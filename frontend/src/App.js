@@ -1,12 +1,19 @@
-function App() {
+import React from "react";
+import Encabezado from "./components/Encabezado";
+import SeccionProductos from "./components/SeccionProductos";
+import PieDePagina from "./components/PieDePagina";
+import { Container } from "@mui/material";
+
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1>Hola Punto shein 2025 </h1>
-        <h2>Bienvenido a la pagina</h2>
-      </header>
+    <div>
+      <Encabezado />
+      <Container>
+        <SeccionProductos />
+      </Container>
+      <PieDePagina />
     </div>
   );
-}
+};
 
 export default App;
