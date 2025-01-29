@@ -14,6 +14,7 @@ import {
   Box,
 } from "@mui/material";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import AccountCircle from "@mui/icons-material/AccountCircle";
 import SearchIcon from "@mui/icons-material/Search";
 import FilterListIcon from "@mui/icons-material/FilterList";
 
@@ -98,7 +99,13 @@ const Encabezado = () => {
         <IconButton color="inherit">
           <ShoppingCartIcon />
         </IconButton>
+
+
+        <IconButton color="inherit">
+          <AccountCircle  />
+        </IconButton>
       </Toolbar>
+      
     </AppBar>
   );
 };
