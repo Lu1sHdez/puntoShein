@@ -1,5 +1,5 @@
 import express from 'express';
-import { registro, login, cerrarSesion } from '../controllers/autenticacion.controller.js';
+import { registro, login, cerrarSesion, recuperarPassword,restablecerPassword } from '../controllers/autenticacion.controller.js';
 
 const router = express.Router();
 
@@ -11,5 +11,11 @@ router.post('/login', express.json(), login);
 
 // Ruta para cerrar sesión
 router.post('/logout', cerrarSesion);
+
+// Ruta de recuperar contraseña
+router.post('/recuperarPassword', express.json(), recuperarPassword);
+
+router.post('/restablecerPassword', express.json(), restablecerPassword);
+
 
 export default router;

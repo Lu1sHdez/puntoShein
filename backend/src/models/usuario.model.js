@@ -47,6 +47,10 @@ const Usuario = sequelize.define('Usuario', {
     type: DataTypes.ENUM('usuario', 'administrador', 'empleado'),
     defaultValue: 'usuario',
   },
+  tokenRecuperacion:{
+    type: DataTypes.STRING,
+    allowNull: true,
+  }
 }, {
   tableName: 'usuarios',
   timestamps: true, // Agrega automáticamente los campos createdAt y updatedAt
