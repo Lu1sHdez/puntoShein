@@ -1,23 +1,26 @@
 import Usuario from '../models/usuario.model.js';
 import bcrypt from 'bcryptjs';
 import { crearTokenAcceso } from '../libs/crearTokenAcceso.js';
-
+import nodemailer from 'nodemailer';
 
 export const registro = async (req, res) => {
   try {
-    console.log("📩 Datos recibidos:", req.body); // Depuración
-
     const { correo, password, nombre_usuario, nombre, apellido_materno, apellido_paterno, telefono, rol } = req.body;
 
-    // Validación de datos obligatorios
     if (!correo || !password || !nombre_usuario || !nombre || !apellido_paterno || !telefono) {
       return res.status(400).json({ mensaje: "Todos los campos son obligatorios excepto el rol." });
     }
 
-    // Verificar si el usuario ya existe
+    // Verificar si el correo ya está registrado
     const usuarioExistente = await Usuario.findOne({ where: { correo } });
     if (usuarioExistente) {
       return res.status(400).json({ mensaje: "El correo ya está registrado." });
+    }
+
+    // Verificar si el teléfono ya está registrado
+    const telefonoExistente = await Usuario.findOne({ where: { telefono } });
+    if (telefonoExistente) {
+      return res.status(400).json({ mensaje: "El teléfono ya está registrado." });
     }
 
     // Hashear la contraseña
@@ -35,26 +38,24 @@ export const registro = async (req, res) => {
       rol: rol || 'usuario',
     });
 
-    res.status(201).json({
+    return res.status(201).json({
       mensaje: "Usuario registrado exitosamente.",
       usuario: {
         id: nuevoUsuario.id,
         nombre_usuario: nuevoUsuario.nombre_usuario,
         correo: nuevoUsuario.correo,
         rol: nuevoUsuario.rol,
-        creado_en: nuevoUsuario.createdAt,
-      }
+      },
     });
   } catch (error) {
-    console.error("Error en el registro:", error);
-    res.status(500).json({ mensaje: "Error interno del servidor." });
+    return res.status(500).json({ mensaje: "Error interno del servidor." });
   }
 };
 
+
+// 🔹 Función para iniciar sesión
 export const login = async (req, res) => {
   try {
-    console.log("Datos recibidos en login:", req.body); // Depuración
-
     const { correo, password } = req.body;
 
     // Validar que los datos no estén vacíos
@@ -73,18 +74,24 @@ export const login = async (req, res) => {
     if (!contraseñaValida) {
       return res.status(400).json({ mensaje: "Correo o contraseña incorrectos." });
     }
+    // Buscar al usuario en la base de datos
+    const usuarioComprobar = await Usuario.findOne({ where: { correo } });
+    if (!usuarioComprobar || !(await bcrypt.compare(password, usuarioComprobar.password))) {
+      return res.status(400).json({ mensaje: "Correo o contraseña incorrectos." });
+    }
+
 
     // Generar token JWT
     const token = crearTokenAcceso(usuario);
 
     // Configurar cookie con el token
     res.cookie('token', token, {
-      httpOnly: true, // Mayor seguridad
-      secure: process.env.NODE_ENV === 'production', // Solo en producción
-      sameSite: 'Strict', // Protección CSRF
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'Strict',
     });
 
-    res.status(200).json({
+    return res.status(200).json({
       mensaje: "Inicio de sesión exitoso.",
       usuario: {
         id: usuario.id,
@@ -92,14 +99,14 @@ export const login = async (req, res) => {
         correo: usuario.correo,
         rol: usuario.rol,
       },
-      token, // Enviar el token en la respuesta
+      token,
     });
 
   } catch (error) {
-    console.error("Error en el login:", error);
-    res.status(500).json({ mensaje: "Error interno del servidor." });
+    return res.status(500).json({ mensaje: "Error interno del servidor." });
   }
 };
+
 
 export const cerrarSesion = (req, res) => {
   res.cookie('token', '', {
@@ -108,4 +115,96 @@ export const cerrarSesion = (req, res) => {
     secure: process.env.NODE_ENV === 'production',
   });
   return res.json({ mensaje: "Sesión cerrada exitosamente." });
+};
+
+
+
+// 🔹 Función para recuperar contraseña
+export const recuperarPassword = async (req, res) => {
+  try {
+    const { correo } = req.body;
+
+    // Verificar si el correo existe en la base de datos
+    const usuario = await Usuario.findOne({ where: { correo } });
+    if (!usuario) {
+      return res.status(400).json({ mensaje: "Correo no registrado." });
+    }
+
+    // Generar un token único para la recuperación de contraseña
+    const tokenRecuperacion = crearTokenAcceso(usuario);
+
+    // Guardar el token en la base de datos
+    usuario.tokenRecuperacion = tokenRecuperacion;
+    await usuario.save();
+
+    // Configurar el transporte de correo electrónico
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+      tls: {
+        rejectUnauthorized: false,
+      },
+    });
+
+    // Crear el mensaje de correo electrónico
+    const mailOptions = {
+      from: `"Punto Shein" <${process.env.EMAIL_USER}>`,
+      to: correo,
+      subject: 'Recuperación de contraseña',
+      html: `
+        <p>Hola ${usuario.nombre},</p>
+        <p>Hemos recibido una solicitud para restablecer tu contraseña.</p>
+        <p>Haz clic en el siguiente enlace para continuar:</p>
+        <p><a href="http://localhost:3000/restablecerPassword?token=${tokenRecuperacion}">Restablecer Contraseña</a></p>
+        <p>Si no solicitaste este cambio, ignora este mensaje.</p>
+      `,
+    };
+
+    // Enviar el correo electrónico
+    transporter.sendMail(mailOptions, (error) => {
+      if (error) {
+        return res.status(500).json({ mensaje: "Error al enviar el correo." });
+      }
+      res.status(200).json({ mensaje: "Se han enviado instrucciones a tu correo." });
+    });
+
+  } catch (error) {
+    res.status(500).json({ mensaje: "Error interno del servidor." });
+  }
+};
+
+// 🔹 Función para restablecer contraseña
+export const restablecerPassword = async (req, res) => {
+  try {
+    const { token, nuevaContrasena } = req.body;
+
+    // Verificar si el token es válido y encontrar al usuario
+    const usuario = await Usuario.findOne({ where: { tokenRecuperacion: token } });
+    if (!usuario) {
+      return res.status(400).json({ mensaje: "Token inválido o expirado." });
+    }
+
+    // Validar que la nueva contraseña cumpla con los requisitos
+    if (!/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(nuevaContrasena)) {
+      return res.status(400).json({
+        mensaje: "La contraseña debe tener mínimo 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial.",
+      });
+    }
+
+    // Hashear la nueva contraseña
+    const contraseñaHasheada = await bcrypt.hash(nuevaContrasena, 10);
+
+    // Actualizar la contraseña y eliminar el token de recuperación
+    usuario.password = contraseñaHasheada;
+    usuario.tokenRecuperacion = null;
+    await usuario.save();
+
+    res.status(200).json({ mensaje: "Contraseña restablecida exitosamente." });
+
+  } catch (error) {
+    res.status(500).json({ mensaje: "Error interno del servidor." });
+  }
 };
