@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Swal from "sweetalert2"; 
 import FormularioInput from "../components/form/FormularioInput";
 import useFormulario from "../hooks/useFormulario";
 
@@ -8,15 +7,12 @@ const Login = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
 
-
-  const { datos, mensaje, handleChange, handleSubmit, loading } = useFormulario(
+  const { datos, handleChange, handleSubmit, loading } = useFormulario(
     { correo: "", password: "" },
     "http://localhost:4000/api/autenticacion/login",
     "/"
   );
 
-  // Desestructurar mensaje
-  const { texto, tipo } = mensaje;
 
   useEffect(() => {
     if (localStorage.getItem("token")) {
@@ -24,21 +20,6 @@ const Login = () => {
     }
   }, [navigate]);
 
-  useEffect(() => {
-    if (texto) {
-      Swal.fire({
-        icon: tipo === "success" ? "success" : "error",
-        title: tipo === "success" ? "¡Éxito!" : "Error",
-        text: texto,
-        showConfirmButton: false,
-        timer: 2000, 
-      });
-
-      if (tipo === "success") {
-        setTimeout(() => navigate("/"), 2000);
-      }
-    }
-  }, [texto, tipo, navigate]);
 
   const inputType = showPassword ? "text" : "password"; // Helper para tipo de input
 

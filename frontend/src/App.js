@@ -20,10 +20,15 @@ const PreguntasFrecuentes = lazy(() =>
 const PoliticaPrivacidad = lazy(() =>
   import("./components/empresa/PoliticaPrivacidad")
 );
+//Documentos de la empresa
 const Terminos = lazy(() => import("./components/empresa/Terminos"));
 const DeslindeLegal = lazy(() => import("./components/empresa/DeslindeLegal"));
-
 const Contacto = lazy(() => import("./components/empresa/Contacto"));
+
+// Páginas de error
+const Error404 = lazy(() => import("./components/error/Error404"));
+const Error500 = lazy(() => import("./components/error/Error500"));
+const Error400 = lazy(() => import("./components/error/Error400"));
 
 
 const App = () => {
@@ -39,30 +44,28 @@ const App = () => {
             }
           >
             <Routes>
-              {/* Rutas ya existentes */}
+              {/* Rutas existentes */}
               <Route path="/" element={<SeccionProductos />} />
               <Route path="/login" element={<Login />} />
               <Route path="/registro" element={<Registro />} />
-              <Route
-                path="/recuperarPassword"
-                element={<RecuperarPassword />}
-              />
-              <Route
-                path="/restablecerPassword"
-                element={<RestablecerPassword />}
-              />
+              <Route path="/recuperarPassword" element={<RecuperarPassword />} />
+              <Route path="/restablecerPassword" element={<RestablecerPassword />} />
               <Route path="/cerrar-sesion" element={<CerrarSesion />} />
 
-              {/* Rutas para la información de la empresa */}
+              {/* Rutas de información de la empresa */}
               <Route path="/acercaDe" element={<AcercaDe />} />
-              <Route
-                path="/preguntasFrecuentes"
-                element={<PreguntasFrecuentes />}
-              />
+              <Route path="/preguntasFrecuentes" element={<PreguntasFrecuentes />} />
               <Route path="/privacidad" element={<PoliticaPrivacidad />} />
               <Route path="/terminos" element={<Terminos />} />
               <Route path="/deslindeLegal" element={<DeslindeLegal />} />
               <Route path="/contacto" element={<Contacto />} />
+
+              {/* Páginas de error */}
+              <Route path="/error400" element={<Error400 />} />
+              <Route path="/error500" element={<Error500 />} />
+              <Route path="*" element={<Error404 />} />
+
+
             </Routes>
           </Suspense>
         </Container>
