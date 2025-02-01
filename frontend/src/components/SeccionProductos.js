@@ -12,7 +12,7 @@ const productos = [
 const SeccionProductos = () => {
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
         {productos.map((producto) => (
           <div key={producto.id} className="bg-white rounded-lg shadow-lg overflow-hidden transition transform hover:scale-105">
             <img src={producto.imagen} alt={producto.nombre} className="w-full h-64 object-cover" />

@@ -4,7 +4,7 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 const FormularioInput = ({ label, type, name, value, onChange, required, showPassword, togglePassword,placeholder}) => {
   return (
     <div className="mb-4 relative">
-      <label className="block text-gray-700 text-sm font-medium mb-1">{label}</label>
+      <label className="block text-gray-700 text-sm font-medium mb-1 -top-1">{label}</label>
       <div className="relative">
         <input
           type={showPassword !== undefined ? (showPassword ? "text" : "password") : type}

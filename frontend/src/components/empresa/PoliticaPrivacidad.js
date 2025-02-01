@@ -3,7 +3,7 @@ import React from "react";
 const PoliticaPrivacidad = () => {
   return (
     <div className="p-4 max-w-3xl mx-auto text-justify">
-      <h2 className="text-2xl font-bold mb-4">Política de Privacidad</h2>
+      <h2 className="text-2xl font-bold text-center mb-4">Política de Privacidad</h2>
       <p className="mb-4">
         En <strong>Punto Shein</strong>, nos comprometemos a proteger la privacidad
         de nuestros usuarios y clientes. La presente política describe qué datos
