@@ -3,7 +3,7 @@ import React from "react";
 const Terminos = () => {
   return (
     <div className="p-4 max-w-3xl mx-auto text-justify">
-      <h2 className="text-2xl font-bold mb-4">Términos y Condiciones</h2>
+      <h2 className="text-2xl font-bold text-center mb-4">Términos y Condiciones</h2>
 
       <p className="mb-4">
         Los presentes términos y condiciones regulan el acceso y uso de la plataforma

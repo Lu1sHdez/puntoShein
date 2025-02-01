@@ -71,7 +71,7 @@ const Registro = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 px-4">
+    <div className="flex items-center justify-center mt-10">
       <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg">
         <h2 className="text-xl font-semibold text-center text-gray-700 mb-4">Registrarse</h2>
 
@@ -92,7 +92,7 @@ const Registro = () => {
                 value={datos[name]}
                 onChange={handleChange}
                 placeholder={placeholder}
-                className="px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-400"
+                className="px-3 py-2 border rounded-md focus:ring-2 focus:ring-pink-400"
                 required
                 pattern={pattern}
                 maxLength={maxLength}
@@ -109,7 +109,7 @@ const Registro = () => {
               placeholder="Mínimo 8 caracteres"
               value={datos.password}
               onChange={handleChange}
-              className="px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-400"
+              className="px-3 py-2 border rounded-md focus:ring-2 focus:ring-pink-400"
               onFocus={() => setShowPasswordRules(true)}
               required
             />
@@ -127,7 +127,7 @@ const Registro = () => {
               placeholder="Repite la contraseña"
               value={datos.confirmPassword}
               onChange={handleChange}
-              className="px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-400"
+              className="px-3 py-2 border rounded-md focus:ring-2 focus:ring-pink-400"
               required
             />
             <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute right-3 top-7">
@@ -154,7 +154,7 @@ const Registro = () => {
 
           {/* Botón de registro */}
           <div className="col-span-2 flex justify-center mt-2">
-            <button type="submit" className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition">
+            <button type="submit" className="w-full bg-pink-600 text-white px-6 py-2 rounded-md hover:bg-pink-700 transition">
               Registrarse
             </button>
           </div>

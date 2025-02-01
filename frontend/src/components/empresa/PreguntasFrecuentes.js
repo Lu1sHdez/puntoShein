@@ -3,7 +3,7 @@ import React from "react";
 const PreguntasFrecuentes = () => {
   return (
     <div className="p-4 max-w-3xl mx-auto">
-      <h2 className="text-2xl font-bold mb-6">Preguntas Frecuentes (FAQ)</h2>
+      <h2 className="text-2xl font-bold text-center mb-6">Preguntas Frecuentes (FAQ)</h2>
 
       <div className="mb-4">
         <h3 className="text-lg font-semibold mb-2">1. ¿Cómo puedo realizar un pedido?</h3>

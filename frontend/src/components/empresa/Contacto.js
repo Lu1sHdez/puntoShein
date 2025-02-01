@@ -17,7 +17,7 @@ const Contacto = () => {
 
   return (
     <div className="max-w-md mx-auto mt-8 p-4 bg-white shadow-md rounded-md">
-      <h2 className="text-2xl font-bold mb-4">Contáctanos</h2>
+      <h2 className="text-2xl font-bold text-center mb-4">Contáctanos</h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
           <label className="block text-sm font-semibold mb-1">
@@ -62,7 +62,7 @@ const Contacto = () => {
 
         <button
           type="submit"
-          className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition"
+          className="bg-pink-600 text-white py-2 px-4 rounded hover:bg-pink-700 transition"
         >
           Enviar
         </button>

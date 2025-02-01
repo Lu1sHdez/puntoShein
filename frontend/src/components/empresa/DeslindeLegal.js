@@ -3,7 +3,7 @@ import React from "react";
 const DeslindeLegal = () => {
   return (
     <div className="p-4 max-w-3xl mx-auto text-justify">
-      <h2 className="text-2xl font-bold mb-4">Deslinde Legal (Disclaimer)</h2>
+      <h2 className="text-2xl font-bold text-center mb-4">Deslinde Legal (Disclaimer)</h2>
 
       <p className="mb-4">
         Este texto de ejemplo establece un deslinde legal que explica las
