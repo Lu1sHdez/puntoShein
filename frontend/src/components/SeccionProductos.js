@@ -19,7 +19,7 @@ const SeccionProductos = () => {
             <div className="p-4">
               <h2 className="text-lg font-semibold">{producto.nombre}</h2>
               <p className="text-gray-500">{producto.precio}</p>
-              <button className="mt-2 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">
+              <button className="mt-2 w-full bg-pink-600 text-white py-2 rounded-lg hover:bg-pink-700 transition">
                 Agregar al carrito
               </button>
               <button className="mt-2 w-full border border-gray-400 py-2 rounded-lg hover:bg-gray-100 transition">

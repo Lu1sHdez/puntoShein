@@ -16,7 +16,7 @@ const useFormulario = (initialState, url, redirigir) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setMensaje({ tipo: "", texto: "" }); // Restablece el mensaje antes de la solicitud
+    setMensaje({ tipo: "", texto: "" });
 
     // Validar que todos los campos estén llenos
     if (Object.values(datos).some((campo) => !campo)) {
@@ -35,11 +35,11 @@ const useFormulario = (initialState, url, redirigir) => {
       // Mostrar alerta de éxito
       await Swal.fire({
         icon: "success",
-        title: "Ha cambiado su contraseña",
+        title: "Inicio de sesión exitoso",
         text: "Operación exitosa, redirigiendo...",
-        timer: 2000, // Cierra automáticamente después de 2 segundos
-        timerProgressBar: true, // Muestra una barra de progreso
-        showConfirmButton: false, // Oculta el botón de confirmación
+        timer: 2000,
+        timerProgressBar: true,
+        showConfirmButton: false,
       });
 
       // Guardar el token en localStorage
@@ -48,14 +48,26 @@ const useFormulario = (initialState, url, redirigir) => {
       // Redirigir después de 2 segundos
       setTimeout(() => navigate(redirigir), 2000);
     } catch (error) {
-      // Mostrar alerta de error
-      await Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: error.response?.data?.mensaje || "Error en la solicitud.",
-      });
+      // Verificar si el error tiene una respuesta del servidor
+      if (!error.response) {
+        // ERROR 500 (Servidor no responde o backend caído)
+        navigate("/error500");
+      } else if (error.response.status === 400) {
+        // ERROR 400 (Solicitud incorrecta)
+        navigate("/error400");
+      } else if (error.response.status === 404) {
+        // ERROR 404 (Recurso no encontrado)
+        navigate("/error404");
+      } else {
+        // Otro tipo de error
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: error.response?.data?.mensaje || "Error en la solicitud.",
+        });
+      }
 
-      // Actualizar el estado del mensaje (si es necesario)
+      // Actualizar el estado del mensaje
       setMensaje({
         tipo: "error",
         texto: error.response?.data?.mensaje || "Error en la solicitud.",
