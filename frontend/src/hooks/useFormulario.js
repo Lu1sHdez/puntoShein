@@ -71,39 +71,32 @@ const useFormulario = (initialState, url, redirigir, isAuthForm = false) => {
         navigate("/error500");
         return false;
       }
+      
 
-      // 🚨 Si es error 400 (Solicitud incorrecta)
       if (error.response.status === 400) {
         const mensajeError = error.response.data.mensaje || "Solicitud incorrecta.";
-
+      
         // ✅ Si el error es por credenciales incorrectas en Login, mostrar alerta y NO redirigir
         if (mensajeError === "Correo o contraseña incorrectos.") {
-          Swal.fire({
-            icon: "error",
-            title: "Error",
-            text: mensajeError,
-          });
-          return false;
+          setMensaje({ tipo: "error", texto: mensajeError }); // ✅ Guardar mensaje en el estado
+          return false; // 🚨 Evita que el formulario actúe como si fue exitoso
         }
-
+      
         // ✅ Si el error es en recuperación/restablecimiento de contraseña, mostrar alerta en vez de redirigir
         if (
           mensajeError.includes("Correo no registrado") ||
           mensajeError.includes("Token inválido") ||
           mensajeError.includes("contraseña debe tener mínimo")
         ) {
-          Swal.fire({
-            icon: "error",
-            title: "Error",
-            text: mensajeError,
-          });
+          setMensaje({ tipo: "error", texto: mensajeError });
           return false;
         }
-
+      
         // 🚨 Otros errores 400 sí redirigen a la página de error
         navigate("/error400");
         return false;
       }
+      
 
       // 🚨 Si el recurso no existe (Error 404)
       if (error.response.status === 404) {
