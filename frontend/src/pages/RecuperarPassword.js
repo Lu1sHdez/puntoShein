@@ -7,13 +7,12 @@ import useFormulario from "../hooks/useFormulario";
 const RecuperarPassword = () => {
   const navigate = useNavigate();
 
-  const { datos, mensaje, handleChange, handleSubmit, loading } = useFormulario(
+  const { datos, handleChange, handleSubmit, loading } = useFormulario(
     { correo: "" },
     "http://localhost:4000/api/autenticacion/recuperarPassword",
-    "/login"
+    "/login",
+    false
   );
-
-  const { texto} = mensaje;
 
   const validarYEnviar = async (e) => {
     e.preventDefault();
@@ -23,33 +22,14 @@ const RecuperarPassword = () => {
         icon: "error",
         title: "Error",
         text: "Por favor, ingresa tu correo electrónico.",
-        confirmButtonColor: "#d33",
       });
       return;
     }
 
-    try {
-      await handleSubmit(e);
+    const exito = await handleSubmit(e);
+    if (!exito) return; // 🚨 Si hubo un error, no continuar
 
-      Swal.fire({
-        icon: "success",
-        title: "Correo Enviado",
-        text: "Hemos enviado un enlace de recuperación a tu correo electrónico.",
-        confirmButtonColor: "#3085d6",
-        timer: 3000,
-        timerProgressBar: true,
-        showConfirmButton: false,
-      });
-
-      setTimeout(() => navigate("/login"), 3000);
-    } catch (error) {
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: texto || "No se pudo enviar el correo. Intenta nuevamente.",
-        confirmButtonColor: "#d33",
-      });
-    }
+    setTimeout(() => navigate("/login"), 3000);
   };
 
   return (
@@ -75,7 +55,7 @@ const RecuperarPassword = () => {
               loading ? "opacity-50 cursor-not-allowed" : ""
             }`}
           >
-            {loading ? "Enviando..." : "Enviar enlace de recuperación"}
+            Enviar enlace de recuperación
           </button>
 
           <button
