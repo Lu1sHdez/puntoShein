@@ -86,7 +86,7 @@ const RestablecerPassword = () => {
               loading ? "opacity-50 cursor-not-allowed" : ""
             }`}
           >
-            {loading ? "Restableciendo..." : "Restablecer Contraseña"}
+            Restablecer Contraseña
           </button>
 
           <button

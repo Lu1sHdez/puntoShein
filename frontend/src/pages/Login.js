@@ -7,19 +7,19 @@ const Login = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
 
+  // ✅ Se pasa `true` para indicar que es un formulario de autenticación
   const { datos, handleChange, handleSubmit, loading } = useFormulario(
     { correo: "", password: "" },
     "http://localhost:4000/api/autenticacion/login",
-    "/"
+    "/",
+    true
   );
-
 
   useEffect(() => {
     if (localStorage.getItem("token")) {
       navigate("/");
     }
   }, [navigate]);
-
 
   const inputType = showPassword ? "text" : "password"; // Helper para tipo de input
 
