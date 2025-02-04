@@ -1,10 +1,15 @@
-// src/components/Layout.js
 import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import Encabezado from "./Encabezado";
 import PieDePagina from "./PieDePagina";
 import Breadcrumbs from "./Breadcrumbs";
 
 const Layout = ({ children }) => {
+  const location = useLocation(); // Obtiene la ruta actual
+
+  // Rutas donde NO se debe mostrar el Breadcrumbs del Layout
+  const ocultarMigas = location.pathname.startsWith("/producto/");
+
   // 1) Arreglo con las rutas de tus imágenes de fondo
   const imagenesFondo = [
     "https://res.cloudinary.com/dgbs7sg9j/image/upload/v1733295506/moda1_qwtxdu.png",
@@ -15,20 +20,18 @@ const Layout = ({ children }) => {
   // 2) Estado para el índice de imagen actual
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  // 3) useEffect para cambiar de imagen cada 3 segundos
+  // 3) useEffect para cambiar de imagen cada 5 segundos
   useEffect(() => {
     const intervalId = setInterval(() => {
-      // Avanza al siguiente índice (o vuelve a 0)
       setCurrentIndex((prevIndex) =>
         prevIndex === imagenesFondo.length - 1 ? 0 : prevIndex + 1
       );
-    }, 5000); // Cambia a 5000 ms = 5s
+    }, 5000);
 
-    // Limpia el intervalo al desmontar
     return () => clearInterval(intervalId);
   }, [imagenesFondo.length]);
 
-  // 4) Combina tu gradient + la imagen actual
+  // 4) Combina el gradiente con la imagen actual
   const styleFondo = {
     backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.5)), url('${imagenesFondo[currentIndex]}')`,
   };
@@ -38,11 +41,11 @@ const Layout = ({ children }) => {
       className="flex flex-col min-h-screen bg-center bg-cover bg-no-repeat transition-all duration-500"
       style={styleFondo}
     >
-      {/* Encabezado fijo */}
       <Encabezado />
 
       <div className="flex-grow pt-20">
-        <Breadcrumbs />
+        {/* ❌ Evita renderizar Breadcrumbs en la página del producto */}
+        {!ocultarMigas && <Breadcrumbs />}
         <div className="relative mt-4">
           <main className="relative">{children}</main>
         </div>

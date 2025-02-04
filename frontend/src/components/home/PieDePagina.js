@@ -11,7 +11,7 @@ const PieDePagina = () => {
         {/* Sección de enlaces legales / info */}
         <div className="flex flex-wrap justify-center space-x-4 mb-2">
           <Link to="/acercaDe" className="hover:underline">
-            Acerca de
+            Acerca de 
           </Link>
           <Link to="/preguntasFrecuentes" className="hover:underline">
             Preguntas Frecuentes
