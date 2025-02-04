@@ -2,10 +2,12 @@
 import React, { Suspense, lazy } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Container, CircularProgress } from "@mui/material";
-import Layout from "./components/Layout";
+import Layout from "./components/home/Layout";
 
 // ⏳ Lazy Loading (Carga Diferida) para tus páginas principales
-const SeccionProductos = lazy(() => import("./components/SeccionProductos"));
+const DetalleProducto = lazy(() => import("./components/productos/DetalleProducto"));
+const SeccionProductos = lazy(() => import("./components/productos/AllProductos"));
+const BuscarProductos = lazy(() => import("./pages/BuscarProductos")); // ✅ Nueva página de búsqueda
 const Login = lazy(() => import("./pages/Login"));
 const Registro = lazy(() => import("./pages/Registro"));
 const RecuperarPassword = lazy(() => import("./pages/RecuperarPassword"));
@@ -51,6 +53,11 @@ const App = () => {
               <Route path="/recuperarPassword" element={<RecuperarPassword />} />
               <Route path="/restablecerPassword" element={<RestablecerPassword />} />
               <Route path="/cerrar-sesion" element={<CerrarSesion />} />
+
+
+               {/* ✅ Nueva ruta para la búsqueda de productos */}
+               <Route path="/buscar" element={<BuscarProductos />} />
+               <Route path="/producto/:id" element={<DetalleProducto />} />
 
               {/* Rutas de información de la empresa */}
               <Route path="/acercaDe" element={<AcercaDe />} />

@@ -1,6 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import autenticacionRutas from './routes/autenticacion.routes.js';
+import productoRutas from './routes/producto.routes.js';
+
 
 const app = express();
 
@@ -15,6 +17,9 @@ app.use(cors({
 
 // Rutas de autenticación (registro)
 app.use('/api/autenticacion', autenticacionRutas);
+// Ruta para buscar productos
+app.use('/api/productos', productoRutas);
+
 
 // Middleware de manejo de errores
 app.use((err, req, res, next) => {

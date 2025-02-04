@@ -7,7 +7,7 @@ import Usuario from '../models/usuario.model.js'; // Ajusta la ruta según tu es
     console.log("✅ Base de datos actualizada correctamente.");
     process.exit(0); // Finaliza el proceso después de la sincronización
   } catch (error) {
-    console.error("❌ Error al actualizar la base de datos:", error);
+    console.error("Error al actualizar la base de datos:", error);
     process.exit(1); // Sale con error si algo falla
   }
 })();

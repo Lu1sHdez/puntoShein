@@ -2,8 +2,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { FaShoppingCart, FaSearch, FaFilter, FaBars } from "react-icons/fa";
-import MenuUsuario from "../components/MenuUsuario";
-import useAuth from "../hooks/useAuth";
+import MenuUsuario from "./MenuUsuario";
+import useAuth from "../../hooks/useAuth";
 
 const FiltrosAvanzados = ({ visible, onClose }) => {
   // ... (código de filtros avanzados igual que antes)
@@ -21,7 +21,9 @@ const Encabezado = () => {
   }, []);
 
   const handleBuscar = () => {
-    console.log("Buscando:", busqueda);
+    if (busqueda.trim()) {
+      navigate(`/buscar?nombre=${busqueda}`);
+    }
   };
 
   const handleLogout = () => {
