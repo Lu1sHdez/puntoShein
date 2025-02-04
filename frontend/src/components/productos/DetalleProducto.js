@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { Breadcrumbs, Link, Typography } from "@mui/material";
 
 const DetalleProducto = () => {
-  const { id } = useParams(); // 📌 Obtiene el ID del producto desde la URL
-  const navigate = useNavigate(); // 🚀 Permite la navegación entre páginas
+  const { id } = useParams(); // Obtiene el ID desde la URL
+  const navigate = useNavigate();
   const [producto, setProducto] = useState(null);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
@@ -28,32 +29,41 @@ const DetalleProducto = () => {
   if (cargando) return <p className="text-center text-gray-500">Cargando producto...</p>;
   if (error) return <p className="text-center text-red-500">{error}</p>;
 
-  // 📌 Función para agregar el producto al carrito
+  // Funciones para los botones
   const handleAgregarCarrito = () => {
     console.log(`🛒 Producto agregado al carrito: ${producto.nombre}`);
-    alert("Producto agregado al carrito"); // Puedes reemplazarlo con una función que maneje el carrito global
+    alert("Producto agregado al carrito");
   };
 
-  // 📌 Función para comprar ahora (redirige a la página de pago)
   const handleComprarAhora = () => {
-    navigate(`/checkout?producto=${producto.id}`); // Redirige a una página de pago
+    navigate(`/checkout?producto=${producto.id}`);
   };
 
   return (
     <div className="container mx-auto px-4 py-8">
+      {/* Migas de Pan */}
+      <Breadcrumbs aria-label="breadcrumb" className="mb-4">
+        <Link underline="hover" color="inherit" href="/">
+          Home
+        </Link>
+        <Link underline="hover" color="inherit" href="/productos">
+          Productos
+        </Link>
+        {producto ? (
+          <Typography color="text.primary">{producto.nombre}</Typography>
+        ) : (
+          <Typography color="text.primary">Cargando...</Typography>
+        )}
+      </Breadcrumbs>
+
       <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
-        {/* Imagen del producto */}
         <img src={producto.imagen} alt={producto.nombre} className="w-full h-96 object-cover" />
 
         <div className="p-6">
-          {/* Nombre y descripción del producto */}
           <h2 className="text-2xl font-bold mb-2">{producto.nombre}</h2>
           <p className="text-gray-600 mb-4">{producto.descripcion}</p>
-
-          {/* Precio */}
           <p className="text-pink-600 text-xl font-bold mb-4">${producto.precio}</p>
 
-          {/* Botones de acción */}
           <div className="flex flex-col space-y-3">
             <button 
               onClick={handleComprarAhora} 
