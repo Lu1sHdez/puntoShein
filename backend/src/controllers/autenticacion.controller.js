@@ -8,12 +8,12 @@ export const registro = async (req, res) => {
     const { correo, password, nombre_usuario, nombre, apellido_materno, apellido_paterno, telefono, rol } = req.body;
 
     if (!correo || !password || !nombre_usuario || !nombre || !apellido_paterno || !telefono) {
-      return res.status(400).json({ mensaje: "Todos los campos son obligatorios excepto el rol." });
+      return res.status(400).json({ mensaje: "Todos los campos son obligatorios." });
     }
 
     // Verificar si el correo ya está registrado
-    const usuarioExistente = await Usuario.findOne({ where: { correo } });
-    if (usuarioExistente) {
+    const correoExistente = await Usuario.findOne({ where: { correo } });
+    if (correoExistente) {
       return res.status(400).json({ mensaje: "El correo ya está registrado." });
     }
 
@@ -21,6 +21,11 @@ export const registro = async (req, res) => {
     const telefonoExistente = await Usuario.findOne({ where: { telefono } });
     if (telefonoExistente) {
       return res.status(400).json({ mensaje: "El teléfono ya está registrado." });
+    }
+    // Verificar si el usuario ya está registrado
+    const usuarioExistente = await Usuario.findOne({ where: { nombre_usuario } });
+    if (usuarioExistente) {
+      return res.status(400).json({ mensaje: "El nombre de usuario ya existe. Intenta con otro" });
     }
 
     // Hashear la contraseña
@@ -74,6 +79,7 @@ export const login = async (req, res) => {
     if (!contraseñaValida) {
       return res.status(400).json({ mensaje: "Correo o contraseña incorrectos." });
     }
+
     // Buscar al usuario en la base de datos
     const usuarioComprobar = await Usuario.findOne({ where: { correo } });
     if (!usuarioComprobar || !(await bcrypt.compare(password, usuarioComprobar.password))) {
