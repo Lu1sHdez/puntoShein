@@ -38,7 +38,7 @@ const useFormulario = (initialState, url, redirigir, isAuthForm = false) => {
           icon: "success",
           title: "Inicio de sesión exitoso",
           text: "Operación exitosa, redirigiendo...",
-          timer: 2000,
+          timer: 1500,
           timerProgressBar: true,
           showConfirmButton: false,
         });
@@ -47,7 +47,7 @@ const useFormulario = (initialState, url, redirigir, isAuthForm = false) => {
         localStorage.setItem("token", respuesta.data.token);
 
         // Redirigir después de 2 segundos
-        setTimeout(() => navigate(redirigir), 2000);
+        setTimeout(() => navigate(redirigir), 1500);
       } else {
         // ✅ Formulario de recuperación o restablecimiento de contraseña
         await Swal.fire({
@@ -55,13 +55,13 @@ const useFormulario = (initialState, url, redirigir, isAuthForm = false) => {
           title: "Operación exitosa",
           text: respuesta.data.mensaje || "Proceso realizado correctamente.",
           confirmButtonColor: "#3085d6",
-          timer: 3000,
+          timer: 1500,
           timerProgressBar: true,
           showConfirmButton: false,
         });
 
         // Redirigir después de 3 segundos si todo salió bien
-        setTimeout(() => navigate(redirigir), 3000);
+        setTimeout(() => navigate(redirigir), 1500);
       }
 
       return true; // ✅ Indica que la operación fue exitosa
