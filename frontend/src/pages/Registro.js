@@ -17,6 +17,7 @@ const Registro = () => {
     confirmPassword: "",
   });
 
+  const [errores, setErrores] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [showPasswordRules, setShowPasswordRules] = useState(false);
@@ -31,25 +32,63 @@ const Registro = () => {
     if (["nombre", "apellido_paterno", "apellido_materno"].includes(name) && !/^[a-zA-Z\s]*$/.test(value)) return;
 
     setDatos({ ...datos, [name]: value });
+    setErrores({ ...errores, [name]: "" });
 
     if (name === "password") validar(value);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    let mensajeError = {};
 
+    let camposVacios = false;
+
+    // Validar que ningún campo esté vacío
+    Object.keys(datos).forEach((campo) => {
+      if (!datos[campo]) {
+        mensajeError[campo] = "Este campo no puede quedar vacío.";
+        camposVacios = true;
+      }
+    });
+
+
+    //Todos los campos son obligatorios
+    if(camposVacios){
+      mensajeError.general = "Todos los campos son obligatorios."
+    }
+
+    // Validación de nombre, apellido paterno y apellido materno (mínimo 3 caracteres)
+    ["nombre", "apellido_paterno", "apellido_materno"].forEach((campo) => {
+      if (datos[campo] && datos[campo].length < 3) {
+        mensajeError[campo] = "Debe tener al menos 3 letras.";
+      }
+    });
+
+    // Validación de teléfono (siempre que tenga algún valor)
     if (!/^\d{10}$/.test(datos.telefono)) {
-      Swal.fire({ icon: "error", title: "Error", text: "El teléfono debe tener exactamente 10 dígitos." });
-      return;
+      mensajeError.telefono = "El teléfono debe tener exactamente 10 dígitos.";
     }
 
+
+   // Validación del correo (solo si tiene algo escrito y es incorrecto)
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (datos.correo && !emailRegex.test(datos.correo)) {
+      mensajeError.correo = "El correo no tiene un formato válido.";
+    }
+
+    // Validación de contraseñas
     if (datos.password !== datos.confirmPassword) {
-      Swal.fire({ icon: "error", title: "Error", text: "Las contraseñas no coinciden." });
-      return;
+      mensajeError.confirmPassword = "Las contraseñas no coinciden.";
     }
 
+    // Validación de reglas de contraseña
     if (!Object.values(passwordRules).every(Boolean)) {
-      Swal.fire({ icon: "error", title: "Error", text: "La contraseña no cumple con los requisitos." });
+      mensajeError.password = "La contraseña no cumple con los requisitos.";
+    }
+ 
+    //Si hay errores detener el envio
+    if (Object.keys(mensajeError).length > 0) {
+      setErrores(mensajeError);
       return;
     }
 
@@ -66,7 +105,19 @@ const Registro = () => {
 
       setTimeout(() => navigate("/login"), 2000);
     } catch (error) {
-      Swal.fire({ icon: "error", title: "Error", text: error.response?.data?.mensaje || "Error en el registro." });
+
+      const mensajeError = error.response?.data?.mensaje;
+
+      if (mensajeError === "El correo ya está registrado.") {
+        setErrores({ correo: mensajeError });
+      } 
+      else if (mensajeError === "El nombre de usuario ya existe. Intenta con otro") {
+          setErrores({ nombre_usuario: mensajeError });
+      } else if (mensajeError === "El teléfono ya está registrado.") { 
+        setErrores({ telefono: mensajeError });     
+      } else {
+        setErrores({ general: mensajeError || "Error en el registro." });
+      }
     }
   };
 
@@ -75,15 +126,17 @@ const Registro = () => {
       <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg">
         <h2 className="text-xl font-semibold text-center text-gray-700 mb-4">Registrarse</h2>
 
+        {errores.general && <p className="text-red-500 text-sm text-center mb-2">{errores.general}</p>}
+
         <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {[
             { label: "Usuario", name: "nombre_usuario", type: "text", placeholder: "Nombre de usuario" },
             { label: "Nombre", name: "nombre", type: "text", placeholder: "Nombre" },
             { label: "Apellido Paterno", name: "apellido_paterno", type: "text", placeholder: "Apellido paterno" },
             { label: "Apellido Materno", name: "apellido_materno", type: "text", placeholder: "Apellido materno" },
-            { label: "Teléfono", name: "telefono", type: "text", placeholder: "0123456789", pattern: "[0-9]{10}", maxLength: "10" },
+            { label: "Teléfono", name: "telefono", type: "text", placeholder: "0123456789", maxLength: "10" },
             { label: "Correo", name: "correo", type: "email", placeholder: "ejemplo@dominio.com" },
-          ].map(({ label, name, type, placeholder, pattern, maxLength }) => (
+          ].map(({ label, name, type, placeholder, maxLength }) => (
             <div key={name} className="flex flex-col">
               <label className="text-gray-700 text-sm">{label}</label>
               <input
@@ -92,11 +145,12 @@ const Registro = () => {
                 value={datos[name]}
                 onChange={handleChange}
                 placeholder={placeholder}
-                className="px-3 py-2 border rounded-md focus:ring-2 focus:ring-pink-400"
-                required
-                pattern={pattern}
+                className={`px-3 py-2 border rounded-md focus:ring-2 focus:ring-pink-400 ${
+                  errores[name] ? "border-red-500" : ""
+                }`}
                 maxLength={maxLength}
               />
+              {errores[name] && <span className="text-red-500 text-xs">{errores[name]}</span>}
             </div>
           ))}
 
@@ -109,13 +163,15 @@ const Registro = () => {
               placeholder="Mínimo 8 caracteres"
               value={datos.password}
               onChange={handleChange}
-              className="px-3 py-2 border rounded-md focus:ring-2 focus:ring-pink-400"
+              className={`px-3 py-2 border rounded-md focus:ring-2 focus:ring-pink-400 ${
+                errores.password ? "border-red-500" : ""
+              }`}
               onFocus={() => setShowPasswordRules(true)}
-              required
             />
             <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-7">
               {showPassword ? <VisibilityOff /> : <Visibility />}
             </button>
+            {errores.password && <span className="text-red-500 text-xs">{errores.password}</span>}
           </div>
 
           {/* Confirmar Contraseña */}
@@ -127,18 +183,21 @@ const Registro = () => {
               placeholder="Repite la contraseña"
               value={datos.confirmPassword}
               onChange={handleChange}
-              className="px-3 py-2 border rounded-md focus:ring-2 focus:ring-pink-400"
+              className={`px-3 py-2 border rounded-md focus:ring-2 focus:ring-pink-400 ${
+                errores.confirmPassword ? "border-red-500" : ""
+              }`}
               required
             />
             <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute right-3 top-7">
               {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
             </button>
+            {errores.confirmPassword && <span className="text-red-500 text-xs">{errores.confirmPassword}</span>}
           </div>
 
           {/* Reglas de contraseña */}
           {showPasswordRules && (
             <div className="col-span-2 text-xs text-gray-600">
-              {[
+              {[ 
                 { text: "Mínimo 8 caracteres", valid: passwordRules.length },
                 { text: "Al menos una mayúscula", valid: passwordRules.uppercase },
                 { text: "Al menos una minúscula", valid: passwordRules.lowercase },
