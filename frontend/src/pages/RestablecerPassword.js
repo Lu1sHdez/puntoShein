@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import Swal from "sweetalert2";
 import FormularioInput from "../components/form/FormularioInput";
 import useFormulario from "../hooks/useFormulario";
 
@@ -9,6 +8,7 @@ const RestablecerPassword = () => {
   const location = useLocation();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [errorValidacion, setErrorValidacion] = useState(""); // ⚠️ Estado para errores
 
   // Obtener token de la URL
   const queryParams = new URLSearchParams(location.search);
@@ -20,21 +20,30 @@ const RestablecerPassword = () => {
     "/login"
   );
 
-  const { texto, tipo } = mensaje;
+  // ⚠️ Actualizar el mensaje de error si viene del backend
+  useEffect(() => {
+    if (mensaje.tipo === "error") {
+      setErrorValidacion(mensaje.texto);
+    }
+  }, [mensaje]);
 
   const validarYEnviar = async (e) => {
     e.preventDefault();
 
     if (datos.nuevaContrasena !== datos.confirmarContrasena) {
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "Las contraseñas no coinciden.",
-      });
+      setErrorValidacion("Las contraseñas no coinciden.");
       return;
     }
 
-    await handleSubmit(e); // Ejecuta el envío solo si las contraseñas coinciden
+    if (!/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(datos.nuevaContrasena)) {
+      setErrorValidacion(
+        "La contraseña debe tener mínimo 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial."
+      );
+      return;
+    }
+
+    setErrorValidacion(""); // Limpiar errores anteriores
+    await handleSubmit(e);
   };
 
   return (
@@ -42,13 +51,10 @@ const RestablecerPassword = () => {
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
         <h2 className="text-2xl font-semibold text-center text-gray-700">Restablecer Contraseña</h2>
 
-        {texto && (
-          <div
-            className={`mt-4 p-2 text-sm text-white text-center rounded ${
-              tipo === "success" ? "bg-green-500" : "bg-red-500"
-            }`}
-          >
-            {texto}
+        {/* ⚠️ Mensaje de error estático arriba del formulario */}
+        {errorValidacion && (
+          <div className="mb-4 text-red-500 text-sm font-semibold text-center">
+            {errorValidacion}
           </div>
         )}
 
