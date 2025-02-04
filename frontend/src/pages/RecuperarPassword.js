@@ -34,7 +34,7 @@ const RecuperarPassword = () => {
     const exito = await handleSubmit(e);
     if (!exito) return; // 🚨 Si hubo un error, no continuar con la navegación
 
-    setTimeout(() => navigate("/login"), 3000);
+    setTimeout(() => navigate("/login"), 1500);
   };
 
   return (
