@@ -3,11 +3,12 @@ import { useLocation } from "react-router-dom";
 import Encabezado from "./Encabezado";
 import PieDePagina from "./PieDePagina";
 import Breadcrumbs from "./Breadcrumbs";
+import Chat from "../chat/Chat";
 
 const Layout = ({ children }) => {
   const location = useLocation(); // Obtiene la ruta actual
 
-  // Rutas donde NO se debe mostrar el Breadcrumbs del Layout
+  // Ocultar las migas de pan en páginas específicas (como Detalle de Producto)
   const ocultarMigas = location.pathname.startsWith("/producto/");
 
   // 1) Arreglo con las rutas de tus imágenes de fondo
@@ -44,13 +45,14 @@ const Layout = ({ children }) => {
       <Encabezado />
 
       <div className="flex-grow pt-20">
-        {/* ❌ Evita renderizar Breadcrumbs en la página del producto */}
+        {/* ✅ Mostrar migas de pan SOLO si no estamos en la página del producto */}
         {!ocultarMigas && <Breadcrumbs />}
         <div className="relative mt-4">
           <main className="relative">{children}</main>
         </div>
       </div>
-
+      
+      <Chat />
       <PieDePagina />
     </div>
   );

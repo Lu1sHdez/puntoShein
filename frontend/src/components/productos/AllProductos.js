@@ -1,18 +1,21 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useLocation } from "react-router-dom"; // Importar useLocation
 import ProductoCard from "./ProductoCard";
 
 const AllProductos = () => {
   const [productos, setProductos] = useState([]); // Lista de productos obtenidos del backend
   const [cargando, setCargando] = useState(false);
   const [error, setError] = useState(null);
-  const [visibleProductos, setVisibleProductos] = useState(8); // Mostrar inicialmente 12 productos
+  const [visibleProductos, setVisibleProductos] = useState(8); // Mostrar inicialmente 8 productos
+  const location = useLocation(); // Usar useLocation para obtener la URL
 
   useEffect(() => {
     const fetchProductos = async () => {
       setCargando(true);
       try {
-        const response = await axios.get("http://localhost:4000/api/productos/allProductos");
+        // Concatenar location.search para incluir los parámetros de la URL (filtros, búsqueda)
+        const response = await axios.get(`http://localhost:4000/api/productos/allProductos${location.search}`);
         setProductos(response.data);
       } catch (error) {
         console.error("Error al obtener productos:", error);
@@ -23,7 +26,7 @@ const AllProductos = () => {
     };
 
     fetchProductos();
-  }, []);
+  }, [location.search]); // Dependencia en location.search para volver a cargar cuando cambia
 
   // Función para cargar más productos al hacer clic en "Ver más"
   const handleVerMas = () => {

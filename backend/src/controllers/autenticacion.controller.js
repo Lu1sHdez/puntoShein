@@ -56,8 +56,6 @@ export const registro = async (req, res) => {
     return res.status(500).json({ mensaje: "Error interno del servidor." });
   }
 };
-
-
 // 🔹 Función para iniciar sesión
 export const login = async (req, res) => {
   try {
@@ -113,7 +111,6 @@ export const login = async (req, res) => {
   }
 };
 
-
 export const cerrarSesion = (req, res) => {
   res.cookie('token', '', {
     expires: new Date(0), // Expira inmediatamente
@@ -122,8 +119,6 @@ export const cerrarSesion = (req, res) => {
   });
   return res.json({ mensaje: "Sesión cerrada exitosamente." });
 };
-
-
 
 // 🔹 Función para recuperar contraseña
 export const recuperarPassword = async (req, res) => {
