@@ -7,7 +7,9 @@ import Layout from "./components/home/Layout";
 // ⏳ Lazy Loading (Carga Diferida) para tus páginas principales
 const DetalleProducto = lazy(() => import("./components/productos/DetalleProducto"));
 const SeccionProductos = lazy(() => import("./components/productos/AllProductos"));
-const BuscarProductos = lazy(() => import("./pages/BuscarProductos")); // ✅ Nueva página de búsqueda
+const BuscarProductos = lazy(() => import("./components/productos/BuscarProductos")); 
+const ProductosFiltrados = lazy(() => import("./components/productos/ProductosFiltrados")); 
+
 const Login = lazy(() => import("./pages/Login"));
 const Registro = lazy(() => import("./pages/Registro"));
 const RecuperarPassword = lazy(() => import("./pages/RecuperarPassword"));
@@ -26,6 +28,9 @@ const PoliticaPrivacidad = lazy(() =>
 const Terminos = lazy(() => import("./components/empresa/Terminos"));
 const DeslindeLegal = lazy(() => import("./components/empresa/DeslindeLegal"));
 const Contacto = lazy(() => import("./components/empresa/Contacto"));
+const Ayuda = lazy(() => import("./components/empresa/Ayuda"));
+const MapaSitio = lazy(() => import("./components/empresa/MapaSitio"));
+
 
 // Páginas de error
 const Error404 = lazy(() => import("./components/error/Error404"));
@@ -55,8 +60,9 @@ const App = () => {
               <Route path="/cerrar-sesion" element={<CerrarSesion />} />
 
 
-               {/* ✅ Nueva ruta para la búsqueda de productos */}
+               {/* Nueva ruta para la búsqueda de productos */}
                <Route path="/buscar" element={<BuscarProductos />} />
+               <Route path="/productos/filtrados" element={<ProductosFiltrados />} />
                <Route path="/producto/:id" element={<DetalleProducto />} />
 
               {/* Rutas de información de la empresa */}
@@ -66,6 +72,10 @@ const App = () => {
               <Route path="/terminos" element={<Terminos />} />
               <Route path="/deslindeLegal" element={<DeslindeLegal />} />
               <Route path="/contacto" element={<Contacto />} />
+              <Route path="/ayuda" element={<Ayuda />} />
+              <Route path="/contacto" element={<Contacto />} />
+              <Route path="/mapa-del-sitio" element={<MapaSitio />} />
+
 
               {/* Páginas de error */}
               <Route path="/error400" element={<Error400 />} />

@@ -51,11 +51,18 @@ const Registro = () => {
       }
     });
 
+    const usernameRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{5,20}$/;
+    if (!usernameRegex.test(datos.nombre_usuario)) {
+      mensajeError.nombre_usuario =
+        "Debe contener al menos una letra y un número";
+    }
+
 
     //Todos los campos son obligatorios
     if(camposVacios){
       mensajeError.general = "Todos los campos son obligatorios."
     }
+
 
     // Validación de nombre, apellido paterno y apellido materno (mínimo 3 caracteres)
     ["nombre", "apellido_paterno", "apellido_materno"].forEach((campo) => {
@@ -130,7 +137,7 @@ const Registro = () => {
 
         <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {[
-            { label: "Usuario", name: "nombre_usuario", type: "text", placeholder: "Nombre de usuario" },
+            { label: "Usuario", name: "nombre_usuario", type: "text", placeholder: "Usuario12345" },
             { label: "Nombre", name: "nombre", type: "text", placeholder: "Nombre" },
             { label: "Apellido Paterno", name: "apellido_paterno", type: "text", placeholder: "Apellido paterno" },
             { label: "Apellido Materno", name: "apellido_materno", type: "text", placeholder: "Apellido materno" },
