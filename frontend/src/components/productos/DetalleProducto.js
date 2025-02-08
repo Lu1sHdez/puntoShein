@@ -42,9 +42,9 @@ const DetalleProducto = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto py-0 text-left">
       {/* 🏷 Migas de pan con mejor diseño y espaciado */}
-      <div className="mb-6">
+      <div className="mt-0 text-left mb-1">
         <Breadcrumbs producto={producto} />
       </div>
 

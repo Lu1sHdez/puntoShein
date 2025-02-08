@@ -6,6 +6,7 @@ import useFormulario from "../hooks/useFormulario";
 const RecuperarPassword = () => {
   const navigate = useNavigate();
   const [errorValidacion, setErrorValidacion] = useState(""); // Estado para el error
+  const [errorCampos, setErrorCampos] = useState({ correo: false }); // Estados para errores en campos específicos
 
   const { datos, mensaje, handleChange, handleSubmit, loading } = useFormulario(
     { correo: "" },
@@ -24,12 +25,15 @@ const RecuperarPassword = () => {
   const validarYEnviar = async (e) => {
     e.preventDefault();
 
+    // Validación de campos vacíos
     if (!datos.correo) {
       setErrorValidacion("Por favor, ingresa tu correo electrónico.");
+      setErrorCampos({ correo: true });
       return;
     }
 
     setErrorValidacion(""); // Limpiar errores anteriores
+    setErrorCampos({ correo: false }); // Resetear el error del correo
 
     const exito = await handleSubmit(e);
     if (!exito) return; // 🚨 Si hubo un error, no continuar con la navegación
@@ -38,11 +42,11 @@ const RecuperarPassword = () => {
   };
 
   return (
-    <div className="flex items-center justify-center mt-10">
+    <div className="flex items-center justify-center mt-0">
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
         <h2 className="text-2xl font-semibold text-center text-gray-700">Recuperar Contraseña</h2>
 
-        {/* ⚠️ Mensaje de error estático */}
+        {/* Mensaje de error estático */}
         {errorValidacion && (
           <div className="mb-4 text-red-500 text-sm font-semibold text-center">
             {errorValidacion}
@@ -58,6 +62,7 @@ const RecuperarPassword = () => {
             value={datos.correo}
             onChange={handleChange}
             required
+            error={errorCampos.correo} // Pasar el estado de error
           />
 
           <button
