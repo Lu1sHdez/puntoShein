@@ -43,15 +43,15 @@ const Layout = ({ children }) => {
       style={styleFondo}
     >
       <Encabezado />
-
+     
       <div className="flex-grow pt-20">
-        {/* ✅ Mostrar migas de pan SOLO si no estamos en la página del producto */}
+        {/* Mostrar migas de pan SOLO si no estamos en la página del producto */}
         {!ocultarMigas && <Breadcrumbs />}
-        <div className="relative mt-4">
+        
+        <div className="relative mt-4 py-5">
           <main className="relative">{children}</main>
         </div>
       </div>
-      
       <Chat />
       <PieDePagina />
     </div>

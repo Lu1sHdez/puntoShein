@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Container, CircularProgress } from "@mui/material";
 import Layout from "./components/home/Layout";
 
-// ⏳ Lazy Loading (Carga Diferida) para tus páginas principales
+//  Lazy Loading (Carga Diferida) para tus páginas principales
 const DetalleProducto = lazy(() => import("./components/productos/DetalleProducto"));
 const SeccionProductos = lazy(() => import("./components/productos/AllProductos"));
 const BuscarProductos = lazy(() => import("./components/productos/BuscarProductos")); 
@@ -16,7 +16,7 @@ const RecuperarPassword = lazy(() => import("./pages/RecuperarPassword"));
 const RestablecerPassword = lazy(() => import("./pages/RestablecerPassword"));
 const CerrarSesion = lazy(() => import("./pages/CerrarSesion"));
 
-// ⏳ Lazy Loading para páginas de tu carpeta "empresa"
+//  Lazy Loading para páginas de tu carpeta "empresa"
 const AcercaDe = lazy(() => import("./components/empresa/AcercaDe"));
 const PreguntasFrecuentes = lazy(() =>
   import("./components/empresa/PreguntasFrecuentes")

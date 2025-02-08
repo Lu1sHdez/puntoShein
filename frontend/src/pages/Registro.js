@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
-import Swal from "sweetalert2";
 import axios from "axios";
 import validaPassword from "../hooks/useValidaPassword";
 
@@ -40,7 +39,6 @@ const Registro = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     let mensajeError = {};
-
     let camposVacios = false;
 
     // Validar que ningún campo esté vacío
@@ -51,18 +49,16 @@ const Registro = () => {
       }
     });
 
-    const usernameRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{5,20}$/;
+    // Validación de nombre de usuario
+    const usernameRegex = /^[A-Za-z\d]{5,20}$/;
     if (!usernameRegex.test(datos.nombre_usuario)) {
-      mensajeError.nombre_usuario =
-        "Debe contener al menos una letra y un número";
+      mensajeError.nombre_usuario = "Usa el ejemplo: usuario1234";
     }
 
-
-    //Todos los campos son obligatorios
-    if(camposVacios){
-      mensajeError.general = "Todos los campos son obligatorios."
+    // Si hay campos vacíos, establecer un error general
+    if (camposVacios) {
+      mensajeError.general = "Todos los campos son obligatorios.";
     }
-
 
     // Validación de nombre, apellido paterno y apellido materno (mínimo 3 caracteres)
     ["nombre", "apellido_paterno", "apellido_materno"].forEach((campo) => {
@@ -71,13 +67,12 @@ const Registro = () => {
       }
     });
 
-    // Validación de teléfono (siempre que tenga algún valor)
-    if (!/^\d{10}$/.test(datos.telefono)) {
+    // Validación de teléfono
+    if (datos.telefono && !/^\d{10}$/.test(datos.telefono)) {
       mensajeError.telefono = "El teléfono debe tener exactamente 10 dígitos.";
     }
 
-
-   // Validación del correo (solo si tiene algo escrito y es incorrecto)
+    // Validación del correo
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (datos.correo && !emailRegex.test(datos.correo)) {
       mensajeError.correo = "El correo no tiene un formato válido.";
@@ -92,36 +87,32 @@ const Registro = () => {
     if (!Object.values(passwordRules).every(Boolean)) {
       mensajeError.password = "La contraseña no cumple con los requisitos.";
     }
- 
-    //Si hay errores detener el envio
+
+    // Si hay errores, detener el envío y mostrar los mensajes
     if (Object.keys(mensajeError).length > 0) {
       setErrores(mensajeError);
+
+      // Establecer el foco en el primer campo con error
+      const firstErrorField = Object.keys(mensajeError)[0];
+      document.querySelector(`[name=${firstErrorField}]`).focus();
+
       return;
     }
 
     try {
       await axios.post("http://localhost:4000/api/autenticacion/registro", datos);
 
-      Swal.fire({
-        icon: "success",
-        title: "Registro exitoso",
-        text: "Serás redirigido...",
-        showConfirmButton: false,
-        timer: 2000,
-      });
-
-      setTimeout(() => navigate("/login"), 2000);
+      setErrores({ general: "Registro exitoso. Serás redirigido..." });
+      setTimeout(() => navigate("/login"), 1000); 
     } catch (error) {
-
       const mensajeError = error.response?.data?.mensaje;
 
       if (mensajeError === "El correo ya está registrado.") {
         setErrores({ correo: mensajeError });
-      } 
-      else if (mensajeError === "El nombre de usuario ya existe. Intenta con otro") {
-          setErrores({ nombre_usuario: mensajeError });
-      } else if (mensajeError === "El teléfono ya está registrado.") { 
-        setErrores({ telefono: mensajeError });     
+      } else if (mensajeError === "El nombre de usuario ya existe. Intenta con otro") {
+        setErrores({ nombre_usuario: mensajeError });
+      } else if (mensajeError === "El teléfono ya está registrado.") {
+        setErrores({ telefono: mensajeError });
       } else {
         setErrores({ general: mensajeError || "Error en el registro." });
       }
@@ -129,7 +120,7 @@ const Registro = () => {
   };
 
   return (
-    <div className="flex items-center justify-center mt-10">
+    <div className="flex items-center justify-center mt-0">
       <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg">
         <h2 className="text-xl font-semibold text-center text-gray-700 mb-4">Registrarse</h2>
 
@@ -142,7 +133,7 @@ const Registro = () => {
             { label: "Apellido Paterno", name: "apellido_paterno", type: "text", placeholder: "Apellido paterno" },
             { label: "Apellido Materno", name: "apellido_materno", type: "text", placeholder: "Apellido materno" },
             { label: "Teléfono", name: "telefono", type: "text", placeholder: "0123456789", maxLength: "10" },
-            { label: "Correo", name: "correo", type: "email", placeholder: "ejemplo@dominio.com" },
+            { label: "Correo", name: "correo", type: "text", placeholder: "ejemplo@dominio.com" },
           ].map(({ label, name, type, placeholder, maxLength }) => (
             <div key={name} className="flex flex-col">
               <label className="text-gray-700 text-sm">{label}</label>
@@ -173,7 +164,8 @@ const Registro = () => {
               className={`px-3 py-2 border rounded-md focus:ring-2 focus:ring-pink-400 ${
                 errores.password ? "border-red-500" : ""
               }`}
-              onFocus={() => setShowPasswordRules(true)}
+              onFocus={() => setShowPasswordRules(true)} //Mostrar la regla
+              onBlur={()=> setShowPasswordRules(false)} //Ocultar Regla
             />
             <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-7">
               {showPassword ? <VisibilityOff /> : <Visibility />}
@@ -187,13 +179,12 @@ const Registro = () => {
             <input
               type={showConfirmPassword ? "text" : "password"}
               name="confirmPassword"
-              placeholder="Repite la contraseña"
+              placeholder="Confirma la contraseña"
               value={datos.confirmPassword}
               onChange={handleChange}
               className={`px-3 py-2 border rounded-md focus:ring-2 focus:ring-pink-400 ${
                 errores.confirmPassword ? "border-red-500" : ""
               }`}
-              required
             />
             <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute right-3 top-7">
               {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
@@ -211,9 +202,19 @@ const Registro = () => {
                 { text: "Al menos un número", valid: passwordRules.number },
                 { text: "Al menos un carácter especial (@$!%*?&)", valid: passwordRules.specialChar },
               ].map(({ text, valid }, index) => (
-                <p key={index} className={valid ? "text-green-500" : "text-red-500"}>
-                  🔹 {text}
-                </p>
+                <div key={index} className="flex items-center space-x-2">
+                  <p className={`flex-1 ${valid ? 'text-black' : 'text-gray-600'}`}>
+                    {/* Íconos para mostrar el cumplimiento */}
+                    {valid ? (
+                      <span className="text-green-500">✔</span> // Ícono de verificación
+                    ) : (
+                      <span className="text-red-500">❌</span> // Ícono de error
+                    )}
+                    {text}
+                  </p>
+                  {/* Puedes agregar más estilos, como subrayar o tachar las reglas */}
+                  <div className={valid ? 'border-b-2 border-green-500' : ''}></div>
+                </div>
               ))}
             </div>
           )}
@@ -223,6 +224,16 @@ const Registro = () => {
             <button type="submit" className="w-full bg-pink-600 text-white px-6 py-2 rounded-md hover:bg-pink-700 transition">
               Registrarse
             </button>
+          </div>
+
+          {/* Si el usuario ya tiene una cuenta */}
+          <div className="col-span-2 text-center mt-4">
+            <p className="text-sm text-gray-600">
+              ¿Ya tienes una cuenta?{" "}
+              <a href="/login" className="text-pink-600 hover:underline">
+                Inicia sesión
+              </a>
+            </p>
           </div>
         </form>
       </div>

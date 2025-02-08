@@ -32,7 +32,7 @@ const useFormulario = (initialState, url, redirigir, isAuthForm = false) => {
     try {
       const respuesta = await axios.post(url, datos, { withCredentials: true });
 
-      // ✅ Si es un formulario de autenticación (Login o Registro)
+      //  Si es un formulario de autenticación (Login o Registro)
       if (isAuthForm) {
         await Swal.fire({
           icon: "success",
@@ -49,7 +49,7 @@ const useFormulario = (initialState, url, redirigir, isAuthForm = false) => {
         // Redirigir después de 2 segundos
         setTimeout(() => navigate(redirigir), 1500);
       } else {
-        // ✅ Formulario de recuperación o restablecimiento de contraseña
+        //  Formulario de recuperación o restablecimiento de contraseña
         await Swal.fire({
           icon: "success",
           title: "Operación exitosa",
@@ -64,9 +64,9 @@ const useFormulario = (initialState, url, redirigir, isAuthForm = false) => {
         setTimeout(() => navigate(redirigir), 1500);
       }
 
-      return true; // ✅ Indica que la operación fue exitosa
+      return true; //  Indica que la operación fue exitosa
     } catch (error) {
-      // 🚨 Si el backend no responde (Error 500)
+      //  Si el backend no responde (Error 500)
       if (!error.response) {
         navigate("/error500");
         return false;
@@ -76,13 +76,13 @@ const useFormulario = (initialState, url, redirigir, isAuthForm = false) => {
       if (error.response.status === 400) {
         const mensajeError = error.response.data.mensaje || "Solicitud incorrecta.";
       
-        // ✅ Si el error es por credenciales incorrectas en Login, mostrar alerta y NO redirigir
+        //  Si el error es por credenciales incorrectas en Login, mostrar alerta y NO redirigir
         if (mensajeError === "Correo o contraseña incorrectos.") {
-          setMensaje({ tipo: "error", texto: mensajeError }); // ✅ Guardar mensaje en el estado
-          return false; // 🚨 Evita que el formulario actúe como si fue exitoso
+          setMensaje({ tipo: "error", texto: mensajeError }); //  Guardar mensaje en el estado
+          return false; //  Evita que el formulario actúe como si fue exitoso
         }
       
-        // ✅ Si el error es en recuperación/restablecimiento de contraseña, mostrar alerta en vez de redirigir
+        //  Si el error es en recuperación/restablecimiento de contraseña, mostrar alerta en vez de redirigir
         if (
           mensajeError.includes("Correo no registrado") ||
           mensajeError.includes("Token inválido") ||
@@ -92,19 +92,19 @@ const useFormulario = (initialState, url, redirigir, isAuthForm = false) => {
           return false;
         }
       
-        // 🚨 Otros errores 400 sí redirigen a la página de error
+        //  Otros errores 400 sí redirigen a la página de error
         navigate("/error400");
         return false;
       }
       
 
-      // 🚨 Si el recurso no existe (Error 404)
+      // Si el recurso no existe (Error 404)
       if (error.response.status === 404) {
         navigate("/error404");
         return false;
       }
 
-      // 🚨 Otros errores no manejados explícitamente
+      //  Otros errores no manejados explícitamente
       Swal.fire({
         icon: "error",
         title: "Error",

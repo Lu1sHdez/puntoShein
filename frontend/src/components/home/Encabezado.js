@@ -1,25 +1,19 @@
 // src/components/Encabezado.js
-import React, { useState} from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { FaShoppingCart, FaSearch, FaFilter, FaBars } from "react-icons/fa";
+import { FaShoppingCart, FaSearch, FaBars,FaChevronDown  } from "react-icons/fa";
 import MenuUsuario from "./MenuUsuario";
 import useAuth from "../../hooks/useAuth";
-import FiltrosAvanzados from "../productos/FiltrosAvanzados";
+import Filtros from "../productos/FiltrosAvanzados";
+
 
 const Encabezado = () => {
-  const [menuFiltrosAbierto, setMenuFiltrosAbierto] = useState(false);
   const [menuMovilAbierto, setMenuMovilAbierto] = useState(false);
   const [busqueda, setBusqueda] = useState("");
+  const [filtrosVisible, setFiltrosVisible] = useState(false); 
   const navigate = useNavigate();
+  const filtroRef = useRef(null); 
   const { usuarioAutenticado } = useAuth();
-
-  // ✅ Nueva función para manejar filtros
-  const handleApplyFilters = (filtros) => {
-    console.log("Filtros aplicados:", filtros);
-    const queryString = new URLSearchParams(filtros).toString();
-    navigate(`/productos/filtrados?${queryString}`);
-    setMenuFiltrosAbierto(false); // Cerrar el modal después de aplicar filtros
-  };
 
   const handleBuscar = () => {
     if (busqueda.trim()) {
@@ -30,6 +24,21 @@ const Encabezado = () => {
   const handleLogout = () => {
     navigate("/cerrar-sesion");
   };
+  // Detectar clic fuera del filtro
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (filtroRef.current && !filtroRef.current.contains(event.target)) {
+        setFiltrosVisible(false); // Cerrar el filtro si se hace clic fuera de él
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside); // Limpiar el evento cuando el componente se desmonte
+    };
+  }, []);
+
 
   return (
     // Se cambia a bg-black text-white
@@ -75,17 +84,16 @@ const Encabezado = () => {
               />
             </div>
           </div>
-
-          {/* Botón para Filtros Avanzados */}
+          {/* Botón para mostrar los filtros avanzados */}
           <button
-            onClick={() => setMenuFiltrosAbierto(!menuFiltrosAbierto)}
-            className="relative flex items-center bg-white text-black px-3 py-1 rounded-md shadow-md hover:bg-gray-200 transition"
+            onClick={() => setFiltrosVisible(!filtrosVisible)}
+            className="flex items-center space-x-3 text-rem px-1 py-2"
           >
-            <FaFilter className="mr-2" />
-            Avanzado
+            <span>Filtros</span>
+            <FaChevronDown size={12} className={`transform ${filtrosVisible ? "rotate-180" : ""}`} />
           </button>
-        </div>
 
+        </div>
         {/* Navegación Principal (pantallas grandes) */}
         <nav className="hidden lg:flex space-x-6">
           <button onClick={() => navigate("/")} className="hover:underline">Inicio</button>
@@ -127,14 +135,6 @@ const Encabezado = () => {
                   Buscar
                 </button>
               </div>
-
-              <button
-                onClick={() => setMenuFiltrosAbierto(!menuFiltrosAbierto)}
-                className="w-full flex items-center justify-center bg-white text-black px-3 py-2 rounded-md shadow-md hover:bg-gray-200 transition"
-              >
-                <FaFilter className="mr-2" />
-                Avanzado
-              </button>
             </div>
 
             {/* Carrito y usuario en mobile */}
@@ -145,13 +145,12 @@ const Encabezado = () => {
           </div>
         </nav>
       )}
-
-        {/* Dropdown Filtros Avanzados */}
-        {menuFiltrosAbierto && (
-          <div className="absolute top-16 right-4 bg-gray-200 p-4 rounded-md shadow-md">
-            <FiltrosAvanzados onApplyFilters={handleApplyFilters} />
-          </div>
-        )}
+      {/* Filtros avanzados debajo del buscador */}
+      {filtrosVisible && (
+        <div ref={filtroRef} className="absolute top-16 right-0 p-4 mt-4 rounded-md w-80">
+          <Filtros />
+        </div>
+      )}
     </header>
   );
 };
