@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 
 const Error404 = () => {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen px-6 text-center bg-black">
+    <div className="flex flex-col items-center justify-center -mt-12 px-6 text-center ">
       {/* Contenedor con fondo semitransparente */}
-      <div className="bg-gray-900 bg-opacity-90 p-10 rounded-lg shadow-2xl max-w-lg w-full">
+      <div className=" bg-opacity-90 p-10 max-w-lg w-full">
         {/* Imagen de error */}
         <img
           src="https://res.cloudinary.com/dgbs7sg9j/image/upload/v1738395727/ee404_o83ddd.png"
@@ -14,10 +14,10 @@ const Error404 = () => {
         />
 
         {/* Mensaje de error */}
-        <h2 className="text-3xl md:text-4xl font-bold text-white mt-4">
+        <h2 className="text-3xl md:text-4xl font-bold text-black mt-4">
           ¡Oops! Página no encontrada
         </h2>
-        <p className="text-gray-300 mt-2 max-w-md text-lg">
+        <p className="text-black mt-2 max-w-md text-lg">
           La página que buscas no existe o fue eliminada. <br />
           Por favor, vuelve al inicio.
         </p>

@@ -1,9 +1,9 @@
 import Producto from "../models/producto.model.js";
-import Categoria from "../models/categoria.model.js"; // ✅ Importar Categoria
+import Categoria from "../models/categoria.model.js"; //  Importar Categoria
 import Subcategoria from "../models/subcategoria.model.js"; // ✅ Importar Subcategoria
 import { Op, Sequelize } from "sequelize";
 
-// 🔍 Buscar productos por nombre
+//  Buscar productos por nombre
 export const buscarProductos = async (req, res) => {
   try {
     const { nombre } = req.query;
@@ -37,7 +37,7 @@ export const buscarProductos = async (req, res) => {
   }
 };
 
-// 🔍 Obtener todos los productos (para AllProductos.js)
+//  Obtener todos los productos (para AllProductos.js)
 export const allProductos = async (req, res) => {
   try {
     const productos = await Producto.findAll({
@@ -61,7 +61,7 @@ export const allProductos = async (req, res) => {
   }
 };
 
-// 🔍 Obtener un producto por su ID
+//  Obtener un producto por su ID
 export const obtenerProductoPorId = async (req, res) => {
   try {
     const { id } = req.params;
@@ -123,7 +123,7 @@ export const filtrarProductos = async (req, res) => {
     }
   };
   
-// ✅ Obtener todas las categorías
+//  Obtener todas las categorías
 export const obtenerCategorias = async (req, res) => {
   try {
     const categorias = await Categoria.findAll();
@@ -134,7 +134,7 @@ export const obtenerCategorias = async (req, res) => {
   }
 };
 
-// ✅ Obtener subcategorías según la categoría seleccionada
+//  Obtener subcategorías según la categoría seleccionada
 export const obtenerSubcategorias = async (req, res) => {
   try {
     const { categoria_id } = req.query;
@@ -152,3 +152,4 @@ export const obtenerSubcategorias = async (req, res) => {
     res.status(500).json({ mensaje: "Error interno del servidor" });
   }
 };
+

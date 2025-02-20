@@ -46,6 +46,7 @@ const Login = () => {
     setErrorCampos({ correo: false, password: false }); // Resetear los errores en los campos
 
     await handleSubmit(e); // Enviar el formulario
+    window.location.reload();
   };
 
   return (

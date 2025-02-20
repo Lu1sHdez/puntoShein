@@ -7,6 +7,7 @@ import Layout from "./components/home/Layout";
 //  Lazy Loading (Carga Diferida) para tus páginas principales
 const DetalleProducto = lazy(() => import("./components/productos/DetalleProducto"));
 const SeccionProductos = lazy(() => import("./components/productos/AllProductos"));
+const AllProductos = lazy(() => import("./components/productos/AllProductos"));
 const BuscarProductos = lazy(() => import("./components/productos/BuscarProductos")); 
 const ProductosFiltrados = lazy(() => import("./components/productos/ProductosFiltrados")); 
 
@@ -37,6 +38,12 @@ const Error404 = lazy(() => import("./components/error/Error404"));
 const Error500 = lazy(() => import("./components/error/Error500"));
 const Error400 = lazy(() => import("./components/error/Error400"));
 
+//perfil de usuario
+const PerfilUsuario = lazy(() => import("./usuario/perfil/perfil"));
+const ActualizarPerfil = lazy(() => import("./usuario/perfil/actualizarPerfil"));
+
+
+
 
 const App = () => {
   return (
@@ -53,6 +60,7 @@ const App = () => {
             <Routes>
               {/* Rutas existentes */}
               <Route path="/" element={<SeccionProductos />} />
+              <Route path="/productos" element={<AllProductos />} />
               <Route path="/login" element={<Login />} />
               <Route path="/registro" element={<Registro />} />
               <Route path="/recuperarPassword" element={<RecuperarPassword />} />
@@ -83,6 +91,10 @@ const App = () => {
               <Route path="*" element={<Error404 />} />
 
 
+              {/* Perfil de usuario */}
+              <Route path="perfil" element={<PerfilUsuario />} />
+              {/* Perfil de usuario */}
+              <Route path="ActualizarPerfil" element={<ActualizarPerfil />} />
             </Routes>
           </Suspense>
         </Container>

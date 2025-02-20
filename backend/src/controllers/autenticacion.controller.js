@@ -2,6 +2,8 @@ import Usuario from '../models/usuario.model.js';
 import bcrypt from 'bcryptjs';
 import { crearTokenAcceso } from '../libs/crearTokenAcceso.js';
 import nodemailer from 'nodemailer';
+import jwt from 'jsonwebtoken';
+
 
 export const registro = async (req, res) => {
   try {
@@ -56,7 +58,7 @@ export const registro = async (req, res) => {
     return res.status(500).json({ mensaje: "Error interno del servidor." });
   }
 };
-// 🔹 Función para iniciar sesión
+//  Función para iniciar sesión
 export const login = async (req, res) => {
   try {
     const { correo, password } = req.body;
@@ -120,7 +122,7 @@ export const cerrarSesion = (req, res) => {
   return res.json({ mensaje: "Sesión cerrada exitosamente." });
 };
 
-// 🔹 Función para recuperar contraseña
+//  Función para recuperar contraseña
 export const recuperarPassword = async (req, res) => {
   try {
     const { correo } = req.body;
@@ -177,7 +179,7 @@ export const recuperarPassword = async (req, res) => {
   }
 };
 
-// 🔹 Función para restablecer contraseña
+//  Función para restablecer contraseña
 export const restablecerPassword = async (req, res) => {
   try {
     const { token, nuevaContrasena } = req.body;
@@ -207,5 +209,41 @@ export const restablecerPassword = async (req, res) => {
 
   } catch (error) {
     res.status(500).json({ mensaje: "Error interno del servidor." });
+  }
+};
+
+export const obtenerPerfil = async (req, res) => {
+  try {
+    // Obtener el token de las cookies
+    const token = req.cookies.token;
+
+    if (!token) {
+      return res.status(401).json({ mensaje: 'No autorizado, token no encontrado.' });
+    }
+
+    // Verificar el token
+    const decoded = jwt.verify(token, process.env.TOKEN_SECRET);
+
+    // Obtener los datos del usuario usando el ID del payload del token
+    const usuario = await Usuario.findByPk(decoded.id);
+
+    if (!usuario) {
+      return res.status(404).json({ mensaje: 'Usuario no encontrado.' });
+    }
+
+    // Devolver los datos del usuario
+    return res.status(200).json({
+      id: usuario.id,
+      nombre_usuario: usuario.nombre_usuario,
+      correo: usuario.correo,
+      rol: usuario.rol,
+      nombre: usuario.nombre,
+      apellido_paterno: usuario.apellido_paterno,
+      apellido_materno: usuario.apellido_materno,
+      telefono: usuario.telefono,
+    });
+  } catch (error) {
+    console.error(error); 
+    return res.status(500).json({ mensaje: 'Error interno del servidor.' , error: error.message });
   }
 };

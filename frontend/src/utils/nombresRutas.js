@@ -12,6 +12,9 @@ const nombresRutas = {
     "acercaDe": "Sobre Nosotros",
     "privacidad": "Política de Privacidad",
     "terminos": "Términos y Condiciones",
+    "mapa-del-sitio":"Mapa del sitio",
+    "chat":"Chat en vivo",
+    "preguntasFrecuentes":"Preguntas frecuentes"
   };
   
   export default nombresRutas;

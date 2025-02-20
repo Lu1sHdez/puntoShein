@@ -8,7 +8,7 @@ const useAuth = () => {
       setUsuarioAutenticado(!!localStorage.getItem("token"));
     };
 
-    // 🔹 Escuchar cambios en el localStorage para actualizar la UI automáticamente
+    // Escuchar cambios en el localStorage
     window.addEventListener("storage", verificarSesion);
 
     return () => {
@@ -19,13 +19,13 @@ const useAuth = () => {
   const login = (token) => {
     localStorage.setItem("token", token);
     setUsuarioAutenticado(true);
-    window.dispatchEvent(new Event("storage")); // 🔹 Notificar cambios globales
+    window.dispatchEvent(new Event("storage")); // Notificar cambios globales
   };
 
   const logout = () => {
     localStorage.removeItem("token");
     setUsuarioAutenticado(false);
-    window.dispatchEvent(new Event("storage")); // 🔹 Notificar cambios globales
+    window.dispatchEvent(new Event("storage")); // Notificar cambios globales
   };
 
   return { usuarioAutenticado, login, logout };
