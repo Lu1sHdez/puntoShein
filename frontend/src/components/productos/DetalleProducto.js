@@ -32,10 +32,27 @@ const DetalleProducto = () => {
 
   const { mensaje, color, icono } = mostrarStock(producto.stock);
 
-  const handleAgregarCarrito = () => {
-    console.log(`🛒 Producto agregado al carrito: ${producto.nombre}`);
-    alert("Producto agregado al carrito");
+  const handleAgregarCarrito = async () => {
+    try {
+      const usuario_id = localStorage.getItem("usuario_id"); // Obtener el ID del usuario (ajusta esto según cómo guardas la sesión)
+      if (!usuario_id) {
+        alert("Debes iniciar sesión para agregar productos al carrito");
+        return;
+      }
+  
+      const response = await axios.post("http://localhost:4000/api/carrito/agregar", {
+        usuario_id,
+        producto_id: producto.id,
+        cantidad: 1,
+      });
+  
+      alert(response.data.message); // Mensaje del backend
+    } catch (error) {
+      console.error("Error al agregar al carrito:", error);
+      alert("Hubo un problema al agregar el producto al carrito");
+    }
   };
+  
 
   const handleComprarAhora = () => {
     navigate(`/checkout?producto=${producto.id}`);

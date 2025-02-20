@@ -1,4 +1,3 @@
-// src/components/productos/FiltrosAvanzados.js
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -44,17 +43,28 @@ const FiltrosAvanzados = () => {
 
   // Manejar el cambio de la categoría seleccionada
   const handleCategoryChange = (e) => {
-    setCategoriaId(e.target.value); // Establecer la categoría seleccionada
+    const selectedCategoriaId = e.target.value;
+    setCategoriaId(selectedCategoriaId); // Establecer la categoría seleccionada
     setSubcategoriaId(""); // Limpiar la subcategoría al cambiar la categoría
+
+    // Redirigir a los productos filtrados directamente
+    const filtros = {
+      categoria_id: selectedCategoriaId,
+      subcategoria_id: "", // No hay subcategoría seleccionada
+    };
+    const queryString = new URLSearchParams(filtros).toString();
+    navigate(`/productos/filtrados?${queryString}`); // Redirigir con los filtros aplicados
   };
 
   // Manejar el cambio de la subcategoría seleccionada
   const handleSubcategoryChange = (e) => {
-    setSubcategoriaId(e.target.value); // Establecer la subcategoría seleccionada
+    const selectedSubcategoriaId = e.target.value;
+    setSubcategoriaId(selectedSubcategoriaId); // Establecer la subcategoría seleccionada
+
     // Redirigir a los productos filtrados directamente
     const filtros = {
       categoria_id: categoriaId,
-      subcategoria_id: e.target.value,
+      subcategoria_id: selectedSubcategoriaId,
     };
     const queryString = new URLSearchParams(filtros).toString();
     navigate(`/productos/filtrados?${queryString}`); // Redirigir con los filtros aplicados
@@ -67,7 +77,7 @@ const FiltrosAvanzados = () => {
         <select
           value={categoriaId}
           onChange={handleCategoryChange}
-          className="w-full px-3 py-1 border-2  text-black"
+          className="w-full px-3 py-1 border-2 text-black"
         >
           <option value="">Categoría</option>
           {categorias.map((categoria) => (
@@ -77,7 +87,6 @@ const FiltrosAvanzados = () => {
           ))}
         </select>
       </div>
-
 
       {/* Selector de Subcategoría (solo visible si se selecciona una categoría) */}
       {categoriaId && (

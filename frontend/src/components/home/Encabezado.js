@@ -13,7 +13,7 @@ const Encabezado = () => {
   const [filtrosVisible, setFiltrosVisible] = useState(false); 
   const navigate = useNavigate();
   const filtroRef = useRef(null); 
-  const { usuarioAutenticado } = useAuth();
+  const { usuarioAutenticado, logout } = useAuth();
 
   const handleBuscar = () => {
     if (busqueda.trim()) {
@@ -22,6 +22,7 @@ const Encabezado = () => {
   };
 
   const handleLogout = () => {
+    logout();
     navigate("/cerrar-sesion");
   };
   // Detectar clic fuera del filtro
@@ -135,7 +136,7 @@ const Encabezado = () => {
                   Buscar
                 </button>
               </div>
-            </div>
+            </div>  
 
             {/* Carrito y usuario en mobile */}
             <div className="mt-4 flex items-center space-x-4">

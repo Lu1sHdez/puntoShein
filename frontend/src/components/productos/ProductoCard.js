@@ -9,7 +9,6 @@ const ProductoCard = ({ producto }) => {
         navigate(`/producto/${producto.id}`); // 🔗 Redirige a la página de detalles del producto
     };
 
-
     return (
         <div className="bg-white rounded-lg shadow-lg overflow-hidden p-4">
         <img src={producto.imagen} alt={producto.nombre} className="w-full h-64 object-cover" />
