@@ -4,7 +4,7 @@ import { sequelize } from './database/database.js';
 async function main() {
   try {
     await sequelize.authenticate();
-    await sequelize.sync(); // 🔥 Sincroniza la base de datos
+    await sequelize.sync(); // Sincroniza la base de datos
     app.listen(4000);
     console.log('Servidor escuchando en el puerto 4000');
   } catch (error) {

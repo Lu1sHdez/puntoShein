@@ -1,30 +1,34 @@
-// src/components/Encabezado.js
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { FaShoppingCart, FaSearch, FaBars,FaChevronDown  } from "react-icons/fa";
+import { FaShoppingCart, FaSearch, FaBars, FaChevronDown } from "react-icons/fa";
 import MenuUsuario from "./MenuUsuario";
+import MenuAdmin from "./MenuAdmin";
+import MenuEmpleado from "./MenuEmpleado";
 import useAuth from "../../hooks/useAuth";
 import Filtros from "../productos/FiltrosAvanzados";
-
+import { jwtDecode } from "jwt-decode";
 
 const Encabezado = () => {
   const [menuMovilAbierto, setMenuMovilAbierto] = useState(false);
   const [busqueda, setBusqueda] = useState("");
-  const [filtrosVisible, setFiltrosVisible] = useState(false); 
+  const [filtrosVisible, setFiltrosVisible] = useState(false);
   const navigate = useNavigate();
-  const filtroRef = useRef(null); 
+  const filtroRef = useRef(null);
   const { usuarioAutenticado, logout } = useAuth();
 
+  // Función de búsqueda
   const handleBuscar = () => {
     if (busqueda.trim()) {
       navigate(`/buscar?nombre=${busqueda}`);
     }
   };
 
+  // Función de cerrar sesión
   const handleLogout = () => {
     logout();
     navigate("/cerrar-sesion");
   };
+
   // Detectar clic fuera del filtro
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -40,9 +44,28 @@ const Encabezado = () => {
     };
   }, []);
 
+  // Determinar el menú a mostrar según el rol del usuario
+  const token = localStorage.getItem('token');
+  let rolUsuario = '';
+  if (token) {
+    try {
+      const decoded = jwtDecode(token);
+      rolUsuario = decoded.rol;
+    } catch (error) {
+      console.error('Error al decodificar el token', error);
+    }
+  }
+
+  let menu;
+  if (rolUsuario === "administrador") {
+    menu = <MenuAdmin usuarioAutenticado={usuarioAutenticado} navigate={navigate} handleLogout={handleLogout} />;
+  } else if (rolUsuario === "empleado") {
+    menu = <MenuEmpleado usuarioAutenticado={usuarioAutenticado} navigate={navigate} handleLogout={handleLogout} />;
+  } else {
+    menu = <MenuUsuario usuarioAutenticado={usuarioAutenticado} navigate={navigate} handleLogout={handleLogout} />;
+  }
 
   return (
-    // Se cambia a bg-black text-white
     <header className="fixed top-0 left-0 w-full z-50 bg-black text-white p-4 shadow-md">
       <div className="container mx-auto flex items-center justify-between">
         {/* Logo + Nombre */}
@@ -70,8 +93,8 @@ const Encabezado = () => {
           {/* Búsqueda */}
           <div className="flex items-center space-x-2">
             <div className="relative">
-            <FaSearch className="absolute left-2 top-2 text-gray-400" />
-            <input
+              <FaSearch className="absolute left-2 top-2 text-gray-400" />
+              <input
                 type="text"
                 value={busqueda}
                 onChange={(e) => setBusqueda(e.target.value)} // Filtra en tiempo real
@@ -93,7 +116,6 @@ const Encabezado = () => {
             <span>Filtros</span>
             <FaChevronDown size={12} className={`transform ${filtrosVisible ? "rotate-180" : ""}`} />
           </button>
-
         </div>
         {/* Navegación Principal (pantallas grandes) */}
         <nav className="hidden lg:flex space-x-6">
@@ -102,7 +124,7 @@ const Encabezado = () => {
           <button onClick={() => navigate("/ofertas")} className="hover:underline">Ofertas</button>
           <button onClick={() => navigate("/contacto")} className="hover:underline">Contacto</button>
           <FaShoppingCart className="text-2xl cursor-pointer" onClick={() => navigate("/carrito")} />
-          <MenuUsuario usuarioAutenticado={usuarioAutenticado} navigate={navigate} handleLogout={handleLogout} />
+          {menu} {/* Aquí se mostrará el menú dependiendo del rol */}
         </nav>
       </div>
 
@@ -110,7 +132,7 @@ const Encabezado = () => {
       {menuMovilAbierto && (
         <nav className="lg:hidden mt-4 px-4">
           <div className="flex flex-col space-y-2 bg-gray-800 p-4 rounded-md shadow-md">
-          <button onClick={() => navigate("/")} className="hover:underline text-left">Inicio</button>
+            <button onClick={() => navigate("/")} className="hover:underline text-left">Inicio</button>
             <button onClick={() => navigate("/productos")} className="hover:underline text-left">Productos</button>
             <button onClick={() => navigate("/ofertas")} className="hover:underline text-left">Ofertas</button>
             <button onClick={() => navigate("/contacto")} className="hover:underline text-left">Contacto</button>
@@ -136,12 +158,12 @@ const Encabezado = () => {
                   Buscar
                 </button>
               </div>
-            </div>  
+            </div>
 
             {/* Carrito y usuario en mobile */}
             <div className="mt-4 flex items-center space-x-4">
               <FaShoppingCart className="text-2xl cursor-pointer" onClick={() => navigate("/carrito")} />
-              <MenuUsuario usuarioAutenticado={usuarioAutenticado} navigate={navigate} handleLogout={handleLogout} />
+              {menu} {/* Aquí también se muestra el menú en el móvil */}
             </div>
           </div>
         </nav>

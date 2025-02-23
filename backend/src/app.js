@@ -4,7 +4,7 @@
   import productoRutas from './routes/producto.routes.js';
   import usuarioRutas from './routes/usuario.routes.js';
   import carritoRutas from "./routes/carrito.routes.js";
-
+  import adminRutas from './routes/admin.routes.js';  // Importa las rutas de admin
 
   import cookieParser from 'cookie-parser';
 
@@ -29,6 +29,7 @@
   // Ruta para buscar carrito
   app.use('/api/carrito', carritoRutas);
 
+  app.use('/api/admin', adminRutas);  
   // Middleware de manejo de errores
   app.use((err, req, res, next) => {
     console.error(err);  // Esto te dará más detalles sobre el error en la consola

@@ -45,8 +45,11 @@ const Login = () => {
     setErrorValidacion(""); // Limpiar el mensaje de error
     setErrorCampos({ correo: false, password: false }); // Resetear los errores en los campos
 
-    await handleSubmit(e); // Enviar el formulario
-    window.location.reload();
+    const success = await handleSubmit(e); // Enviar el formulario
+    if(success){
+      window.location.reload();
+    }
+    
   };
 
   return (

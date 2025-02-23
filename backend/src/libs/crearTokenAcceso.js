@@ -1,3 +1,4 @@
+//backend\src\libs\crearTokenAcceso.js
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 
@@ -10,3 +11,4 @@ export const crearTokenAcceso = (usuario) => {
     { expiresIn: '1d' } // Expiración de 1 día
   );
 };
+  

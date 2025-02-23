@@ -1,11 +1,9 @@
-// src/components/MenuUsuario.js
-
 import React, { useState } from "react";
-import { FaUserCircle, FaUsers, FaSignInAlt, FaSignOutAlt, FaUserPlus } from "react-icons/fa";
+import { FaUserCircle, FaUsers, FaSignOutAlt } from "react-icons/fa";  // Usamos los iconos correctos
 import { jwtDecode } from "jwt-decode";
 import { Link } from "react-router-dom";
 
-const MenuUsuario = ({ usuarioAutenticado, navigate, handleLogout }) => {
+const MenuEmpleado = ({ usuarioAutenticado, handleLogout }) => {
   const [menuAbierto, setMenuAbierto] = useState(false);
   const [timeoutId, setTimeoutId] = useState(null);
 
@@ -53,6 +51,7 @@ const MenuUsuario = ({ usuarioAutenticado, navigate, handleLogout }) => {
         >
           {usuarioAutenticado ? (
             <>
+              {/* Icono de Mi Perfil */}
               <Link
                 to="/perfil"
                 onClick={() => setMenuAbierto(false)}
@@ -62,6 +61,7 @@ const MenuUsuario = ({ usuarioAutenticado, navigate, handleLogout }) => {
                 Mi perfil
               </Link>
 
+              {/* Icono de Cerrar sesión */}
               <button
                 onClick={() => {
                   handleLogout();
@@ -73,31 +73,11 @@ const MenuUsuario = ({ usuarioAutenticado, navigate, handleLogout }) => {
                 Cerrar sesión
               </button>
             </>
-          ) : (
-            <>
-              <Link
-                to="/login"
-                onClick={() => setMenuAbierto(false)}
-                className="w-full text-left px-4 py-2 hover:bg-gray-200 flex items-center"
-              >
-                <FaSignInAlt className="mr-2" />
-                Iniciar sesión
-              </Link>
-
-              <Link
-                to="/registro"
-                onClick={() => setMenuAbierto(false)}
-                className="w-full text-left px-4 py-2 hover:bg-gray-200 flex items-center"
-              >
-                <FaUserPlus className="mr-2" />
-                Registrarse
-              </Link>
-            </>
-          )}
+          ) : null}
         </div>
       )}
     </div>
   );
 };
 
-export default MenuUsuario;
+export default MenuEmpleado;
