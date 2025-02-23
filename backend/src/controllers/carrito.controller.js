@@ -1,7 +1,6 @@
 import Carrito from "../models/carrito.model.js";
 import Producto from "../models/producto.model.js";
 
-
 /**
  * Agregar un producto al carrito
  */
