@@ -1,11 +1,13 @@
 // routes/empleado.routes.js
 import express from 'express';
-import { obtenerTareasEmpleado } from '../controllers/empleado.controller.js';
-import { validarRol } from '../middleware/validarRol.js';
+import { actualizarPerfil } from '../controllers/usuario.controller.js';
+import { obtenerPerfil } from '../controllers/autenticacion.controller.js';
+import { verificarToken } from '../middleware/auth.js';
+
 
 const router = express.Router();
 
-// Rutas solo para empleados
-router.get('/tareas', validarRol(['empleado']), obtenerTareasEmpleado);
+router.put('/perfil', verificarToken, actualizarPerfil);
+router.get('/perfil', verificarToken, obtenerPerfil);
 
 export default router;
