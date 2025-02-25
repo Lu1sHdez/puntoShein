@@ -2,6 +2,8 @@
 import Sequelize from 'sequelize';
 import Usuario from '../models/usuario.model.js';  // Asegúrate de tener el modelo de usuario correctamente importado
 import Producto from '../models/producto.model.js';  // Modelo de productos
+import Subcategoria from '../models/subcategoria.model.js';
+
 
 export const obtenerUsuarios = async (req, res) => {
   try {
@@ -29,7 +31,6 @@ export const obtenerUsuarios = async (req, res) => {
     res.status(500).json({ mensaje: 'Error al obtener los usuarios.' });
   }
 };
-
 // Obtener solo empleados
 export const obtenerEmpleados = async (req, res) => {
   try {
@@ -42,7 +43,6 @@ export const obtenerEmpleados = async (req, res) => {
     res.status(500).json({ mensaje: 'Error al obtener los empleados.' });
   }
 };
-
 // Obtener solo usuarios (no empleados ni administradores)
 export const obtenerSoloUsuarios = async (req, res) => {
   try {
@@ -55,7 +55,6 @@ export const obtenerSoloUsuarios = async (req, res) => {
     res.status(500).json({ mensaje: 'Error al obtener los usuarios.' });
   }
 };
-
 // Obtener solo administradores
 export const obtenerAdmins = async (req, res) => {
   try {
@@ -68,7 +67,6 @@ export const obtenerAdmins = async (req, res) => {
     res.status(500).json({ mensaje: 'Error al obtener los administradores.' });
   }
 };
-
 // Eliminar un usuario
 export const eliminarUsuario = async (req, res) => {
   try {
@@ -107,5 +105,72 @@ export const obtenerProductos = async (req, res) => {
   } catch (error) {
     console.error('Error al obtener los productos:', error);
     res.status(500).json({ mensaje: 'Error al obtener los productos.' });
+  }
+};
+
+export const crearProducto = async (req, res) => {
+  const { nombre, descripcion, precio, imagen, stock, subcategoria_id } = req.body;
+
+  try {
+    const subcategoria = await Subcategoria.findByPk(subcategoria_id);
+    if (!subcategoria) {
+      return res.status(404).json({ mensaje: 'Subcategoría no encontrada' });
+    }
+
+    const nuevoProducto = await Producto.create({
+      nombre,
+      descripcion,
+      precio,
+      imagen,
+      stock,
+      subcategoria_id,
+    });
+
+    res.status(201).json(nuevoProducto);
+  } catch (error) {
+    console.error('Error al crear el producto:', error);
+    res.status(500).json({
+      mensaje: 'Error al crear el producto',
+      detalle: error.message,  // Detalle del error para ayudar a depurar
+    });
+  }
+};
+// Obtener los roles disponibles
+export const obtenerRoles = async (req, res) => {
+  try {
+    const roles = ['usuario', 'administrador', 'empleado']; // Lista de roles posibles
+    res.json({ roles }); // Solo devolvemos los roles
+  } catch (error) {
+    console.error('Error al obtener los roles:', error);
+    res.status(500).json({ mensaje: 'Error al obtener los roles.' });
+  }
+};
+
+// Actualizar el rol de un usuario
+export const actualizarRol = async (req, res) => {
+  const { id } = req.params;  // Obtener el ID del usuario desde la URL
+  const { rol } = req.body;   // Obtener el nuevo rol del cuerpo de la solicitud
+
+  try {
+    // Validamos que el rol sea uno de los valores permitidos
+    const rolesValidos = ['usuario', 'administrador', 'empleado'];
+    if (!rolesValidos.includes(rol)) {
+      return res.status(400).json({ mensaje: 'Rol no válido' });
+    }
+
+    // Buscamos al usuario por ID
+    const usuario = await Usuario.findByPk(id);
+    if (!usuario) {
+      return res.status(404).json({ mensaje: 'Usuario no encontrado' });
+    }
+
+    // Actualizamos el rol del usuario
+    usuario.rol = rol;
+    await usuario.save();
+
+    res.status(200).json({ mensaje: 'Rol actualizado exitosamente' });
+  } catch (error) {
+    console.error('Error al actualizar el rol:', error);
+    res.status(500).json({ mensaje: 'Error al actualizar el rol' });
   }
 };
