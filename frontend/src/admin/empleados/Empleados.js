@@ -1,7 +1,7 @@
-import RegresarButton from '../../components/Regresar.js';  // Importamos el botón
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';  // Importamos axios para hacer la llamada HTTP
+import axios from 'axios'; 
 import { Link } from 'react-router-dom'; 
+import RegresarButton from '../../components/Regresar.js';
 
 const Empleados = () => {
     const [empleados, setEmpleados] = useState([]);  // Estado para los empleados
@@ -11,17 +11,17 @@ const Empleados = () => {
         // Hacer la solicitud con axios
         const fetchEmpleados = async () => {
             try {
-              const response = await axios.get('http://localhost:4000/api/admin/empleados', {
-                withCredentials: true,
-              });
-              setEmpleados(response.data);  // Guardamos los empleados en el estado
+                const response = await axios.get('http://localhost:4000/api/admin/empleados', {
+                    withCredentials: true,
+                });
+                setEmpleados(response.data);  // Guardamos los empleados en el estado
             } catch (error) {
-              console.error('Error al obtener los empleados:', error);
-              // Aquí puedes mostrar un mensaje de error al usuario
+                console.error('Error al obtener los empleados:', error);
+                // Aquí puedes mostrar un mensaje de error al usuario
             } finally {
-              setLoading(false);
+                setLoading(false);
             }
-          };
+        };
 
         fetchEmpleados();  // Llamamos a la función para obtener los empleados
     }, []);
@@ -36,6 +36,25 @@ const Empleados = () => {
             setEmpleados(empleados.filter((empleado) => empleado.id !== id));
         } catch (error) {
             console.error('Error al eliminar el empleado:', error);
+        }
+    };
+
+    const cambiarRol = async (empleadoId, newRole) => {
+        try {
+            // Hacemos la solicitud PUT para actualizar el rol
+            await axios.put(
+                `http://localhost:4000/api/admin/usuarios/${empleadoId}/rol`,
+                { rol: newRole }, // Enviamos el nuevo rol
+                { withCredentials: true }
+            );
+            // Si todo sale bien, actualizamos el rol del empleado en el estado
+            setEmpleados(empleados.map(empleado =>
+                empleado.id === empleadoId ? { ...empleado, rol: newRole } : empleado
+            ));
+            alert('Rol actualizado exitosamente');
+        } catch (error) {
+            console.error('Error al actualizar el rol:', error);
+            alert('Hubo un problema al actualizar el rol');
         }
     };
 
@@ -62,7 +81,18 @@ const Empleados = () => {
                             <td className="py-2 px-4 border-b">{empleado.id}</td>
                             <td className="py-2 px-4 border-b">{empleado.nombre}</td>
                             <td className="py-2 px-4 border-b">{empleado.correo}</td>
-                            <td className="py-2 px-4 border-b">{empleado.rol}</td>
+                            <td className="py-2 px-4 border-b">
+                                {/* Agregar select para cambiar el rol */}
+                                <select
+                                    value={empleado.rol}
+                                    onChange={(e) => cambiarRol(empleado.id, e.target.value)} // Llamamos a la función para cambiar el rol
+                                    className="p-2 border border-gray-300 rounded-md"
+                                >
+                                    <option value="usuario">Usuario</option>
+                                    <option value="administrador">Administrador</option>
+                                    <option value="empleado">Empleado</option>
+                                </select>
+                            </td>
                             <td className="py-2 px-4 border-b">
                                 <button className="text-blue-500 hover:text-blue-700">Editar</button>
                                 <button

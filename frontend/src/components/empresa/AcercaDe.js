@@ -1,61 +1,76 @@
-import React from "react";
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 const AcercaDe = () => {
+  const [empresa, setEmpresa] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Función para obtener los datos de la empresa desde la API
+  const fetchEmpresa = async () => {
+    try {
+      const response = await axios.get('http://localhost:4000/api/empresa/empresa', {
+        withCredentials: true,  // Si usas autenticación basada en cookies
+      });
+      setEmpresa(response.data);  // Guardamos los datos de la empresa en el estado
+    } catch (error) {
+      setError('Error al obtener los datos de la empresa');
+      console.error('Error al obtener los datos de la empresa:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchEmpresa();  // Llamamos a la función para obtener los datos de la empresa
+  }, []);  // Solo se ejecuta una vez al montar el componente
+
+  if (loading) {
+    return <div>Cargando...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
+
   return (
     <div className="p-4 max-w-3xl mx-auto text-justify">
       <h2 className="text-2xl font-bold text-center mb-4">Acerca de nosotros</h2>
 
-      <p className="mb-4">
-        En <strong>Punto Shein</strong>, nos dedicamos a ofrecer a nuestros clientes una
-        experiencia de compra única, brindando acceso a las últimas tendencias de
-        moda a precios accesibles. Desde nuestro inicio, nos hemos comprometido
-        a satisfacer las necesidades de nuestros usuarios, ofreciendo productos
-        de calidad y un servicio excepcional.
-      </p>
-
       <h3 className="text-xl font-semibold mb-2">Nuestra Misión</h3>
-      <p className="mb-4">
-      Ofrecer a nuestros clientes productos de moda actualizados y accesibles, 
-      seleccionados de las últimas tendencias disponibles en Shein, 
-      brindando una experiencia de compra rápida y confiable a través de nuestra plataforma local, 
-      que facilita el acceso a moda de calidad en la región.
-      </p>
+      <p className="mb-4">{empresa.mision}</p>
 
       <h3 className="text-xl font-semibold mb-2">Nuestra Visión</h3>
-      <p className="mb-4">
-      Ser la tienda de referencia en la región para la moda en línea, 
-      facilitando el acceso a las últimas tendencias de Shein y 
-      proporcionando un servicio confiable que permita a nuestros 
-      clientes disfrutar de moda de calidad de manera rápida y accesible
-      </p>
+      <p className="mb-4">{empresa.vision}</p>
 
       <h3 className="text-xl font-semibold mb-2">Nuestros Valores</h3>
       <ul className="list-disc list-inside mb-4">
-        <li><strong>Calidad:</strong> Ofrecemos productos que cumplen con los más altos estándares.</li>
-        <li><strong>Innovación:</strong> Estamos siempre a la vanguardia de las tendencias de moda.</li>
-        <li><strong>Sostenibilidad:</strong> Nos comprometemos con prácticas responsables con el medio ambiente.</li>
-        <li><strong>Servicio al cliente:</strong> Tu satisfacción es nuestra prioridad.</li>
+        {empresa.valores && empresa.valores.length > 0 ? (
+          empresa.valores.map((valor, index) => (
+            <li key={index}>
+              <strong>{valor.nombre}:</strong> {valor.descripcion}
+            </li>
+          ))
+        ) : (
+          <p>No hay valores definidos.</p>
+        )}
       </ul>
 
       <h3 className="text-xl font-semibold mb-2">Nuestra Historia</h3>
-      <p className="mb-4">
-        Fundada en 2020, <strong>Punto Shein</strong> comenzó como un pequeño emprendimiento
-        con la visión de llevar las últimas tendencias de moda a un público más amplio.
-        Hoy, gracias al apoyo de nuestros clientes, nos hemos convertido en una
-        plataforma de referencia en el sector, con presencia en múltiples países.
-      </p>
+      <p className="mb-4">{empresa.historia}</p>
 
       <h3 className="text-xl font-semibold mb-2">Nuestro Equipo</h3>
-      <p className="mb-4">
-        Contamos con un equipo apasionado y dedicado, compuesto por expertos en
-        moda, tecnología y servicio al cliente. Trabajamos juntos para ofrecerte
-        la mejor experiencia de compra posible.
-      </p>
+      <p className="mb-4">{empresa.equipo}</p>
 
-      <p className="mt-6">
-        Si deseas saber más sobre nosotros o tienes alguna pregunta, no dudes en
-        contactarnos en: <em>puntosheinhuejutla@gmail.com</em>.
-      </p>
+      <h3 className="text-xl font-semibold mb-2">Información de Contacto</h3>
+      <div className="mb-4">
+        <strong className="text-gray-700">Correo Electrónico:</strong>
+        <p className="text-gray-600">{empresa.correo}</p>
+      </div>
+      <div className="mb-4">
+        <strong className="text-gray-700">Teléfono:</strong>
+        <p className="text-gray-600">{empresa.telefono}</p>
+      </div>
     </div>
   );
 };

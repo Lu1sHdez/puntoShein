@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { FaUserCircle, FaCog, FaUsers, FaBox, FaUserTie, FaTh, FaSignOutAlt } from "react-icons/fa";  // Usamos los iconos correctos
-import { jwtDecode } from "jwt-decode";
 import { Link } from "react-router-dom";
 
 const MenuAdmin = ({ usuarioAutenticado, navigate, handleLogout }) => {
@@ -22,17 +21,6 @@ const MenuAdmin = ({ usuarioAutenticado, navigate, handleLogout }) => {
     setTimeoutId(id);
   };
 
-  const token = localStorage.getItem('token');
-  let rolUsuario = '';
-  if (token) {
-    try {
-      const decoded = jwtDecode(token);
-      rolUsuario = decoded.rol;
-    } catch (error) {
-      console.error('Error al decodificar el token', error);
-    }
-  }
-
   return (
     <div
       className="relative"
@@ -53,7 +41,7 @@ const MenuAdmin = ({ usuarioAutenticado, navigate, handleLogout }) => {
             <>
               {/* Icono de Mi Perfil */}
               <Link
-                to="/perfil"
+                to="/admin/perfil"
                 onClick={() => setMenuAbierto(false)}
                 className="w-full text-left px-4 py-2 hover:bg-gray-200 flex items-center"
               >

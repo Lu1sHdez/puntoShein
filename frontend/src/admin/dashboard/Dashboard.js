@@ -59,7 +59,7 @@ const Dashboard = () => {
 
                 {/* Tarjeta de Perfil */}
                 <Link
-                    to="/perfil"
+                    to="/admin/perfil"
                     className="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition duration-300 transform hover:scale-105"
                 >
                     <BsPersonLinesFill className="text-4xl text-gray-700 mb-4" />
@@ -85,7 +85,7 @@ const Dashboard = () => {
                 <Route path="/admin/usuarios" element={<Usuarios />} />
                 <Route path="/admin/empleados" element={<Empleados />} />
                 <Route path="/admin/productos" element={<Productos />} />
-                <Route path="/perfil" element={<Productos />} />
+                <Route path="/admin/perfil" element={<Productos />} />
             </Routes>
         </div>
     );

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
-import ProductoCard from "./ProductoCard";
+import ProductoCard from "./ProductoCard";  // Importa el componente ProductoCard
 
 const AllProductos = () => {
   const [productos, setProductos] = useState([]);
@@ -38,7 +38,6 @@ const AllProductos = () => {
       {error && <p className="text-red-500">{error}</p>}
       {!cargando && productos.length === 0 && <p>No hay productos disponibles.</p>}
 
-      
       {/* Contenedor de los productos con grid, con margen izquierdo */}
       <div className="ml-1/4 mt-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">

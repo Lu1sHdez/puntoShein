@@ -63,6 +63,25 @@ const Usuarios = () => {
     }
   };
 
+  const cambiarRol = async (userId, newRole) => {
+    try {
+      // Hacemos la solicitud PUT para actualizar el rol
+      await axios.put(
+        `http://localhost:4000/api/admin/usuarios/${userId}/rol`,
+        { rol: newRole }, // Enviamos el nuevo rol
+        { withCredentials: true }
+      );
+      // Si todo sale bien, actualizamos el rol del usuario en el estado
+      setUsuarios(usuarios.map(usuario =>
+        usuario.id === userId ? { ...usuario, rol: newRole } : usuario
+      ));
+      alert('Rol actualizado exitosamente');
+    } catch (error) {
+      console.error('Error al actualizar el rol:', error);
+      alert('Hubo un problema al actualizar el rol');
+    }
+  };
+
   if (loading) {
     return <div>Cargando...</div>;
   }
@@ -119,7 +138,18 @@ const Usuarios = () => {
                 <td className="py-2 px-4 border-b">{usuario.id}</td>
                 <td className="py-2 px-4 border-b">{usuario.nombre}</td>
                 <td className="py-2 px-4 border-b">{usuario.correo}</td>
-                <td className="py-2 px-4 border-b">{usuario.rol}</td>
+                <td className="py-2 px-4 border-b">
+                  <select
+                    value={usuario.rol}
+                    onChange={(e) => cambiarRol(usuario.id, e.target.value)} // Llamamos a la función para cambiar el rol
+                    className="p-2 border border-gray-300 rounded-md"
+                  >
+                    <option value="usuario">Usuario</option>
+                    <option value="administrador">Administrador</option>
+                    <option value="empleado">Empleado</option>
+                  </select>
+                </td>
+
                 <td className="py-2 px-4 border-b">
                   <button className="text-blue-500 hover:text-blue-700">Editar</button>
                   <button
@@ -132,6 +162,7 @@ const Usuarios = () => {
                     Ver más
                   </Link>
                 </td>
+                
               </tr>
             ))}
           </tbody>

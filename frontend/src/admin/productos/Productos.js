@@ -1,7 +1,7 @@
-// src/admin/productos/Productos.js
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';  // Para hacer las solicitudes HTTP
 import RegresarButton from '../../components/Regresar.js';  // Importamos el botón de regreso
+import { Link } from 'react-router-dom';  // Importamos Link para redirigir al formulario de crear producto
 
 const Productos = () => {
   const [productos, setProductos] = useState([]);  // Estado para los productos
@@ -13,7 +13,6 @@ const Productos = () => {
     const fetchProductos = async () => {
       try {
         const response = await axios.get('http://localhost:4000/api/admin/productos', {
-            
           withCredentials: true,  // Esto es necesario si estás usando cookies
         });
         setProductos(response.data);  // Guardamos los productos en el estado
@@ -52,6 +51,14 @@ const Productos = () => {
   return (
     <div className="p-6">
       <h1 className="text-3xl mb-6">Gestión de Productos</h1>
+
+      {/* Botón para agregar un nuevo producto */}
+      <div className="mb-4">
+        <Link to="/admin/productos/crear" className="px-4 py-2 bg-pink-600 hover:bg-pink-700 text-white rounded-md transition">
+          Crear Nuevo Producto
+        </Link>
+      </div>
+
       <table className="min-w-full bg-white border border-gray-200">
         <thead>
           <tr>
