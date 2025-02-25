@@ -1,9 +1,11 @@
 // src/App.js
 import React, { Suspense, lazy } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { Container, CircularProgress } from "@mui/material";
+import { Container } from "@mui/material";
 import Layout from "./components/home/Layout";
-import ProtectedRoute from "./components/ProtectedRoute"; // Importa ProtectedRoute
+import ProteccionRutas from "./utils/ProteccionRutas.js"; // Importa ProteccionRutas
+
+import Skeleton from "./components/Skeleton.js";
 
 // Lazy Loading (Carga Diferida) para tus páginas principales
 const DetalleProducto = lazy(() => import("./components/productos/DetalleProducto"));
@@ -39,8 +41,8 @@ const Error500 = lazy(() => import("./components/error/Error500"));
 const Error400 = lazy(() => import("./components/error/Error400"));
 
 //perfil de usuario
-const PerfilUsuario = lazy(() => import("./usuario/perfil/perfil"));
-const ActualizarPerfil = lazy(() => import("./usuario/perfil/actualizarPerfil"));
+const PerfilUsuario = lazy(() => import("./usuario/perfil/Perfil.js"));
+const ActualizarPerfilUsuario = lazy(() => import("./usuario/perfil/ActualizarPerfil.js"));
 const DashboardUsuario = lazy(() => import("./usuario/dashboard/Dashboard.js"));
 
 //Perfil admin
@@ -50,25 +52,28 @@ const Usuarios = lazy(() => import("./admin/usuarios/Usuarios.js"));
 const UsuarioDetalles = lazy(() => import("./admin/usuarios/UsuarioDetalles.js"));  // Importa el nuevo componente
 const Empleados = lazy(() => import("./admin/empleados/Empleados.js"));
 const Productos = lazy(() => import("./admin/productos/Productos.js"));
+const ActualizarEmpresa = lazy(() => import("./admin/empresa/ActualizarEmpresa.js"));
+const PerfilAdmin = lazy(() => import("./admin/perfil/Perfil.js"));
+const ActualizarPerfilAdmin = lazy(() => import("./admin/perfil/ActualizarPerfil.js"));
+
 
 const Configuracion = lazy(() => import("./admin/setting/Configuracion.js"));
+const CrearProducto = lazy(() => import("./admin/productos/CrearProducto.js"));
+
 
 //Perfil Empleado
 const DashboardEmpleado = lazy(() => import("./empleado/dashboard/Dashboard.js"));
 const ConfiguracionEmpleado = lazy(() => import("./empleado/setting/Configuracion.js"));
+const PerfilEmpleado = lazy(() => import("./empleado/perfil/Perfil.js"));
+const ActualizarPerfilEmpleado = lazy(() => import("./empleado/perfil/ActualizarPerfil.js"));
+
 
 const App = () => {
   return (
     <Router>
       <Layout>
         <Container>
-          <Suspense
-            fallback={
-              <div className="flex justify-center items-center min-h-screen">
-                <CircularProgress />
-              </div>
-            }
-          >
+          <Suspense fallback={<Skeleton/>}>
             <Routes>
               {/* Rutas existentes */}
               <Route path="/" element={<SeccionProductos />} />
@@ -103,53 +108,81 @@ const App = () => {
              { /* Rutas protegidas para administradores */}
               <Route
                 path="/empleado/dashboard"
-                element={<ProtectedRoute element={DashboardEmpleado} allowedRoles={['empleado']} />}
+                element={<ProteccionRutas element={DashboardEmpleado} allowedRoles={['empleado']} />}
               />
               <Route
                 path="/empleado/configuracion"
-                element={<ProtectedRoute element={ConfiguracionEmpleado} allowedRoles={['empleado']} />}
+                element={<ProteccionRutas element={ConfiguracionEmpleado} allowedRoles={['empleado']} />}
               />
-
-              {/* Rutas protegidas para administradores */}
               <Route
                 path="/admin/dashboard"
-                element={<ProtectedRoute element={DashboardAdmin} allowedRoles={['administrador']} />}
+                element={<ProteccionRutas element={DashboardAdmin} allowedRoles={['administrador']} />}
               />
               <Route
                 path="/admin/configuracion"
-                element={<ProtectedRoute element={Configuracion} allowedRoles={['administrador']} />}
+                element={<ProteccionRutas element={Configuracion} allowedRoles={['administrador']} />}
               />
               <Route
                 path="/admin/empresa"
-                element={<ProtectedRoute element={Empresa} allowedRoles={['administrador']} />}
+                element={<ProteccionRutas element={Empresa} allowedRoles={['administrador']} />}
+              />
+               <Route
+                path="/admin/perfil"
+                element={<ProteccionRutas element={PerfilAdmin} allowedRoles={['administrador']} />}
+              />
+               <Route
+                path="/admin/actualizarPerfil"
+                element={<ProteccionRutas element={ActualizarPerfilAdmin} allowedRoles={['administrador']} />}
               />
               <Route
                 path="/admin/productos"
-                element={<ProtectedRoute element={Productos} allowedRoles={['administrador']} />}
+                element={<ProteccionRutas element={Productos} allowedRoles={['administrador']} />}
               />
               <Route
                   path="/admin/usuarios/:id"
-                  element={<ProtectedRoute element={UsuarioDetalles} allowedRoles={['administrador']} />}
+                  element={<ProteccionRutas element={UsuarioDetalles} allowedRoles={['administrador']} />}
                 />
-
+              <Route
+                  path="/admin/empresa/actualizar"
+                  element={<ProteccionRutas element={ActualizarEmpresa} allowedRoles={['administrador']} />}
+                />
               <Route
                 path="/admin/usuarios"
-                element={<ProtectedRoute element={Usuarios} allowedRoles={['administrador']} />}
+                element={<ProteccionRutas element={Usuarios} allowedRoles={['administrador']} />}
               />
               <Route
                 path="/admin/empleados"
-                element={<ProtectedRoute element={Empleados} allowedRoles={['administrador']} />}
+                element={<ProteccionRutas element={Empleados} allowedRoles={['administrador']} />}
+              />
+              <Route
+                path="/admin/productos/crear"
+                element={<ProteccionRutas element={CrearProducto} allowedRoles={['administrador']} />}
+              />
+
+              {/* Rutas de empleado */}
+              <Route
+                path="/empleado/perfil"
+                element={<ProteccionRutas element={PerfilEmpleado} allowedRoles={['empleado']} />}
+              />
+              <Route
+                path="/empleado/actualizarPerfil"
+                element={<ProteccionRutas element={ActualizarPerfilEmpleado} allowedRoles={['empleado']} />}
               />
 
               {/* Ruta para el Dashboard de Usuario */}
               <Route
                 path="/usuario/dashboard"
-                element={<ProtectedRoute element={DashboardUsuario} allowedRoles={['usuario']} />}
+                element={<ProteccionRutas element={DashboardUsuario} allowedRoles={['usuario']} />}
               />
-              {/* Perfil de usuario */}
-              <Route path="perfil" element={<PerfilUsuario />} />
-              {/* Actualizar perfil */}
-              <Route path="ActualizarPerfil" element={<ActualizarPerfil />} />
+              <Route
+                path="/usuario/perfil"
+                element={<ProteccionRutas element={PerfilUsuario} allowedRoles={['usuario']} />}
+              />
+              <Route
+                path="/usuario/actualizarPerfil"
+                element={<ProteccionRutas element={ActualizarPerfilUsuario} allowedRoles={['usuario']} />}
+              />
+            
             </Routes>
           </Suspense>
         </Container>

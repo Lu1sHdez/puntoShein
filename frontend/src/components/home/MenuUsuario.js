@@ -2,10 +2,9 @@
 
 import React, { useState } from "react";
 import { FaUserCircle, FaUsers, FaSignInAlt, FaSignOutAlt, FaUserPlus } from "react-icons/fa";
-import { jwtDecode } from "jwt-decode";
 import { Link } from "react-router-dom";
 
-const MenuUsuario = ({ usuarioAutenticado, navigate, handleLogout }) => {
+const MenuUsuario = ({ usuarioAutenticado, handleLogout }) => {
   const [menuAbierto, setMenuAbierto] = useState(false);
   const [timeoutId, setTimeoutId] = useState(null);
 
@@ -23,17 +22,6 @@ const MenuUsuario = ({ usuarioAutenticado, navigate, handleLogout }) => {
     }, 500);
     setTimeoutId(id);
   };
-
-  const token = localStorage.getItem('token');
-  let rolUsuario = '';
-  if (token) {
-    try {
-      const decoded = jwtDecode(token);
-      rolUsuario = decoded.rol;
-    } catch (error) {
-      console.error('Error al decodificar el token', error);
-    }
-  }
 
   return (
     <div
@@ -54,7 +42,7 @@ const MenuUsuario = ({ usuarioAutenticado, navigate, handleLogout }) => {
           {usuarioAutenticado ? (
             <>
               <Link
-                to="/perfil"
+                to="/usuario/perfil"
                 onClick={() => setMenuAbierto(false)}
                 className="w-full text-left px-4 py-2 hover:bg-gray-200 flex items-center"
               >

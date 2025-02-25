@@ -12,7 +12,7 @@ const Perfil = () => {
     const obtenerPerfil = async () => {
       try {
         // Realizar la solicitud para obtener los datos del perfil
-        const response = await axios.get('http://localhost:4000/api/usuario/perfil', { withCredentials: true });
+        const response = await axios.get('http://localhost:4000/api/empleado/perfil', { withCredentials: true });
         setUsuario(response.data);
       } catch (err) {
         setError('No se pudo obtener los datos del perfil');
@@ -47,7 +47,7 @@ const Perfil = () => {
   return (
     <div className="flex items-center justify-center -mt-10 py-8 px-4">
       <div className="bg-white p-5 rounded-lg shadow-lg w-full max-w-2xl">
-        <h1 className="text-2xl font-semibold text-center text-gray-700 mb-6">Perfil de Usuario</h1>
+        <h1 className="text-2xl font-semibold text-center text-gray-700 mb-6">Perfil de Administrador</h1>
 
         <div className="space-y-4">
         <div className="flex justify-between">
@@ -83,7 +83,7 @@ const Perfil = () => {
 
         <div className="mt-6">
           <button
-            onClick={() => navigate('/usuario/actualizarPerfil')}
+            onClick={() => navigate('/empleado/actualizarPerfil')}
             className="w-full bg-pink-600 text-white py-2 rounded-lg hover:bg-pink-700 transition"
           >
             Editar Perfil

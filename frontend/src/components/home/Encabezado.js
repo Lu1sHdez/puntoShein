@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { FaShoppingCart, FaSearch, FaBars, FaChevronDown } from "react-icons/fa";
 import MenuUsuario from "./MenuUsuario";
@@ -7,14 +7,32 @@ import MenuEmpleado from "./MenuEmpleado";
 import useAuth from "../../hooks/useAuth";
 import Filtros from "../productos/FiltrosAvanzados";
 import { jwtDecode } from "jwt-decode";
+import axios from "axios"; // Importar axios para las solicitudes HTTP
 
 const Encabezado = () => {
   const [menuMovilAbierto, setMenuMovilAbierto] = useState(false);
   const [busqueda, setBusqueda] = useState("");
   const [filtrosVisible, setFiltrosVisible] = useState(false);
+  const [empresa, setEmpresa] = useState(null); // Nuevo estado para la empresa
   const navigate = useNavigate();
   const filtroRef = useRef(null);
   const { usuarioAutenticado, logout } = useAuth();
+
+  // Función para obtener los datos de la empresa desde la API
+  const fetchEmpresa = async () => {
+    try {
+      const response = await axios.get("http://localhost:4000/api/empresa/empresa", {
+        withCredentials: true, // Si usas autenticación basada en cookies
+      });
+      setEmpresa(response.data); // Guardar los datos de la empresa en el estado
+    } catch (error) {
+      console.error("Error al obtener los datos de la empresa:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchEmpresa(); // Llamamos a la función para obtener los datos de la empresa
+  }, []);
 
   // Función de búsqueda
   const handleBuscar = () => {
@@ -71,12 +89,18 @@ const Encabezado = () => {
         {/* Logo + Nombre */}
         <div className="flex items-center space-x-2">
           <Link to="/" className="flex items-center space-x-2">
-            <img
-              src="https://res.cloudinary.com/dgbs7sg9j/image/upload/v1732688337/oyki4qctlifup2fw6krl.png"
-              alt="Logo"
-              className="h-20 w-auto"
-            />
-            <h1 className="text-lg font-bold">Punto Shein</h1>
+            {empresa ? (
+              <>
+                <img
+                  src={empresa.logo}
+                  alt="Logo"
+                  className="h-20 w-auto"
+                />
+                <h1 className="text-lg font-bold">{empresa.nombre}</h1>
+              </>
+            ) : (
+              <p>Cargando...</p> // Mientras la empresa se carga, muestra un texto.
+            )}
           </Link>
         </div>
 

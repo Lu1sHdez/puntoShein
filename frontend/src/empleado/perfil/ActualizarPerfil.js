@@ -12,7 +12,7 @@ const ActualizarPerfil = () => {
   useEffect(() => {
     const obtenerPerfil = async () => {
       try {
-        const response = await axios.get('http://localhost:4000/api/usuario/perfil', { withCredentials: true });
+        const response = await axios.get('http://localhost:4000/api/empleado/perfil', { withCredentials: true });
         setUsuario(response.data);
         setDatos({
           nombre_usuario: response.data.nombre_usuario,
@@ -50,7 +50,7 @@ const ActualizarPerfil = () => {
 
     try {
       // Enviar los datos actualizados al backend
-      const response = await axios.put('http://localhost:4000/api/usuario/perfil', datos, { withCredentials: true });
+      const response = await axios.put('http://localhost:4000/api/empleado/perfil', datos, { withCredentials: true });
       
       // Mostrar el mensaje de éxito con SweetAlert2
       Swal.fire({
@@ -71,7 +71,7 @@ const ActualizarPerfil = () => {
   return (
     <div className="flex items-center justify-center mt-0 py-8 px-4">
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-2xl">
-        <h1 className="text-2xl font-semibold text-center text-gray-700 mb-6">Editar perfil</h1>
+        <h1 className="text-2xl font-semibold text-center text-gray-700 mb-6">Editar Perfil</h1>
 
         {/* Mostrar mensaje de error si existe */}
         {errores.general && <p className="text-red-500 text-sm text-center mb-2">{errores.general}</p>}

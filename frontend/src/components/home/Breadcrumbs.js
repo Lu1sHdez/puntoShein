@@ -1,10 +1,14 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import nombresRutas from "../../utils/nombresRutas";
+import rutasExcluir from "../../utils/rutasExcluir"; // Importa las rutas a excluir
+
 
 const Breadcrumbs = ({ producto }) => {
   const location = useLocation();
   const pathnames = location.pathname.split("/").filter((x) => x);
+
+  const excluirRutas = (segment) => rutasExcluir.includes(segment);
 
   return (
     <nav className="mt-9 px-6 py-2 flex items-center justify-start space-x-2 max-w-screen-sm text-black" aria-label="Breadcrumb">
@@ -51,6 +55,10 @@ const Breadcrumbs = ({ producto }) => {
 
         {/* Segmentos dinámicos si no hay producto */}
         {!producto && pathnames.map((segment, index) => {
+
+          // Omite la parte "admin", "empleado", etc. en los breadcrumbs
+          if (excluirRutas(segment)) return null;
+
           const to = `/${pathnames.slice(0, index + 1).join("/")}`;
           const isLast = index === pathnames.length - 1;
           const nombreVisible = nombresRutas[segment] || segment.charAt(0).toUpperCase() + segment.slice(1);

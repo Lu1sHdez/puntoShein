@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import Breadcrumbs from "../home/Breadcrumbs"; //Importamos las migas de pan personalizadas
+import Breadcrumbs from "../home/Breadcrumbs"; // Importamos las migas de pan personalizadas
 import { mostrarStock } from "../../utils/funtionProductos"; 
 
 const DetalleProducto = () => {
@@ -87,7 +87,7 @@ const DetalleProducto = () => {
           <p className="text-2xl font-semibold text-pink-600 mt-4">${producto.precio}</p>
 
           {/* 🛒 Botones de acción */}
-          <div className="flex flex-col space-y-4 mt-6">
+          <div className="botones-acciones">
             <button 
               onClick={handleComprarAhora} 
               className="w-full bg-blue-600 text-white py-3 rounded-lg shadow-md text-lg font-semibold transition transform hover:scale-105 hover:bg-blue-700"
