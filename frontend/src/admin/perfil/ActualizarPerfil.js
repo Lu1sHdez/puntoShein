@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';  // Importar SweetAlert2
+import { formAnimation } from '../Funciones.js';
+import { motion } from 'framer-motion';
+import RegresarButton from '../../components/Regresar.js';  // Importamos el botón de regreso
 
 const ActualizarPerfil = () => {
   const [usuario, setUsuario] = useState(null);
@@ -69,7 +72,7 @@ const ActualizarPerfil = () => {
   if (!usuario) return <div>Cargando...</div>; // Mientras se obtiene el perfil
 
   return (
-    <div className="flex items-center justify-center mt-0 py-8 px-4">
+    <motion.div {...formAnimation} className="flex items-center justify-center mt-0 py-8 px-4">
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-2xl">
         <h1 className="text-2xl font-semibold text-center text-gray-700 mb-6">Editar mi perfil</h1>
 
@@ -104,8 +107,9 @@ const ActualizarPerfil = () => {
             Guardar cambios
           </button>
         </form>
+        <RegresarButton/>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

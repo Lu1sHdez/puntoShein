@@ -22,7 +22,6 @@ export const obtenerEmpresa = async (req, res) => {
   }
 };
 
-
 // Actualizar datos de la empresa y sus valores
 export const actualizarEmpresa = async (req, res) => {
     try {

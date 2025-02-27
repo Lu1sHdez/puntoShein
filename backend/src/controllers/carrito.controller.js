@@ -6,6 +6,7 @@ import Producto from "../models/producto.model.js";
  */
 export const agregarAlCarrito = async (req, res) => {
   try {
+    
     const { usuario_id, producto_id, cantidad } = req.body;
 
     // Verificar si el producto existe

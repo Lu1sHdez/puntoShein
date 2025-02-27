@@ -11,4 +11,4 @@ export const crearTokenAcceso = (usuario) => {
     { expiresIn: '1d' } // Expiración de 1 día
   );
 };
-  
+

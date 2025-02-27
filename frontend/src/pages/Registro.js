@@ -1,8 +1,12 @@
 import React, { useState } from "react";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import validaPassword from "../hooks/useValidaPassword";
+import { formAnimation } from "./Funciones"; 
+import { motion } from "framer-motion";
+
+
 
 const Registro = () => {
   const [datos, setDatos] = useState({
@@ -126,6 +130,7 @@ const Registro = () => {
 
         {errores.general && <p className="text-red-500 text-sm text-center mb-2">{errores.general}</p>}
 
+        <motion.div {...formAnimation}>
         <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {[
             { label: "Usuario", name: "nombre_usuario", type: "text", placeholder: "Usuario12345" },
@@ -230,12 +235,13 @@ const Registro = () => {
           <div className="col-span-2 text-center mt-4">
             <p className="text-sm text-gray-600">
               ¿Ya tienes una cuenta?{" "}
-              <a href="/login" className="text-pink-600 hover:underline">
+              <Link to="/login" className="text-pink-600 hover:underline">
                 Inicia sesión
-              </a>
+              </Link>
             </p>
           </div>
         </form>
+        </motion.div>
       </div>
     </div>
   );

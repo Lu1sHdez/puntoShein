@@ -9,10 +9,12 @@ import Empresa from '../empresa/Empresa';  // Componente para la empresa
 import Usuarios from '../usuarios/Usuarios';  // Componente para los usuarios
 import Empleados from '../empleados/Empleados';  // Componente para los empleados
 import Productos from '../productos/Productos';  // Componente para los productos
+import { dashboardAnimation } from '../Funciones'; // Importamos las animaciones
+import { motion } from 'framer-motion';
 
 const Dashboard = () => {
     return (
-        <div className="p-6">
+        <motion.div {...dashboardAnimation} className="p-6">
             <h1 className="text-3xl font-bold mb-6">Dashboard - Administrador</h1>
 
             {/* Sección de tarjetas con opciones */}
@@ -87,7 +89,7 @@ const Dashboard = () => {
                 <Route path="/admin/productos" element={<Productos />} />
                 <Route path="/admin/perfil" element={<Productos />} />
             </Routes>
-        </div>
+        </motion.div>
     );
 };
 

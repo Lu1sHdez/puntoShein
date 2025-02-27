@@ -4,7 +4,6 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Container } from "@mui/material";
 import Layout from "./components/home/Layout";
 import ProteccionRutas from "./utils/ProteccionRutas.js"; // Importa ProteccionRutas
-
 import Skeleton from "./components/Skeleton.js";
 
 // Lazy Loading (Carga Diferida) para tus páginas principales
@@ -34,6 +33,10 @@ const DeslindeLegal = lazy(() => import("./components/empresa/DeslindeLegal"));
 const Contacto = lazy(() => import("./components/empresa/Contacto"));
 const Ayuda = lazy(() => import("./components/empresa/Ayuda"));
 const MapaSitio = lazy(() => import("./components/empresa/MapaSitio"));
+
+
+//Pagina Principal
+const Cuerpo = lazy(() => import("./components/home/cuerpo/Cuerpo.js"));
 
 // Páginas de error
 const Error404 = lazy(() => import("./components/error/Error404"));
@@ -76,7 +79,7 @@ const App = () => {
           <Suspense fallback={<Skeleton/>}>
             <Routes>
               {/* Rutas existentes */}
-              <Route path="/" element={<SeccionProductos />} />
+              <Route path="/" element={<Cuerpo />} />
               <Route path="/productos" element={<AllProductos />} />
               <Route path="/login" element={<Login />} />
               <Route path="/registro" element={<Registro />} />

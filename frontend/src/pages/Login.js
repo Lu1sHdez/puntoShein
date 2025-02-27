@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import FormularioInput from "../components/form/FormularioInput";
 import useFormulario from "../hooks/useFormulario";
+import { formAnimation } from "./Funciones"; 
+import { motion } from "framer-motion";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -15,7 +17,7 @@ const Login = () => {
     "http://localhost:4000/api/autenticacion/login",
     "/",
     true
-  );
+  ); 
 
   useEffect(() => {
     if (localStorage.getItem("token")) {
@@ -29,6 +31,7 @@ const Login = () => {
     }
   }, [mensaje.texto]);
 
+  //Funcion sincrona
   const validarYEnviar = async (e) => {
     e.preventDefault();
 
@@ -36,18 +39,21 @@ const Login = () => {
     if (!datos.correo || !datos.password) {
       setErrorValidacion("El correo y la contraseña son obligatorios.");
       setErrorCampos({
-        correo: !datos.correo, // Marca el correo como erróneo si está vacío
-        password: !datos.password, // Marca la contraseña como errónea si está vacía
+        correo: !datos.correo, 
+        password: !datos.password, 
       });
       return;
     }
 
+    //Sincrona
     setErrorValidacion(""); // Limpiar el mensaje de error
     setErrorCampos({ correo: false, password: false }); // Resetear los errores en los campos
 
-    const success = await handleSubmit(e); // Enviar el formulario
+    // Función asíncrona envia datos de sesion al servidor
+    const success = await handleSubmit(e); 
+
     if(success){
-      window.location.reload();
+      window.location.reload(); // Después de que se resuelve la operación asincrónica
     }
     
   };
@@ -64,6 +70,7 @@ const Login = () => {
           </div>
         )}
 
+        <motion.div {...formAnimation}>
         <form onSubmit={validarYEnviar} className="mt-6">
           <FormularioInput
             label="Correo Electrónico"
@@ -115,6 +122,7 @@ const Login = () => {
             ¿No tienes cuenta? Regístrate aquí
           </button>
         </form>
+        </motion.div>
       </div>
     </div>
   );

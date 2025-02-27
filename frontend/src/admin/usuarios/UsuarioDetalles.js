@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import RegresarButton from '../../components/Regresar.js';  // Importamos el botón
+import { formAnimation } from '../Funciones.js';
+import { motion } from 'framer-motion';
 
 const UsuarioDetalles = () => {
   const { id } = useParams();  // Obtén el ID del usuario desde la URL
@@ -45,7 +47,7 @@ const UsuarioDetalles = () => {
   }
 
   return (
-    <div className="p-6">
+    <motion.div {...formAnimation} className="p-6">
       <div className="max-w-3xl mx-auto bg-white p-8 rounded-lg shadow-lg">
         <h1 className="text-3xl font-semibold text-center text-gray-700 mb-6">Detalles del Usuario</h1>
 
@@ -86,7 +88,7 @@ const UsuarioDetalles = () => {
           <RegresarButton />
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

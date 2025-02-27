@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import FormularioInput from "../components/form/FormularioInput";
 import useFormulario from "../hooks/useFormulario";
+import { formAnimation } from "./Funciones"; 
+import { motion } from "framer-motion";
+
 
 const RecuperarPassword = () => {
   const navigate = useNavigate();
@@ -53,6 +56,7 @@ const RecuperarPassword = () => {
           </div>
         )}
 
+        <motion.div {...formAnimation}>
         <form onSubmit={validarYEnviar} className="mt-6">
           <FormularioInput
             label="Correo Electrónico"
@@ -81,6 +85,7 @@ const RecuperarPassword = () => {
             Volver al inicio de sesión
           </button>
         </form>
+        </motion.div>
       </div>
     </div>
   );
