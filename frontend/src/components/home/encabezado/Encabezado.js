@@ -1,13 +1,16 @@
+// src/components/home/encabezado/Encabezado.js
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { FaShoppingCart, FaSearch, FaBars, FaChevronDown } from "react-icons/fa";
+import { FaShoppingCart, FaBars, FaChevronDown } from "react-icons/fa";
 import MenuUsuario from "./MenuUsuario";
 import MenuAdmin from "./MenuAdmin";
 import MenuEmpleado from "./MenuEmpleado";
-import useAuth from "../../hooks/useAuth";
-import Filtros from "../productos/FiltrosAvanzados";
+import useAuth from "../../../hooks/useAuth";
+import Filtros from "../../productos/FiltrosAvanzados";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios"; // Importar axios para las solicitudes HTTP
+import "../../../css/Texto.css";  // Ruta correcta a Texto.css
+import Busqueda from "./Busqueda";  // Importar el componente Busqueda
 
 const Encabezado = () => {
   const [menuMovilAbierto, setMenuMovilAbierto] = useState(false);
@@ -33,13 +36,6 @@ const Encabezado = () => {
   useEffect(() => {
     fetchEmpresa(); // Llamamos a la función para obtener los datos de la empresa
   }, []);
-
-  // Función de búsqueda
-  const handleBuscar = () => {
-    if (busqueda.trim()) {
-      navigate(`/buscar?nombre=${busqueda}`);
-    }
-  };
 
   // Función de cerrar sesión
   const handleLogout = () => {
@@ -96,7 +92,7 @@ const Encabezado = () => {
                   alt="Logo"
                   className="h-20 w-auto"
                 />
-                <h1 className="text-lg font-bold">{empresa.nombre}</h1>
+                <h2 className="texto-grande">{empresa.nombre}</h2>
               </>
             ) : (
               <p>Cargando...</p> // Mientras la empresa se carga, muestra un texto.
@@ -114,24 +110,8 @@ const Encabezado = () => {
 
         {/* Sección derecha: Búsqueda + Filtros + Carrito + Usuario */}
         <div className="hidden lg:flex items-center space-x-12">
-          {/* Búsqueda */}
-          <div className="flex items-center space-x-2">
-            <div className="relative">
-              <FaSearch className="absolute left-2 top-2 text-gray-400" />
-              <input
-                type="text"
-                value={busqueda}
-                onChange={(e) => setBusqueda(e.target.value)} // Filtra en tiempo real
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && busqueda.trim()) {
-                    navigate(`/buscar?nombre=${busqueda}`);
-                  }
-                }} // Busca cuando presiona Enter
-                placeholder="Buscar producto"
-                className="pl-8 pr-2 py-1 w-32 md:w-48 rounded-md text-black border border-gray-300 focus:outline-none"
-              />
-            </div>
-          </div>
+          {/* Componente de Búsqueda */}
+          <Busqueda busqueda={busqueda} setBusqueda={setBusqueda} />
           {/* Botón para mostrar los filtros avanzados */}
           <button
             onClick={() => setFiltrosVisible(!filtrosVisible)}
@@ -141,6 +121,7 @@ const Encabezado = () => {
             <FaChevronDown size={12} className={`transform ${filtrosVisible ? "rotate-180" : ""}`} />
           </button>
         </div>
+
         {/* Navegación Principal (pantallas grandes) */}
         <nav className="hidden lg:flex space-x-6">
           <button onClick={() => navigate("/")} className="hover:underline">Inicio</button>
@@ -163,35 +144,12 @@ const Encabezado = () => {
 
             {/* Sección de Búsqueda y Botón Filtros, también visible en mobile */}
             <div className="mt-4">
-              <div className="flex items-center space-x-2 mb-2">
-                <div className="relative flex-1">
-                  <FaSearch onClick={handleBuscar} className="absolute left-2 top-2 text-gray-400 cursor-pointer" />
-
-                  <input
-                    type="text"
-                    value={busqueda}
-                    onChange={(e) => setBusqueda(e.target.value)}
-                    placeholder="Buscar..."
-                    className="pl-8 pr-2 py-1 w-full rounded-md text-black border border-gray-300 focus:outline-none"
-                  />
-                </div>
-                <button
-                  onClick={handleBuscar}
-                  className="bg-white text-black py-1 px-3 rounded-md hover:bg-gray-200 transition"
-                >
-                  Buscar
-                </button>
-              </div>
-            </div>
-
-            {/* Carrito y usuario en mobile */}
-            <div className="mt-4 flex items-center space-x-4">
-              <FaShoppingCart className="text-2xl cursor-pointer" onClick={() => navigate("/carrito")} />
-              {menu} {/* Aquí también se muestra el menú en el móvil */}
+              <Busqueda busqueda={busqueda} setBusqueda={setBusqueda} />
             </div>
           </div>
         </nav>
       )}
+
       {/* Filtros avanzados debajo del buscador */}
       {filtrosVisible && (
         <div ref={filtroRef} className="absolute top-16 right-0 p-4 mt-4 rounded-md w-80">

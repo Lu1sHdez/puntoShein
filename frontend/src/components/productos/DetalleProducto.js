@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Breadcrumbs from "../home/Breadcrumbs"; // Importamos las migas de pan personalizadas
 import { mostrarStock } from "../../utils/funtionProductos"; 
+import RegresarButton from "../Regresar";
 
 const DetalleProducto = () => {
   const { id } = useParams();
@@ -101,6 +102,7 @@ const DetalleProducto = () => {
             >
               Agregar al Carrito
             </button>
+            <RegresarButton/>
           </div>
         </div>
       </div>

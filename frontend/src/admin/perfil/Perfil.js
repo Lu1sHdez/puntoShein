@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import Skeleton from "../../components/Skeleton.js";
+import { formAnimation, userDetailsLoadingAnimation } from '../Funciones.js';
+import { motion } from 'framer-motion';
+import RegresarButton from '../../components/Regresar.js';
 
 const Perfil = () => {
   const [usuario, setUsuario] = useState(null);
@@ -11,13 +15,11 @@ const Perfil = () => {
   useEffect(() => {
     const obtenerPerfil = async () => {
       try {
-        // Realizar la solicitud para obtener los datos del perfil
         const response = await axios.get('http://localhost:4000/api/admin/perfil', { withCredentials: true });
         setUsuario(response.data);
       } catch (err) {
         setError('No se pudo obtener los datos del perfil');
         if (err.response?.status === 401) {
-          // Redirigir al usuario si no está autenticado
           navigate('/login');
         }
       } finally {
@@ -31,7 +33,7 @@ const Perfil = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="text-xl text-gray-600">Cargando...</div>
+        <Skeleton />
       </div>
     );
   }
@@ -45,12 +47,12 @@ const Perfil = () => {
   }
 
   return (
-    <div className="flex items-center justify-center -mt-10 py-8 px-4">
-      <div className="bg-white p-5 rounded-lg shadow-lg w-full max-w-2xl">
+    <motion.div {...formAnimation} className="flex items-center justify-center mt-0 py-8 px-4">
+      <motion.div {...userDetailsLoadingAnimation} className="bg-white p-5 rounded-lg shadow-lg w-full max-w-2xl">
         <h1 className="text-2xl font-semibold text-center text-gray-700 mb-6">Perfil de Administrador</h1>
 
         <div className="space-y-4">
-        <div className="flex justify-between">
+          <div className="flex justify-between">
             <span className="text-gray-600 font-medium">Nombre de Usuario:</span>
             <span className="text-gray-800">{usuario.nombre_usuario}</span>
           </div>
@@ -66,7 +68,6 @@ const Perfil = () => {
             <span className="text-gray-600 font-medium">Apellido Paterno:</span>
             <span className="text-gray-800">{usuario.apellido_materno}</span>
           </div>
-          
           <div className="flex justify-between">
             <span className="text-gray-600 font-medium">Correo Electrónico:</span>
             <span className="text-gray-800">{usuario.correo}</span>
@@ -88,9 +89,10 @@ const Perfil = () => {
           >
             Editar Perfil
           </button>
+          <RegresarButton />
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 };
 

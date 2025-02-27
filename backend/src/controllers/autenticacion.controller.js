@@ -9,8 +9,27 @@ export const registro = async (req, res) => {
   try {
     const { correo, password, nombre_usuario, nombre, apellido_materno, apellido_paterno, telefono, rol } = req.body;
 
+    // Validación de campos vacíos
     if (!correo || !password || !nombre_usuario || !nombre || !apellido_paterno || !telefono) {
       return res.status(400).json({ mensaje: "Todos los campos son obligatorios." });
+    }
+
+    // Validación de correo
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(correo)) {
+      return res.status(400).json({ mensaje: "El correo no tiene un formato válido." });
+    }
+
+    // Validación de teléfono (solo números y 10 dígitos)
+    const telefonoRegex = /^\d{10}$/;
+    if (!telefonoRegex.test(telefono)) {
+      return res.status(400).json({ mensaje: "El teléfono debe tener exactamente 10 dígitos." });
+    }
+
+    // Validación de nombre de usuario (alfanumérico, entre 5 y 20 caracteres)
+    const usernameRegex = /^[A-Za-z\d]{5,20}$/;
+    if (!usernameRegex.test(nombre_usuario)) {
+      return res.status(400).json({ mensaje: "El nombre de usuario debe ser alfanumérico y tener entre 5 y 20 caracteres." });
     }
 
     // Verificar si el correo ya está registrado
@@ -24,13 +43,14 @@ export const registro = async (req, res) => {
     if (telefonoExistente) {
       return res.status(400).json({ mensaje: "El teléfono ya está registrado." });
     }
-    // Verificar si el usuario ya está registrado
+
+    // Verificar si el nombre de usuario ya está registrado
     const usuarioExistente = await Usuario.findOne({ where: { nombre_usuario } });
     if (usuarioExistente) {
       return res.status(400).json({ mensaje: "El nombre de usuario ya existe. Intenta con otro" });
     }
 
-    // Hashear la contraseña
+    // Hashear la contraseña con bcrypt
     const contraseñaHasheada = await bcrypt.hash(password, 10);
 
     // Crear usuario
@@ -42,7 +62,7 @@ export const registro = async (req, res) => {
       correo,
       telefono,
       password: contraseñaHasheada,
-      rol: rol || 'usuario',
+      rol: rol || 'usuario',  // Asignar rol por defecto si no se especifica
     });
 
     return res.status(201).json({
@@ -55,15 +75,16 @@ export const registro = async (req, res) => {
       },
     });
   } catch (error) {
+    console.error('Error al registrar usuario:', error);
     return res.status(500).json({ mensaje: "Error interno del servidor." });
   }
 };
-//  Función para iniciar sesión
+
 export const login = async (req, res) => {
   try {
     const { correo, password } = req.body;
 
-    // Validar que los datos no estén vacíos
+    // Validar que los campos no estén vacíos
     if (!correo || !password) {
       return res.status(400).json({ mensaje: "El correo y la contraseña son obligatorios." });
     }
@@ -74,41 +95,37 @@ export const login = async (req, res) => {
       return res.status(400).json({ mensaje: "Correo o contraseña incorrectos." });
     }
 
-    // Comparar la contraseña ingresada con la almacenada en la base de datos
+    // Comparar la contraseña
     const contraseñaValida = await bcrypt.compare(password, usuario.password);
     if (!contraseñaValida) {
       return res.status(400).json({ mensaje: "Correo o contraseña incorrectos." });
     }
-
-    // Buscar al usuario en la base de datos
-    const usuarioComprobar = await Usuario.findOne({ where: { correo } });
-    if (!usuarioComprobar || !(await bcrypt.compare(password, usuarioComprobar.password))) {
-      return res.status(400).json({ mensaje: "Correo o contraseña incorrectos." });
-    }
-
 
     // Generar token JWT
     const token = crearTokenAcceso(usuario);
 
     // Configurar cookie con el token
     res.cookie('token', token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'Strict',
+      httpOnly: true, // La cookie solo es accesible desde el servidor
+      secure: process.env.NODE_ENV === 'production', // Solo enviar la cookie sobre HTTPS en producción
+      sameSite: 'Strict', // Prevenir ataques CSRF
+      maxAge: 24 * 60 * 60 * 1000, // Expira en 1 día (en milisegundos)
     });
 
+    // Respuesta exitosa
     return res.status(200).json({
       mensaje: "Inicio de sesión exitoso.",
       usuario: {
         id: usuario.id,
         nombre_usuario: usuario.nombre_usuario,
         correo: usuario.correo,
-        rol: usuario.rol,
+        rol: usuario.rol, // Asegúrate de que el rol esté aquí
       },
-      token,
+      token, // Opcional: Enviar el token en la respuesta (útil para clientes que no usan cookies)
     });
 
   } catch (error) {
+    console.error('Error en el login:', error); // Log del error para depuración
     return res.status(500).json({ mensaje: "Error interno del servidor." });
   }
 };
@@ -118,6 +135,7 @@ export const cerrarSesion = (req, res) => {
     expires: new Date(0), // Expira inmediatamente
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
+    sameSite: 'Strict',
   });
   return res.json({ mensaje: "Sesión cerrada exitosamente." });
 };

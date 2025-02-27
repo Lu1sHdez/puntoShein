@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios'; 
 import { Link } from 'react-router-dom'; 
 import RegresarButton from '../../components/Regresar.js';
+import {  userLoadingContainer } from '../Funciones.js';
+import { motion } from 'framer-motion';
+
 
 const Empleados = () => {
     const [empleados, setEmpleados] = useState([]);  // Estado para los empleados
@@ -63,7 +66,7 @@ const Empleados = () => {
     }
 
     return (
-        <div className="p-6">
+        <motion.div {...userLoadingContainer} className="p-6">
             <h1 className="text-3xl mb-6">Gestión de Empleados</h1>
             <table className="min-w-full bg-white border border-gray-200">
                 <thead>
@@ -110,7 +113,7 @@ const Empleados = () => {
                 </tbody>
             </table>
             <RegresarButton />  {/* Botón de regresar */}
-        </div>
+        </motion.div>
     );
 };
 

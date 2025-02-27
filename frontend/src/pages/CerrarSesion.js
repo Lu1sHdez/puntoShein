@@ -13,7 +13,7 @@ const CerrarSesion = () => {
       try {
         await axios.post("http://localhost:4000/api/autenticacion/logout", {}, { withCredentials: true });
         
-        logout(); // ✅ Borra la autenticación
+        logout(); //Borra la autenticación
 
         Swal.fire({
           icon: "success",

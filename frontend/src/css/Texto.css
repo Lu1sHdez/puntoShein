@@ -1,0 +1,8 @@
+/* src/css/Texto.css */
+.texto-grande {
+    font-size: 2rem; /* Tamaño de letra grande */
+    font-weight: bold; /* En negrita */
+    color: #ffffff; /* Asegura que el color sea blanco */
+    text-transform:uppercase;
+  }
+  

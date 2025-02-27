@@ -1,10 +1,11 @@
 // src/controllers/admin.controller.js
 import Sequelize from 'sequelize';
+
 import Usuario from '../models/usuario.model.js';  // Asegúrate de tener el modelo de usuario correctamente importado
 import Producto from '../models/producto.model.js';  // Modelo de productos
 import Subcategoria from '../models/subcategoria.model.js';
 
-
+// Funcion para btener los usuarios
 export const obtenerUsuarios = async (req, res) => {
   try {
     const { rol, search } = req.query;  // Obtener el rol y la búsqueda desde la query string
@@ -23,15 +24,17 @@ export const obtenerUsuarios = async (req, res) => {
     }
 
     const usuarios = await Usuario.findAll({
-      where: whereClause  // Aplicar los filtros
+      where: whereClause  // Aplicar los filtros de manera segura
     });
+
+
     res.json(usuarios);
   } catch (error) {
     console.error('Error al obtener los usuarios:', error);
     res.status(500).json({ mensaje: 'Error al obtener los usuarios.' });
   }
 };
-// Obtener solo empleados
+// Funcion para obtener solo empleados
 export const obtenerEmpleados = async (req, res) => {
   try {
     const empleados = await Usuario.findAll({
@@ -156,6 +159,15 @@ export const actualizarRol = async (req, res) => {
     const rolesValidos = ['usuario', 'administrador', 'empleado'];
     if (!rolesValidos.includes(rol)) {
       return res.status(400).json({ mensaje: 'Rol no válido' });
+    }
+    
+    // Verificar si el usuario es el único administrador
+    if (rol === 'usuario' || rol ==='empleado') {
+      const totalAdmins = await Usuario.count({ where: { rol: 'administrador' } });
+      
+      if (totalAdmins === 1) {
+        return res.status(400).json({ mensaje: 'No puedes cambiar el rol del único administrador. Asigna otro administrador primero.' });
+      }
     }
 
     // Buscamos al usuario por ID

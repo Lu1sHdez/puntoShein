@@ -2,13 +2,15 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import FormularioInput from "../components/form/FormularioInput";
 import useFormulario from "../hooks/useFormulario";
+import { formAnimation } from "./Funciones"; 
+import { motion } from "framer-motion";
 
 const RestablecerPassword = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [errorValidacion, setErrorValidacion] = useState(""); // ⚠️ Estado para errores
+  const [errorValidacion, setErrorValidacion] = useState(""); //  Estado para errores
 
   // Obtener token de la URL
   const queryParams = new URLSearchParams(location.search);
@@ -20,7 +22,7 @@ const RestablecerPassword = () => {
     "/login"
   );
 
-  // ⚠️ Actualizar el mensaje de error si viene del backend
+  //Actualizar el mensaje de error si viene del backend
   useEffect(() => {
     if (mensaje.tipo === "error") {
       setErrorValidacion(mensaje.texto);
@@ -51,12 +53,13 @@ const RestablecerPassword = () => {
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
         <h2 className="text-2xl font-semibold text-center text-gray-700">Restablecer Contraseña</h2>
 
-        {/* ⚠️ Mensaje de error estático arriba del formulario */}
+        {/*  Mensaje de error estático arriba del formulario */}
         {errorValidacion && (
           <div className="mb-4 text-red-500 text-sm font-semibold text-center">
             {errorValidacion}
           </div>
         )}
+        <motion.div {...formAnimation}>
 
         <form onSubmit={validarYEnviar} className="mt-6">
           {/* Nueva Contraseña */}
@@ -103,6 +106,7 @@ const RestablecerPassword = () => {
             Volver al inicio de sesión
           </button>
         </form>
+        </motion.div>
       </div>
     </div>
   );

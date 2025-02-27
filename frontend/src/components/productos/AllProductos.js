@@ -1,7 +1,10 @@
+// src/components/AllProductos.js
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
 import ProductoCard from "./ProductoCard";  // Importa el componente ProductoCard
+import RegresarButton from "../Regresar";
+import { motion } from "framer-motion"; // Importamos framer-motion
 
 const AllProductos = () => {
   const [productos, setProductos] = useState([]);
@@ -40,21 +43,37 @@ const AllProductos = () => {
 
       {/* Contenedor de los productos con grid, con margen izquierdo */}
       <div className="ml-1/4 mt-4">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+        {/* Animamos la entrada de los productos */}
+        <motion.div
+          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6"
+          initial={{ opacity: 0, y: 50 }} // Comienza desvanecido y desplazado hacia abajo
+          animate={{ opacity: 1, y: 0 }} // Se desvanece y se desplaza hacia su lugar
+          transition={{ duration: 0.8, type: "spring", stiffness: 120 }} // Duración de la animación y efecto de resorte
+        >
           {productos.slice(0, visibleProductos).map((producto) => (
-            <ProductoCard key={producto.id} producto={producto} />
+            <motion.div
+              key={producto.id}
+              initial={{ opacity: 0, y: 50 }} // Cada producto comienza desvanecido y desplazado
+              animate={{ opacity: 1, y: 0 }} // Los productos aparecen y se colocan en su lugar
+              transition={{ duration: 0.5, type: "spring", stiffness: 120 }} // Animación de los productos
+            >
+              <ProductoCard producto={producto} />
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
 
         {/* Botón "Ver más" - Solo se muestra si hay más productos */}
         {visibleProductos < productos.length && (
           <div className="flex justify-center mt-6">
-            <button
+            <motion.button
               onClick={handleVerMas}
-              className="bg-pink-600 text-white py-2 px-6 rounded-lg hover:bg-pink-700 transition"
+              className="bg-pink-600 text-white py-2 px-6 rounded-lg hover:bg-pink-700 transition-all"
+              whileHover={{ scale: 1.05 }} // Efecto de hover en el botón
+              transition={{ type: "spring", stiffness: 300 }}
             >
               Ver más
-            </button>
+            </motion.button>
+            <RegresarButton />
           </div>
         )}
       </div>

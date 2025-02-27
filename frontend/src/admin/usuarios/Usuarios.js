@@ -1,7 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState,useCallback } from 'react';
 import axios from 'axios'; 
 import { Link } from 'react-router-dom'; 
 import RegresarButton from '../../components/Regresar.js';
+import Swal from 'sweetalert2';
+import { userLoadingContainer, dataLoadingAnimation } from '../Funciones.js';
+import { motion } from 'framer-motion';
 
 const Usuarios = () => {
   const [usuarios, setUsuarios] = useState([]);
@@ -32,7 +35,7 @@ const Usuarios = () => {
   }, [search]);
 
   // Función para obtener los usuarios según el rol y la búsqueda
-  const fetchUsuarios = async () => {
+  const fetchUsuarios = useCallback(async () => {
     try {
       const response = await axios.get(`http://localhost:4000/api/admin/usuarios?rol=${rol}&search=${debouncedSearch}`, {
         withCredentials: true,
@@ -44,41 +47,122 @@ const Usuarios = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [rol, debouncedSearch]);
 
   // Usamos useEffect para llamar a fetchUsuarios cuando el rol o la búsqueda cambian
   useEffect(() => {
     setLoading(true);
     fetchUsuarios();
-  }, [rol, debouncedSearch]); // Solo actualizamos cuando 'debouncedSearch' cambia
+  }, [rol, fetchUsuarios]); 
 
   const handleEliminar = async (id) => {
     try {
-      await axios.delete(`http://localhost:4000/api/admin/usuarios/${id}`, {
-        withCredentials: true,
+      // Verificar si el usuario a eliminar es el único administrador
+      const usuarioAEliminar = usuarios.find((usuario) => usuario.id === id);
+      if (usuarioAEliminar.rol === 'administrador') {
+        const totalAdmins = await axios.get('http://localhost:4000/api/admin/usuarios?rol=administrador', {
+          withCredentials: true,
+        });
+  
+        // Si es el único administrador, no permitir eliminarlo
+        if (totalAdmins.data.length === 1) {
+          Swal.fire({
+            icon: 'warning',
+            title: 'Advertencia',
+            text: 'No puedes eliminar al único administrador. Debes asignar otro administrador primero.',
+          });
+          return;  // Salimos de la función si no se puede eliminar
+        }
+      }
+  
+      // Mostrar confirmación antes de eliminar
+      const confirmacion = await Swal.fire({
+        icon: 'warning',
+        title: '¿Estás seguro?',
+        text: 'Este usuario será eliminado permanentemente.',
+        showCancelButton: true,
+        confirmButtonText: 'Eliminar',
+        cancelButtonText: 'Cancelar',
       });
-      setUsuarios(usuarios.filter((usuario) => usuario.id !== id));
+  
+      if (confirmacion.isConfirmed) {
+        // Si el usuario confirma, proceder con la eliminación
+        await axios.delete(`http://localhost:4000/api/admin/usuarios/${id}`, {
+          withCredentials: true,
+        });
+        setUsuarios(usuarios.filter((usuario) => usuario.id !== id));  // Actualizamos la lista de usuarios
+        Swal.fire({
+          icon: 'success',
+          title: 'Eliminado',
+          text: 'Usuario eliminado exitosamente.',
+        });
+      }
     } catch (error) {
       console.error('Error al eliminar el usuario:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Hubo un problema al eliminar el usuario.',
+      });
     }
   };
-
+  
   const cambiarRol = async (userId, newRole) => {
     try {
-      // Hacemos la solicitud PUT para actualizar el rol
-      await axios.put(
-        `http://localhost:4000/api/admin/usuarios/${userId}/rol`,
-        { rol: newRole }, // Enviamos el nuevo rol
-        { withCredentials: true }
-      );
-      // Si todo sale bien, actualizamos el rol del usuario en el estado
-      setUsuarios(usuarios.map(usuario =>
-        usuario.id === userId ? { ...usuario, rol: newRole } : usuario
-      ));
-      alert('Rol actualizado exitosamente');
+      // Verifica si el usuario está intentando cambiar su propio rol
+      const usuarioAEliminar = usuarios.find((usuario) => usuario.id === userId);
+  
+      if (usuarioAEliminar.rol === 'administrador' && (newRole === 'usuario' || newRole === 'empleado')) {
+        const totalAdmins = await axios.get('http://localhost:4000/api/admin/usuarios?rol=administrador', {
+          withCredentials: true,
+        });
+  
+        // Si es el único administrador, mostrar advertencia
+        if (totalAdmins.data.length === 1) {
+          Swal.fire({
+            icon: 'warning',
+            title: 'Advertencia',
+            text: 'No puedes cambiar tu rol, eres el único administrador. Debes asignar otro administrador primero.',
+          });
+          return;  // Si el usuario no confirma, no se realiza el cambio
+        }
+      }
+  
+      // Mostrar confirmación antes de cambiar el rol
+      const confirmacion = await Swal.fire({
+        icon: 'question',
+        title: '¿Estás seguro?',
+        text: `Estás a punto de cambiar el rol a ${newRole}. ¿Deseas continuar?`,
+        showCancelButton: true,
+        confirmButtonText: 'Cambiar',
+        cancelButtonText: 'Cancelar',
+      });
+  
+      if (confirmacion.isConfirmed) {
+        // Si el usuario confirma, proceder con el cambio de rol
+        await axios.put(
+          `http://localhost:4000/api/admin/usuarios/${userId}/rol`,
+          { rol: newRole }, // Enviamos el nuevo rol
+          { withCredentials: true }
+        );
+  
+        // Si todo sale bien, actualizamos el rol del usuario en el estado
+        setUsuarios(usuarios.map(usuario =>
+          usuario.id === userId ? { ...usuario, rol: newRole } : usuario
+        ));
+        Swal.fire({
+          icon: 'success',
+          title: 'Rol actualizado',
+          text: 'Rol actualizado exitosamente.',
+        });
+      }
     } catch (error) {
       console.error('Error al actualizar el rol:', error);
-      alert('Hubo un problema al actualizar el rol');
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Hubo un problema al actualizar el rol.',
+      });
     }
   };
 
@@ -91,7 +175,7 @@ const Usuarios = () => {
   }
 
   return (
-    <div className="p-6">
+    <motion.div {...userLoadingContainer} className="p-2">
       <h1 className="text-3xl mb-6">Gestión de Usuarios</h1>
 
       <div className="mb-4">
@@ -134,7 +218,7 @@ const Usuarios = () => {
           </thead>
           <tbody>
             {usuarios.map((usuario) => (
-              <tr key={usuario.id}>
+              <motion.tr key={usuario.id} {...dataLoadingAnimation} >
                 <td className="py-2 px-4 border-b">{usuario.id}</td>
                 <td className="py-2 px-4 border-b">{usuario.nombre}</td>
                 <td className="py-2 px-4 border-b">{usuario.correo}</td>
@@ -151,26 +235,29 @@ const Usuarios = () => {
                 </td>
 
                 <td className="py-2 px-4 border-b">
-                  <button className="text-blue-500 hover:text-blue-700">Editar</button>
-                  <button
-                    className="text-red-500 hover:text-red-700 ml-4"
-                    onClick={() => handleEliminar(usuario.id)}
-                  >
-                    Eliminar
-                  </button>
-                  <Link to={`/admin/usuarios/${usuario.id}`} className="text-green-500 hover:text-green-700 ml-4">
-                    Ver más
-                  </Link>
-                </td>
-                
-              </tr>
+                <button className="text-blue-500 hover:text-blue-700 focus:outline-none transition duration-200">Editar</button>
+                <button
+                  className="text-white bg-red-500 hover:bg-red-700 focus:outline-none ml-4 px-4 py-2 rounded transition duration-200"
+                  onClick={() => handleEliminar(usuario.id)}
+                >
+                  Eliminar
+                </button>
+                <Link
+                  to={`/admin/usuarios/${usuario.id}`}
+                  className="text-green-500 hover:text-green-700 focus:outline-none ml-4 transition duration-200"
+                >
+                  Ver más
+                </Link>
+              </td>
+
+              </motion.tr>
             ))}
           </tbody>
         </table>
       </div>
 
       <RegresarButton />
-    </div>
+    </motion.div>
   );
 };
 

@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios'; 
 import { Link } from 'react-router-dom'; // Para redirigir al formulario de actualización
 import RegresarButton from '../../components/Regresar.js';
+import {  dataLoadingAnimation } from '../Funciones.js';
+import { motion } from 'framer-motion';
 
 const Empresa = () => {
   const [empresa, setEmpresa] = useState(null);
@@ -38,7 +40,7 @@ const Empresa = () => {
   }
 
   return (
-    <div className="p-6 max-w-4xl mx-auto bg-white rounded-lg shadow-lg">
+    <motion.div {...dataLoadingAnimation} className="p-6 max-w-4xl mx-auto bg-white rounded-lg shadow-lg">
       <h1 className="text-3xl font-semibold text-center mb-6">Datos de la Empresa</h1>
 
       {empresa && (
@@ -111,7 +113,7 @@ const Empresa = () => {
       <div className="mt-6 text-center">
         <RegresarButton />
       </div>
-    </div>
+    </motion.div>
   );
 };
 
