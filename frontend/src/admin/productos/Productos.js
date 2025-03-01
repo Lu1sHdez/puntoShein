@@ -3,11 +3,12 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import RegresarButton from '../../components/Regresar.js';
 import Swal from 'sweetalert2';
-import { userLoadingContainer, dataLoadingAnimation } from '../Funciones.js';
+import { dataLoadingAnimation } from '../Funciones.js';
 import { motion } from 'framer-motion';
 import { LuRefreshCw } from "react-icons/lu";
-import '../../css/Texto.css'
+import '../../css/Texto.css';
 import BuscarProducto from './BuscarProductos';  // Importar el componente de búsqueda
+import ProductoCard from './ProductoCard';  // Importar el componente ProductoCard
 
 const Productos = () => {
   const [productos, setProductos] = useState([]);
@@ -17,7 +18,8 @@ const Productos = () => {
   const [subcategorias, setSubcategorias] = useState([]);
   const [selectedCategoria, setSelectedCategoria] = useState('');
   const [selectedSubcategoria, setSelectedSubcategoria] = useState('');
-  const [searchTerm, setSearchTerm] = useState('');  // Guardar el término de búsqueda aquí
+  const [searchTerm, setSearchTerm] = useState(''); 
+  const [visibleProductos, setVisibleProductos] = useState(8);  // Estado para controlar cuántos productos se muestran
 
   // Obtener todas las categorías
   useEffect(() => {
@@ -51,10 +53,9 @@ const Productos = () => {
     fetchSubcategorias();
   }, [selectedCategoria]);
 
-
   // Llamar a fetchProductos cuando cambian los filtros o la búsqueda
   useEffect(() => {
-        // Función para obtener los productos filtrados
+    // Función para obtener los productos filtrados
     const fetchProductos = async () => {
       try {
         const response = await axios.get(`http://localhost:4000/api/admin/filtrar?categoria_id=${selectedCategoria}&subcategoria_id=${selectedSubcategoria}&nombre=${searchTerm}`, {
@@ -109,7 +110,7 @@ const Productos = () => {
   const handleCargarTodos = async () => {
     setSelectedCategoria('');  // Restablece la categoría seleccionada
     setSelectedSubcategoria('');  // Restablece la subcategoría seleccionada
-    setLoading(true); 
+    setLoading(true);
     try {
       const response = await axios.get('http://localhost:4000/api/admin/productos', { withCredentials: true });
       setProductos(response.data);  // Establece los productos
@@ -119,6 +120,11 @@ const Productos = () => {
     } finally {
       setLoading(false);  // Desactiva el loading
     }
+  };
+
+  // Función para mostrar más productos
+  const handleVerMas = () => {
+    setVisibleProductos((prevVisible) => prevVisible + 4);  // Aumenta la cantidad de productos visibles
   };
 
   // Cargando productos o error
@@ -131,7 +137,7 @@ const Productos = () => {
   }
 
   return (
-    <motion.div {...userLoadingContainer} className="p-6">
+    <motion.div {...dataLoadingAnimation} className="p-6">
       <h1 className="text-3xl mb-6">Todos los productos</h1>
 
       <div className="mb-4 flex items-center justify-between">
@@ -181,49 +187,31 @@ const Productos = () => {
         <BuscarProducto setProductos={setProductos} setError={setError} setLoading={setLoading} searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
       </div>
 
-      <div className="overflow-y-auto max-h-96 shadow-md sm:rounded-lg">
-        <table className="min-w-full bg-white border border-gray-200">
-          <thead className="sticky top-0 bg-gray-100">
-            <tr>
-              <th className="py-2 px-4 border-b font-bold">ID</th>
-              <th className="py-2 px-4 border-b font-bold">Nombre</th>
-              <th className="py-2 px-4 border-b font-bold">Descripción</th>
-              <th className="py-2 px-4 border-b font-bold">Precio</th>
-              <th className="py-2 px-4 border-b font-bold">Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {productos.map((producto) => (
-              <motion.tr key={producto.id} {...dataLoadingAnimation}>
-                <td className="py-2 px-4 border-b">{producto.id}</td>
-                <td className="py-2 px-4 border-b">{producto.nombre}</td>
-                <td className="py-2 px-4 truncate">{producto.descripcion}</td>
-                <td className="py-2 px-4 border-b">{producto.precio}</td>
-                <td className="py-2 px-4 border-b">
-                  <Link
-                    to={`/admin/productos/editar/${producto.id}`}
-                    className="text-blue-500 hover:text-blue-700 focus:outline-none transition duration-200"
-                  >
-                    Editar
-                  </Link>
-                  <button
-                    className="text-white bg-red-500 hover:bg-red-700 focus:outline-none ml-4 px-4 py-2 rounded transition duration-200"
-                    onClick={() => handleEliminar(producto.id)}
-                  >
-                    Eliminar
-                  </button>
-                  <Link
-                    to={`/admin/productos/detalle/${producto.id}`}
-                    className="text-green-500 hover:text-green-700 focus:outline-none ml-4 transition duration-200"
-                  >
-                    Ver más
-                  </Link>
-                </td>
-              </motion.tr>
-            ))}
-          </tbody>
-        </table>
+      {/* Mostrar productos como tarjetas */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {productos.slice(0, visibleProductos).map((producto) => (
+          <ProductoCard
+            key={producto.id}
+            producto={producto}
+            onEliminar={handleEliminar}
+          />
+        ))}
       </div>
+
+      {/* Botón "Ver más" - Solo se muestra si hay más productos */}
+      {visibleProductos < productos.length && (
+          <div className="flex justify-center mt-6">
+            <motion.button
+              onClick={handleVerMas}
+              className="bg-pink-600 text-white py-2 px-6 rounded-lg hover:bg-pink-700 transition-all"
+              whileHover={{ scale: 1.05 }} // Efecto de hover en el botón
+              transition={{ type: "spring", stiffness: 300 }}
+            >
+              Ver más
+            </motion.button>
+            <RegresarButton />
+          </div>
+        )}
 
       <RegresarButton />
     </motion.div>

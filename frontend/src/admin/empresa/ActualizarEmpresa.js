@@ -80,6 +80,7 @@ const ActualizarEmpresa = () => {
         withCredentials: true,
       });
       navigate('/admin/empresa');  // Usar navigate para redirigir a la página de la empresa después de actualizar
+      window.location.reload()
     } catch (error) {
       setError('Error al actualizar los datos de la empresa');
       console.error('Error al actualizar los datos de la empresa:', error);
