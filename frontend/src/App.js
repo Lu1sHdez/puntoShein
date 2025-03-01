@@ -8,7 +8,6 @@ import Skeleton from "./components/Skeleton.js";
 
 // Lazy Loading (Carga Diferida) para tus páginas principales
 const DetalleProducto = lazy(() => import("./components/productos/DetalleProducto"));
-const SeccionProductos = lazy(() => import("./components/productos/AllProductos"));
 const AllProductos = lazy(() => import("./components/productos/AllProductos"));
 const BuscarProductos = lazy(() => import("./components/productos/BuscarProductos")); 
 const ProductosFiltrados = lazy(() => import("./components/productos/ProductosFiltrados")); 
@@ -55,13 +54,14 @@ const Usuarios = lazy(() => import("./admin/usuarios/Usuarios.js"));
 const UsuarioDetalles = lazy(() => import("./admin/usuarios/UsuarioDetalles.js"));  // Importa el nuevo componente
 const Empleados = lazy(() => import("./admin/empleados/Empleados.js"));
 const Productos = lazy(() => import("./admin/productos/Productos.js"));
+const DetalleProductos = lazy(() => import("./admin/productos/DetalleProducto.js"));
 const ActualizarEmpresa = lazy(() => import("./admin/empresa/ActualizarEmpresa.js"));
 const PerfilAdmin = lazy(() => import("./admin/perfil/Perfil.js"));
 const ActualizarPerfilAdmin = lazy(() => import("./admin/perfil/ActualizarPerfil.js"));
-
-
 const Configuracion = lazy(() => import("./admin/setting/Configuracion.js"));
-const CrearProducto = lazy(() => import("./admin/productos/CrearProducto.js"));
+const CrearProducto = lazy(() => import("./admin/productos/crearProducto/CrearProducto.js"));
+const EditarProducto = lazy(() => import ("./admin/productos/editarProducto/EditarProducto.js")); 
+
 
 
 //Perfil Empleado
@@ -142,6 +142,10 @@ const App = () => {
                 element={<ProteccionRutas element={Productos} allowedRoles={['administrador']} />}
               />
               <Route
+                path="/admin/productos/detalle/:id"
+                element={<ProteccionRutas element={DetalleProductos} allowedRoles={['administrador']} />}
+              />
+              <Route
                   path="/admin/usuarios/:id"
                   element={<ProteccionRutas element={UsuarioDetalles} allowedRoles={['administrador']} />}
                 />
@@ -160,6 +164,10 @@ const App = () => {
               <Route
                 path="/admin/productos/crear"
                 element={<ProteccionRutas element={CrearProducto} allowedRoles={['administrador']} />}
+              />
+              <Route
+                path="/admin/productos/editar/:id"
+                element={<ProteccionRutas element={EditarProducto} allowedRoles={['administrador']} />}
               />
 
               {/* Rutas de empleado */}

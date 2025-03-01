@@ -1,5 +1,6 @@
 import express from 'express';
-import { buscarProductos, allProductos, obtenerProductoPorId, filtrarProductos,obtenerCategorias,obtenerSubcategorias} from '../controllers/producto.controller.js';
+import { buscarProductos, allProductos, obtenerProductoPorId, 
+    filtrarProductos,obtenerCategorias,obtenerSubcategorias} from '../controllers/producto.controller.js';
 
 const router = express.Router();
 

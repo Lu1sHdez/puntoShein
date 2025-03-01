@@ -54,7 +54,7 @@ const Encabezado = () => {
     document.addEventListener("mousedown", handleClickOutside);
 
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside); // Limpiar el evento cuando el componente se desmonte
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 

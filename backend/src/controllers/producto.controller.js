@@ -3,33 +3,25 @@ import Categoria from "../models/categoria.model.js"; //  Importar Categoria
 import Subcategoria from "../models/subcategoria.model.js"; // ✅ Importar Subcategoria
 import { Op, Sequelize } from "sequelize";
 
-//  Buscar productos por nombre
+// Función para buscar productos por nombre
 export const buscarProductos = async (req, res) => {
   try {
-    const { nombre } = req.query;
+    const { nombre } = req.query;  // Obtener el término de búsqueda desde la query string
 
     if (!nombre) {
-      return res.status(400).json({ mensaje: "El parámetro de búsqueda es obligatorio." });
+      return res.status(400).json({ mensaje: 'Debe proporcionar un término de búsqueda.' });
     }
 
+    // Filtrar productos por nombre utilizando el término de búsqueda
     const productos = await Producto.findAll({
       where: {
         nombre: {
-          [Op.iLike]: `%${nombre}%`, // Permite buscar productos con coincidencias parciales
+          [Sequelize.Op.iLike]: `%${nombre}%`,  // Usar iLike para insensibilidad a mayúsculas/minúsculas
         },
       },
-      include: [
-        {
-          model: Subcategoria,
-          as: "subcategoria",
-          include: {
-            model: Categoria,
-            as: "categoria",
-          },
-        },
-      ],
     });
 
+    // Devolver los productos que coinciden con el término de búsqueda
     res.json(productos);
   } catch (error) {
     console.error("Error al buscar productos:", error);
@@ -121,7 +113,7 @@ export const filtrarProductos = async (req, res) => {
       console.error("Error al filtrar productos:", error);
       res.status(500).json({ mensaje: "Error al filtrar productos." });
     }
-  };
+};
   
 //  Obtener todas las categorías
 export const obtenerCategorias = async (req, res) => {
@@ -152,4 +144,3 @@ export const obtenerSubcategorias = async (req, res) => {
     res.status(500).json({ mensaje: "Error interno del servidor" });
   }
 };
-

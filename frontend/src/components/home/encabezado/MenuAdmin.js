@@ -26,7 +26,9 @@ const MenuAdmin = ({ usuarioAutenticado, handleLogout }) => {
   return (
     <div
       className="relative"
+
       onMouseEnter={handleMouseEnter}
+      
       onMouseLeave={handleMouseLeave}
     >
       <button className="flex items-center space-x-2">

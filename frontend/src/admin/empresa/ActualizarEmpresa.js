@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom'; // Importar useNavigate en lugar de useHistory
 import RegresarButton from '../../components/Regresar.js';
+import {  dataLoadingAnimation } from '../Funciones.js';
+import { motion } from 'framer-motion';
 
 const ActualizarEmpresa = () => {
   const [empresa, setEmpresa] = useState({
@@ -93,7 +95,7 @@ const ActualizarEmpresa = () => {
   }
 
   return (
-    <div className="p-6">
+    <motion.div {...dataLoadingAnimation} className="p-6">
       <h1 className="text-3xl mb-6">Actualizar Datos de la Empresa</h1>
 
       <form onSubmit={handleSubmit}>
@@ -227,7 +229,7 @@ const ActualizarEmpresa = () => {
       </form>
 
       <RegresarButton />
-    </div>
+    </motion.div>
   );
 };
 

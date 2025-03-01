@@ -1,4 +1,3 @@
-// src/components/Búsqueda.js
 import React, { useEffect } from "react";
 import { FaSearch } from "react-icons/fa";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -16,11 +15,11 @@ const Busqueda = ({ busqueda, setBusqueda }) => {
   }, [busqueda, navigate, location.pathname]);
 
   return (
-    <motion.div
-      className="relative flex items-center space-x-3 w-full max-w-[600px]"
-      initial={{ opacity: 0, scale: 0.8, x: -20 }} // Animación inicial: opacidad baja, escala pequeña, desplazado a la izquierda
-      animate={{ opacity: 1, scale: 1, x: 0 }} // Animación de entrada: aparece con escala normal y se desplaza a su lugar
-      transition={{ duration: 0.8, type: "spring", stiffness: 120 }} // Duración más larga y con un efecto de "resorte" más suave
+    <motion.div   
+      className="relative flex items-center space-x-1 w-full max-w-[1200px]"  // Hacer el input más ancho
+      initial={{ opacity: 0, scale: 0.8, x: -20 }} 
+      animate={{ opacity: 1, scale: 1, x: 0 }} 
+      transition={{ duration: 0.8, type: "spring", stiffness: 120 }} 
     >
       {/* Input de búsqueda */}
       <input
@@ -33,17 +32,17 @@ const Busqueda = ({ busqueda, setBusqueda }) => {
           }
         }} // Busca cuando presiona Enter
         placeholder="Buscar producto..."
-        className="pl-4 pr-12 py-3 w-full rounded-lg border-2 border-gray-300 focus:outline-none focus:ring-2 
-        focus:ring-indigo-500 transition-all shadow-md focus:shadow-xl hover:shadow-2xl focus:ring-opacity-80 text-black 
-        hover:bg-gray-100 focus:ring-offset-2"
+        className="pl-8 pr-20 py-4 rounded-lg border-2 border-gray-300 focus:outline-none focus:ring-2 
+          focus:ring-indigo-500 transition-all shadow-md focus:shadow-xl hover:shadow-2xl focus:ring-opacity-80 
+          text-black hover:bg-gray-100 focus:ring-offset-2 text-left text-xl w-full"  // Aumenta el tamaño de la letra y hace el input más ancho
       />
       
       {/* Ícono de búsqueda al final */}
       <motion.div
         className="absolute right-4 text-gray-600 text-xl"
-        initial={{ opacity: 0, x: 30 }} // Animación inicial del ícono (opacidad 0 y desplazado a la derecha)
-        animate={{ opacity: 1, x: 0 }} // El ícono se vuelve visible y se mueve a su lugar original
-        transition={{ duration: 1, delay: 0.5 }} // Duración de la animación con un pequeño retraso
+        initial={{ opacity: 0, x: 30 }} 
+        animate={{ opacity: 1, x: 0 }} 
+        transition={{ duration: 1, delay: 0.5 }} 
       >
         <FaSearch />
       </motion.div>

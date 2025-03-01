@@ -5,4 +5,11 @@
     color: #ffffff; /* Asegura que el color sea blanco */
     text-transform:uppercase;
   }
+  .truncate {
+    white-space: nowrap; /* Evita que el texto se divida en varias líneas */
+    overflow: hidden; /* Esconde el texto que sobrepase el contenedor */
+    text-overflow: ellipsis; /* Añade '...' al final si el texto es muy largo */
+    width: 200px; /* Define el ancho máximo, ajústalo según tus necesidades */
+    display: inline-block; /* Asegura que el texto se comporte como un bloque en línea */
+  }
   
