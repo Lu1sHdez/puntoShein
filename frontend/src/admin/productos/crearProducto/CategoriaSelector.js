@@ -1,8 +1,11 @@
 // src/components/CategoriaSelector.js
 import React from 'react';
+import { dataLoadingAnimation } from '../../Funciones.js';
+import { motion } from 'framer-motion';
+
 
 const CategoriaSelector = ({ categorias, categoriaId, setCategoriaId, nuevaCategoria, setNuevaCategoria, handleCrearCategoria, showCrearCategoria, setShowCrearCategoria }) => (
-  <div>
+  <motion.div {...dataLoadingAnimation} >
     <label htmlFor="categoria_id" className="block text-lg font-semibold text-gray-700">Seleccionar Categoría</label>
     <select
       id="categoria_id"
@@ -42,7 +45,7 @@ const CategoriaSelector = ({ categorias, categoriaId, setCategoriaId, nuevaCateg
         </button>
       </div>
     )}
-  </div>
+  </motion.div>
 );
 
 export default CategoriaSelector;

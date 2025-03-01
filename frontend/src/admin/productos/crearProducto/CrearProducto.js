@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import RegresarButton from '../../components/Regresar';
+import RegresarButton from '../../../components/Regresar';
 import { useNavigate } from 'react-router-dom';
+import { formAnimation } from '../../Funciones.js';
+import { motion } from 'framer-motion';
 
 const CrearProducto = () => {
   const [nombre, setNombre] = useState('');
@@ -109,7 +111,7 @@ const CrearProducto = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-lg -mt-5">
+    <motion.div {...formAnimation} className="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-lg -mt-5">
       <h1 className="text-3xl font-bold text-center mb-6">Crear Producto</h1>
 
       {error && <div className="text-red-500 mb-4">{error}</div>}
@@ -284,7 +286,7 @@ const CrearProducto = () => {
         </button>
         <RegresarButton />
       </form>
-    </div>
+    </motion.div>
   );
 };
 

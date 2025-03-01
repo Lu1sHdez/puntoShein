@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios'; 
 import { Link } from 'react-router-dom'; 
 import RegresarButton from '../../components/Regresar.js';
-import {  userLoadingContainer } from '../Funciones.js';
+import { dataLoadingAnimation} from '../Funciones.js';
 import { motion } from 'framer-motion';
 
 
@@ -66,7 +66,7 @@ const Empleados = () => {
     }
 
     return (
-        <motion.div {...userLoadingContainer} className="p-6">
+        <motion.div {...dataLoadingAnimation} className="p-6">
             <h1 className="text-3xl mb-6">Gestión de Empleados</h1>
             <table className="min-w-full bg-white border border-gray-200">
                 <thead>

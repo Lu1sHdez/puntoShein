@@ -10,7 +10,15 @@ export const obtenerCategorias = async (req, res) => {
     res.status(500).json({ mensaje: 'Error al obtener categorías' });
   }
 };
-
+// Obtener todas las subcategorías
+export const obtenerSubcategorias = async (req, res) => {
+  try {
+    const subcategorias = await Subcategoria.findAll();
+    res.json(subcategorias);
+  } catch (error) {
+    res.status(500).json({ mensaje: 'Error al obtener subcategorías' });
+  }
+};
 // Crear una nueva categoría
 export const crearCategoria = async (req, res) => {
   const { nombre } = req.body;
@@ -22,17 +30,6 @@ export const crearCategoria = async (req, res) => {
     res.status(500).json({ mensaje: 'Error al crear la categoría' });
   }
 };
-
-// Obtener todas las subcategorías
-export const obtenerSubcategorias = async (req, res) => {
-  try {
-    const subcategorias = await Subcategoria.findAll();
-    res.json(subcategorias);
-  } catch (error) {
-    res.status(500).json({ mensaje: 'Error al obtener subcategorías' });
-  }
-};
-
 // Crear una nueva subcategoría
 export const crearSubcategoria = async (req, res) => {
   const { nombre, categoria_id } = req.body;
@@ -44,3 +41,4 @@ export const crearSubcategoria = async (req, res) => {
     res.status(500).json({ mensaje: 'Error al crear la subcategoría' });
   }
 };
+  

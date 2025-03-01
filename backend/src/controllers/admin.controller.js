@@ -138,6 +138,38 @@ export const crearProducto = async (req, res) => {
     });
   }
 };
+// src/controllers/admin.controller.js
+
+// Función para editar un producto
+export const editarProducto = async (req, res) => {
+  const { id } = req.params; // Obtenemos el ID del producto desde los parámetros de la URL
+  const { nombre, descripcion, precio, imagen, stock, subcategoria_id } = req.body; // Obtenemos los datos del producto desde el cuerpo de la solicitud
+
+  try {
+    // Buscamos el producto por ID
+    const producto = await Producto.findByPk(id);
+    if (!producto) {
+      return res.status(404).json({ mensaje: 'Producto no encontrado' });
+    }
+
+    // Actualizamos los campos del producto
+    producto.nombre = nombre || producto.nombre;
+    producto.descripcion = descripcion || producto.descripcion;
+    producto.precio = precio || producto.precio;
+    producto.imagen = imagen || producto.imagen;
+    producto.stock = stock || producto.stock;
+    producto.subcategoria_id = subcategoria_id || producto.subcategoria_id;
+
+    // Guardamos los cambios
+    await producto.save();
+
+    res.status(200).json({ mensaje: 'Producto actualizado correctamente' });
+  } catch (error) {
+    console.error('Error al actualizar el producto:', error);
+    res.status(500).json({ mensaje: 'Error al actualizar el producto' });
+  }
+};
+
 // Obtener los roles disponibles
 export const obtenerRoles = async (req, res) => {
   try {
@@ -186,3 +218,4 @@ export const actualizarRol = async (req, res) => {
     res.status(500).json({ mensaje: 'Error al actualizar el rol' });
   }
 };
+

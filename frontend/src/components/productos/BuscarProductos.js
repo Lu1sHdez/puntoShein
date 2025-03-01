@@ -6,18 +6,14 @@ import ProductoCard from "./ProductoCard";
 const BuscarProductos = () => {
   const [searchParams] = useSearchParams();  // Obtener los parámetros de búsqueda de la URL
   const nombre = searchParams.get("nombre"); // Parámetro de búsqueda (nombre del producto)
-  const { productos, loading, error, buscarProductos } = useBuscarProductos();
+  const { productos, loading, error, setDebouncedNombre } = useBuscarProductos();  // Agregar setDebouncedNombre
 
-  // Usamos un estado para evitar consultas innecesarias
-  const [ultimoNombre, setUltimoNombre] = React.useState("");
-
-  // UseEffect para ejecutar la búsqueda solo si el nombre cambia
   useEffect(() => {
-    if (nombre && nombre !== ultimoNombre) {
-      setUltimoNombre(nombre);  // Guardamos el último valor de búsqueda
-      buscarProductos(nombre);  // Llamamos al hook para buscar productos
+    // Ejecuta la búsqueda solo si el nombre de búsqueda cambia
+    if (nombre) {
+      setDebouncedNombre(nombre);  // Actualiza el término de búsqueda con debounce
     }
-  }, [nombre, buscarProductos, ultimoNombre]);
+  }, [nombre, setDebouncedNombre]);
 
   return (
     <div className="container mx-auto px-4 py-8">

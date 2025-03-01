@@ -166,8 +166,9 @@ const Usuarios = () => {
     }
   };
 
+  // Cargando productos o error
   if (loading) {
-    return <div>Cargando...</div>;
+    return <motion.div {...dataLoadingAnimation} className="text-center">Cargando...</motion.div>;
   }
 
   if (error) {
