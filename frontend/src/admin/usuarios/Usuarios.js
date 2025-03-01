@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Link } from 'react-router-dom'; 
 import RegresarButton from '../../components/Regresar.js';
 import Swal from 'sweetalert2';
-import { userLoadingContainer, dataLoadingAnimation } from '../Funciones.js';
+import { dataLoadingAnimation } from '../Funciones.js';
 import { motion } from 'framer-motion';
 
 const Usuarios = () => {
@@ -176,7 +176,7 @@ const Usuarios = () => {
   }
 
   return (
-    <motion.div {...userLoadingContainer} className="p-2">
+    <motion.div {...dataLoadingAnimation} className="p-2">
       <h1 className="text-3xl mb-6">Gestión de Usuarios</h1>
 
       <div className="mb-4">
