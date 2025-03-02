@@ -20,7 +20,7 @@ const useFormulario = (initialState, url, redirigir, isAuthForm = false) => {
 
     // Validar que todos los campos estén llenos
     if (Object.values(datos).some((campo) => !campo)) {
-      await Swal.fire({
+      await Swal.fire({ 
         icon: "error",
         title: "Error",
         text: "Todos los campos son obligatorios.",
@@ -30,7 +30,9 @@ const useFormulario = (initialState, url, redirigir, isAuthForm = false) => {
     }
 
     try {
-      const respuesta = await axios.post(url, datos, { withCredentials: true });
+      const respuesta = await axios.post(url, datos, { 
+        withCredentials: true // Asegura que las cookies se envíen con la solicitud
+      });
 
       //  Si es un formulario de autenticación (Login o Registro)
       if (isAuthForm) {

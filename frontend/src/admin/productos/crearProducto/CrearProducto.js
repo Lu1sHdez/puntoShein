@@ -3,7 +3,7 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 import RegresarButton from '../../../components/Regresar';
 import { useNavigate } from 'react-router-dom';
-import { formAnimation } from '../../Funciones.js';
+import { formAnimation } from '../../../components/Funciones.js';
 import { motion } from 'framer-motion';
 
 const CrearProducto = () => {

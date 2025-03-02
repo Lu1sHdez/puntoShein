@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import RegresarButton from '../../components/Regresar.js';  // Importamos el botón
-import { formAnimation } from '../Funciones.js';
+import { formAnimation } from '../../components/Funciones.js';
 import { motion } from 'framer-motion';
 
 const UsuarioDetalles = () => {

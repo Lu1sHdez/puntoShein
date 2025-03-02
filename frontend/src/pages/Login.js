@@ -53,6 +53,10 @@ const Login = () => {
     const success = await handleSubmit(e); 
 
     if(success){
+      if (success.token) {  // Asegúrate de que la respuesta contiene el token
+        localStorage.setItem("token", success.token);
+      }
+      
       window.location.reload(); // Después de que se resuelve la operación asincrónica
     }
     

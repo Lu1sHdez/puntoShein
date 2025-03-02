@@ -9,7 +9,7 @@ import Empresa from '../empresa/Empresa';  // Componente para la empresa
 import Usuarios from '../usuarios/Usuarios';  // Componente para los usuarios
 import Empleados from '../empleados/Empleados';  // Componente para los empleados
 import Productos from '../productos/Productos';  // Componente para los productos
-import { dashboardAnimation } from '../Funciones'; // Importamos las animaciones
+import { dashboardAnimation } from '../../components/Funciones.js';
 import { motion } from 'framer-motion';
 
 const Dashboard = () => {

@@ -1,8 +1,10 @@
 import React from "react";
+import { dataLoadingAnimation} from '../Funciones';
+import { motion } from 'framer-motion';
 
 const DeslindeLegal = () => {
   return (
-    <div className="p-4 max-w-3xl mx-auto text-justify">
+    <motion.div {...dataLoadingAnimation} className="p-4 max-w-3xl mx-auto text-justify">
       <h2 className="text-2xl font-bold text-center mb-4">Deslinde Legal (Disclaimer)</h2>
 
       <p className="mb-4">
@@ -38,7 +40,7 @@ const DeslindeLegal = () => {
         Para más información o aclaraciones sobre este deslinde legal, 
         contáctanos en: <em>legal@puntoshein.com</em>.
       </p>
-    </div>
+    </motion.div>
   );
 };
 

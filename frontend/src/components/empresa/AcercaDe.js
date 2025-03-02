@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { dataLoadingAnimation} from '../Funciones';
+import { motion } from 'framer-motion';
 
 const AcercaDe = () => {
   const [empresa, setEmpresa] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  
 
   // Función para obtener los datos de la empresa desde la API
   const fetchEmpresa = async () => {
@@ -34,7 +37,7 @@ const AcercaDe = () => {
   }
 
   return (
-    <div className="p-4 max-w-3xl mx-auto text-justify">
+    <motion.div {...dataLoadingAnimation} className="p-4 max-w-3xl mx-auto text-justify">
       <h2 className="text-2xl font-bold text-center mb-4">Acerca de nosotros</h2>
 
       <h3 className="text-xl font-semibold mb-2">Nuestra Misión</h3>
@@ -71,7 +74,7 @@ const AcercaDe = () => {
         <strong className="text-gray-700">Teléfono:</strong>
         <p className="text-gray-600">{empresa.telefono}</p>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

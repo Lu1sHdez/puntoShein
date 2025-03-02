@@ -1,6 +1,6 @@
 // src/components/CategoriaSelector.js
 import React from 'react';
-import { dataLoadingAnimation } from '../../Funciones.js';
+import { dataLoadingAnimation } from '../../components/Funciones.js';
 import { motion } from 'framer-motion';
 
 

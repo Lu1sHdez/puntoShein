@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { dataLoadingAnimation} from '../../components/Funciones.js';
+import { motion } from 'framer-motion';
 
 const Perfil = () => {
   const [usuario, setUsuario] = useState(null);
@@ -45,7 +47,7 @@ const Perfil = () => {
   }
 
   return (
-    <div className="flex items-center justify-center -mt-10 py-8 px-4">
+    <motion.div {...dataLoadingAnimation} className="flex items-center justify-center -mt-10 py-8 px-4">
       <div className="bg-white p-5 rounded-lg shadow-lg w-full max-w-2xl">
         <h1 className="text-2xl font-semibold text-center text-gray-700 mb-6">Perfil de Usuario</h1>
 
@@ -90,7 +92,7 @@ const Perfil = () => {
           </button>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
