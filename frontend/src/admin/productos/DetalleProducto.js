@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import RegresarButton from '../../components/Regresar';
 import { motion } from 'framer-motion';
-import { dataLoadingAnimation } from '../Funciones.js';
+import { dataLoadingAnimation } from '../../components/Funciones.js';
 
 const DetalleProducto = () => {
   const [producto, setProducto] = useState(null);

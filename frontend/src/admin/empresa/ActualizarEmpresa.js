@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom'; // Importar useNavigate en lugar de useHistory
 import RegresarButton from '../../components/Regresar.js';
-import {  dataLoadingAnimation } from '../Funciones.js';
+import { dataLoadingAnimation} from '../../components/Funciones.js';
 import { motion } from 'framer-motion';
 
 const ActualizarEmpresa = () => {

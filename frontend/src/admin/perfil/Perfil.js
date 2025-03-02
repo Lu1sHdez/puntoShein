@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Skeleton from "../../components/Skeleton.js";
-import { formAnimation, userDetailsLoadingAnimation } from '../Funciones.js';
+import { formAnimation, userDetailsLoadingAnimation } from '../../components/Funciones.js';
 import { motion } from 'framer-motion';
 import RegresarButton from '../../components/Regresar.js';
 

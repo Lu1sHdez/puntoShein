@@ -1,8 +1,10 @@
 import React from "react";
+import { dataLoadingAnimation} from '../Funciones';
+import { motion } from 'framer-motion';
 
 const PoliticaPrivacidad = () => {
   return (
-    <div className="p-4 max-w-3xl mx-auto text-justify">
+    <motion.div {...dataLoadingAnimation} className="p-4 max-w-3xl mx-auto text-justify">
       <h2 className="text-2xl font-bold text-center mb-4">Política de Privacidad</h2>
       <p className="mb-4">
         En <strong>Punto Shein</strong>, nos comprometemos a proteger la privacidad
@@ -36,7 +38,7 @@ const PoliticaPrivacidad = () => {
         Para más información acerca de nuestra política de privacidad, contáctanos. 
         Nos reservamos el derecho de actualizar esta política en cualquier momento.
       </p>
-    </div>
+    </motion.div>
   );
 };
 

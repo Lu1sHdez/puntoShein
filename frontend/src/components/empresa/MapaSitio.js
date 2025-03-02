@@ -1,9 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { dataLoadingAnimation} from '../Funciones';
+import { motion } from 'framer-motion';
 
 const MapaSitio = () => {
   return (
-    <div className="flex justify-center items-center min-h-screen">
+    <motion.div {...dataLoadingAnimation} className="flex justify-center items-center min-h-screen">
       <div className="container max-w-3xl shadow-md rounded-lg p-8">
         <h1 className="text-3xl font-bold mb-4 text-center">Mapa del Sitio</h1>
         <p className="text-gray-600 mb-6 text-center">
@@ -62,7 +64,7 @@ const MapaSitio = () => {
           </Link>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

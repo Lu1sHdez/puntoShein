@@ -1,8 +1,10 @@
 import React from "react";
+import { dataLoadingAnimation} from '../Funciones';
+import { motion } from 'framer-motion';
 
 const PreguntasFrecuentes = () => {
   return (
-    <div className="p-4 max-w-3xl mx-auto">
+    <motion.div {...dataLoadingAnimation} className="p-4 max-w-3xl mx-auto">
       <h2 className="text-2xl font-bold text-center mb-6">Preguntas Frecuentes (FAQ)</h2>
 
       <div className="mb-4">
@@ -45,7 +47,7 @@ const PreguntasFrecuentes = () => {
           al 01-800-PUNTO (78686) de lunes a viernes, de 9:00 a 18:00 hrs.
         </p>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

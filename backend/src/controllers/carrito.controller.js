@@ -1,12 +1,8 @@
 import Carrito from "../models/carrito.model.js";
 import Producto from "../models/producto.model.js";
 
-/**
- * Agregar un producto al carrito
- */
 export const agregarAlCarrito = async (req, res) => {
   try {
-    
     const { usuario_id, producto_id, cantidad } = req.body;
 
     // Verificar si el producto existe
@@ -34,10 +30,6 @@ export const agregarAlCarrito = async (req, res) => {
     res.status(500).json({ message: "Error al agregar al carrito", error });
   }
 };
-
-/**
- * Obtener el carrito de un usuario
- */
 export const obtenerCarrito = async (req, res) => {
   try {
     const { usuario_id } = req.params;
@@ -52,10 +44,6 @@ export const obtenerCarrito = async (req, res) => {
     res.status(500).json({ message: "Error al obtener el carrito", error });
   }
 };
-
-/**
- * Eliminar un producto del carrito
- */
 export const eliminarDelCarrito = async (req, res) => {
   try {
     const { usuario_id, producto_id } = req.body;
@@ -73,10 +61,6 @@ export const eliminarDelCarrito = async (req, res) => {
     res.status(500).json({ message: "Error al eliminar del carrito", error });
   }
 };
-
-/**
- * Vaciar el carrito de un usuario
- */
 export const vaciarCarrito = async (req, res) => {
   try {
     const { usuario_id } = req.body;

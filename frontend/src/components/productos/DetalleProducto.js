@@ -34,26 +34,35 @@ const DetalleProducto = () => {
   const { mensaje, color, icono } = mostrarStock(producto.stock);
 
   const handleAgregarCarrito = async () => {
+    const token = localStorage.getItem("token"); // Obtener el token desde localStorage
+
+    if (!token) {
+      alert("Debes iniciar sesión para agregar productos al carrito");
+      return;
+    }
+
     try {
-      const usuario_id = localStorage.getItem("usuario_id"); // Obtener el ID del usuario (ajusta esto según cómo guardas la sesión)
-      if (!usuario_id) {
-        alert("Debes iniciar sesión para agregar productos al carrito");
-        return;
-      }
-  
-      const response = await axios.post("http://localhost:4000/api/carrito/agregar", {
-        usuario_id,
-        producto_id: producto.id,
-        cantidad: 1,
-      });
-  
+      // Realizar la solicitud POST al backend para agregar al carrito
+      const response = await axios.post(
+        "http://localhost:4000/api/carrito/agregar",
+        {
+          producto_id: producto.id,
+          cantidad: 1,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Enviar el token en la cabecera de la solicitud
+          },
+          withCredentials: true, // Esto asegura que las cookies se envíen con la solicitud
+        }
+      );
+
       alert(response.data.message); // Mensaje del backend
     } catch (error) {
       console.error("Error al agregar al carrito:", error);
       alert("Hubo un problema al agregar el producto al carrito");
     }
   };
-  
 
   const handleComprarAhora = () => {
     navigate(`/checkout?producto=${producto.id}`);

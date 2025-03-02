@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Link } from 'react-router-dom'; 
 import RegresarButton from '../../components/Regresar.js';
 import Swal from 'sweetalert2';
-import { dataLoadingAnimation } from '../Funciones.js';
+import { dataLoadingAnimation } from '../../components/Funciones.js';
 import { motion } from 'framer-motion';
 
 const Usuarios = () => {

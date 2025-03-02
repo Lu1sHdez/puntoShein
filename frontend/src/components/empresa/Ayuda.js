@@ -1,9 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { dataLoadingAnimation} from '../Funciones';
+import { motion } from 'framer-motion';
 
 const Ayuda = () => {
   return (
-    <div className="container mx-auto p-6">
+    <motion.div {...dataLoadingAnimation} className="container mx-auto p-6">
       <h1 className="text-2xl font-bold text-gray-800 mb-4">Centro de Ayuda</h1>
       <p className="text-gray-600 mb-6">
         Encuentra respuestas a las preguntas más frecuentes y obtén asistencia para tu compra en Punto Shein.
@@ -59,7 +61,7 @@ const Ayuda = () => {
           Volver a Inicio
         </Link>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

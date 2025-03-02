@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';  // Importar SweetAlert2
-import { formAnimation } from '../Funciones.js';
+import { formAnimation} from '../../components/Funciones.js';
 import { motion } from 'framer-motion';
 import RegresarButton from '../../components/Regresar.js';  // Importamos el botón de regreso
 

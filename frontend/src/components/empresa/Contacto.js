@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { dataLoadingAnimation} from '../Funciones';
+import { motion } from 'framer-motion';
 
 const Contacto = () => {
   const [nombre, setNombre] = useState("");
@@ -16,7 +18,7 @@ const Contacto = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-0 p-4 bg-white shadow-md rounded-md">
+    <motion.div {...dataLoadingAnimation} className="max-w-md mx-auto mt-0 p-4 bg-white shadow-md rounded-md">
       <h2 className="text-2xl font-bold text-center mb-4">Contáctanos</h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
@@ -74,7 +76,7 @@ const Contacto = () => {
         <p>Correo: soporte@puntoshein.com</p>
         <p>Dirección: Av. Ejemplo 123, Col. Centro, Ciudad, País</p>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
