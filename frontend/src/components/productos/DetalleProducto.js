@@ -4,15 +4,20 @@ import axios from "axios";
 import Breadcrumbs from "../home/Breadcrumbs"; // Importamos las migas de pan personalizadas
 import { mostrarStock } from "../../utils/funtionProductos"; 
 import RegresarButton from "../Regresar";
+import { agregarCarrito } from "../../usuario/cart/agregarCarrito"; // Importamos la función para agregar al carrito
+import Swal from "sweetalert2"; // Importamos SweetAlert2
 
 const DetalleProducto = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [producto, setProducto] = useState(null);
+  const [usuario, setUsuario] = useState(null); // Estado para almacenar el usuario
+
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    // Obtener los detalles del producto
     const fetchProducto = async () => {
       try {
         const response = await axios.get(`http://localhost:4000/api/productos/${id}`);
@@ -25,7 +30,20 @@ const DetalleProducto = () => {
       }
     };
 
+    // Obtener los datos del usuario
+    const obtenerUsuario = async () => {
+      try {
+        const response = await axios.get("http://localhost:4000/api/usuario/perfil", {
+          withCredentials: true, // Asegura que las cookies se envíen con la solicitud
+        });
+        setUsuario(response.data); // Almacena los datos del usuario en el estado
+      } catch (error) {
+        console.error("Error al obtener el perfil:", error);
+      }
+    };
+
     fetchProducto();
+    obtenerUsuario(); // Llamamos a la función para obtener el perfil del usuario
   }, [id]);
 
   if (cargando) return <p className="text-center text-gray-500">Cargando producto...</p>;
@@ -33,39 +51,24 @@ const DetalleProducto = () => {
 
   const { mensaje, color, icono } = mostrarStock(producto.stock);
 
-  const handleAgregarCarrito = async () => {
-    const token = localStorage.getItem("token"); // Obtener el token desde localStorage
-
-    if (!token) {
-      alert("Debes iniciar sesión para agregar productos al carrito");
-      return;
-    }
-
-    try {
-      // Realizar la solicitud POST al backend para agregar al carrito
-      const response = await axios.post(
-        "http://localhost:4000/api/carrito/agregar",
-        {
-          producto_id: producto.id,
-          cantidad: 1,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`, // Enviar el token en la cabecera de la solicitud
-          },
-          withCredentials: true, // Esto asegura que las cookies se envíen con la solicitud
-        }
-      );
-
-      alert(response.data.message); // Mensaje del backend
-    } catch (error) {
-      console.error("Error al agregar al carrito:", error);
-      alert("Hubo un problema al agregar el producto al carrito");
-    }
-  };
-
   const handleComprarAhora = () => {
     navigate(`/checkout?producto=${producto.id}`);
+  };
+
+  const handleAgregarCarrito = () => {
+    // Verificamos si el usuario está logueado antes de agregar al carrito
+    if (!usuario) {
+      Swal.fire({
+        icon: "warning",
+        title: "Inicia sesión o regístrate",
+        text: "Para agregar este producto al carrito, debes iniciar sesión o registrarte.",
+        confirmButtonText: "Aceptar",
+      });
+      return;
+    }
+    
+    // Si está logueado, llamamos a la función de agregar al carrito
+    agregarCarrito(usuario, producto);
   };
 
   return (
