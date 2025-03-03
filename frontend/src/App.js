@@ -46,6 +46,9 @@ const Error400 = lazy(() => import("./components/error/Error400"));
 const PerfilUsuario = lazy(() => import("./usuario/perfil/Perfil.js"));
 const ActualizarPerfilUsuario = lazy(() => import("./usuario/perfil/ActualizarPerfil.js"));
 const DashboardUsuario = lazy(() => import("./usuario/dashboard/Dashboard.js"));
+const ProductosA = lazy(() => import("./usuario/cart/agregarCarrito.js"));
+const Carrito= lazy(() =>  import ("./usuario/cart/Carrito.js"));
+
 
 //Perfil admin
 const DashboardAdmin = lazy(() => import("./admin/dashboard/Dashboard.js"));
@@ -188,6 +191,14 @@ const App = () => {
               <Route
                 path="/usuario/perfil"
                 element={<ProteccionRutas element={PerfilUsuario} allowedRoles={['usuario']} />}
+              />
+              <Route
+                path="/productos/agregar"
+                element={<ProteccionRutas element={ProductosA} allowedRoles={['usuario']} />}
+              />
+              <Route
+                path="/productos/Carrito"
+                element={<ProteccionRutas element={Carrito} allowedRoles={['usuario']} />}
               />
               <Route
                 path="/usuario/actualizarPerfil"

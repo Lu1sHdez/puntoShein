@@ -36,14 +36,24 @@ export const obtenerCarrito = async (req, res) => {
 
     const carrito = await Carrito.findAll({
       where: { usuario_id },
-      include: [{ model: Producto, as: "producto" }],
+      include: [{
+        model: Producto,
+        as: "producto",
+        attributes: ['id', 'nombre', 'descripcion', 'precio', 'imagen'], // Specify the fields you want
+      }],
     });
+
+    // Check if the cart is empty
+    if (carrito.length === 0) {
+      return res.status(404).json({ message: "El carrito está vacío." });
+    }
 
     res.json(carrito);
   } catch (error) {
     res.status(500).json({ message: "Error al obtener el carrito", error });
   }
 };
+
 export const eliminarDelCarrito = async (req, res) => {
   try {
     const { usuario_id, producto_id } = req.body;
