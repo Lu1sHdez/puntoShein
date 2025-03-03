@@ -1,48 +1,37 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion"; // Importamos framer-motion para las animaciones
+import { agregarCarrito } from "../../usuario/cart/agregarCarrito"; // Importamos la nueva función
 import axios from "axios"; // Para hacer la solicitud
 import "../../css/TarjetaProductos.css"; // Ruta correcta al archivo de estilos
 
 const ProductoCard = ({ producto }) => {
+  const [usuario, setUsuario] = useState(null); // Estado para almacenar los datos del usuario
+  const [mensaje, setMensaje] = useState(""); // Estado para mostrar el mensaje
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Función para obtener los datos del usuario
+    const obtenerUsuario = async () => {
+      try {
+        const response = await axios.get("http://localhost:4000/api/usuario/perfil", {
+          withCredentials: true, // Asegura que las cookies se envíen con la solicitud
+        });
+        setUsuario(response.data); // Almacena los datos del usuario en el estado
+      } catch (error) {
+        console.error("Error al obtener el perfil:", error);  
+      }
+    };
+
+    obtenerUsuario();
+  }, []);
 
   const handleVerDetalles = () => {
     navigate(`/producto/${producto.id}`); // Redirige a la página de detalles del producto
   };
 
-  const handleAgregarCarrito = async () => {
-    // Obtener el token desde localStorage
-    const token = localStorage.getItem("token"); // Obtenemos el token desde localStorage
-
-    console.log("Token desde localStorage:", token); // Ver el token en la consola
-
-    if (!token) {
-      alert("Debes iniciar sesión para agregar productos al carrito");
-      return;
-    }
-
-    try {
-      // Realizar la solicitud POST al backend para agregar al carrito
-      const response = await axios.post(
-        "http://localhost:4000/api/carrito/agregar",
-        {
-          producto_id: producto.id,
-          cantidad: 1,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`, // Enviar el token en la cabecera de la solicitud
-          },
-          withCredentials: true, // Esto asegura que las cookies se envíen con la solicitud
-        }
-      );
-
-      alert(response.data.message); // Mostrar mensaje de éxito del backend
-    } catch (error) {
-      console.error("Error al agregar al carrito:", error);
-      alert("Hubo un problema al agregar el producto al carrito");
-    }
+  const handleAgregarCarrito = () => {
+    agregarCarrito(usuario, producto, setMensaje); // Llama a la función de agregar al carrito
   };
 
   return (
@@ -79,6 +68,8 @@ const ProductoCard = ({ producto }) => {
           Ver detalles
         </motion.button>
       </div>
+
+      {mensaje && <p className="mensaje">{mensaje}</p>} {/* Mostrar mensaje de estado */}
     </motion.div>
   );
 };
