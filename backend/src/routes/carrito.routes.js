@@ -8,8 +8,7 @@ import {
 } from "../controllers/carrito.controller.js";
 
 const router = express.Router();
-const usuarios = validarRol(['usuario']);
-
+const usuarios = validarRol(['usuario', 'empleado', 'administrador']);
 
 // Rutas protegidas para agregar productos al carrito, solo para usuarios autenticados
 router.post("/agregar", verificarToken, usuarios, agregarAlCarrito);
