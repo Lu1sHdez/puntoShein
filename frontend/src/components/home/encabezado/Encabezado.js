@@ -128,7 +128,7 @@ const Encabezado = () => {
           <button onClick={() => navigate("/productos")} className="hover:underline">Productos</button>
           <button onClick={() => navigate("/ofertas")} className="hover:underline">Ofertas</button>
           <button onClick={() => navigate("/contacto")} className="hover:underline">Contacto</button>
-          <FaShoppingCart className="text-2xl cursor-pointer" onClick={() => navigate("/carrito")} />
+          <FaShoppingCart className="text-2xl cursor-pointer" onClick={() => navigate("productos/carrito")} />
           {menu} {/* Aquí se mostrará el menú dependiendo del rol */}
         </nav>
       </div>
