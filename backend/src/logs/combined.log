@@ -1,0 +1,44 @@
+{
+  message: 'Credenciales inválidas - Usuario no encontrado',
+  level: 'error',
+  codigo_error: '400',
+  ip_cliente: '::ffff:127.0.0.1',
+  fecha_hora: '2025-03-10T23:33:41.620Z',
+  usuario: '202210sss61@uthh.edu.mx',
+  timestamp: '2025-03-10T23:33:41.621Z'
+}
+{
+  message: 'Credenciales inválidas - Contraseña incorrecta',
+  level: 'error',
+  codigo_error: '400',
+  ip_cliente: '::ffff:127.0.0.1',
+  fecha_hora: '2025-03-10T23:34:12.699Z',
+  usuario: '20221061@uthh.edu.mx',
+  timestamp: '2025-03-10T23:34:12.699Z'
+}
+{
+  message: 'Correo ya registrado',
+  level: 'warn',
+  codigo_error: '400',
+  ip_cliente: '::ffff:127.0.0.1',
+  fecha_hora: '2025-03-10T23:36:36.525Z',
+  usuario: '20221061@uthh.edu.mx',
+  timestamp: '2025-03-10T23:36:36.526Z'
+}
+{
+  message: 'Intenta con otro nombre de usuario',
+  level: 'warn',
+  codigo_error: '400',
+  ip_cliente: '::ffff:127.0.0.1',
+  fecha_hora: '2025-03-10T23:38:51.015Z',
+  usuario: 'Lui2323',
+  timestamp: '2025-03-10T23:38:51.015Z'
+}
+{
+  message: 'Intenta con otro nombre de usuario',
+  level: 'warn',
+  codigo_error: '400',
+  ip_cliente: '::ffff:127.0.0.1',
+  fecha_hora: '2025-03-10T23:40:01.993Z',
+  usuario: 'Lui2323'
+}

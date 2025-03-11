@@ -112,6 +112,10 @@ const EditarProducto = () => {
     }
   };
 
+  const cancelar =()=> {
+    navigate('/admin/productos');
+  }
+
   return (
     <div className="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-lg -mt-5">
       <h1 className="text-3xl font-bold text-center mb-6">Editar Producto</h1>
@@ -215,13 +219,22 @@ const EditarProducto = () => {
           </select>
         </div>
 
-        {/* Botón para actualizar el producto */}
-        <button
-          type="submit"
-          className="w-full py-3 px-4 bg-pink-600 hover:bg-pink-700 text-white rounded-md"
-        >
-          Actualizar Producto
-        </button>
+        <div className="flex space-x-4">
+            <button
+              type="submit"
+              className="w-full py-3 px-4 bg-pink-600 hover:bg-pink-700 text-white rounded-md"
+            >
+              Actualizar Producto
+            </button>
+            <button
+              type="button"
+              onClick={cancelar}
+              className="w-full bg-gray-600 text-white py-2 rounded-lg hover:bg-gray-700 transition"
+            >
+              Cancelar
+            </button>
+        </div>
+        
       </form>
 
       <RegresarButton />

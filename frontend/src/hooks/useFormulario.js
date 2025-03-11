@@ -79,7 +79,7 @@ const useFormulario = (initialState, url, redirigir, isAuthForm = false) => {
         const mensajeError = error.response.data.mensaje || "Solicitud incorrecta.";
       
         //  Si el error es por credenciales incorrectas en Login, mostrar alerta y NO redirigir
-        if (mensajeError === "Correo o contraseña incorrectos.") {
+        if (mensajeError === "Credenciales invalidas") {
           setMensaje({ tipo: "error", texto: mensajeError }); //  Guardar mensaje en el estado
           return false; //  Evita que el formulario actúe como si fue exitoso
         }
