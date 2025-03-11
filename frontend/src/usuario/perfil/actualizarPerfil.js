@@ -43,6 +43,10 @@ const ActualizarPerfil = () => {
     setDatos({ ...datos, [name]: value });
   };
 
+  const cancelarEdicion = ()=>{
+    navigate('/usuario/perfil');
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -101,12 +105,21 @@ const ActualizarPerfil = () => {
             </div>
           ))}
 
-          <button
-            type="submit"
-            className="w-full bg-pink-600 text-white py-2 rounded-lg hover:bg-pink-700 transition"
-          >
-            Guardar cambios
-          </button>
+          <div className="flex space-x-4">
+            <button
+              type="submit"
+              className="w-full bg-pink-600 text-white py-2 rounded-lg hover:bg-pink-700 transition"
+            >
+              Guardar cambios
+            </button>
+            <button
+              type="button"
+              onClick={cancelarEdicion}
+              className="w-full bg-gray-600 text-white py-2 rounded-lg hover:bg-gray-700 transition"
+            >
+              Cancelar
+            </button> 
+          </div>
         </form>
         <RegresarButton/>
       </div>

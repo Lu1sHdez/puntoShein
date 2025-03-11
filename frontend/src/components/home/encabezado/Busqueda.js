@@ -31,7 +31,7 @@ const Busqueda = ({ busqueda, setBusqueda }) => {
             navigate(`/buscar?nombre=${busqueda}`); // Navega con la búsqueda
           }
         }} // Busca cuando presiona Enter
-        placeholder="Buscar producto..."
+        placeholder="Buscar productos..."
         className="pl-8 pr-20 py-4 rounded-lg border-2 border-gray-300 focus:outline-none focus:ring-2 
           focus:ring-indigo-500 transition-all shadow-md focus:shadow-xl hover:shadow-2xl focus:ring-opacity-80 
           text-black hover:bg-gray-100 focus:ring-offset-2 text-left text-xl w-full"  // Aumenta el tamaño de la letra y hace el input más ancho

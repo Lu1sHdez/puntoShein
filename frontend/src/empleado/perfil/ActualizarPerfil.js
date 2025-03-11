@@ -66,6 +66,10 @@ const ActualizarPerfil = () => {
     }
   };
 
+  const cancelarEdicion =() =>{
+    navigate('/empleado/perfil')
+  }
+
   if (!usuario) return <div>Cargando...</div>; // Mientras se obtiene el perfil
 
   return (
@@ -97,12 +101,21 @@ const ActualizarPerfil = () => {
             </div>
           ))}
 
-          <button
-            type="submit"
-            className="w-full bg-pink-600 text-white py-2 rounded-lg hover:bg-pink-700 transition"
-          >
-            Guardar cambios
-          </button>
+          <div className="flex space-x-4">
+            <button
+              type="submit"
+              className="w-full bg-pink-600 text-white py-2 rounded-lg hover:bg-pink-700 transition"
+            >
+              Guardar cambios
+            </button>
+            <button
+              type="button"
+              onClick={cancelarEdicion}
+              className="w-full bg-gray-600 text-white py-2 rounded-lg hover:bg-gray-700 transition"
+            >
+              Cancelar
+            </button>
+          </div>
         </form>
       </div>
     </div>

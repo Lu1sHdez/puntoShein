@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs';
 import { crearTokenAcceso } from '../libs/crearTokenAcceso.js';
 import nodemailer from 'nodemailer';
 import jwt from 'jsonwebtoken';
-
+import logger from '../libs/logger.js'; 
 
 export const registro = async (req, res) => {
   try {
@@ -11,43 +11,102 @@ export const registro = async (req, res) => {
 
     // Validación de campos vacíos
     if (!correo || !password || !nombre_usuario || !nombre || !apellido_paterno || !telefono) {
+      const errorMessage = {
+        message: "Todos los campos son obligatorios.",
+        level: "warn",
+        codigo_error: "400",
+        ip_cliente: req.ip,
+        fecha_hora: new Date().toISOString(),
+      };
+      logger.warn(errorMessage);  // Registra el error
       return res.status(400).json({ mensaje: "Todos los campos son obligatorios." });
     }
 
     // Validación de correo
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(correo)) {
+      const errorMessage = {
+        message: "El correo no tiene un formato válido.",
+        level: "warn",
+        codigo_error: "400",
+        ip_cliente: req.ip,
+        fecha_hora: new Date().toISOString(),
+      };
+      logger.warn(errorMessage);  // Registra el error
       return res.status(400).json({ mensaje: "El correo no tiene un formato válido." });
     }
 
     // Validación de teléfono (solo números y 10 dígitos)
     const telefonoRegex = /^\d{10}$/;
     if (!telefonoRegex.test(telefono)) {
-      return res.status(400).json({ mensaje: "El teléfono debe tener exactamente 10 dígitos." });
+      const errorMessage = {
+        message: "El teléfono debe tener 10 dígitos.",
+        level: "warn",
+        codigo_error: "400",
+        ip_cliente: req.ip,
+        fecha_hora: new Date().toISOString(),
+      };
+      logger.warn(errorMessage);  // Registra el error
+      return res.status(400).json({ mensaje: "El teléfono debe tener 10 dígitos." });
     }
 
     // Validación de nombre de usuario (alfanumérico, entre 5 y 20 caracteres)
     const usernameRegex = /^[A-Za-z\d]{5,20}$/;
     if (!usernameRegex.test(nombre_usuario)) {
-      return res.status(400).json({ mensaje: "El nombre de usuario debe ser alfanumérico y tener entre 5 y 20 caracteres." });
+      const errorMessage = {
+        message: "El usuario debe tener 5-20 letras o números",
+        level: "warn",
+        codigo_error: "400",
+        ip_cliente: req.ip,
+        fecha_hora: new Date().toISOString(),
+      };
+      logger.warn(errorMessage);  // Registra el error
+      return res.status(400).json({ mensaje: "El usuario debe tener 5-20 letras o números" });
     }
 
     // Verificar si el correo ya está registrado
     const correoExistente = await Usuario.findOne({ where: { correo } });
     if (correoExistente) {
-      return res.status(400).json({ mensaje: "El correo ya está registrado." });
+      const errorMessage = {
+        message: "Correo ya registrado",
+        level: "warn",
+        codigo_error: "400",
+        ip_cliente: req.ip,
+        fecha_hora: new Date().toISOString(),
+        usuario: correo,
+      };
+      logger.warn(errorMessage);  // Registra el error
+      return res.status(400).json({ mensaje: "Correo ya registrado" });
     }
 
     // Verificar si el teléfono ya está registrado
     const telefonoExistente = await Usuario.findOne({ where: { telefono } });
     if (telefonoExistente) {
-      return res.status(400).json({ mensaje: "El teléfono ya está registrado." });
+      const errorMessage = {
+        message: "Teléfono ya registrado",
+        level: "warn",
+        codigo_error: "400",
+        ip_cliente: req.ip,
+        fecha_hora: new Date().toISOString(),
+        telefono,
+      };
+      logger.warn(errorMessage);  // Registra el error
+      return res.status(400).json({ mensaje: "Teléfono ya registrado" });
     }
 
     // Verificar si el nombre de usuario ya está registrado
     const usuarioExistente = await Usuario.findOne({ where: { nombre_usuario } });
     if (usuarioExistente) {
-      return res.status(400).json({ mensaje: "El nombre de usuario ya existe. Intenta con otro" });
+      const errorMessage = {
+        message: "Intenta con otro nombre de usuario",
+        level: "warn",
+        codigo_error: "400",
+        ip_cliente: req.ip,
+        fecha_hora: new Date().toISOString(),
+        usuario: nombre_usuario,
+      };
+      logger.warn(errorMessage);  // Registra el error
+      return res.status(400).json({ mensaje: "Intenta con otro nombre de usuario" });
     }
 
     // Hashear la contraseña con bcrypt
@@ -74,8 +133,20 @@ export const registro = async (req, res) => {
         rol: nuevoUsuario.rol,
       },
     });
+
   } catch (error) {
-    console.error('Error al registrar usuario:', error);
+    // Crear un mensaje estructurado para el log en caso de error
+    const errorMessage = {
+      message: error.message,
+      level: 'error',
+      codigo_error: error.code || 'No especificado',
+      stack: error.stack,
+      ip_cliente: req.ip,
+      fecha_hora: new Date().toISOString(),
+    };
+
+    // Registrar el error en el log
+    logger.error(errorMessage);
     return res.status(500).json({ mensaje: "Error interno del servidor." });
   }
 };
@@ -86,19 +157,45 @@ export const login = async (req, res) => {
 
     // Validar que los campos no estén vacíos
     if (!correo || !password) {
-      return res.status(400).json({ mensaje: "El correo y la contraseña son obligatorios." });
+      const errorMessage = {
+        message: "El correo y la contraseña son obligatorios.",
+        level: "warn",
+        codigo_error: "400",
+        ip_cliente: req.ip,
+        fecha_hora: new Date().toISOString(),
+      };
+      logger.warn(errorMessage);
+      return res.status(400).json({ mensaje: errorMessage.message });
     }
 
     // Buscar al usuario en la base de datos
     const usuario = await Usuario.findOne({ where: { correo } });
     if (!usuario) {
-      return res.status(400).json({ mensaje: "Correo o contraseña incorrectos." });
+      const errorMessage = {
+        message: "Credenciales inválidas - Usuario no encontrado",
+        level: "error",
+        codigo_error: "400",
+        ip_cliente: req.ip,
+        fecha_hora: new Date().toISOString(),
+        usuario: correo,
+      };
+      logger.error(errorMessage);
+      return res.status(400).json({ mensaje: "Credenciales invalidas" });
     }
 
     // Comparar la contraseña
     const contraseñaValida = await bcrypt.compare(password, usuario.password);
     if (!contraseñaValida) {
-      return res.status(400).json({ mensaje: "Correo o contraseña incorrectos." });
+      const errorMessage = {
+        message: "Credenciales inválidas - Contraseña incorrecta",
+        level: "error",
+        codigo_error: "400",
+        ip_cliente: req.ip,
+        fecha_hora: new Date().toISOString(),
+        usuario: correo,
+      };
+      logger.error(errorMessage);
+      return res.status(400).json({ mensaje: "Credenciales invalidas" });
     }
 
     // Generar token JWT
@@ -106,10 +203,10 @@ export const login = async (req, res) => {
 
     // Configurar cookie con el token
     res.cookie('token', token, {
-      httpOnly: true, // La cookie solo es accesible desde el servidor
-      secure: process.env.NODE_ENV === 'production', // Solo enviar la cookie sobre HTTPS en producción
-      sameSite: 'Strict', // Prevenir ataques CSRF
-      maxAge: 24 * 60 * 60 * 1000, // Expira en 1 día (en milisegundos)
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'Strict',
+      maxAge: 24 * 60 * 60 * 1000,
     });
 
     // Respuesta exitosa
@@ -119,13 +216,21 @@ export const login = async (req, res) => {
         id: usuario.id,
         nombre_usuario: usuario.nombre_usuario,
         correo: usuario.correo,
-        rol: usuario.rol, // Asegúrate de que el rol esté aquí
+        rol: usuario.rol,
       },
-      token, // Opcional: Enviar el token en la respuesta (útil para clientes que no usan cookies)
+      token,
     });
 
   } catch (error) {
-    console.error('Error en el login:', error); // Log del error para depuración
+    const errorMessage = {
+      message: error.message,
+      level: 'error',
+      codigo_error: error.code || 'No especificado',
+      stack: error.stack,
+      ip_cliente: req.ip,
+      fecha_hora: new Date().toISOString(),
+    };
+    logger.error(errorMessage);
     return res.status(500).json({ mensaje: "Error interno del servidor." });
   }
 };

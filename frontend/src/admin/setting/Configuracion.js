@@ -1,6 +1,5 @@
 // src/admin/setting/Configuracion.js
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';  // Importamos useNavigate para redirigir a la página anterior}
 import RegresarButton from '../../components/Regresar.js';  // Importamos el botón
 
 const Configuracion = () => {
@@ -9,8 +8,6 @@ const Configuracion = () => {
     email: '',
     password: '',
   });
-
-  const navigate = useNavigate();  // Usamos useNavigate
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;

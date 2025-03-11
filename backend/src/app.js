@@ -1,5 +1,7 @@
   import express from 'express';
   import cors from 'cors';
+  import cookieParser from 'cookie-parser';
+
   import autenticacionRutas from './routes/autenticacion.routes.js';
   import productoRutas from './routes/producto.routes.js';
   import usuarioRutas from './routes/usuario.routes.js';
@@ -9,12 +11,10 @@
   import empleadoRutas from './routes/empleado.routes.js';  // Importa las rutas de admin
 
 
-  import cookieParser from 'cookie-parser';
+  const app = express();//instancia de espress
 
-  const app = express();
-  // Middleware para procesar JSON (¡debe ir antes de las rutas!)
   app.use(express.json());
-
+  app.set('trust proxy', true);
   app.use(cookieParser());
 
   // Configuración de CORS

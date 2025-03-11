@@ -94,7 +94,11 @@ const ActualizarEmpresa = () => {
   if (error) {
     return <div>{error}</div>;
   }
-
+  
+  const cancelar =()=>
+  {
+    navigate('/admin/empresa')
+  }
   return (
     <motion.div {...dataLoadingAnimation} className="p-6">
       <h1 className="text-3xl mb-6">Actualizar Datos de la Empresa</h1>
@@ -224,9 +228,17 @@ const ActualizarEmpresa = () => {
           />
         </div>
 
-        <button type="submit" className="px-4 py-2 bg-pink-600 hover:bg-pink-700  text-white rounded-md">
-          Actualizar Empresa
-        </button>
+        <div className='flex space-x-4'>
+          <button type="submit" className="w-full bg-pink-600 text-white py-2 rounded-lg hover:bg-pink-700 transition">
+            Actualizar Empresa
+          </button>
+          <button
+            type="button" onClick={cancelar} 
+            className="w-full bg-gray-600 text-white py-2 rounded-lg hover:bg-gray-700 transition"> 
+            Cancelar
+          </button>
+        </div>
+       
       </form>
 
       <RegresarButton />
