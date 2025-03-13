@@ -6,9 +6,16 @@ dotenv.config(); // Cargar variables de entorno
 
 export const crearTokenAcceso = (usuario) => {
   return jwt.sign(
-    { id: usuario.id, rol: usuario.rol }, // Payload del token
+    { id: usuario.id, rol: usuario.rol }, 
     process.env.TOKEN_SECRET, // Clave secreta
     { expiresIn: '1d' } // Expiración de 1 día
   );
 };
 
+export const crearTokenRecuperacion = (usuario) => {
+  return jwt.sign(
+    { id: usuario.id, rol: usuario.rol }, 
+    process.env.TOKEN_SECRET, // Clave secreta
+    { expiresIn: '5m' } // Expiración de 5 minutos
+  );
+};

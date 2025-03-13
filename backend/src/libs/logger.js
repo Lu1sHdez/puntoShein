@@ -1,29 +1,30 @@
+// src/libs/logger.js
 import winston from 'winston';
 
 // Configuración del logger
 const logger = winston.createLogger({
-  level: 'info',  // Nivel global de logs
+  level: 'info', 
   format: winston.format.combine(
-    winston.format.prettyPrint()        // Formato JSON para los logs
+    winston.format.prettyPrint()  // Formato de los logs
   ),
   transports: [
-    new winston.transports.Console({ // Imprime en consola
+    new winston.transports.Console({ 
       format: winston.format.combine(
-        winston.format.colorize(), // Agregar color a los logs
-        winston.format.simple()    // Formato simple para consola
+        winston.format.colorize(),  // Coloriza el nivel del log
+        winston.format.simple()     // Formato simple en consola
       ),
     }),
-    new winston.transports.File({ // Registra todos los logs en combined.log
-      filename: 'C:/Users/luishdez/Desktop/puntoshein/backend/src/logs/combined.log',
+    new winston.transports.File({ 
+      filename: 'src/logs/combined.log',
       format: winston.format.combine(
-        winston.format.prettyPrint()        // Formato JSON
+        winston.format.prettyPrint()  // Formato JSON para los logs
       ),
     }),
-    new winston.transports.File({  // Registra solo errores en errors.log
-      filename: 'C:/Users/luishdez/Desktop/puntoshein/backend/src/logs/errors.log',
-      level: 'error',  // Solo los errores van a este archivo
+    new winston.transports.File({  
+      filename: 'src/logs/errors.log',
+      level: 'error',  // Registra solo los errores en este archivo
       format: winston.format.combine(
-        winston.format.prettyPrint()        // Formato JSON
+        winston.format.prettyPrint()  // Formato JSON para los logs de errores
       ),
     }),
   ],

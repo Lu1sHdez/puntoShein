@@ -1,68 +1,47 @@
 import Usuario from '../models/usuario.model.js';
 import bcrypt from 'bcryptjs';
-import { crearTokenAcceso } from '../libs/crearTokenAcceso.js';
+import { crearTokenAcceso, crearTokenRecuperacion } from '../libs/crearTokenAcceso.js';
 import nodemailer from 'nodemailer';
 import jwt from 'jsonwebtoken';
 import logger from '../libs/logger.js'; 
+import { body, validationResult } from 'express-validator';
+import obtenerFechaHora from '../utils/funciones.js';
 
 export const registro = async (req, res) => {
   try {
+    const fecha = obtenerFechaHora();
+    // Validación de campos usando express-validator
+    await body('correo')
+      .isEmail().withMessage('El correo no tiene un formato válido.')
+      .normalizeEmail()
+      .run(req);
+
+    await body('telefono')
+      .isLength({ min: 10, max: 10 }).withMessage('El teléfono debe tener exactamente 10 dígitos.')
+      .isNumeric().withMessage('El teléfono debe ser numérico.')
+      .run(req);
+
+    await body('nombre_usuario')
+      .matches(/^[A-Za-z\d]{5,20}$/).withMessage('El nombre de usuario debe tener entre 5 y 20 caracteres alfanuméricos.')
+      .run(req);
+
+    await body('nombre')
+      .isAlpha().withMessage('El nombre debe contener solo letras.')
+      .isLength({ min: 3 }).withMessage('El nombre debe tener al menos 3 caracteres.')
+      .run(req);
+
+    await body('apellido_paterno')
+      .isAlpha().withMessage('El apellido paterno debe contener solo letras.')
+      .isLength({ min: 3 }).withMessage('El apellido paterno debe tener al menos 3 caracteres.')
+      .run(req);
+
+    // Verifica si hay errores de validación
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errores: errors.array() });
+    }
+
     const { correo, password, nombre_usuario, nombre, apellido_materno, apellido_paterno, telefono, rol } = req.body;
-
-    // Validación de campos vacíos
-    if (!correo || !password || !nombre_usuario || !nombre || !apellido_paterno || !telefono) {
-      const errorMessage = {
-        message: "Todos los campos son obligatorios.",
-        level: "warn",
-        codigo_error: "400",
-        ip_cliente: req.ip,
-        fecha_hora: new Date().toISOString(),
-      };
-      logger.warn(errorMessage);  // Registra el error
-      return res.status(400).json({ mensaje: "Todos los campos son obligatorios." });
-    }
-
-    // Validación de correo
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(correo)) {
-      const errorMessage = {
-        message: "El correo no tiene un formato válido.",
-        level: "warn",
-        codigo_error: "400",
-        ip_cliente: req.ip,
-        fecha_hora: new Date().toISOString(),
-      };
-      logger.warn(errorMessage);  // Registra el error
-      return res.status(400).json({ mensaje: "El correo no tiene un formato válido." });
-    }
-
-    // Validación de teléfono (solo números y 10 dígitos)
-    const telefonoRegex = /^\d{10}$/;
-    if (!telefonoRegex.test(telefono)) {
-      const errorMessage = {
-        message: "El teléfono debe tener 10 dígitos.",
-        level: "warn",
-        codigo_error: "400",
-        ip_cliente: req.ip,
-        fecha_hora: new Date().toISOString(),
-      };
-      logger.warn(errorMessage);  // Registra el error
-      return res.status(400).json({ mensaje: "El teléfono debe tener 10 dígitos." });
-    }
-
-    // Validación de nombre de usuario (alfanumérico, entre 5 y 20 caracteres)
-    const usernameRegex = /^[A-Za-z\d]{5,20}$/;
-    if (!usernameRegex.test(nombre_usuario)) {
-      const errorMessage = {
-        message: "El usuario debe tener 5-20 letras o números",
-        level: "warn",
-        codigo_error: "400",
-        ip_cliente: req.ip,
-        fecha_hora: new Date().toISOString(),
-      };
-      logger.warn(errorMessage);  // Registra el error
-      return res.status(400).json({ mensaje: "El usuario debe tener 5-20 letras o números" });
-    }
 
     // Verificar si el correo ya está registrado
     const correoExistente = await Usuario.findOne({ where: { correo } });
@@ -72,7 +51,6 @@ export const registro = async (req, res) => {
         level: "warn",
         codigo_error: "400",
         ip_cliente: req.ip,
-        fecha_hora: new Date().toISOString(),
         usuario: correo,
       };
       logger.warn(errorMessage);  // Registra el error
@@ -87,7 +65,6 @@ export const registro = async (req, res) => {
         level: "warn",
         codigo_error: "400",
         ip_cliente: req.ip,
-        fecha_hora: new Date().toISOString(),
         telefono,
       };
       logger.warn(errorMessage);  // Registra el error
@@ -102,7 +79,6 @@ export const registro = async (req, res) => {
         level: "warn",
         codigo_error: "400",
         ip_cliente: req.ip,
-        fecha_hora: new Date().toISOString(),
         usuario: nombre_usuario,
       };
       logger.warn(errorMessage);  // Registra el error
@@ -142,7 +118,7 @@ export const registro = async (req, res) => {
       codigo_error: error.code || 'No especificado',
       stack: error.stack,
       ip_cliente: req.ip,
-      fecha_hora: new Date().toISOString(),
+      fecha_hora: fecha,
     };
 
     // Registrar el error en el log
@@ -155,6 +131,8 @@ export const login = async (req, res) => {
   try {
     const { correo, password } = req.body;
 
+    const fecha = obtenerFechaHora();
+
     // Validar que los campos no estén vacíos
     if (!correo || !password) {
       const errorMessage = {
@@ -162,7 +140,7 @@ export const login = async (req, res) => {
         level: "warn",
         codigo_error: "400",
         ip_cliente: req.ip,
-        fecha_hora: new Date().toISOString(),
+        fecha_hora: fecha,
       };
       logger.warn(errorMessage);
       return res.status(400).json({ mensaje: errorMessage.message });
@@ -176,8 +154,8 @@ export const login = async (req, res) => {
         level: "error",
         codigo_error: "400",
         ip_cliente: req.ip,
-        fecha_hora: new Date().toISOString(),
         usuario: correo,
+        fecha_hora: fecha,
       };
       logger.error(errorMessage);
       return res.status(400).json({ mensaje: "Credenciales invalidas" });
@@ -191,8 +169,8 @@ export const login = async (req, res) => {
         level: "error",
         codigo_error: "400",
         ip_cliente: req.ip,
-        fecha_hora: new Date().toISOString(),
         usuario: correo,
+        fecha_hora: fecha,
       };
       logger.error(errorMessage);
       return res.status(400).json({ mensaje: "Credenciales invalidas" });
@@ -217,6 +195,7 @@ export const login = async (req, res) => {
         nombre_usuario: usuario.nombre_usuario,
         correo: usuario.correo,
         rol: usuario.rol,
+
       },
       token,
     });
@@ -228,7 +207,7 @@ export const login = async (req, res) => {
       codigo_error: error.code || 'No especificado',
       stack: error.stack,
       ip_cliente: req.ip,
-      fecha_hora: new Date().toISOString(),
+      fecha_hora: fecha,
     };
     logger.error(errorMessage);
     return res.status(500).json({ mensaje: "Error interno del servidor." });
@@ -245,7 +224,7 @@ export const cerrarSesion = (req, res) => {
   return res.json({ mensaje: "Sesión cerrada exitosamente." });
 };
 
-//  Función para recuperar contraseña
+// Función para recuperar la contraseña
 export const recuperarPassword = async (req, res) => {
   try {
     const { correo } = req.body;
@@ -257,7 +236,7 @@ export const recuperarPassword = async (req, res) => {
     }
 
     // Generar un token único para la recuperación de contraseña
-    const tokenRecuperacion = crearTokenAcceso(usuario);
+    const tokenRecuperacion = crearTokenRecuperacion(usuario); // Usar la función de token de recuperación
 
     // Guardar el token en la base de datos
     usuario.tokenRecuperacion = tokenRecuperacion;
@@ -302,7 +281,7 @@ export const recuperarPassword = async (req, res) => {
   }
 };
 
-//  Función para restablecer contraseña
+// Función para restablecer la contraseña
 export const restablecerPassword = async (req, res) => {
   try {
     const { token, nuevaContrasena } = req.body;
@@ -311,6 +290,12 @@ export const restablecerPassword = async (req, res) => {
     const usuario = await Usuario.findOne({ where: { tokenRecuperacion: token } });
     if (!usuario) {
       return res.status(400).json({ mensaje: "Token inválido o expirado." });
+    }
+
+    // Verificar si el token ha expirado
+    const decoded = jwt.verify(token, process.env.TOKEN_SECRET);
+    if (decoded.exp < Math.floor(Date.now() / 1000)) {
+      return res.status(400).json({ mensaje: "El enlace ha expirado. Solicita un nuevo enlace de recuperación." });
     }
 
     // Validar que la nueva contraseña cumpla con los requisitos
