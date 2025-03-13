@@ -42,3 +42,90 @@
   fecha_hora: '2025-03-10T23:40:01.993Z',
   usuario: 'Lui2323'
 }
+{
+  message: 'Credenciales inválidas - Contraseña incorrecta',
+  level: 'error',
+  codigo_error: '400',
+  ip_cliente: '::ffff:127.0.0.1',
+  fecha_hora: '2025-03-12T18:03:33.927Z',
+  usuario: '20221061@uthh.edu.mx'
+}
+{
+  message: 'Credenciales inválidas - Contraseña incorrecta',
+  level: 'error',
+  codigo_error: '400',
+  ip_cliente: '::ffff:127.0.0.1',
+  fecha_hora: '2025-03-12T18:03:36.100Z',
+  usuario: '20221061@uthh.edu.mx'
+}
+{
+  message: 'Credenciales inválidas - Contraseña incorrecta',
+  level: 'error',
+  codigo_error: '400',
+  ip_cliente: '::1',
+  fecha_hora: '2025-03-12T18:04:01.922Z',
+  usuario: '20221061@uthh.edu.mx'
+}
+{
+  message: 'Credenciales inválidas - Contraseña incorrecta',
+  level: 'error',
+  codigo_error: '400',
+  ip_cliente: '::1',
+  fecha_hora: '2025-03-12T18:04:41.446Z',
+  usuario: '20221061@uthh.edu.mx'
+}
+{
+  message: 'Credenciales inválidas - Usuario no encontrado',
+  level: 'error',
+  codigo_error: '400',
+  ip_cliente: '::ffff:127.0.0.1',
+  fecha_hora: '2025-03-13T04:33:13.123Z',
+  usuario: '20221061@uthh.edus.mx'
+}
+{
+  message: 'Credenciales inválidas - Usuario no encontrado',
+  level: 'error',
+  codigo_error: '400',
+  ip_cliente: '::ffff:127.0.0.1',
+  usuario: '20221s061@uthh.edu.mx'
+}
+{
+  message: 'Credenciales inválidas - Usuario no encontrado',
+  level: 'error',
+  codigo_error: '400',
+  ip_cliente: '::ffff:127.0.0.1',
+  usuario: '20221s061@uthh.edu.mx',
+  fecha_hora: '12/3/2025, 23:14:34'
+}
+{
+  message: 'Credenciales inválidas - Usuario no encontrado',
+  level: 'error',
+  codigo_error: '400',
+  ip_cliente: '::ffff:127.0.0.1',
+  usuario: '20221s061@uthh.edu.mx',
+  fecha_hora: '12/3/2025, 23:15:57'
+}
+{
+  message: 'Credenciales inválidas - Contraseña incorrecta',
+  level: 'error',
+  codigo_error: '400',
+  ip_cliente: '::ffff:127.0.0.1',
+  usuario: '20221061@uthh.edu.mx',
+  fecha_hora: '13/3/2025, 1:54:50'
+}
+{
+  message: 'Credenciales inválidas - Usuario no encontrado',
+  level: 'error',
+  codigo_error: '400',
+  ip_cliente: '::ffff:127.0.0.1',
+  usuario: 'luis004hdez@gmail.com',
+  fecha_hora: '13/3/2025, 11:58:09'
+}
+{
+  message: 'Credenciales inválidas - Usuario no encontrado',
+  level: 'error',
+  codigo_error: '400',
+  ip_cliente: '::ffff:127.0.0.1',
+  usuario: 'luis004hdez@gmail.com',
+  fecha_hora: '13/3/2025, 11:58:16'
+}
