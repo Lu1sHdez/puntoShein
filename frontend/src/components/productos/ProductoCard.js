@@ -1,8 +1,9 @@
+// src/components/productos/ProductoCard.js
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion"; // Importamos framer-motion para las animaciones
-import { agregarCarrito } from "../../usuario/cart/agregarCarrito"; // Importamos la nueva función
-import axios from "axios"; // Para hacer la solicitud
+import agregarCarrito from "../cart/Agregar"; // Importamos la función agregarCarrito desde los servicios
+import axios from "axios";
 import "../../css/TarjetaProductos.css"; // Ruta correcta al archivo de estilos
 
 const ProductoCard = ({ producto }) => {
@@ -19,7 +20,7 @@ const ProductoCard = ({ producto }) => {
         });
         setUsuario(response.data); // Almacena los datos del usuario en el estado
       } catch (error) {
-        console.error("Error al obtener el perfil:", error);  
+        console.error("Error al obtener el perfil:", error);
       }
     };
 
@@ -31,7 +32,14 @@ const ProductoCard = ({ producto }) => {
   };
 
   const handleAgregarCarrito = () => {
-    agregarCarrito(usuario, producto, setMensaje); // Llama a la función de agregar al carrito
+    if (usuario) {
+      // Llama a la función de agregar al carrito
+      agregarCarrito(usuario, producto).then((responseMessage) => {
+        setMensaje(responseMessage); // Muestra el mensaje después de agregar al carrito
+      });
+    } else {
+      setMensaje("Por favor, inicia sesión para agregar productos al carrito.");
+    }
   };
 
   return (

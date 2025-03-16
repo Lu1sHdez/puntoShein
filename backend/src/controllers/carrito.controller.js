@@ -11,11 +11,6 @@ export const agregarAlCarrito = async (req, res) => {
       return res.status(404).json({ message: "Producto no encontrado" });
     }
 
-    // Verificar si hay suficiente stock
-    if (producto.stock < cantidad) {
-      return res.status(400).json({ message: "No hay suficiente stock disponible" });
-    }
-
     // Buscar si ya existe el producto en el carrito del usuario
     let itemCarrito = await Carrito.findOne({
       where: { usuario_id, producto_id },
@@ -29,10 +24,6 @@ export const agregarAlCarrito = async (req, res) => {
       // Si no está, crear un nuevo registro
       itemCarrito = await Carrito.create({ usuario_id, producto_id, cantidad });
     }
-
-    // Actualizar el stock del producto
-    producto.stock -= cantidad;
-    await producto.save();
 
     res.json({ message: "Producto agregado al carrito", itemCarrito });
   } catch (error) {
@@ -53,11 +44,10 @@ export const obtenerCarrito = async (req, res) => {
       }],
     });
 
-    // Check if the cart is empty
+    // Checar si el carrito esta vacio
     if (carrito.length === 0) {
-      return res.status(404).json({ message: "El carrito está vacío." });
+      return res.status(200).json({ message: "El carrito está vacío." });
     }
-
     res.json(carrito);
   } catch (error) {
     res.status(500).json({ message: "Error al obtener el carrito", error });
@@ -77,20 +67,10 @@ export const eliminarDelCarrito = async (req, res) => {
       return res.status(404).json({ message: "Producto no encontrado en el carrito" });
     }
 
-    // Buscar el producto en la base de datos
-    const producto = await Producto.findByPk(producto_id);
-    if (!producto) {
-      return res.status(404).json({ message: "Producto no encontrado" });
-    }
-
-    // Aumentar el stock del producto según la cantidad que estaba en el carrito
-    producto.stock += itemCarrito.cantidad;
-    await producto.save();
-
     // Eliminar el producto del carrito
     await itemCarrito.destroy();
 
-    res.json({ message: "Producto eliminado del carrito y stock actualizado" });
+    res.json({ message: "Producto eliminado del carrito" });
   } catch (error) {
     res.status(500).json({ message: "Error al eliminar del carrito", error });
   }
@@ -109,22 +89,38 @@ export const vaciarCarrito = async (req, res) => {
       return res.status(404).json({ message: "El carrito está vacío" });
     }
 
-    // Recorrer los productos en el carrito y actualizar el stock
-    for (let item of itemsCarrito) {
-      const producto = await Producto.findByPk(item.producto_id);
-      if (producto) {
-        producto.stock += item.cantidad; // Aumentar el stock del producto
-        await producto.save();
-      }
-    }
-
     // Vaciar el carrito
     await Carrito.destroy({
       where: { usuario_id },
     });
 
-    res.json({ message: "Carrito vaciado y stock de productos actualizado" });
+    res.json({ message: "Carrito vaciado" });
   } catch (error) {
     res.status(500).json({ message: "Error al vaciar el carrito", error });
   }
 };
+
+  export const actualizarCantidad = async(req, res) =>{
+    try {
+      const {usuario_id, producto_id, cantidad} = req.body;
+
+      if (cantidad>5){
+          return res.status(400).json({message: "No puedes agregar mas productos"});
+      };
+
+      const miCarrito = await Carrito.findOne({
+        where: {usuario_id, producto_id}
+      });
+
+      if (!miCarrito){
+        return res.status(404).json({message: "Producto no encontrado en el carrito"});
+      }
+
+      miCarrito.cantidad = cantidad;
+      await miCarrito.save();
+      res.json({message: "Cantidad actualizada", miCarrito});
+
+    } catch (error) {
+      res.status(500).json({message: "Error al actualizar la cantidad", error})
+    }
+  };

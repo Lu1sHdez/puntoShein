@@ -46,8 +46,8 @@ const Error400 = lazy(() => import("./components/error/Error400"));
 const PerfilUsuario = lazy(() => import("./usuario/perfil/Perfil.js"));
 const ActualizarPerfilUsuario = lazy(() => import("./usuario/perfil/ActualizarPerfil.js"));
 const DashboardUsuario = lazy(() => import("./usuario/dashboard/Dashboard.js"));
-const ProductosA = lazy(() => import("./usuario/cart/agregarCarrito.js"));
-const Carrito= lazy(() =>  import ("./usuario/cart/Carrito.js"));
+const ProductosA = lazy(() => import("./components/cart/Agregar.js"));
+const Carrito= lazy(() =>  import ("./components/cart/Carrito.js"));
 
 
 //Perfil admin
