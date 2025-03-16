@@ -141,6 +141,8 @@ const Encabezado = () => {
             <button onClick={() => navigate("/productos")} className="hover:underline text-left">Productos</button>
             <button onClick={() => navigate("/ofertas")} className="hover:underline text-left">Ofertas</button>
             <button onClick={() => navigate("/contacto")} className="hover:underline text-left">Contacto</button>
+            <FaShoppingCart className="text-2xl cursor-pointer" onClick={() => navigate("productos/carrito")} />
+              {menu} {/* Aquí se mostrará el menú dependiendo del rol */}
 
             {/* Sección de Búsqueda y Botón Filtros, también visible en mobile */}
             <div className="mt-4">

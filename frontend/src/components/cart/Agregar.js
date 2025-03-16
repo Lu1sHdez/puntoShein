@@ -1,10 +1,10 @@
+// src/components/cart/Agregar.js
+import Swal from "sweetalert2";
 import axios from "axios";
-import Swal from "sweetalert2"; // Importamos SweetAlert2
 
 // Función para agregar productos al carrito
-export const agregarCarrito = async (usuario, producto) => {
+const agregarCarrito = async (usuario, producto) => {
   if (!usuario || !usuario.id) {
-    // Mostrar mensaje con SweetAlert2 si no está autenticado
     Swal.fire({
       icon: "warning",
       title: "Inicia sesión o regístrate",
@@ -15,7 +15,6 @@ export const agregarCarrito = async (usuario, producto) => {
   }
 
   try {
-    // Realizar la solicitud POST al backend para agregar al carrito
     const response = await axios.post(
       "http://localhost:4000/api/carrito/agregar",
       {
@@ -24,11 +23,10 @@ export const agregarCarrito = async (usuario, producto) => {
         cantidad: 1,
       },
       {
-        withCredentials: true, // Asegura que las cookies se envíen con la solicitud
+        withCredentials: true,
       }
     );
 
-    // Mostrar mensaje de éxito con SweetAlert2
     Swal.fire({
       icon: "success",
       title: "Producto agregado",
@@ -45,3 +43,5 @@ export const agregarCarrito = async (usuario, producto) => {
     });
   }
 };
+
+export default agregarCarrito; // Exportación por defecto

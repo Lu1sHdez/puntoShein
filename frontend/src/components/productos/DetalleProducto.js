@@ -4,7 +4,7 @@ import axios from "axios";
 import Breadcrumbs from "../home/Breadcrumbs"; // Importamos las migas de pan personalizadas
 import { mostrarStock } from "../../utils/funtionProductos"; 
 import RegresarButton from "../Regresar";
-import { agregarCarrito } from "../../usuario/cart/agregarCarrito"; // Importamos la función para agregar al carrito
+import agregarCarrito from "../cart/Agregar";
 import Swal from "sweetalert2"; // Importamos SweetAlert2
 
 const DetalleProducto = () => {
