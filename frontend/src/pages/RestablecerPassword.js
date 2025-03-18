@@ -2,19 +2,20 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import FormularioInput from "../components/form/FormularioInput";
 import useFormulario from "../hooks/useFormulario";
-import { formAnimation } from "./Funciones"; 
+import { formAnimation } from "./Funciones";
 import { motion } from "framer-motion";
+import Boton from "../elements/Boton";
 
 const RestablecerPassword = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [errorValidacion, setErrorValidacion] = useState(""); //  Estado para errores
+  const [errorValidacion, setErrorValidacion] = useState(""); // Estado para errores
 
   // Obtener token de la URL
-  const queryParams = new URLSearchParams(location.search);
-  const token = queryParams.get("token");
+  const consulta = new URLSearchParams(location.search);
+  const token = consulta.get("token");
 
   const { datos, mensaje, handleChange, handleSubmit, loading } = useFormulario(
     { nuevaContrasena: "", confirmarContrasena: "", token },
@@ -22,10 +23,10 @@ const RestablecerPassword = () => {
     "/login"
   );
 
-  //Actualizar el mensaje de error si viene del backend
+  // Actualizar el mensaje de error si viene del backend
   useEffect(() => {
     if (mensaje.tipo === "error") {
-      setErrorValidacion(mensaje.texto);
+      setErrorValidacion(mensaje.texto); // Mostrar el mensaje de error
     }
   }, [mensaje]);
 
@@ -53,7 +54,7 @@ const RestablecerPassword = () => {
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
         <h2 className="text-2xl font-semibold text-center text-gray-700">Restablecer Contraseña</h2>
 
-        {/*  Mensaje de error estático arriba del formulario */}
+        {/* Mensaje de error estático arriba del formulario */}
         {errorValidacion && (
           <div className="mb-4 text-red-500 text-sm font-semibold text-center">
             {errorValidacion}
@@ -61,51 +62,48 @@ const RestablecerPassword = () => {
         )}
         <motion.div {...formAnimation}>
 
-        <form onSubmit={validarYEnviar} className="mt-6">
-          {/* Nueva Contraseña */}
-          <FormularioInput
-            label="Nueva Contraseña"
-            type={showPassword ? "text" : "password"}
-            name="nuevaContrasena"
-            placeholder="Ingresa tu nueva contraseña"
-            value={datos.nuevaContrasena}
-            onChange={handleChange}
-            showPassword={showPassword}
-            togglePassword={() => setShowPassword(!showPassword)}
-            required
-          />
+          <form onSubmit={validarYEnviar} className="mt-6">
+            {/* Nueva Contraseña */}
+            <FormularioInput
+              label="Nueva Contraseña"
+              type={showPassword ? "text" : "password"}
+              name="nuevaContrasena"
+              placeholder="Ingresa tu nueva contraseña"
+              value={datos.nuevaContrasena}
+              onChange={handleChange}
+              showPassword={showPassword}
+              togglePassword={() => setShowPassword(!showPassword)}
+              required
+            />
 
-          {/* Confirmar Contraseña */}
-          <FormularioInput
-            label="Confirmar Contraseña"
-            type={showConfirmPassword ? "text" : "password"}
-            name="confirmarContrasena"
-            placeholder="Confirma tu nueva contraseña"
-            value={datos.confirmarContrasena}
-            onChange={handleChange}
-            showPassword={showConfirmPassword}
-            togglePassword={() => setShowConfirmPassword(!showConfirmPassword)}
-            required
-          />
+            {/* Confirmar Contraseña */}
+            <FormularioInput
+              label="Confirmar Contraseña"
+              type={showConfirmPassword ? "text" : "password"}
+              name="confirmarContrasena"
+              placeholder="Confirma tu nueva contraseña"
+              value={datos.confirmarContrasena}
+              onChange={handleChange}
+              showPassword={showConfirmPassword}
+              togglePassword={() => setShowConfirmPassword(!showConfirmPassword)}
+              required
+            />
 
-          <button
-            type="submit"
-            disabled={loading}
-            className={`w-full bg-pink-600 text-white py-2 rounded-lg hover:bg-pink-700 transition ${
-              loading ? "opacity-50 cursor-not-allowed" : ""
-            }`}
-          >
-            Restablecer Contraseña
-          </button>
+            <Boton
+              texto="Restablecer Contraseña"
+              type="submit"
+              disabled={loading}
+              estiloPersonalizado={`w-full bg-pink-600 text-white py-2 rounded-lg hover:bg-pink-700 transition ${
+                loading ? "opacity-50 cursor-not-allowed" : ""
+              }`}
+            />
 
-          <button
-            type="button"
-            onClick={() => navigate("/login")}
-            className="mt-3 w-full text-pink-600 hover:underline"
-          >
-            Volver al inicio de sesión
-          </button>
-        </form>
+            <Boton
+              texto="Volver al inicio de sesión"
+              onClick={() => navigate("/login")}
+              estiloPersonalizado="mt-3 w-full text-pink-600 hover:underline"
+            />
+          </form>
         </motion.div>
       </div>
     </div>

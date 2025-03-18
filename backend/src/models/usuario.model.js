@@ -50,7 +50,7 @@ const Usuario = sequelize.define('Usuario', {
   tokenRecuperacion:{
     type: DataTypes.STRING,
     allowNull: true,
-  }
+  },
 }, {
   tableName: 'usuarios',
   timestamps: true, // Agrega automáticamente los campos createdAt y updatedAt

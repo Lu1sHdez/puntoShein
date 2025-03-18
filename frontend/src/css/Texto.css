@@ -1,15 +1,15 @@
-/* src/css/Texto.css */
+
 .texto-grande {
-    font-size: 2rem; /* Tamaño de letra grande */
-    font-weight: bold; /* En negrita */
-    color: #ffffff; /* Asegura que el color sea blanco */
+    font-size: 2rem; 
+    font-weight: bold; 
+    color: #ffffff; 
     text-transform:uppercase;
   }
   .truncate {
-    white-space: nowrap; /* Evita que el texto se divida en varias líneas */
-    overflow: hidden; /* Esconde el texto que sobrepase el contenedor */
-    text-overflow: ellipsis; /* Añade '...' al final si el texto es muy largo */
-    width: 200px; /* Define el ancho máximo, ajústalo según tus necesidades */
-    display: inline-block; /* Asegura que el texto se comporte como un bloque en línea */
+    white-space: nowrap;
+    overflow: hidden; 
+    text-overflow: ellipsis;
+    width: 200px; 
+    display: inline-block; 
   }
   

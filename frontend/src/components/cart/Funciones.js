@@ -53,3 +53,16 @@ export const vaciarCarrito = async (usuarioId) => {
     throw error;
   }
 };
+
+
+export const obtenerCantidad = async (usuarioId) => {
+  try {
+    const response = await axios.get(`http://localhost:4000/api/carrito/cantidad/${usuarioId}`, {
+      withCredentials: true,
+    });
+    return response.data.totalCantidad || 0; // Retorna la cantidad total de productos o 0 si está vacío
+  } catch (error) {
+    console.error("Error al obtener la cantidad total de productos:", error);
+    throw error;
+  }
+};

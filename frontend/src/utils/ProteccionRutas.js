@@ -1,4 +1,3 @@
-// src/components/ProtectedRoute.js
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 import {jwtDecode} from 'jwt-decode';
@@ -18,7 +17,7 @@ const ProtectedRoute = ({ element: Component, allowedRoles }) => {
       return <Navigate to="/login" />;
     }
 
-    return <Component />; // Renderiza el componente si es autorizado
+    return <Component />; 
   } catch (error) {
     return <Navigate to="/login" />;
   }

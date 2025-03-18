@@ -5,7 +5,10 @@ import Breadcrumbs from "../home/Breadcrumbs"; // Importamos las migas de pan pe
 import { mostrarStock } from "../../utils/funtionProductos"; 
 import RegresarButton from "../Regresar";
 import agregarCarrito from "../cart/Agregar";
-import Swal from "sweetalert2"; // Importamos SweetAlert2
+import Swal from "sweetalert2"; 
+import "../../css/Botones.css"
+import { motion } from "framer-motion";
+
 
 const DetalleProducto = () => {
   const { id } = useParams();
@@ -99,21 +102,22 @@ const DetalleProducto = () => {
 
           <p className="text-2xl font-semibold text-pink-600 mt-4">${producto.precio}</p>
 
-          {/* 🛒 Botones de acción */}
-          <div className="botones-acciones">
-            <button 
+          <div className="botones-acciones flex space-x-4">
+            <motion.button 
               onClick={handleComprarAhora} 
-              className="w-full bg-blue-600 text-white py-3 rounded-lg shadow-md text-lg font-semibold transition transform hover:scale-105 hover:bg-blue-700"
-            >
+              className="boton-comprar"
+              whileHover={{ scale: 1.1 }}
+              transition={{ type: "spring", stiffness: 400 }}>
               Comprar Ahora
-            </button>
+            </motion.button>
             
-            <button 
+            <motion.button 
               onClick={handleAgregarCarrito} 
-              className="w-full bg-pink-600 text-white py-3 rounded-lg shadow-md text-lg font-semibold transition transform hover:scale-105 hover:bg-pink-700"
-            >
+              className="boton-agregar"
+              whileHover={{ scale: 1.1 }}
+              transition={{ type: "spring", stiffness: 400 }}>
               Agregar al Carrito
-            </button>
+            </motion.button>
             <RegresarButton/>
           </div>
         </div>

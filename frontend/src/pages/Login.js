@@ -4,6 +4,7 @@ import FormularioInput from "../components/form/FormularioInput";
 import useFormulario from "../hooks/useFormulario";
 import { formAnimation } from "./Funciones"; 
 import { motion } from "framer-motion";
+import Boton from "../elements/Boton";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -108,15 +109,13 @@ const Login = () => {
             </button>
           </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className={`w-full bg-pink-600 text-white py-2 rounded-lg hover:bg-pink-700 transition ${
-              loading ? "opacity-50 cursor-not-allowed" : ""
-            }`}
-          >
-            Iniciar sesión
-          </button>
+          <Boton
+              texto="Iniciar sesión"
+              onClick={validarYEnviar}
+              estiloPersonalizado={`w-full bg-pink-600 text-white py-2 rounded-lg hover:bg-pink-700 transition ${
+                loading ? "opacity-50 cursor-not-allowed" : ""
+              }`}
+            />
 
           <button
             type="button"

@@ -2,7 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import '../../css/TarjetaProductos.css'; // Importa los estilos
+import '../../css/TarjetaProductos.css';
+import '../../css/Botones.css';
+import { motion } from 'framer-motion';
 
 const ProductoCard = ({ producto, onEliminar }) => {
 
@@ -46,29 +48,36 @@ const ProductoCard = ({ producto, onEliminar }) => {
         <div className="precio">${producto.precio}</div>
 
         <div className="botones">
-          {/* Botón de Ver detalles que redirige a la página de detalle */}
-          <Link
-            to={`/admin/productos/detalle/${producto.id}`}
+          <motion.button
             className="boton-detalles"
+            whileHover={{ scale: 1.1 }}
+            transition={{ type: "spring", stiffness: 400 }}
           >
-            Ver detalles
-          </Link>
+            <Link to={`/admin/productos/detalle/${producto.id}`}>
+              Ver Detalles
+            </Link>
+          </motion.button>
           
           {/* Botón de Editar */}
-          <Link
-            to={`/admin/productos/editar/${producto.id}`}
+          <motion.button
             className="boton-editar"
+            whileHover={{ scale: 1.1 }}
+            transition={{ type: "spring", stiffness: 400 }}
           >
-            Editar
-          </Link>
+            <Link to={`/admin/productos/editar/${producto.id}`}>
+              Editar
+            </Link>
+          </motion.button>
 
           {/* Botón de Eliminar */}
-          <button
+          <motion.button
             className="boton-eliminar"
             onClick={() => handleEliminar(producto.id)}
+            whileHover={{ scale: 1.1 }}
+            transition={{ type: "spring", stiffness: 400 }}
           >
             Eliminar
-          </button>
+          </motion.button>
         </div>
       </div>
     </div>

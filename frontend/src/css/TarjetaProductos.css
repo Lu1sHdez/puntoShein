@@ -1,4 +1,4 @@
-/* src/css/TarjetaProductos.css */
+
 .tarjeta-producto {
     display: flex;
     flex-direction: column;
@@ -58,57 +58,10 @@
     
 }
 
-.boton-agregar {
-    background-color: #db2777; /* bg-pink-600 */
-    color: white;
-    padding: 8px 16px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    gap: 18px; 
-}
 
-.boton-agregar:hover {
-    background-color: #be185d; /* hover:bg-pink-700 */
-}
 .tarjeta-producto:hover {
     transform: translateY(-9px); /* Efecto de levantar la tarjeta */
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6); /* Sombra más grande al hacer hover */
   }
 
-.boton-detalles {
-    background-color: #e0e0e0;
-    color: black;
-    padding: 8px 16px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
 
-.boton-detalles:hover {
-    background-color: #bdbdbd;
-}
-.boton-eliminar {
-    background-color: #ef4444;
-    color: white;
-    padding: 8px 16px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-.boton-eliminar:hover {
-    background-color: #dc2626;
-}
-
-.boton-editar {
-    background-color: #3b82f6;
-    color: white;
-    padding: 8px 16px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.boton-editar:hover {
-    background-color: #2563eb;
-}

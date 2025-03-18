@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FaUserCircle, FaUsers, FaSignInAlt, FaSignOutAlt, FaUserPlus } from "react-icons/fa";
+import { FaUserCircle, FaUser, FaUsers, FaSignInAlt, FaSignOutAlt, FaUserPlus } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { menuAnimado } from "../../home/encabezado/Funciones"; // Importamos las animaciones
 import { motion } from "framer-motion"; // Usamos motion para las animaciones
@@ -32,7 +32,7 @@ const MenuUsuario = ({ usuarioAutenticado, handleLogout }) => {
       onMouseLeave={handleMouseLeave}
     >
       <button className="flex items-center space-x-2">
-        <FaUserCircle className="text-2xl" />
+        <FaUser className="text-2xl" />
       </button>
 
       {menuAbierto && (

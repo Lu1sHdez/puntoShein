@@ -19,7 +19,7 @@ const MenuAdmin = ({ usuarioAutenticado, handleLogout }) => {
   const handleMouseLeave = () => {
     const id = setTimeout(() => {
       setMenuAbierto(false);
-    }, 500);
+    }, 1000);
     setTimeoutId(id);
   };
 
