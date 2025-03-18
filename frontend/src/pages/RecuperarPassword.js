@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import FormularioInput from "../components/form/FormularioInput";
 import useFormulario from "../hooks/useFormulario";
-import { formAnimation } from "./Funciones"; 
+import { formAnimation } from "./Funciones";
 import { motion } from "framer-motion";
-
+import Boton from "../elements/Boton";
 
 const RecuperarPassword = () => {
   const navigate = useNavigate();
@@ -18,10 +18,9 @@ const RecuperarPassword = () => {
     false
   );
 
-  // 🚨 Si hay un error en el backend (como correo no registrado), se actualiza el estado de error
   useEffect(() => {
     if (mensaje.tipo === "error") {
-      setErrorValidacion(mensaje.texto);
+      setErrorValidacion(mensaje.texto); // Mostrar el mensaje de error
     }
   }, [mensaje]);
 
@@ -39,9 +38,9 @@ const RecuperarPassword = () => {
     setErrorCampos({ correo: false }); // Resetear el error del correo
 
     const exito = await handleSubmit(e);
-    if (!exito) return; // 🚨 Si hubo un error, no continuar con la navegación
+    if (!exito) return; // Si hubo un error, no continuar con la navegación
 
-    setTimeout(() => navigate("/login"), 1500);
+    setTimeout(() => navigate("/login"), 1500); // Redirigir después de un pequeño retraso
   };
 
   return (
@@ -57,34 +56,31 @@ const RecuperarPassword = () => {
         )}
 
         <motion.div {...formAnimation}>
-        <form onSubmit={validarYEnviar} className="mt-6">
-          <FormularioInput
-            label="Correo Electrónico"
-            type="email"
-            name="correo"
-            placeholder="ejemplo@dominio.com"
-            value={datos.correo}
-            onChange={handleChange}
-            required
-            error={errorCampos.correo} // Pasar el estado de error
-          />
+          <form onSubmit={validarYEnviar} className="mt-6">
+            <FormularioInput
+              label="Correo Electrónico"
+              type="email"
+              name="correo"
+              placeholder="ejemplo@dominio.com"
+              value={datos.correo}
+              onChange={handleChange}
+              required
+              error={errorCampos.correo} // Pasar el estado de error
+            />
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-pink-600 text-white py-2 rounded-lg hover:bg-pink-700 transition"
-          >
-            Enviar enlace de recuperación
-          </button>
+            <Boton
+              texto="Enviar enlace de recuperación"
+              type="submit"
+              estiloPersonalizado="w-full bg-pink-600 text-white py-2 rounded-lg hover:bg-pink-700 transition"
+              disabled={loading}
+            />
 
-          <button
-            type="button"
-            onClick={() => navigate("/login")}
-            className="mt-3 w-full text-pink-600 hover:underline"
-          >
-            Volver al inicio de sesión
-          </button>
-        </form>
+            <Boton
+              texto="Volver al inicio de sesión"
+              onClick={() => navigate("/login")}
+              estiloPersonalizado="mt-3 w-full text-pink-600 hover:underline"
+            />
+          </form>
         </motion.div>
       </div>
     </div>

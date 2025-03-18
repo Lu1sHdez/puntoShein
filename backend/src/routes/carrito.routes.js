@@ -5,7 +5,8 @@ import {
   obtenerCarrito,
   eliminarDelCarrito,
   vaciarCarrito,
-  actualizarCantidad
+  actualizarCantidad,
+  obtenerCantidad
 } from "../controllers/carrito.controller.js";
 
 const router = express.Router();
@@ -16,5 +17,6 @@ router.get("/:usuario_id", verificarToken, usuarios, obtenerCarrito);
 router.delete("/eliminar", verificarToken, usuarios, eliminarDelCarrito);
 router.delete("/vaciar", verificarToken, usuarios, vaciarCarrito);
 router.put("/actualizarCantidad", verificarToken, usuarios, actualizarCantidad)
+router.get("/cantidad/:usuario_id", verificarToken, usuarios, obtenerCantidad)
 
 export default router;

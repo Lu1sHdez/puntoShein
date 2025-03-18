@@ -1,0 +1,78 @@
+.boton-verMas {
+    background-color: #db2777; 
+    color: white;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    gap: 18px; 
+}
+
+.boton-verMas:hover {
+    background-color: #be185d; 
+}
+
+.boton-detalles {
+    background-color: #e0e0e0;
+    color: black;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.boton-detalles:hover {
+    background-color: #bdbdbd;
+}
+
+.boton-agregar {
+    background-color: #db2777; 
+    color: white;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    gap: 18px; 
+}
+
+.boton-agregar:hover {
+    background-color: #be185d; 
+}
+.boton-comprar {
+    background-color: #3b82f6;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    gap: 18px; 
+}
+
+.boton-comprar:hover {
+    background-color: #2563eb; /* hover:bg-pink-700 */
+}
+
+.boton-eliminar {
+    background-color: #ef4444;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+.boton-eliminar:hover {
+    background-color: #dc2626;
+}
+
+.boton-editar {
+    background-color: #3b82f6;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.boton-editar:hover {
+    background-color: #2563eb;
+}   

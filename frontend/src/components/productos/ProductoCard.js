@@ -4,7 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion"; // Importamos framer-motion para las animaciones
 import agregarCarrito from "../cart/Agregar"; // Importamos la función agregarCarrito desde los servicios
 import axios from "axios";
-import "../../css/TarjetaProductos.css"; // Ruta correcta al archivo de estilos
+import "../../css/TarjetaProductos.css";
+import "../../css/Botones.css"
 
 const ProductoCard = ({ producto }) => {
   const [usuario, setUsuario] = useState(null); // Estado para almacenar los datos del usuario
@@ -69,9 +70,9 @@ const ProductoCard = ({ producto }) => {
         </motion.button>
         <motion.button
           onClick={handleVerDetalles}
-          className="boton-detalles"
+          className="boton-detalles"     
           whileHover={{ scale: 1.1 }}
-          transition={{ type: "spring", stiffness: 400 }}
+          transition={{ type: "spring", stiffness: 400 }}     
         >
           Ver detalles
         </motion.button>

@@ -7,8 +7,9 @@ import { dataLoadingAnimation } from '../../components/Funciones.js';
 import { motion } from 'framer-motion';
 import { LuRefreshCw } from "react-icons/lu";
 import '../../css/Texto.css';
-import BuscarProducto from './BuscarProductos';  // Importar el componente de búsqueda
-import ProductoCard from './ProductoCard';  // Importar el componente ProductoCard
+import '../../css/Botones.css';
+import BuscarProducto from './BuscarProductos'; 
+import ProductoCard from './ProductoCard'; 
 
 const Productos = () => {
   const [productos, setProductos] = useState([]);
@@ -124,7 +125,7 @@ const Productos = () => {
 
   // Función para mostrar más productos
   const handleVerMas = () => {
-    setVisibleProductos((prevVisible) => prevVisible + 4);  // Aumenta la cantidad de productos visibles
+    setVisibleProductos((prevVisible) => prevVisible + 4);  
   };
 
   // Cargando productos o error
@@ -203,9 +204,9 @@ const Productos = () => {
           <div className="flex justify-center mt-6">
             <motion.button
               onClick={handleVerMas}
-              className="bg-pink-600 text-white py-2 px-6 rounded-lg hover:bg-pink-700 transition-all"
-              whileHover={{ scale: 1.05 }} // Efecto de hover en el botón
-              transition={{ type: "spring", stiffness: 300 }}
+              className= "boton-verMas"
+              whileHover={{ scale: 1.1 }}
+              transition={{ type: "spring", stiffness: 400 }}
             >
               Ver más
             </motion.button>

@@ -153,3 +153,11 @@
   usuario: '20221061@uthh.edu.mx',
   fecha_hora: '14/3/2025, 1:09:05'
 }
+{
+  message: 'Credenciales inválidas - Usuario no encontrado',
+  level: 'error',
+  codigo_error: '400',
+  ip_cliente: '::ffff:127.0.0.1',
+  usuario: '20221s061@uthh.edu.mx',
+  fecha_hora: '16/3/2025, 3:46:47'
+}

@@ -5,6 +5,7 @@ import axios from "axios";
 import validaPassword from "../hooks/useValidaPassword";
 import { formAnimation } from "./Funciones"; 
 import { motion } from "framer-motion";
+import Boton from "../elements/Boton";
 
 
 
@@ -226,10 +227,13 @@ const Registro = () => {
 
           {/* Botón de registro */}
           <div className="col-span-2 flex justify-center mt-2">
-            <button type="submit" className="w-full bg-pink-600 text-white px-6 py-2 rounded-md hover:bg-pink-700 transition">
-              Registrarse
-            </button>
+            <Boton
+              texto="Registrarse"
+              onClick={handleSubmit}
+              estiloPersonalizado="w-full bg-pink-600 text-white px-6 py-2 rounded-md hover:bg-pink-700 transition"
+            />
           </div>
+
 
           {/* Si el usuario ya tiene una cuenta */}
           <div className="col-span-2 text-center mt-4">
