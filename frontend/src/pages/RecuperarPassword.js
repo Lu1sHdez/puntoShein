@@ -64,7 +64,6 @@ const RecuperarPassword = () => {
               placeholder="ejemplo@dominio.com"
               value={datos.correo}
               onChange={handleChange}
-              required
               error={errorCampos.correo} // Pasar el estado de error
             />
 

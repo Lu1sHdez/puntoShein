@@ -19,6 +19,8 @@ const Registro = lazy(() => import("./pages/Registro"));
 const RecuperarPassword = lazy(() => import("./pages/RecuperarPassword"));
 const RestablecerPassword = lazy(() => import("./pages/RestablecerPassword"));
 const CerrarSesion = lazy(() => import("./pages/CerrarSesion"));
+const RegistroPregunta = lazy(() => import("./pages/RegistroPregunta"));
+
 
 //  Lazy Loading para páginas de tu carpeta "empresa"
 const AcercaDe = lazy(() => import("./components/empresa/AcercaDe"));
@@ -206,6 +208,10 @@ const App = () => {
                 <Route
                   path="/usuario/actualizarPerfil"
                   element={<ProteccionRutas element={ActualizarPerfilUsuario} allowedRoles={['usuario']} />}
+                />
+                 <Route
+                  path="/usuario/registroPregunta"
+                  element={<ProteccionRutas element={RegistroPregunta} allowedRoles={['usuario']} />}
                 />
               
               </Routes>

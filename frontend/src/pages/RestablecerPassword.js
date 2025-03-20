@@ -12,6 +12,8 @@ const RestablecerPassword = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [errorValidacion, setErrorValidacion] = useState(""); // Estado para errores
+  const [tiempoRestante, setTiempoRestante] = useState(""); // Estado para tiempo restante
+  const [isError, setIsError] = useState(false); // Estado para manejar errores desde el backend
 
   // Obtener token de la URL
   const consulta = new URLSearchParams(location.search);
@@ -23,12 +25,19 @@ const RestablecerPassword = () => {
     "/login"
   );
 
-  // Actualizar el mensaje de error si viene del backend
   useEffect(() => {
     if (mensaje.tipo === "error") {
-      setErrorValidacion(mensaje.texto); // Mostrar el mensaje de error
+      // Si el mensaje de error contiene un tiempo de espera, lo guardamos en el estado correspondiente
+      if (mensaje.texto.includes("intentalo en")) {
+        setIsError(true);
+        setTiempoRestante(mensaje.texto); // Guardar el mensaje del tiempo restante
+      } else {
+        setErrorValidacion(mensaje.texto); // Mostrar otros mensajes de error
+        setIsError(false); // Restablecer estado de error
+      }
     }
   }, [mensaje]);
+  
 
   const validarYEnviar = async (e) => {
     e.preventDefault();
@@ -55,13 +64,18 @@ const RestablecerPassword = () => {
         <h2 className="text-2xl font-semibold text-center text-gray-700">Restablecer Contraseña</h2>
 
         {/* Mensaje de error estático arriba del formulario */}
-        {errorValidacion && (
+        {isError && (
+          <div className="mb-4 text-red-500 text-sm font-semibold text-center">
+            {tiempoRestante} {/* Mostrar el mensaje de tiempo restante */}
+          </div>
+        )}
+        {errorValidacion && !isError && (
           <div className="mb-4 text-red-500 text-sm font-semibold text-center">
             {errorValidacion}
           </div>
         )}
-        <motion.div {...formAnimation}>
 
+        <motion.div {...formAnimation}>
           <form onSubmit={validarYEnviar} className="mt-6">
             {/* Nueva Contraseña */}
             <FormularioInput
@@ -93,9 +107,7 @@ const RestablecerPassword = () => {
               texto="Restablecer Contraseña"
               type="submit"
               disabled={loading}
-              estiloPersonalizado={`w-full bg-pink-600 text-white py-2 rounded-lg hover:bg-pink-700 transition ${
-                loading ? "opacity-50 cursor-not-allowed" : ""
-              }`}
+              estiloPersonalizado={`w-full bg-pink-600 text-white py-2 rounded-lg hover:bg-pink-700 transition ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
             />
 
             <Boton
