@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import helmet from 'helmet';
 
 import autenticacionRutas from './routes/autenticacion.routes.js';
 import productoRutas from './routes/producto.routes.js';
@@ -12,57 +13,40 @@ import empleadoRutas from './routes/empleado.routes.js';
 
 const app = express();
 
+//Deshabilitar la divulgación de la tecnología (X-Powered-By)
+app.disable('x-powered-by');
+
 // Middleware para parsear JSON y cookies
 app.use(express.json());
 app.set('trust proxy', true);
 app.use(cookieParser());
 
-// Configuración de CORS (Permitir solo solicitudes desde el frontend)
-app.use(cors({
-  origin: ['http://localhost:3000'],  // Asegúrate de que solo tu frontend tenga acceso
-  credentials: true,  // Permitir el envío de cookies en solicitudes
+const corsOpcion ={
+  origin: ['http://localhost:3000'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+}
+app.use(cors(corsOpcion));
+
+
+// uso de Helmet para configurar csp
+app.use(helmet());
+
+app.use(helmet.contentSecurityPolicy({
+  directives: {
+    defaultSrc: ["'self'"],  
+    scriptSrc: ["'self'"],  
+    styleSrc: ["'self'"],  
+    imgSrc: ["'self'"],  
+    connectSrc: ["'self'"], 
+    frameAncestors: ["'none'"],  
+  },
 }));
 
-// Deshabilitar el encabezado X-Powered-By para no exponer información sobre el servidor
-app.disable('x-powered-by');
 
-// Configuración de Content-Security-Policy (CSP) para prevenir ataques XSS
-app.use((req, res, next) => {
-  res.setHeader('Content-Security-Policy', 
-    "default-src 'self'; " + 
-    "script-src 'self' https://trusted-scripts.com; " + // Permitir scripts desde un origen confiable
-    "style-src 'self' https://trusted-styles.com; " + // Permitir estilos desde un origen confiable
-    "img-src 'self' https://trusted-images.com; " + // Permitir imágenes desde un origen confiable
-    "font-src 'self'; " + // Permitir fuentes locales
-    "connect-src 'self' https://api.trusted-api.com; " + // Permitir conexiones a APIs confiables
-    "frame-ancestors 'none'; " + // Proteger contra clickjacking
-    "base-uri 'self';"); // Evitar que se cambien las URLs base
-  next();
-});
-
-// Agregar X-Content-Type-Options para evitar "sniffing" del tipo de contenido
-app.use((req, res, next) => {
-  res.setHeader('X-Content-Type-Options', 'nosniff');
-  next();
-});
-
-// Agregar X-Frame-Options para evitar ataques de Clickjacking
-app.use((req, res, next) => {
-  res.setHeader('X-Frame-Options', 'DENY');
-  next();
-});
-
-// Agregar Strict-Transport-Security (HSTS) para forzar el uso de HTTPS
-app.use((req, res, next) => {
-  res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
-  next();
-});
-
-// Agregar Referrer-Policy para no enviar información de referencia en los encabezados
-app.use((req, res, next) => {
-  res.setHeader('Referrer-Policy', 'no-referrer');
-  next();
-});
+// Uso de Helmet para proteger contra Clickjacking
+app.use(helmet.frameguard({ action: 'deny' }));
 
 // Rutas de la aplicación
 app.use('/api/autenticacion', autenticacionRutas);
@@ -80,3 +64,6 @@ app.use((err, req, res, next) => {
 });
 
 export default app;
+
+
+

@@ -6,6 +6,8 @@ import jwt from 'jsonwebtoken';
 import logger from '../libs/logger.js'; 
 import { body, validationResult } from 'express-validator';
 import obtenerFechaHora from '../utils/funciones.js';
+import PreguntaSecreta from '../models/preguntaSecreta.model.js';
+
 
 export const registro = async (req, res) => {
   try {
@@ -224,7 +226,6 @@ export const cerrarSesion = (req, res) => {
   return res.json({ mensaje: "Sesión cerrada exitosamente." });
 };
 
-// Función para recuperar la contraseña
 export const recuperarPassword = async (req, res) => {
   try {
     const { correo } = req.body;
@@ -281,21 +282,39 @@ export const recuperarPassword = async (req, res) => {
   }
 };
 
-// Función para restablecer la contraseña
 export const restablecerPassword = async (req, res) => {
   try {
     const { token, nuevaContrasena } = req.body;
 
-    // Verificar si el token es válido y encontrar al usuario
-    const usuario = await Usuario.findOne({ where: { tokenRecuperacion: token } });
-    if (!usuario) {
-      return res.status(400).json({ mensaje: "Token inválido o expirado." });
-    }
-
     // Verificar si el token ha expirado
     const decoded = jwt.verify(token, process.env.TOKEN_SECRET);
     if (decoded.exp < Math.floor(Date.now() / 1000)) {
-      return res.status(400).json({ mensaje: "El enlace ha expirado. Solicita un nuevo enlace de recuperación." });
+      return res.status(500).json({ mensaje: "El enlace ha expirado. Solicita un nuevo enlace de recuperación." });
+    }
+
+    // Verificar si el token es válido y encontrar al usuario
+    const usuario = await Usuario.findOne({ where: { tokenRecuperacion: token } });
+    if (!usuario) {
+      return res.status(500).json({ mensaje: "Token inválido o expirado." });
+    }
+
+    
+    const ultimoCambioPassword = usuario.ultimoCambioPassword ? new Date(usuario.ultimoCambioPassword).getTime() : 0;
+    const tiempoActual = Date.now();
+    const tiempoLimite = 24 * 60 * 60 * 1000; // 24 horas en milisegundos
+
+    // Calcular la diferencia de tiempo en milisegundos
+    const tiempoRestante = tiempoLimite - (tiempoActual - ultimoCambioPassword);
+
+    // Verificar si el tiempo de espera ha pasado
+    if (tiempoRestante > 0) {
+      // Calcular el tiempo restante en horas y minutos
+      const horasRestantes = Math.floor(tiempoRestante / (1000 * 60 * 60));
+      const minutosRestantes = Math.floor((tiempoRestante % (1000 * 60 * 60)) / (1000 * 60));
+
+      return res.status(500).json({
+        mensaje: `Cambiaste tu contraseña recientemente. Intenta nuevamente en ${horasRestantes} horas y ${minutosRestantes} minutos.`,
+      });
     }
 
     // Validar que la nueva contraseña cumpla con los requisitos
@@ -311,6 +330,7 @@ export const restablecerPassword = async (req, res) => {
     // Actualizar la contraseña y eliminar el token de recuperación
     usuario.password = contraseñaHasheada;
     usuario.tokenRecuperacion = null;
+    usuario.ultimoCambioPassword= new Date();
     await usuario.save();
 
     res.status(200).json({ mensaje: "Contraseña restablecida exitosamente." });
@@ -355,3 +375,47 @@ export const obtenerPerfil = async (req, res) => {
     return res.status(500).json({ mensaje: 'Error interno del servidor.' , error: error.message });
   }
 };
+
+export const registroPregunta = async (req, res) => {
+  try {
+    const token = req.cookies.token;
+    if (!token) {
+      return res.status(401).json({ mensaje: 'No autorizado, token no encontrado.' });
+    }
+
+    const decoded = jwt.verify(token, process.env.TOKEN_SECRET);
+    const usuarioId = decoded.id;
+
+    const { pregunta, respuesta } = req.body;
+    if (!pregunta || !respuesta) {
+      return res.status(400).json({ mensaje: 'La pregunta y la respuesta son obligatorios.' });
+    }
+
+    const usuario = await Usuario.findByPk(usuarioId);
+    if (!usuario) {
+      return res.status(404).json({ mensaje: 'Usuario no encontrado.' });
+    }
+
+    const nuevaPregunta = await PreguntaSecreta.create({
+      pregunta,
+      respuesta,
+      usuario_id: usuarioId,
+    });
+
+    return res.status(201).json({
+      mensaje: 'Pregunta secreta registrada exitosamente.',
+      pregunta: {
+        id: nuevaPregunta.id,
+        pregunta: nuevaPregunta.pregunta,
+      },
+    });
+  } catch (error) {
+    console.error(error);  // Muestra más detalles en la consola
+    return res.status(500).json({
+      mensaje: 'Error interno del servidor.',
+      error: error.message,  // Devuelve el mensaje de error para depuración
+    });
+  }
+};
+
+
