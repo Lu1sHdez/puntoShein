@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, Routes, Route } from 'react-router-dom';  // Usamos Link para la navegación, y Routes y Route para las rutas
-import { FaCog, FaUsers, FaBox, FaUserTie } from 'react-icons/fa';  // Iconos para las tarjetas
+import { FaCog, FaUsers, FaBox, FaUserTie, FaQuestionCircle} from 'react-icons/fa';  // Iconos para las tarjetas
 import { BsPersonLinesFill } from 'react-icons/bs';  // Icono para el perfil
 
 // Importar los componentes necesarios para las rutas
@@ -8,7 +8,7 @@ import Configuracion from '../setting/Configuracion';  // Componente para la con
 import Empresa from '../empresa/Empresa';  // Componente para la empresa
 import Usuarios from '../usuarios/Usuarios';  // Componente para los usuarios
 import Empleados from '../empleados/Empleados';  // Componente para los empleados
-import Productos from '../productos/Productos';  // Componente para los productos
+import Productos from '../productos/Productos';  
 import { dashboardAnimation } from '../../components/Funciones.js';
 import { motion } from 'framer-motion';
 
@@ -77,6 +77,15 @@ const Dashboard = () => {
                     <FaBox className="text-4xl text-gray-700 mb-4" />
                     <h2 className="text-xl font-semibold">Empresa</h2>
                     <p className="text-gray-500 mt-2">Administra la información de la empresa.</p>
+                </Link>
+                {/* Tarjeta de Preguntas */}
+                <Link
+                    to="/admin/preguntasFrecuentes"
+                    className="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition duration-300 transform hover:scale-105"
+                >
+                    <FaQuestionCircle className="text-4xl text-gray-700 mb-4" />
+                    <h2 className="text-xl font-semibold">Preguntas Frecuentes</h2>
+                    <p className="text-gray-500 mt-2">Administra las preguntas frecuentes de la empresa</p>
                 </Link>
             </div>
 

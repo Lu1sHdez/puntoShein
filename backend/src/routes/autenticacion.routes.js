@@ -1,8 +1,6 @@
 import express from 'express';
-import { registro, login, cerrarSesion, recuperarPassword,restablecerPassword, registroPregunta} from '../controllers/autenticacion.controller.js';
-import { verificarToken, validarRol } from '../middleware/auth.js';
+import { registro, login, cerrarSesion, recuperarPassword,restablecerPassword} from '../controllers/autenticacion.controller.js';
 
-const usuario = validarRol(['usuario']);
 const router = express.Router();
 
 // Ruta para registrar usuarios
@@ -18,7 +16,5 @@ router.post('/logout', cerrarSesion);
 router.post('/recuperarPassword', express.json(), recuperarPassword);
 // Ruta para restablecer contraseña
 router.post('/restablecerPassword', express.json(), restablecerPassword);
-
-router.post('/registroPregunta', verificarToken, usuario, registroPregunta);
 
 export default router;

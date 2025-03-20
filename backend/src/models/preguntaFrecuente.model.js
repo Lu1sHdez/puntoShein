@@ -1,10 +1,10 @@
-import { DataTypes } from "sequelize";
-import { sequelize } from "../database/database.js";
+import { DataTypes } from 'sequelize';
+import { sequelize } from '../database/database.js';
 
-const PreguntaFrecuente = sequelize.define("PreguntaFrecuente", {
+const PreguntaFrecuente = sequelize.define('PreguntaFrecuente', {
   id: {
-    type: DataTypes.INTEGER,
-    autoIncrement: true,
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
     primaryKey: true,
   },
   pregunta: {
@@ -12,20 +12,12 @@ const PreguntaFrecuente = sequelize.define("PreguntaFrecuente", {
     allowNull: false,
   },
   respuesta: {
-    type: DataTypes.TEXT,
+    type: DataTypes.STRING,
     allowNull: false,
   },
-  empresa_id: {
-    type: DataTypes.INTEGER,
-    references: {
-      model: 'empresa',
-      key: 'id',
-    },
-    onDelete: 'CASCADE',
-  },
 }, {
-  tableName: "preguntas_frecuentes",
-  timestamps: false,
+  tableName: 'preguntas_frecuentes',
+  timestamps: true, // Agrega automáticamente los campos createdAt y updatedAt
 });
 
 export default PreguntaFrecuente;

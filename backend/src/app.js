@@ -10,6 +10,8 @@ import carritoRutas from "./routes/carrito.routes.js";
 import adminRutas from './routes/admin.routes.js'; 
 import empresaRutas from './routes/empresa.routes.js'; 
 import empleadoRutas from './routes/empleado.routes.js'; 
+import preguntaFrecuenteRutas from './routes/preguntaFrecuente.routes.js'; 
+
 
 const app = express();
 
@@ -56,6 +58,7 @@ app.use('/api/carrito', carritoRutas);
 app.use('/api/empresa', empresaRutas);
 app.use('/api/admin', adminRutas);
 app.use('/api/empleado', empleadoRutas);
+app.use('/api/preguntas', preguntaFrecuenteRutas)
 
 // Middleware de manejo de errores para capturar errores no controlados
 app.use((err, req, res, next) => {

@@ -6,7 +6,6 @@ import jwt from 'jsonwebtoken';
 import logger from '../libs/logger.js'; 
 import { body, validationResult } from 'express-validator';
 import obtenerFechaHora from '../utils/funciones.js';
-import PreguntaSecreta from '../models/preguntaSecreta.model.js';
 
 
 export const registro = async (req, res) => {
@@ -373,48 +372,6 @@ export const obtenerPerfil = async (req, res) => {
   } catch (error) {
     console.error(error); 
     return res.status(500).json({ mensaje: 'Error interno del servidor.' , error: error.message });
-  }
-};
-
-export const registroPregunta = async (req, res) => {
-  try {
-    const token = req.cookies.token;
-    if (!token) {
-      return res.status(401).json({ mensaje: 'No autorizado, token no encontrado.' });
-    }
-
-    const decoded = jwt.verify(token, process.env.TOKEN_SECRET);
-    const usuarioId = decoded.id;
-
-    const { pregunta, respuesta } = req.body;
-    if (!pregunta || !respuesta) {
-      return res.status(400).json({ mensaje: 'La pregunta y la respuesta son obligatorios.' });
-    }
-
-    const usuario = await Usuario.findByPk(usuarioId);
-    if (!usuario) {
-      return res.status(404).json({ mensaje: 'Usuario no encontrado.' });
-    }
-
-    const nuevaPregunta = await PreguntaSecreta.create({
-      pregunta,
-      respuesta,
-      usuario_id: usuarioId,
-    });
-
-    return res.status(201).json({
-      mensaje: 'Pregunta secreta registrada exitosamente.',
-      pregunta: {
-        id: nuevaPregunta.id,
-        pregunta: nuevaPregunta.pregunta,
-      },
-    });
-  } catch (error) {
-    console.error(error);  // Muestra más detalles en la consola
-    return res.status(500).json({
-      mensaje: 'Error interno del servidor.',
-      error: error.message,  // Devuelve el mensaje de error para depuración
-    });
   }
 };
 
