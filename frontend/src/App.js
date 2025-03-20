@@ -19,12 +19,10 @@ const Registro = lazy(() => import("./pages/Registro"));
 const RecuperarPassword = lazy(() => import("./pages/RecuperarPassword"));
 const RestablecerPassword = lazy(() => import("./pages/RestablecerPassword"));
 const CerrarSesion = lazy(() => import("./pages/CerrarSesion"));
-const RegistroPregunta = lazy(() => import("./pages/RegistroPregunta"));
-
 
 //  Lazy Loading para páginas de tu carpeta "empresa"
 const AcercaDe = lazy(() => import("./components/empresa/AcercaDe"));
-const PreguntasFrecuentes = lazy(() =>import("./components/empresa/PreguntasFrecuentes"));
+const PreguntasFrecuentes = lazy(() =>import("./admin/empresa/preguntasFrecuentes/PreguntasFrecuentes.js"));
 const PoliticaPrivacidad = lazy(() =>import("./components/empresa/PoliticaPrivacidad"));
 
 //Documentos de la empresa
@@ -33,6 +31,7 @@ const DeslindeLegal = lazy(() => import("./components/empresa/DeslindeLegal"));
 const Contacto = lazy(() => import("./components/empresa/Contacto"));
 const Ayuda = lazy(() => import("./components/empresa/Ayuda"));
 const MapaSitio = lazy(() => import("./components/empresa/MapaSitio"));
+const PreguntasFrecuentesAll = lazy(() => import("./components/empresa/PreguntasFrecuentes.js"));
 
 
 //Pagina Principal
@@ -93,8 +92,6 @@ const App = () => {
                 <Route path="/restablecerPassword" element={<RestablecerPassword />} />
                 <Route path="/cerrar-sesion" element={<CerrarSesion />} />
 
-
-
                 {/* Nueva ruta para la búsqueda de productos */}
                 <Route path="/buscar" element={<BuscarProductos />} />
                 <Route path="/productos/filtrados" element={<ProductosFiltrados />} />
@@ -102,7 +99,7 @@ const App = () => {
 
                 {/* Rutas de información de la empresa */}
                 <Route path="/acercaDe" element={<AcercaDe />} />
-                <Route path="/preguntasFrecuentes" element={<PreguntasFrecuentes />} />
+                <Route path="/preguntasFrecuentes" element={<PreguntasFrecuentesAll />} />
                 <Route path="/privacidad" element={<PoliticaPrivacidad />} />
                 <Route path="/terminos" element={<Terminos />} />
                 <Route path="/deslindeLegal" element={<DeslindeLegal />} />
@@ -128,6 +125,11 @@ const App = () => {
                 <Route
                   path="/admin/dashboard"
                   element={<ProteccionRutas element={DashboardAdmin} allowedRoles={['administrador']} />}
+                />
+
+                <Route
+                  path="/admin/preguntasFrecuentes"
+                  element={<ProteccionRutas element={PreguntasFrecuentes} allowedRoles={['administrador']} />}
                 />
                 <Route
                   path="/admin/configuracion"
@@ -208,10 +210,6 @@ const App = () => {
                 <Route
                   path="/usuario/actualizarPerfil"
                   element={<ProteccionRutas element={ActualizarPerfilUsuario} allowedRoles={['usuario']} />}
-                />
-                 <Route
-                  path="/usuario/registroPregunta"
-                  element={<ProteccionRutas element={RegistroPregunta} allowedRoles={['usuario']} />}
                 />
               
               </Routes>

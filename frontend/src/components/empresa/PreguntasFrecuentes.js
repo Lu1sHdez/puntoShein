@@ -1,51 +1,72 @@
-import React from "react";
-import { dataLoadingAnimation} from '../Funciones';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { dataLoadingAnimation } from '../Funciones';
 import { motion } from 'framer-motion';
 
 const PreguntasFrecuentes = () => {
+  const [preguntas, setPreguntas] = useState([]);
+  const [activeQuestion, setActiveQuestion] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Función para obtener las preguntas frecuentes desde la API
+  const fetchPreguntas = async () => {
+    try {
+      const response = await axios.get('http://localhost:4000/api/preguntas/obtener', {
+        withCredentials: true,  // Si usas autenticación basada en cookies
+      });
+      setPreguntas(response.data);  // Almacena las preguntas en el estado
+    } catch (error) {
+      setError('Error al obtener las preguntas frecuentes');
+      console.error('Error al obtener las preguntas frecuentes:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Usamos useEffect para cargar las preguntas cuando el componente se monta
+  useEffect(() => {
+    fetchPreguntas();
+  }, []);
+
+  const toggleAnswer = (index) => {
+    if (activeQuestion === index) {
+      setActiveQuestion(null); // Si la misma pregunta se hace clic, se cierra
+    } else {
+      setActiveQuestion(index); // Si una nueva pregunta se hace clic, se abre
+    }
+  };
+
+  if (loading) {
+    return <div className="text-center py-4 text-lg">Cargando...</div>;
+  }
+
+  if (error) {
+    return <div className="text-center py-4 text-red-500">{error}</div>;
+  }
+
   return (
     <motion.div {...dataLoadingAnimation} className="p-4 max-w-3xl mx-auto">
       <h2 className="text-2xl font-bold text-center mb-6">Preguntas Frecuentes (FAQ)</h2>
 
-      <div className="mb-4">
-        <h3 className="text-lg font-semibold mb-2">1. ¿Cómo puedo realizar un pedido?</h3>
-        <p>
-          Para hacer un pedido, navega por nuestro catálogo, selecciona los productos
-          que deseas y agrégalos al carrito. Luego, procede con el pago en el checkout.
-        </p>
-      </div>
-
-      <div className="mb-4">
-        <h3 className="text-lg font-semibold mb-2">2. ¿Cuáles son las opciones de pago?</h3>
-        <p>
-          Aceptamos tarjetas de crédito, débito, PayPal y depósitos bancarios. 
-          Verifica los métodos disponibles durante el proceso de compra.
-        </p>
-      </div>
-
-      <div className="mb-4">
-        <h3 className="text-lg font-semibold mb-2">3. ¿Cuánto tarda el envío?</h3>
-        <p>
-          El tiempo de entrega varía según la ubicación. Generalmente, oscila entre 
-          3 y 7 días hábiles. Ofrecemos también envíos exprés con un costo adicional.
-        </p>
-      </div>
-
-      <div className="mb-4">
-        <h3 className="text-lg font-semibold mb-2">4. ¿Puedo devolver o cambiar un producto?</h3>
-        <p>
-          Contamos con una política de devoluciones dentro de los primeros 15 días 
-          posteriores a la entrega. Para más detalles, consulta nuestros{" "}
-          <strong>Términos y Condiciones</strong>.
-        </p>
-      </div>
-
-      <div className="mb-4">
-        <h3 className="text-lg font-semibold mb-2">5. ¿Cómo contacto al servicio de atención al cliente?</h3>
-        <p>
-          Puedes enviarnos un correo a <em>soporte@puntoshein.com</em> o llamar 
-          al 01-800-PUNTO (78686) de lunes a viernes, de 9:00 a 18:00 hrs.
-        </p>
+      <div className="overflow-y-auto max-h-96"> {/* Contenedor con scroll */}
+        {preguntas.length > 0 ? (
+          preguntas.map((pregunta, index) => (
+            <div key={index} className="mb-4">
+              <h3
+                className="text-lg font-semibold cursor-pointer mb-2"
+                onClick={() => toggleAnswer(index)}
+              >
+                {index + 1}. {pregunta.pregunta}
+              </h3>
+              {activeQuestion === index && (
+                <p>{pregunta.respuesta}</p>
+              )}
+            </div>
+          ))
+        ) : (
+          <div className="text-center py-4 text-gray-600">No hay preguntas frecuentes disponibles.</div>
+        )}
       </div>
     </motion.div>
   );
