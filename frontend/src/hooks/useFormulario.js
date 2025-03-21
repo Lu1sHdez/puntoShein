@@ -18,16 +18,6 @@ const useFormulario = (initialState, url, redirigir, isAuthForm = false) => {
   setLoading(true);
   setMensaje({ tipo: "", texto: "" });
 
-  // Validar que los campos estén llenos
-  if (!datos.correo && !datos.nombre_usuario) {
-    await Swal.fire({ 
-      icon: "error",
-      title: "Error",
-      text: "Correo o Nombre de usuario es obligatorio.",
-    });
-    setLoading(false);
-    return false;
-  }
 
   try {
     const respuesta = await axios.post(url, datos, { 

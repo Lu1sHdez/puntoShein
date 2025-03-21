@@ -17,6 +17,10 @@ const ProductosFiltrados = lazy(() => import("./components/productos/ProductosFi
 const Login = lazy(() => import("./pages/Login"));
 const Registro = lazy(() => import("./pages/Registro"));
 const RecuperarPassword = lazy(() => import("./pages/RecuperarPassword"));
+const SolicitarPasswordTelefono = lazy(() => import("./pages/RecuperarPasswordTelefono.js"));
+const VerificarTelefono = lazy(() => import("./pages/VerificarCodigoTelefono.js"));
+const RestablecerTelefono = lazy(() => import("./pages/RestablecerPasswordTelefono.js"));
+
 const RestablecerPassword = lazy(() => import("./pages/RestablecerPassword"));
 const CerrarSesion = lazy(() => import("./pages/CerrarSesion"));
 
@@ -89,6 +93,10 @@ const App = () => {
                 <Route path="/login" element={<Login />} />
                 <Route path="/registro" element={<Registro />} />
                 <Route path="/recuperarPassword" element={<RecuperarPassword />} />
+                <Route path="/solicitarPasswordTelefono" element={<SolicitarPasswordTelefono />} />
+                <Route path="/verificarTelefono" element={<VerificarTelefono />} />
+                <Route path="/restablecerPasswordTelefono" element={<RestablecerTelefono />} />
+
                 <Route path="/restablecerPassword" element={<RestablecerPassword />} />
                 <Route path="/cerrar-sesion" element={<CerrarSesion />} />
 

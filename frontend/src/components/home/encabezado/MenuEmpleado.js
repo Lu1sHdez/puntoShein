@@ -53,6 +53,17 @@ const MenuEmpleado = ({ usuarioAutenticado, handleLogout }) => {
                   Mi perfil
                 </Link>
               </motion.div>
+              {/* Animación para "Mi perfil" */}
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }}>
+                <Link
+                  to="/empleado/dashboard"
+                  onClick={() => setMenuAbierto(false)}
+                  className="w-full text-left px-4 py-2 hover:bg-gray-200 flex items-center"
+                >
+                  <FaUsers className="mr-2" />
+                  Dashboard
+                </Link>
+              </motion.div>
 
               {/* Animación para "Cerrar sesión" */}
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}>
