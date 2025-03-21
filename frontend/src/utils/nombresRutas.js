@@ -17,7 +17,8 @@ const nombresRutas = {
     "solicitarPasswordTelefono": "Recuperar contraseña",  
     "verificarTelefono": "Recuperar contraseña",
     "preguntasFrecuentes":"Preguntas frecuentes",
-    "restablecerPasswordTelefono":" Recuperar contraseña",
+    "restablecerPasswordTelefono":"Recuperar contraseña",
+    "opcionRestablecimiento":"Metodo de recuperar contraseña"
   };
   
   export default nombresRutas;

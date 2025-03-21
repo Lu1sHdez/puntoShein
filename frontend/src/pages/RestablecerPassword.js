@@ -5,6 +5,7 @@ import useFormulario from "../hooks/useFormulario";
 import { formAnimation } from "./Funciones";
 import { motion } from "framer-motion";
 import Boton from "../elements/Boton";
+import RegresarButton from "../components/Regresar";
 
 const RestablecerPassword = () => {
   const navigate = useNavigate();
@@ -116,6 +117,7 @@ const RestablecerPassword = () => {
               estiloPersonalizado="mt-3 w-full text-pink-600 hover:underline"
             />
           </form>
+          <RegresarButton/>
         </motion.div>
       </div>
     </div>

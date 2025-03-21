@@ -4,6 +4,7 @@ import FormularioInput from "../components/form/FormularioInput";
 import Boton from "../elements/Boton";
 import { motion } from "framer-motion";
 import { formAnimation } from "./Funciones";
+import RegresarButton from "../components/Regresar";
 
 const VerificarCodigoTelefono = () => {
   const navigate = useNavigate();
@@ -87,6 +88,7 @@ const VerificarCodigoTelefono = () => {
               estiloPersonalizado="mt-3 w-full text-pink-600 hover:underline"
             />
           </form>
+          <RegresarButton/>
         </motion.div>
       </div>
     </div>

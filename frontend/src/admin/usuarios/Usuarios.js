@@ -5,6 +5,7 @@ import RegresarButton from '../../components/Regresar.js';
 import Swal from 'sweetalert2';
 import { dataLoadingAnimation } from '../../components/Funciones.js';
 import { motion } from 'framer-motion';
+import { mostrarNotificacion } from '../../Animations/NotificacionSwal.js';
 
 const Usuarios = () => {
   const [usuarios, setUsuarios] = useState([]);
@@ -91,19 +92,12 @@ const Usuarios = () => {
           withCredentials: true,
         });
         setUsuarios(usuarios.filter((usuario) => usuario.id !== id));  // Actualizamos la lista de usuarios
-        Swal.fire({
-          icon: 'success',
-          title: 'Eliminado',
-          text: 'Usuario eliminado exitosamente.',
-        });
+        mostrarNotificacion("success", "Usuario eliminado exitosamente.")
+
       }
     } catch (error) {
       console.error('Error al eliminar el usuario:', error);
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'Hubo un problema al eliminar el usuario.',
-      });
+      mostrarNotificacion("error", "Hubo un problema al eliminar al usuario")
     }
   };
   
@@ -150,19 +144,13 @@ const Usuarios = () => {
         setUsuarios(usuarios.map(usuario =>
           usuario.id === userId ? { ...usuario, rol: newRole } : usuario
         ));
-        Swal.fire({
-          icon: 'success',
-          title: 'Rol actualizado',
-          text: 'Rol actualizado exitosamente.',
-        });
+        mostrarNotificacion("success", "Rol actualizado correctamente")
+
       }
     } catch (error) {
       console.error('Error al actualizar el rol:', error);
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'Hubo un problema al actualizar el rol.',
-      });
+      mostrarNotificacion("error", "Hubo un problema al actualizar el rol.")
+
     }
   };
 

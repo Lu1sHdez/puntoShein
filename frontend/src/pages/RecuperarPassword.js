@@ -5,6 +5,7 @@ import useFormulario from "../hooks/useFormulario";
 import { formAnimation } from "./Funciones";
 import { motion } from "framer-motion";
 import Boton from "../elements/Boton";
+import RegresarButton from "../components/Regresar";
 
 const RecuperarPassword = () => {
   const navigate = useNavigate();
@@ -46,7 +47,7 @@ const RecuperarPassword = () => {
   return (
     <div className="flex items-center justify-center mt-0">
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-        <h2 className="text-2xl font-semibold text-center text-gray-700">Recuperar Contraseña</h2>
+        <h2 className="text-2xl font-semibold text-center text-gray-700">Recuperar Contraseña (Correo)</h2>
 
         {/* Mensaje de error estático */}
         {errorValidacion && (
@@ -73,6 +74,11 @@ const RecuperarPassword = () => {
               estiloPersonalizado="w-full bg-pink-600 text-white py-2 rounded-lg hover:bg-pink-700 transition"
               disabled={loading}
             />
+            <Boton
+              texto="Recuperar por teléfono"
+              onClick={() => navigate("/solicitarPasswordTelefono")}
+              estiloPersonalizado="mt-3 w-full text-blue-600 hover:underline"
+            />
 
             <Boton
               texto="Volver al inicio de sesión"
@@ -80,6 +86,7 @@ const RecuperarPassword = () => {
               estiloPersonalizado="mt-3 w-full text-pink-600 hover:underline"
             />
           </form>
+          <RegresarButton/>
         </motion.div>
       </div>
     </div>

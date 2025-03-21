@@ -20,6 +20,7 @@ const RecuperarPassword = lazy(() => import("./pages/RecuperarPassword"));
 const SolicitarPasswordTelefono = lazy(() => import("./pages/RecuperarPasswordTelefono.js"));
 const VerificarTelefono = lazy(() => import("./pages/VerificarCodigoTelefono.js"));
 const RestablecerTelefono = lazy(() => import("./pages/RestablecerPasswordTelefono.js"));
+const OpcionRecuperarPassword = lazy(() => import("./pages/OpcionRecuperarPassword.js"));
 
 const RestablecerPassword = lazy(() => import("./pages/RestablecerPassword"));
 const CerrarSesion = lazy(() => import("./pages/CerrarSesion"));
@@ -96,6 +97,9 @@ const App = () => {
                 <Route path="/solicitarPasswordTelefono" element={<SolicitarPasswordTelefono />} />
                 <Route path="/verificarTelefono" element={<VerificarTelefono />} />
                 <Route path="/restablecerPasswordTelefono" element={<RestablecerTelefono />} />
+                <Route path="/opcionRestablecimiento" element={<OpcionRecuperarPassword />} />
+
+
 
                 <Route path="/restablecerPassword" element={<RestablecerPassword />} />
                 <Route path="/cerrar-sesion" element={<CerrarSesion />} />

@@ -5,6 +5,7 @@ import RegresarButton from '../../../components/Regresar';
 import { useNavigate } from 'react-router-dom';
 import { formAnimation } from '../../../components/Funciones.js';
 import { motion } from 'framer-motion';
+import { mostrarNotificacion } from '../../../Animations/NotificacionSwal.js';
 
 const CrearProducto = () => {
   const [nombre, setNombre] = useState('');
@@ -67,12 +68,7 @@ const CrearProducto = () => {
 
       await axios.post('http://localhost:4000/api/admin/productos', producto, { withCredentials: true });
 
-      Swal.fire({
-        title: '¡Éxito!',
-        text: 'Producto creado exitosamente',
-        icon: 'success',
-        confirmButtonText: 'Aceptar',
-      });
+      mostrarNotificacion("success", "Producto creado exitosamente");
 
       navigate('/admin/productos');
     } catch (err) {
@@ -91,6 +87,7 @@ const CrearProducto = () => {
       const response = await axios.post('http://localhost:4000/api/admin/categorias', { nombre: nuevaCategoria }, { withCredentials: true });
       setCategorias([...categorias, response.data]);
       setCategoriaId(response.data.id);
+      mostrarNotificacion("success", "Categoria creada correctamente");
       setNuevaCategoria('');
       setShowCrearCategoria(false); // Cerrar el formulario al crear una categoría
     } catch (err) {
@@ -103,6 +100,7 @@ const CrearProducto = () => {
       const response = await axios.post('http://localhost:4000/api/admin/subcategorias', { nombre: nuevaSubcategoria, categoria_id: categoriaId }, { withCredentials: true });
       setSubcategorias([...subcategorias, response.data]);
       setSubcategoriaId(response.data.id);
+      mostrarNotificacion("success", "Subcategoria creada correctamente");
       setNuevaSubcategoria('');
       setShowCrearSubcategoria(false); // Cerrar el formulario al crear una subcategoría
     } catch (err) {
@@ -250,7 +248,7 @@ const CrearProducto = () => {
               <button
                 type="button"
                 onClick={() => setShowCrearSubcategoria(!showCrearSubcategoria)} // Toggle para mostrar/ocultar el formulario de nueva subcategoría
-                className="mt-2 px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
+                className="mt-2 px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600"
               >
                 {showCrearSubcategoria ? 'Cancelar' : 'Crear Nueva Subcategoría'}
               </button>

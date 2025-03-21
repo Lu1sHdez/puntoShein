@@ -4,6 +4,7 @@ import FormularioInput from "../components/form/FormularioInput";
 import { motion } from "framer-motion";
 import Boton from "../elements/Boton";
 import { formAnimation } from "./Funciones";
+import RegresarButton from "../components/Regresar";
 
 const RecuperarPasswordTelefono = () => {
   const navigate = useNavigate();
@@ -87,6 +88,11 @@ const RecuperarPasswordTelefono = () => {
               estiloPersonalizado="w-full bg-pink-600 text-white py-2 rounded-lg hover:bg-pink-700 transition"
               disabled={loading}
             />
+            <Boton
+              texto="Recuperar por Correo"
+              onClick={() => navigate("/recuperarPassword")}
+              estiloPersonalizado="mt-3 w-full text-blue-600 hover:underline"
+            />
 
             <Boton
               texto="Volver al inicio de sesión"
@@ -94,6 +100,7 @@ const RecuperarPasswordTelefono = () => {
               estiloPersonalizado="mt-3 w-full text-pink-600 hover:underline"
             />
           </form>
+          <RegresarButton/>
         </motion.div>
       </div>
     </div>

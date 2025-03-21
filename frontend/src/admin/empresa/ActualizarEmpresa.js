@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'; // Importar useNavigate en lugar
 import RegresarButton from '../../components/Regresar.js';
 import { dataLoadingAnimation} from '../../components/Funciones.js';
 import { motion } from 'framer-motion';
+import { mostrarNotificacion } from '../../Animations/NotificacionSwal.js';
 
 const ActualizarEmpresa = () => {
   const [empresa, setEmpresa] = useState({
@@ -79,8 +80,8 @@ const ActualizarEmpresa = () => {
       await axios.put('http://localhost:4000/api/admin/empresa', empresa, {
         withCredentials: true,
       });
+      mostrarNotificacion("success", "Datos actualizados correctamente")
       navigate('/admin/empresa');  // Usar navigate para redirigir a la página de la empresa después de actualizar
-      window.location.reload()
     } catch (error) {
       setError('Error al actualizar los datos de la empresa');
       console.error('Error al actualizar los datos de la empresa:', error);

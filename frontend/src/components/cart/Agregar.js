@@ -1,7 +1,9 @@
 // src/components/cart/Agregar.js
 import Swal from "sweetalert2";
 import axios from "axios";
+import { mostrarNotificacion } from "../../Animations/NotificacionSwal";
 
+mostrarNotificacion();
 // Función para agregar productos al carrito
 const agregarCarrito = async (usuario, producto) => {
   if (!usuario || !usuario.id) {
@@ -27,12 +29,8 @@ const agregarCarrito = async (usuario, producto) => {
       }
     );
 
-    Swal.fire({
-      icon: "success",
-      title: "Producto agregado",
-      text: response.data.message,
-      confirmButtonText: "Aceptar",
-    });
+    mostrarNotificacion("success", "Producto agregado al carrito");
+
   } catch (error) {
     console.error("Error al agregar al carrito:", error);
     Swal.fire({

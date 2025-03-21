@@ -102,7 +102,7 @@ const Login = () => {
           <div className="mt-3 text-right">
             <button
               type="button"
-              onClick={() => navigate("/recuperarPassword")}
+              onClick={() => navigate("/opcionRestablecimiento")}
               className="text-sm text-pink-600 hover:underline"
             >
               ¿Olvidaste tu contraseña?

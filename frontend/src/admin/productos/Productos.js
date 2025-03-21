@@ -10,6 +10,8 @@ import '../../css/Texto.css';
 import '../../css/Botones.css';
 import BuscarProducto from './BuscarProductos'; 
 import ProductoCard from './ProductoCard'; 
+import { mostrarNotificacion } from '../../Animations/NotificacionSwal.js';
+
 
 const Productos = () => {
   const [productos, setProductos] = useState([]);
@@ -91,11 +93,7 @@ const Productos = () => {
           withCredentials: true,
         });
         setProductos(productos.filter((producto) => producto.id !== id));  // Elimina el producto de la lista
-        Swal.fire({
-          icon: 'success',
-          title: 'Eliminado',
-          text: 'Producto eliminado exitosamente.',
-        });
+        mostrarNotificacion("success", "Producto eliminado correctamente") 
       }
     } catch (err) {
       console.error('Error al eliminar el producto:', err);

@@ -2,10 +2,13 @@ import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { obtenerCarrito, actualizarCantidad, eliminarDelCarrito, vaciarCarrito, obtenerCantidad } from "./Funciones";
-import { FaPlus, FaMinus, FaTrashAlt } from "react-icons/fa";
+import { FaPlus, FaMinus, FaTrashAlt, FaShoppingCart } from "react-icons/fa";
 import axios from "axios";
 import { dataLoadingAnimation} from '../../components/Funciones.js';
 import { motion } from 'framer-motion';
+import { mostrarNotificacion } from "../../Animations/NotificacionSwal.js";
+
+mostrarNotificacion();
 
 const Carrito = () => {
   const [carrito, setCarrito] = useState([]);
@@ -42,11 +45,11 @@ const Carrito = () => {
 
       try {
         const data = await obtenerCarrito(usuario.id);
-        setCarrito(data.carrito); // Actualiza el carrito con la respuesta del backend
+        setCarrito(data?.carrito || []); // Actualiza el carrito con la respuesta del backend
 
         // Llamamos a obtenerCantidad para obtener la cantidad total de productos en el carrito
         const cantidadTotal = await obtenerCantidad(usuario.id);
-        setTotalCantidad(cantidadTotal); // Actualiza el estado con la cantidad total
+        setTotalCantidad(cantidadTotal ||0); // Actualiza el estado con la cantidad total
       } catch (error) {
         Swal.fire({
           icon: "error",
@@ -100,12 +103,7 @@ const Carrito = () => {
     if (result.isConfirmed) {
       try {
         const response = await eliminarDelCarrito(usuario.id, productoId);
-        Swal.fire({
-          icon: "success",
-          title: "Producto eliminado",
-          text: response.message,
-          confirmButtonText: "Aceptar",
-        });
+        mostrarNotificacion("success", "Producto eliminado");       
 
         // Actualizar el carrito localmente para reflejar la eliminación
         setCarrito((prevCarrito) => prevCarrito.filter((item) => item.producto.id !== productoId));
@@ -114,12 +112,7 @@ const Carrito = () => {
         const cantidadTotal = await obtenerCantidad(usuario.id);
         setTotalCantidad(cantidadTotal);
       } catch (error) {
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "Hubo un problema al eliminar el producto del carrito.",
-          confirmButtonText: "Aceptar",
-        });
+        mostrarNotificacion("error", "Hubo un problema al eliminar el producto del carrito.")
       }
     }
   };
@@ -138,12 +131,7 @@ const Carrito = () => {
     if (result.isConfirmed) {
       try {
         const response = await vaciarCarrito(usuario.id);
-        Swal.fire({
-          icon: "success",
-          title: "Carrito vaciado",
-          text: response.message,
-          confirmButtonText: "Aceptar",
-        });
+        mostrarNotificacion("success", "Carrito vaciado"); 
         setCarrito([]); // Limpiar el carrito localmente
 
         // Actualizamos la cantidad total a 0 después de vaciar el carrito
@@ -172,7 +160,18 @@ const Carrito = () => {
       {loading ? (
         <p className="text-center text-gray-500">Cargando carrito...</p>
       ) : carrito.length === 0 ? (
-        <p className="text-center text-gray-500">Tu carrito está vacío.</p>
+        <div className="flex flex-col items-center justify-center text-center py-12 px-4 bg-white rounded-lg shadow-md">
+          <FaShoppingCart className="text-6xl text-gray-400 mb-4" />
+          <p className="text-xl text-gray-700 font-semibold mb-2">Tu carrito está vacío</p>
+          <p className="text-gray-500 mb-6">Los productos que agregues aparecerán aquí.</p>
+          <button
+            onClick={() => navigate("/productos")}
+            className="bg-pink-600 hover:bg-pink-700 text-white font-medium py-2 px-6 rounded-lg shadow-md transition duration-300"
+          >
+            Ver productos
+          </button>
+        </div>
+
       ) : (
         <div className="flex gap-10">
           <div className="w-2/3">

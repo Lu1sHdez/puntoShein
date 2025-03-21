@@ -3,6 +3,7 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 import { useNavigate, useParams } from 'react-router-dom';
 import RegresarButton from '../../../components/Regresar';
+import { mostrarNotificacion } from '../../../Animations/NotificacionSwal';
 
 const EditarProducto = () => {
   const { id } = useParams(); // Obtenemos el ID del producto de la URL
@@ -98,12 +99,7 @@ const EditarProducto = () => {
         withCredentials: true,
       });
 
-      Swal.fire({
-        title: '¡Éxito!',
-        text: 'Producto actualizado exitosamente',
-        icon: 'success',
-        confirmButtonText: 'Aceptar',
-      });
+      mostrarNotificacion("success", "Producto actualizado correctamente");
 
       navigate('/admin/productos');
     } catch (err) {
@@ -158,7 +154,7 @@ const EditarProducto = () => {
             onChange={(e) => setPrecio(e.target.value)}
             className="w-full p-3 border border-gray-300 rounded-md mt-2"
             placeholder="Precio del producto"
-          />
+          />  
         </div>
 
         {/* Stock */}

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import Swal from 'sweetalert2';  // Importar SweetAlert2
 import { formAnimation} from '../../components/Funciones.js';
 import { motion } from 'framer-motion';
 import RegresarButton from '../../components/Regresar.js';  // Importamos el botón de regreso
+import { mostrarNotificacion } from '../../Animations/NotificacionSwal.js';
 
 const ActualizarPerfil = () => {
   const [usuario, setUsuario] = useState(null);
@@ -55,13 +55,8 @@ const ActualizarPerfil = () => {
       // Enviar los datos actualizados al backend
       const response = await axios.put('http://localhost:4000/api/admin/perfil', datos, { withCredentials: true });
       
-      // Mostrar el mensaje de éxito con SweetAlert2
-      Swal.fire({
-        icon: 'success',
-        title: '¡Perfil actualizado!',
-        text: response.data.mensaje, // Aquí mostramos el mensaje del backend
-        confirmButtonText: 'Aceptar',
-      });
+      mostrarNotificacion("success", "¡Perfil actualizado!");
+
 
       navigate('/admin/perfil'); // Redirigir al perfil actualizado
     } catch (error) {
