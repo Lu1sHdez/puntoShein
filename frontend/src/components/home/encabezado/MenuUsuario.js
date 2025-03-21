@@ -52,6 +52,14 @@ const MenuUsuario = ({ usuarioAutenticado, handleLogout }) => {
                 <FaUsers className="mr-2" />
                 Mi perfil
               </Link>
+              <Link
+                to="/usuario/dashboard"
+                onClick={() => setMenuAbierto(false)}
+                className="w-full text-left px-4 py-2 hover:bg-gray-200 flex items-center"
+              >
+                <FaUsers className="mr-2" />
+                  Dashboard
+              </Link>
 
               <button
                 onClick={() => {
