@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { obtenerCarrito, actualizarCantidad, eliminarDelCarrito, vaciarCarrito, obtenerCantidad } from "./Funciones";
 import { FaPlus, FaMinus, FaTrashAlt } from "react-icons/fa";
 import axios from "axios";
+import { dataLoadingAnimation} from '../../components/Funciones.js';
+import { motion } from 'framer-motion';
 
 const Carrito = () => {
   const [carrito, setCarrito] = useState([]);
@@ -164,7 +166,7 @@ const Carrito = () => {
   if (!usuario) return <p className="text-center text-gray-500">Cargando...</p>;
 
   return (
-    <div className="container mx-auto py-6 text-left">
+    <motion.div {...dataLoadingAnimation} className="container mx-auto py-6 text-left">
       <h2 className="text-3xl font-bold text-gray-900 mb-8">Mi Carrito</h2>
 
       {loading ? (
@@ -249,7 +251,7 @@ const Carrito = () => {
           </div>
         </div>
       )}
-    </div>
+    </motion.div>
   );
 };
 

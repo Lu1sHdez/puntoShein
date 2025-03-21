@@ -3297,3 +3297,19 @@
   usuario: '20221061@uthh.edu.mxs',
   fecha_hora: '19/3/2025, 22:29:19'
 }
+{
+  message: 'Credenciales inválidas - Contraseña incorrecta',
+  level: 'error',
+  codigo_error: '400',
+  ip_cliente: '::1',
+  usuario: 'luis2004hdez@gmail.com',
+  fecha_hora: '20/3/2025, 18:55:49'
+}
+{
+  message: 'Credenciales inválidas - Usuario no encontrado',
+  level: 'error',
+  codigo_error: '400',
+  ip_cliente: '::ffff:127.0.0.1',
+  usuario: '@20221061Luis',
+  fecha_hora: '20/3/2025, 19:01:00'
+}

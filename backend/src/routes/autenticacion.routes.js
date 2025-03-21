@@ -1,5 +1,5 @@
 import express from 'express';
-import { registro, login, cerrarSesion, recuperarPassword,restablecerPassword} from '../controllers/autenticacion.controller.js';
+import { registro, login, cerrarSesion,actualizarPasswordTelefono, recuperarPassword,restablecerPassword, verificarSoloCodigoTelefono, solicitarRecuperacionTelefono} from '../controllers/autenticacion.controller.js';
 
 const router = express.Router();
 
@@ -16,5 +16,10 @@ router.post('/logout', cerrarSesion);
 router.post('/recuperarPassword', express.json(), recuperarPassword);
 // Ruta para restablecer contraseña
 router.post('/restablecerPassword', express.json(), restablecerPassword);
+
+router.post('/verificar', express.json(), verificarSoloCodigoTelefono);
+router.post('/solicitar', express.json(), solicitarRecuperacionTelefono);
+router.post('/actualizarPasswordTelefono', express.json(), actualizarPasswordTelefono);
+
 
 export default router;

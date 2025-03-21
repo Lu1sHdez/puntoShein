@@ -6,6 +6,7 @@ import jwt from 'jsonwebtoken';
 import logger from '../libs/logger.js'; 
 import { body, validationResult } from 'express-validator';
 import obtenerFechaHora from '../utils/funciones.js';
+import twilio from 'twilio';
 
 
 export const registro = async (req, res) => {
@@ -375,4 +376,137 @@ export const obtenerPerfil = async (req, res) => {
   }
 };
 
+export const solicitarRecuperacionTelefono = async (req, res) => {
+  try {
+    const { telefono } = req.body;
+
+    const usuario = await Usuario.findOne({ where: { telefono } });
+    if (!usuario) {
+      return res.status(400).json({ mensaje: "Teléfono no registrado." });
+    }
+
+    // Generar código de verificación
+    const codigo = Math.floor(100000 + Math.random() * 900000).toString();
+
+    // Calcular expiración (5 minutos desde ahora)
+    const expiracion = new Date(Date.now() + 5 * 60 * 1000);
+
+    usuario.smsCodigo = codigo;
+    usuario.smsCodigoExpira = expiracion;
+    await usuario.save();
+
+    // Enviar SMS con Twilio
+    const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+    await client.messages.create({
+      body: `Tu código de recuperación es: ${codigo}`,
+      from: process.env.TWILIO_PHONE_NUMBER,
+      to: `+52${telefono}`, // Asegúrate de tener formato internacional
+    });
+
+    res.status(200).json({ mensaje: "Código de verificación enviado por SMS." });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ mensaje: "Error al enviar el código por SMS." });
+  }
+};
+
+export const verificarSoloCodigoTelefono = async (req, res) => {
+  try {
+    const { telefono, codigo } = req.body;
+
+    const usuario = await Usuario.findOne({ where: { telefono } });
+    if (!usuario || !usuario.smsCodigo || !usuario.smsCodigoExpira) {
+      return res.status(400).json({ mensaje: "Código no válido o ya expirado." });
+    }
+
+    // Verificar expiración
+    if (new Date(usuario.smsCodigoExpira) < new Date()) {
+      return res.status(400).json({ mensaje: "El código ha expirado. Solicita uno nuevo." });
+    }
+
+    if (usuario.smsCodigo !== codigo) {
+      return res.status(400).json({ mensaje: "Código incorrecto." });
+    }
+
+    res.status(200).json({ mensaje: "Código verificado correctamente." });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ mensaje: "Error al verificar el código." });
+  }
+};
+
+export const actualizarPasswordTelefono = async (req, res) => {
+  try {
+    const { telefono, codigo, nuevaContrasena, confirmarContrasena } = req.body;
+
+    if (!telefono || !codigo || !nuevaContrasena || !confirmarContrasena) {
+      return res.status(400).json({ mensaje: "Todos los campos son obligatorios." });
+    }
+
+    if (nuevaContrasena !== confirmarContrasena) {
+      return res.status(400).json({ mensaje: "Las contraseñas no coinciden." });
+    }
+
+    if (!/^\d{10}$/.test(telefono)) {
+      return res.status(400).json({ mensaje: "El teléfono debe tener exactamente 10 dígitos numéricos." });
+    }
+
+    if (!/^\d{6}$/.test(codigo)) {
+      return res.status(400).json({ mensaje: "El código debe tener exactamente 6 dígitos." });
+    }
+
+    const regexPassword = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
+    if (!regexPassword.test(nuevaContrasena)) {
+      return res.status(400).json({
+        mensaje:
+          "La contraseña debe tener mínimo 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial.",
+      });
+    }
+
+    const usuario = await Usuario.findOne({ where: { telefono } });
+    if (!usuario) {
+      return res.status(404).json({ mensaje: "Usuario no encontrado con ese número de teléfono." });
+    }
+
+    if (!usuario.smsCodigo || !usuario.smsCodigoExpira) {
+      return res.status(400).json({ mensaje: "No se ha solicitado código o ya expiró." });
+    }
+
+    if (new Date(usuario.smsCodigoExpira) < new Date()) {
+      return res.status(400).json({ mensaje: "El código ha expirado. Solicita uno nuevo." });
+    }
+
+    if (usuario.smsCodigo !== codigo) {
+      return res.status(400).json({ mensaje: "Código incorrecto." });
+    }
+
+    const ultimoCambioPassword = usuario.ultimoCambioPassword
+      ? new Date(usuario.ultimoCambioPassword).getTime()
+      : 0;
+    const tiempoActual = Date.now();
+    const tiempoLimite = 24 * 60 * 60 * 1000;
+
+    const tiempoRestante = tiempoLimite - (tiempoActual - ultimoCambioPassword);
+    if (tiempoRestante > 0) {
+      const horasRestantes = Math.floor(tiempoRestante / (1000 * 60 * 60));
+      const minutosRestantes = Math.floor((tiempoRestante % (1000 * 60 * 60)) / (1000 * 60));
+      return res.status(400).json({
+        mensaje: `Ya cambiaste tu contraseña recientemente. Intenta nuevamente en ${horasRestantes}h ${minutosRestantes}m.`,
+      });
+    }
+
+    const contraseñaHasheada = await bcrypt.hash(nuevaContrasena, 10);
+    usuario.password = contraseñaHasheada;
+    usuario.smsCodigo = null;
+    usuario.smsCodigoExpira = null;
+    usuario.ultimoCambioPassword = new Date();
+    await usuario.save();
+
+    return res.status(200).json({ mensaje: "Contraseña actualizada exitosamente." });
+
+  } catch (error) {
+    console.error("Error actualizando contraseña:", error);
+    return res.status(500).json({ mensaje: "Error interno del servidor." });
+  }
+};
 

@@ -1,4 +1,5 @@
 import axios from "axios";
+
 export const obtenerCarrito = async (usuarioId) => {
   try {
     const response = await axios.get(`http://localhost:4000/api/carrito/${usuarioId}`, {

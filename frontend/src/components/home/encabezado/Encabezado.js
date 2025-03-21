@@ -13,6 +13,7 @@
   import Busqueda from "./Busqueda";
   import { obtenerCantidad } from "../../cart/Funciones";
   import Usuarios from "./Usuarios"; // Importar el componente Usuarios
+  
 
   const Encabezado = () => {
     const [menuMovilAbierto, setMenuMovilAbierto] = useState(false);
@@ -101,10 +102,10 @@
 
     return (
       <header className="fixed top-0 left-0 w-full z-50 bg-black text-white p-4 shadow-md">
-        <div className="container mx-auto flex items-center justify-between">
+<div className="w-full py-1 flex items-center justify-between px-4 lg:px-8">
           {/* Logo + Nombre */}
-          <div className="flex items-center space-x-2">
-            <Link to="/" className="flex items-center space-x-2">
+          <div className="flex items-center space-x-4 lg:space-x-6">
+            <Link to="/" className="flex items-center space-x-3">
               {empresa ? (
                 <>
                   <img
@@ -112,7 +113,7 @@
                     alt="Logo"
                     className="h-20 w-auto"
                   />
-                  <h2 className="texto-grande">{empresa.nombre}</h2>
+                  <h2 className="texto-grande boton-nav">{empresa.nombre}</h2>
                 </>
               ) : (
                 <p>Cargando...</p>
@@ -135,7 +136,7 @@
             {/* Botón para mostrar los filtros avanzados */}
             <button
               onClick={() => setFiltrosVisible(!filtrosVisible)}
-              className="flex items-center space-x-3 text-rem px-1 py-2"
+              className="flex items-center boton-nav space-x-3 text-rem px-1 py-2"
             >
               <span>Filtros</span>
               <FaChevronDown size={12} className={`transform ${filtrosVisible ? "rotate-180" : ""}`} />
@@ -143,55 +144,88 @@
           </div>
 
           {/* Navegación Principal (pantallas grandes) */}
-          <nav className="hidden lg:flex space-x-4">
-            <button onClick={() => navigate("/productos")} className="hover:underline">Productos</button>
-            <button onClick={() => navigate("/ofertas")} className="hover:underline">Ofertas</button>
-            <button onClick={() => navigate("/contacto")} className="hover:underline">Contacto</button>
-            <div className="relative">
+          <nav className="hidden lg:flex space-x-1">
+            <button onClick={() => navigate("/productos")} className="boton-nav">Productos</button>
+            <button onClick={() => navigate("/ofertas")} className="boton-nav">Ofertas</button>
+            <button onClick={() => navigate("/contacto")} className="boton-nav">Contacto</button>
+            <div className="relative boton-nav flex items-center">
               <FaShoppingCart className="text-2xl cursor-pointer" onClick={() => navigate("productos/carrito")} />
               {totalCantidad > 0 && (
-                <span className="absolute -top-4 right-1 bg-red-600 text-white text-xs rounded-full px-1 py-0.5 transform translate-x-1 translate-y-1">
+                <span className="absolute -top-1 -right-2 bg-red-600 text-white text-xs rounded-full px-1 py-0.5">
                   {totalCantidad}
                 </span>
               )}
             </div>
 
+
             {menu} 
-            <div className="flex items-center space-x-2"> 
+
+            <div className="flex boton-nav items-center space-x-2"> 
               <Usuarios /> 
             </div>  
+            {!usuarioAutenticado && (
+              <button
+                onClick={() => navigate("/login")}
+                className="text-sm boton-nav"
+              >
+                Inicia sesión
+              </button>
+            )}
+
             
           </nav>
         </div>
 
-        {/* Menú de Navegación en móvil */}
         {menuMovilAbierto && (
-          <nav className="lg:hidden mt-4 px-4">
-            <div className="flex flex-col space-y-2 bg-gray-800 p-4 rounded-md shadow-md">
-              <button onClick={() => navigate("/productos")} className="hover:underline text-left">Productos</button>
-              <button onClick={() => navigate("/ofertas")} className="hover:underline text-left">Ofertas</button>
-              <button onClick={() => navigate("/contacto")} className="hover:underline text-left">Contacto</button>
-              <div className="relative">
-                <FaShoppingCart className="text-2xl cursor-pointer" onClick={() => navigate("productos/carrito")} />
-                {totalCantidad > 0 && (
-                  <span className="absolute top-0 right-0 bg-red-600 text-white text-xs rounded-full px-1 py-0.5 transform translate-x-1 translate-y-1">
-                    {totalCantidad}
-                  </span>
-                )}
-              </div>
-              {/* Mostrar nombre y rol del usuario en móvil */}
-              <div className="flex items-center space-x-2">
-                
-                <Usuarios /> 
-                <FaUser className="text-xl" />
-              </div>
-              {menu}
-              <div className="mt-4">
-                <Busqueda busqueda={busqueda} setBusqueda={setBusqueda} />
-              </div>
+        <nav className="lg:hidden w-full bg-gray-900 text-white px-4 py-4">
+          <div className="flex flex-col gap-4 bg-gray-800 rounded-lg shadow-lg p-4 max-h-[calc(100vh-5rem)] overflow-y-auto">
+
+            {/* Enlaces de navegación */}
+            <div className="flex flex-col gap-2">
+              <button
+                onClick={() => navigate("/productos")}
+                className="boton-nav"
+              >
+                Productos
+              </button>
+              <button
+                onClick={() => navigate("/ofertas")}
+                className="boton-nav"
+              >
+                Ofertas
+              </button>
+              <button
+                onClick={() => navigate("/contacto")}
+                className="boton-nav"
+              >
+                Contacto
+              </button>
             </div>
-          </nav>
-        )}
+
+            {/* Carrito */}
+            <div className="relative boton-nav flex items-center">
+              <FaShoppingCart
+                className="text-2xl cursor-pointer"
+                onClick={() => navigate("productos/carrito")}
+              />
+              {totalCantidad > 0 && (
+                <span className="absolute -top-1 -right-2 bg-red-600 text-white text-xs rounded-full px-1 py-0.5">
+                  {totalCantidad}
+                </span>
+              )}
+            </div>
+
+            {/* Menú de acuerdo al rol */}
+            <div>{menu}</div>
+
+            {/* Buscador */}
+            <div className="pt-2 boton-nav border-t border-gray-700">
+              <Busqueda busqueda={busqueda} setBusqueda={setBusqueda} />
+            </div>
+          </div>
+        </nav>
+      )}
+
 
         {/* Filtros avanzados debajo del buscador */}
         {filtrosVisible && (

@@ -54,7 +54,17 @@ const Usuario = sequelize.define('Usuario', {
   tokenRecuperacion:{
     type: DataTypes.STRING,
     allowNull: true,
-  }
+    // Campos para la recuperación vía SMS:
+  },
+  smsCodigo: {
+    type: DataTypes.STRING,   // o DataTypes.INTEGER, si prefieres
+    allowNull: true,
+  },
+  smsCodigoExpira: {
+    type: DataTypes.DATE,     // fecha/hora de expiración del código
+    allowNull: true,
+  },
+  
 }, {
   tableName: 'usuarios',
   timestamps: true, // Agrega automáticamente los campos createdAt y updatedAt

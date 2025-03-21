@@ -55,10 +55,8 @@ const Usuarios = () => {
 
   return (
     <div className="flex items-center space-x-2">
-      <div className="text-sm">
-        <p className="text-white">{nombreUsuario}</p>
-        <p className="text-gray-400">{rolUsuario}</p>
-      </div>
+      <div className="text-left">
+        </div>
     </div>
   );
 };

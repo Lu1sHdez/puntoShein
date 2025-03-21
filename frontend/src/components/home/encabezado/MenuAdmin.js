@@ -1,12 +1,39 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaUserCircle, FaCog, FaUsers, FaBox, FaUserTie, FaTh, FaSignOutAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion"; // Importamos motion para las animaciones
 import { menuAnimado } from "../../home/encabezado/Funciones"; // Importamos las animaciones
+import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 
 const MenuAdmin = ({ usuarioAutenticado, handleLogout }) => {
   const [menuAbierto, setMenuAbierto] = useState(false);
   const [timeoutId, setTimeoutId] = useState(null);
+  const [nombreUsuario, setNombreUsuario] = useState("");
+  const [rolUsuario, setRolUsuario] = useState("");
+
+  useEffect(() => {
+    const obtenerDatosUsuario = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      try {
+        const decoded = jwtDecode(token);
+        const rol = decoded.rol;
+        let endpoint = rol === "administrador"
+          ? "http://localhost:4000/api/admin/perfil"
+          : rol === "empleado"
+          ? "http://localhost:4000/api/empleado/perfil"
+          : "http://localhost:4000/api/usuario/perfil";
+        const response = await axios.get(endpoint, { withCredentials: true });
+        setNombreUsuario(response.data.nombre);
+        setRolUsuario(rol);
+      } catch (error) {
+        console.error("Error al obtener los datos del usuario:", error);
+      }
+    };
+
+    obtenerDatosUsuario();
+  }, []);
 
   const handleMouseEnter = () => {
     if (timeoutId) {
@@ -32,7 +59,11 @@ const MenuAdmin = ({ usuarioAutenticado, handleLogout }) => {
       onMouseLeave={handleMouseLeave}
     >
       <button className="flex items-center space-x-2">
-        <FaUserCircle className="text-2xl" />
+        <FaUserCircle className="text-xl sm:text-2xl" />
+        <div className="text-left">
+          <p className="text-xs sm:text-sm text-white leading-tight">{nombreUsuario}</p>
+          <p className="text-[10px] sm:text-xs text-gray-400 leading-tight capitalize">{rolUsuario}</p>
+        </div>
       </button>
 
       {menuAbierto && (

@@ -14,7 +14,10 @@ const nombresRutas = {
     "terminos": "Términos y Condiciones",
     "mapa-del-sitio":"Mapa del sitio",
     "chat":"Chat en vivo",
-    "preguntasFrecuentes":"Preguntas frecuentes"
+    "solicitarPasswordTelefono": "Recuperar contraseña",  
+    "verificarTelefono": "Recuperar contraseña",
+    "preguntasFrecuentes":"Preguntas frecuentes",
+    "restablecerPasswordTelefono":" Recuperar contraseña",
   };
   
   export default nombresRutas;
