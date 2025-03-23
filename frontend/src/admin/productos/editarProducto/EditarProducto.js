@@ -12,6 +12,7 @@ const EditarProducto = () => {
   const [precio, setPrecio] = useState('');
   const [imagen, setImagen] = useState('');
   const [stock, setStock] = useState('');
+  const [color, setColor] = useState('');
   const [categorias, setCategorias] = useState([]);
   const [subcategorias, setSubcategorias] = useState([]);
   const [categoriaId, setCategoriaId] = useState('');
@@ -29,6 +30,7 @@ const EditarProducto = () => {
         const producto = response.data;
         setNombre(producto.nombre);
         setDescripcion(producto.descripcion);
+        setColor(producto.color);
         setPrecio(producto.precio);
         setImagen(producto.imagen);
         setStock(producto.stock);
@@ -88,6 +90,7 @@ const EditarProducto = () => {
       const producto = {
         nombre,
         descripcion,
+        color,
         precio,
         imagen,
         stock,
@@ -141,6 +144,16 @@ const EditarProducto = () => {
             onChange={(e) => setDescripcion(e.target.value)}
             className="w-full p-3 border border-gray-300 rounded-md mt-2"
             placeholder="Descripción del producto"
+          />
+        </div>
+        <div>
+          <label htmlFor="color" className="block text-lg font-semibold text-gray-700">Color</label>
+          <textarea
+            id="color"
+            value={color}
+            onChange={(e) => setColor(e.target.value)}
+            className="w-full p-3 border border-gray-300 rounded-md mt-2"
+            placeholder="Color del producto"
           />
         </div>
 

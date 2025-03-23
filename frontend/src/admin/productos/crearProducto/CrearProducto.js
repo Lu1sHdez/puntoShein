@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import Swal from 'sweetalert2';
 import RegresarButton from '../../../components/Regresar';
 import { useNavigate } from 'react-router-dom';
 import { formAnimation } from '../../../components/Funciones.js';
@@ -13,6 +12,7 @@ const CrearProducto = () => {
   const [precio, setPrecio] = useState('');
   const [imagen, setImagen] = useState('');
   const [stock, setStock] = useState('');
+  const [color, setColor] = useState('');
   const [categorias, setCategorias] = useState([]);
   const [subcategorias, setSubcategorias] = useState([]);
   const [categoriaId, setCategoriaId] = useState('');
@@ -61,6 +61,7 @@ const CrearProducto = () => {
         precio,
         imagen,
         stock,
+        color,
         subcategoria_id: subcategoriaId || nuevaSubcategoria,
       };
 
@@ -150,6 +151,18 @@ const CrearProducto = () => {
             onChange={(e) => setPrecio(e.target.value)}
             className="w-full p-3 border border-gray-300 rounded-md mt-2"
             placeholder="Precio del producto"
+          />
+        </div>
+        {/* Precio */}
+        <div>
+          <label htmlFor="color" className="block text-lg font-semibold text-gray-700">Color</label>
+          <input
+            type="text"
+            id="color"
+            value={color}
+            onChange={(e) => setColor(e.target.value)}
+            className="w-full p-3 border border-gray-300 rounded-md mt-2"
+            placeholder="Color del producto"
           />
         </div>
 

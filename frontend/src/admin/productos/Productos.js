@@ -89,12 +89,13 @@ const Productos = () => {
       });
 
       if (confirmacion.isConfirmed) {
-        await axios.delete(`http://localhost:4000/api/admin/productos/${id}`, {
+        await axios.delete(`http://localhost:4000/api/admin/eliminar/${id}`, {
           withCredentials: true,
         });
         setProductos(productos.filter((producto) => producto.id !== id));  // Elimina el producto de la lista
-        mostrarNotificacion("success", "Producto eliminado correctamente") 
       }
+      mostrarNotificacion("success", "Producto eliminado correctamente");
+
     } catch (err) {
       console.error('Error al eliminar el producto:', err);
       Swal.fire({

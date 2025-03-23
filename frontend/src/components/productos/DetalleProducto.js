@@ -94,6 +94,8 @@ const DetalleProducto = () => {
         <div className="w-full lg:w-1/2 p-6">
           <h2 className="text-3xl font-bold text-gray-900">{producto.nombre}</h2>
           <p className="text-gray-600 mt-2">{producto.descripcion}</p>
+          <p className="text-gray-600 mt-2">Color: {producto.color}</p>
+
           {/* Mostrar información del stock con diseño dinámico */}
           <div className={`flex items-center mt-2 ${color}`}>
             {icono}

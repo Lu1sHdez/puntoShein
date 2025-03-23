@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, Routes, Route } from 'react-router-dom';  // Usamos Link para la navegación, y Routes y Route para las rutas
-import { FaCog, FaUsers, FaBox, FaUserTie, FaQuestionCircle} from 'react-icons/fa';  // Iconos para las tarjetas
+import { FaCog, FaUsers, FaBox, FaUserTie, FaQuestionCircle, FaChartLine} from 'react-icons/fa';  // Iconos para las tarjetas
 import { BsPersonLinesFill } from 'react-icons/bs';  // Icono para el perfil
 
 // Importar los componentes necesarios para las rutas
@@ -86,6 +86,14 @@ const Dashboard = () => {
                     <FaQuestionCircle className="text-4xl text-gray-700 mb-4" />
                     <h2 className="text-xl font-semibold">Preguntas Frecuentes</h2>
                     <p className="text-gray-500 mt-2">Administra las preguntas frecuentes de la empresa</p>
+                </Link>
+                <Link
+                    to="/admin/gestionProductos"
+                    className="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition duration-300 transform hover:scale-105"
+                >
+                    <FaChartLine className="text-4xl text-gray-700 mb-4" />
+                    <h2 className="text-xl font-semibold">Analisis de ventas</h2>
+                    <p className="text-gray-500 mt-2">Modulo de prediccón de ventas para la toma de decisiones de productos</p>
                 </Link>
             </div>
 

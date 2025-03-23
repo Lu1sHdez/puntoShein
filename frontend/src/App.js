@@ -11,6 +11,8 @@ const DetalleProducto = lazy(() => import("./components/productos/DetalleProduct
 const AllProductos = lazy(() => import("./components/productos/AllProductos"));
 const BuscarProductos = lazy(() => import("./components/productos/BuscarProductos")); 
 const ProductosFiltrados = lazy(() => import("./components/productos/ProductosFiltrados")); 
+const GestionProductos = lazy(() => import("./admin/productos/analisis/AnalisisVentas.js")); 
+
 
 
 //Autenticacion
@@ -109,6 +111,7 @@ const App = () => {
                 <Route path="/productos/filtrados" element={<ProductosFiltrados />} />
                 <Route path="/producto/:id" element={<DetalleProducto />} />
 
+
                 {/* Rutas de información de la empresa */}
                 <Route path="/acercaDe" element={<AcercaDe />} />
                 <Route path="/preguntasFrecuentes" element={<PreguntasFrecuentesAll />} />
@@ -162,6 +165,10 @@ const App = () => {
                 <Route
                   path="/admin/productos"
                   element={<ProteccionRutas element={Productos} allowedRoles={['administrador']} />}
+                />
+                <Route
+                  path="/admin/gestionProductos"
+                  element={<ProteccionRutas element={GestionProductos} allowedRoles={['administrador']} />}
                 />
                 <Route
                   path="/admin/productos/detalle/:id"

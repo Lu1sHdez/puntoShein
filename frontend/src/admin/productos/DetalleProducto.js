@@ -47,6 +47,7 @@ const DetalleProducto = () => {
           <div className="bg-indigo-50 p-4 rounded-lg shadow-md">
             <h2 className="text-2xl font-semibold text-gray-800">{producto.nombre}</h2>
             <p className="text-lg text-gray-700"><strong>Descripción:</strong> {producto.descripcion}</p>
+            <p className="text-lg text-gray-700"><strong>Color:</strong> {producto.color}</p>
             <p className="text-lg text-gray-700"><strong>Precio:</strong> ${producto.precio}</p>
             <div className="mb-4">
               <strong className="text-gray-700"></strong>
