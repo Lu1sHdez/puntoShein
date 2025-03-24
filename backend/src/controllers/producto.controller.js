@@ -1,7 +1,8 @@
 import Producto from "../models/producto.model.js";
 import Categoria from "../models/categoria.model.js"; //  Importar Categoria
-import Subcategoria from "../models/subcategoria.model.js"; // ✅ Importar Subcategoria
+import Subcategoria from "../models/subcategoria.model.js"; // 
 import { Op, Sequelize } from "sequelize";
+
 
 // Función para buscar productos por nombre
 export const buscarProductos = async (req, res) => {
@@ -144,3 +145,29 @@ export const obtenerSubcategorias = async (req, res) => {
     res.status(500).json({ mensaje: "Error interno del servidor" });
   }
 };
+export const eliminarProducto = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const producto = await Producto.findByPk(id);
+    if (!producto) {
+      return res.status(404).json({ mensaje: 'Producto no encontrado' });
+    }
+
+    // Verifica si está relacionado con alguna venta
+    const ventasRelacionadas = await Venta.findOne({ where: { producto_id: id } });
+
+    if (ventasRelacionadas) {
+      return res.status(400).json({
+        mensaje: 'No se puede eliminar este producto porque está relacionado con una o más ventas.',
+      });
+    }
+
+    await producto.destroy();
+    res.json({ mensaje: 'Producto eliminado correctamente' });
+  } catch (error) {
+    console.error('Error al eliminar el producto:', error);
+    res.status(500).json({ mensaje: 'Error al eliminar el producto' });
+  }
+};
+

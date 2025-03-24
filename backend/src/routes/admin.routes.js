@@ -26,7 +26,8 @@ import {
 import { 
   obtenerProductoPorId, 
   filtrarProductos, 
-  buscarProductos
+  buscarProductos,
+  eliminarProducto
 } from '../controllers/producto.controller.js';
 
 const router = express.Router();
@@ -50,6 +51,7 @@ router.post('/productos', verificarToken, admin, crearProducto);  // Crear nuevo
 router.get('/buscar', verificarToken, admin, buscarProductos);
 
 router.put('/productos/:id', verificarToken, admin, editarProducto); // Ruta para editar producto
+router.delete('/eliminar/:id', verificarToken, admin, eliminarProducto);
 
 
 // Rutas para el perfil del usuario

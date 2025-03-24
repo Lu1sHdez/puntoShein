@@ -8,6 +8,7 @@ import agregarCarrito from "../cart/Agregar";
 import Swal from "sweetalert2"; 
 import "../../css/Botones.css"
 import { motion } from "framer-motion";
+import { mostrarNotificacion } from "../../Animations/NotificacionSwal";
 
 
 const DetalleProducto = () => {
@@ -54,10 +55,6 @@ const DetalleProducto = () => {
 
   const { mensaje, color, icono } = mostrarStock(producto.stock);
 
-  const handleComprarAhora = () => {
-    navigate(`/checkout?producto=${producto.id}`);
-  };
-
   const handleAgregarCarrito = () => {
     // Verificamos si el usuario está logueado antes de agregar al carrito
     if (!usuario) {
@@ -73,6 +70,47 @@ const DetalleProducto = () => {
     // Si está logueado, llamamos a la función de agregar al carrito
     agregarCarrito(usuario, producto);
   };
+  const handleComprarAhora = async () => {
+    if (!usuario || !usuario.id) {
+      Swal.fire({
+        icon: "warning",
+        title: "Inicia sesión o regístrate",
+        text: "Para comprar este producto, debes iniciar sesión o registrarte.",
+        confirmButtonText: "Aceptar",
+      });
+      return;
+    }
+  
+    try {
+      const response = await axios.post(
+        "http://localhost:4000/api/compra/comprar",
+        {
+          producto_id: producto.id,
+          cantidad: 1,
+          usuario_id: usuario.id,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+      mostrarNotificacion("success", "La compra se ha registrado exitosamente.")
+
+  
+      // Opcional: puedes volver a cargar el producto para actualizar el stock
+      const updatedProducto = await axios.get(`http://localhost:4000/api/productos/${id}`);
+      setProducto(updatedProducto.data);
+  
+    } catch (error) {
+      console.error("Error al comprar:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error al comprar",
+        text: error.response?.data?.mensaje || "No se pudo completar la compra.",
+        confirmButtonText: "Aceptar",
+      });
+    }
+  };
+  
 
   return (
     <div className="container mx-auto py-0 text-left">

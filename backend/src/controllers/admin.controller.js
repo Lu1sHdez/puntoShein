@@ -112,7 +112,7 @@ export const obtenerProductos = async (req, res) => {
 };
 
 export const crearProducto = async (req, res) => {
-  const { nombre, descripcion, precio, imagen, stock, subcategoria_id } = req.body;
+  const { nombre, descripcion, color, precio, imagen, stock, subcategoria_id } = req.body;
 
   try {
     const subcategoria = await Subcategoria.findByPk(subcategoria_id);
@@ -123,6 +123,7 @@ export const crearProducto = async (req, res) => {
     const nuevoProducto = await Producto.create({
       nombre,
       descripcion,
+      color,
       precio,
       imagen,
       stock,
@@ -143,7 +144,7 @@ export const crearProducto = async (req, res) => {
 // Función para editar un producto
 export const editarProducto = async (req, res) => {
   const { id } = req.params; // Obtenemos el ID del producto desde los parámetros de la URL
-  const { nombre, descripcion, precio, imagen, stock, subcategoria_id } = req.body; // Obtenemos los datos del producto desde el cuerpo de la solicitud
+  const { nombre, descripcion, precio, color, imagen, stock, subcategoria_id } = req.body; // Obtenemos los datos del producto desde el cuerpo de la solicitud
 
   try {
     // Buscamos el producto por ID
@@ -155,6 +156,7 @@ export const editarProducto = async (req, res) => {
     // Actualizamos los campos del producto
     producto.nombre = nombre || producto.nombre;
     producto.descripcion = descripcion || producto.descripcion;
+    producto.color = color || producto.color;
     producto.precio = precio || producto.precio;
     producto.imagen = imagen || producto.imagen;
     producto.stock = stock || producto.stock;

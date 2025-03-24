@@ -3369,3 +3369,35 @@
   usuario: 'luisdh@gmail.com@uthh.edu.mx',
   fecha_hora: '21/3/2025, 4:46:48'
 }
+{
+  message: 'Credenciales inválidas - Contraseña incorrecta',
+  level: 'error',
+  codigo_error: '400',
+  ip_cliente: '::ffff:127.0.0.1',
+  usuario: '20221061@uthh.edu.mx',
+  fecha_hora: '22/3/2025, 22:46:50'
+}
+{
+  message: 'Credenciales inválidas - Contraseña incorrecta',
+  level: 'error',
+  codigo_error: '400',
+  ip_cliente: '::ffff:127.0.0.1',
+  usuario: '20221061@uthh.edu.mx',
+  fecha_hora: '22/3/2025, 22:46:50'
+}
+{
+  message: 'Credenciales inválidas - Contraseña incorrecta',
+  level: 'error',
+  codigo_error: '400',
+  ip_cliente: '::ffff:127.0.0.1',
+  usuario: '20221061@uthh.edu.mx',
+  fecha_hora: '22/3/2025, 22:46:50'
+}
+{
+  message: 'Credenciales inválidas - Contraseña incorrecta',
+  level: 'error',
+  codigo_error: '400',
+  ip_cliente: '::1',
+  usuario: '20221061@uthh.edu.mx',
+  fecha_hora: '22/3/2025, 23:06:07'
+}

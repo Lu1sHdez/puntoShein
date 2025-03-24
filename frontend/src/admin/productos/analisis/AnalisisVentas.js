@@ -1,165 +1,412 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { Line } from "react-chartjs-2";
+import { useNavigate } from 'react-router-dom';
+import RegresarButton from "../../../components/Regresar";
+
 import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
   Tooltip,
-  ResponsiveContainer,
-} from "recharts";
+  Legend,
+  LineElement,
+  PointElement
+} from "chart.js";
 
-const AnalisisProductos = () => {
-  const [datos, setDatos] = useState([]);
-  const [filtro, setFiltro] = useState("Todos");
-  const [loading, setLoading] = useState(true);
-  const [meses, setMeses] = useState(1);
-  const [prediccion, setPrediccion] = useState(null);
+// Registrar componentes de Chart.js
+ChartJS.register(CategoryScale, LinearScale,LineElement, PointElement, BarElement, Title, Tooltip, Legend);
 
+const AnalisisVentas = () => {
+  const [productos, setProductos] = useState([]);
+  const [productoSeleccionado, setProductoSeleccionado] = useState("");
+  const [semana, setSemana] = useState("");
+  const [meta, setMeta] = useState("");
+  const [ventasSemanales, setVentasSemanales] = useState([]);
+  const [prediccionVentas, setPrediccionVentas] = useState(null);
+  const [predicciones, setPredicciones] = useState([]);
+  const [prediccionMeta, setPrediccionMeta] = useState(null);
+  const [productoDetalle, setProductoDetalle] = useState(null);
+  const navigate = useNavigate();
+
+  
+  const [error, setError] = useState("");
+
+  const API_URL = "http://localhost:4000/api/ventas";
+
+  // Obtener la lista de productos vendidos
   useEffect(() => {
-    const obtenerDatos = async () => {
+    const obtenerProductosVendidos = async () => {
       try {
-        const res = await axios.get("http://localhost:4000/api/ventas/productosMasVendidos", {
-          withCredentials: true,
-        });
-        const productosProcesados = res.data.map((venta) => ({
-          producto_id: venta.producto_id,
-          nombre: venta.producto.nombre,
-          imagen: venta.producto.imagen,
-          precio: parseFloat(venta.producto.precio),
-          categoria: venta.producto.subcategoria.categoria.nombre,
-          subcategoria: venta.producto.subcategoria.nombre,
-          total_vendido: parseInt(venta.total_vendido),
-        }));
-        setDatos(productosProcesados);
-      } catch (error) {
-        console.error("Error al obtener productos más vendidos:", error);
-      } finally {
-        setLoading(false);
+        const response = await axios.get(`${API_URL}/productosVendidos`, { withCredentials: true });
+        setProductos(response.data);
+      } catch (err) {
+        console.error("Error al obtener productos vendidos:", err);
       }
     };
 
-    obtenerDatos();
+    obtenerProductosVendidos();
   }, []);
+  
 
-  const datosFiltrados =
-    filtro === "Todos" ? datos : datos.filter((p) => p.nombre === filtro);
-
-  const predecir = async () => {
-    const producto = datos.find((p) => p.nombre === filtro);
-    if (!producto) return;
+  const obtenerVentasSemanales = async () => {
+    if (!productoSeleccionado) {
+      setError("Selecciona un producto.");
+      return;
+    }
+  
     try {
-        const res = await axios.get(
-        `http://localhost:4000/api/ventas/predecir/${producto.producto_id}/${meses}`, {
+      const response = await axios.get(`${API_URL}/ventaSemanal/${productoSeleccionado}`, {
+        withCredentials: true,
+      });
+      const ventas = response.data;
+      setVentasSemanales(ventas);
+  
+      // Obtener predicciones para 5 semanas futuras
+      const prediccionesTemp = [];
+      for (let i = ventas.length + 1; i <= ventas.length + 5; i++) {
+        const res2 = await axios.get(`${API_URL}/predecir/${productoSeleccionado}?semana=${i}`, {
           withCredentials: true,
         });
-                  
-      setPrediccion(res.data);
+        prediccionesTemp.push({
+          semana: i,
+          prediccion: res2.data.prediccion,
+        });
+      }
+      setPredicciones(prediccionesTemp);
+  
+      setError("");
     } catch (err) {
-      console.error("Error al predecir:", err);
+      setError("Error al obtener las ventas semanales o predicciones.");
+      setVentasSemanales([]);
+      setPredicciones([]);
+    }
+  };
+  
+
+  // Predecir ventas futuras
+  const predecirVentasFuturas = async () => {
+    if (!productoSeleccionado || !semana) {
+      setError("Selecciona un producto e ingresa el número de semana.");
+      return;
+    }
+
+    try {
+      const response = await axios.get(
+        `${API_URL}/predecir/${productoSeleccionado}?semana=${semana}`,
+        { withCredentials: true }
+      );
+      setPrediccionVentas(response.data);
+      setError("");
+    } catch (err) {
+      setError("Error al predecir las ventas futuras.");
+      setPrediccionVentas(null);
     }
   };
 
+  // Predecir semanas para alcanzar una meta
+  const predecirSemanasPorMeta = async () => {
+    if (!productoSeleccionado || !meta) {
+      setError("Selecciona un producto e ingresa la meta de ventas.");
+      return;
+    }
+
+    try {
+      const response = await axios.get(
+        `${API_URL}/predecirMeta/${productoSeleccionado}?meta=${meta}`,
+        { withCredentials: true }
+      );
+      setPrediccionMeta(response.data);
+      setError("");
+    } catch (err) {
+      setError("Error al predecir la meta.");
+      setPrediccionMeta(null);
+    }
+  };
+
+  // Datos para la gráfica de ventas semanales
+  const datosGrafica = {
+    labels: ventasSemanales.map((venta) => `Semana ${venta.semana}`),
+    datasets: [
+      {
+        label: "Unidades Vendidas",
+        data: ventasSemanales.map((venta) => venta.unidades_vendidas),
+        backgroundColor: "rgba(75, 192, 192, 0.6)",
+        borderColor: "rgba(75, 192, 192, 1)",
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  const opcionesGrafica = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: "top",
+      },
+      title: {
+        display: true,
+        text: "Ventas Semanales",
+      },
+    },
+    scales: {
+      x: {
+        title: {
+          display: true,
+          text: "Semanas",
+        },
+      },
+      y: {
+        title: {
+          display: true,
+          text: "Unidades Vendidas",
+        },
+        beginAtZero: true,
+      },
+    },
+  };
+
   return (
-    <div className="p-6 bg-white rounded-xl shadow-lg w-full max-w-6xl mx-auto mt-8">
-      <h2 className="text-3xl font-bold text-center text-gray-800 mb-4">
-        Productos Más Vendidos - Categoría: Vestidos
-      </h2>
-
-      <div className="mb-6">
-        <label htmlFor="filtroProductos" className="block text-sm font-medium text-gray-700">
-          Filtrar por producto:
-        </label>
-        <select
-          id="filtroProductos"
-          value={filtro}
-          onChange={(e) => setFiltro(e.target.value)}
-          className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-pink-500 focus:border-pink-500 sm:text-sm"
-        >
-          <option value="Todos">Todos</option>
-          {datos.map((producto, index) => (
-            <option key={index} value={producto.nombre}>
-              {producto.nombre}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div className="mb-6">
-        <label htmlFor="meses" className="block text-sm font-medium text-gray-700">
-          ¿En cuántos meses deseas predecir la demanda?
-        </label>
-        <input
-          id="meses"
-          type="number"
-          min="1"
-          value={meses}
-          onChange={(e) => setMeses(e.target.value)}
-          className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-pink-500 focus:border-pink-500 sm:text-sm"
-        />
-        <button
-          onClick={predecir}
-          className="mt-3 px-4 py-2 bg-pink-600 text-white rounded-md hover:bg-pink-700"
-        >
-          Calcular predicción
-        </button>
-      </div>
-
-      {prediccion && (
-        <div className="mb-6 bg-green-50 border border-green-200 rounded p-4">
-          <h4 className="font-bold text-green-700 mb-2">Predicción estimada</h4>
-          <p>Para el mes {prediccion.meses}, se estima que se venderán <strong>{prediccion.prediccion}</strong> unidades.</p>
-          <p className="text-sm text-gray-600">Sugerencia de compra: {Math.ceil(prediccion.prediccion * 1.1)} unidades (con 10% extra de seguridad).</p>
-        </div>
-      )}
-
-      {loading ? (
-        <p className="text-center text-gray-500">Cargando datos...</p>
-      ) : datos.length === 0 ? (
-        <p className="text-center text-gray-500">No hay ventas registradas aún.</p>
-      ) : (
-        <>
-          <div className="grid md:grid-cols-2 gap-4 mb-10">
-            {datosFiltrados.map((producto, index) => (
-              <div
-                key={index}
-                className="flex items-center gap-4 bg-gray-50 p-4 rounded-lg shadow-sm border"
+    <div>
+      
+      <div className="w-full px-12 bg-gray-100  py-10">
+        
+        <h2 className="text-2xl text-center font-bold mb-6">Análisis de venta</h2>
+        <div className="grid grid-cols-2 gap-6">
+          {/* Columna izquierda - arriba */}
+          <div className="bg-white p-6 rounded-lg shadow border border-black">
+              {/* Selección de producto */}
+            <div className="mb-8 p-4 bg-white shadow-md rounded-lg">
+              <h2 className="text-xl font-bold mb-4">Seleccionar Producto</h2>
+              <select
+                value={productoSeleccionado}
+                onChange={(e) => {
+                  const id = e.target.value;
+                  setProductoSeleccionado(id);
+                  const seleccionado = productos.find(p => p.producto.id === parseInt(id));
+                  setProductoDetalle(seleccionado?.producto || null);
+                }}
+                  className="p-2 border rounded w-full"
               >
-                <img
-                  src={producto.imagen}
-                  alt={producto.nombre}
-                  className="w-20 h-20 object-cover rounded-lg"
-                />
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-800">{producto.nombre}</h3>
-                  <p className="text-sm text-gray-600">
-                    {producto.categoria} - {producto.subcategoria}
-                  </p>
-                  <p className="text-pink-600 font-bold">Total Vendido: {producto.total_vendido}</p>
-                </div>
+                <option value="">Selecciona un producto</option>
+                {productos.map((producto) => (
+                  <option key={producto.producto.id} value={producto.producto.id}>
+                    {producto.producto.nombre}
+                  </option>
+                ))}
+              </select>
+              <div>
+              {productoSeleccionado && (
+                  <div className="mt-4 text-sm text-gray-700">
+                  {productoDetalle?.imagen && (
+                      <img
+                        src={productoDetalle.imagen}
+                        alt="Imagen del producto"
+                        className="w-full max-w-xs h-auto object-cover rounded-lg shadow-md border border-gray-300 mb-4"
+                    />  
+                  )}  
+                    <p><strong>Precio:</strong> $ {productoDetalle?.precio}</p>
+                    <p><strong>Stock:</strong> {productoDetalle?.stock} unidades</p>
+                    <p><strong>Descripción:</strong> {productoDetalle?.descripcion}</p>
+                  </div>
+                )}              
               </div>
-            ))}
+            </div>
           </div>
 
-          <div className="h-[400px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={datosFiltrados}
-                margin={{ top: 20, right: 30, left: 0, bottom: 5 }}
+          {/* Columna derecha - arriba */}
+          <div className="bg-white p-6 rounded-lg shadow border border-black">
+            {/* Sección para obtener ventas semanales */}
+            <div className="mb-8 p-4 bg-white shadow-md rounded-lg">
+              <h2 className="text-xl font-bold mb-4">Ventas Semanales</h2>
+              <button
+                onClick={obtenerVentasSemanales}
+                className="p-2 bg-pink-600 text-white rounded"
               >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="nombre" />
-                <YAxis />
-                <Tooltip />
-                <Bar dataKey="total_vendido" fill="#ec4899" radius={[5, 5, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
+                Obtener Ventas
+              </button>
+              {error && <p className="text-red-500">{error}</p>}
+              {ventasSemanales.length > 0 && (
+                <div className="mt-4">
+                  <Line
+                    data={{
+                      labels: [
+                        ...ventasSemanales.map((v) => `Semana ${v.semana}`),
+                        ...predicciones.map((p) => `Semana ${p.semana}`),
+                      ],
+                      datasets: [
+                        {
+                          label: "Ventas reales",
+                          data: ventasSemanales.map((v) => v.unidades_vendidas),
+                          borderColor: "blue",
+                          backgroundColor: "blue",
+                          tension: 0.3,
+                          pointRadius: 5,
+                        },
+                        {
+                          label: "Predicción",
+                          data: [
+                            ...Array(ventasSemanales.length).fill(null),
+                            ...predicciones.map((p) => p.prediccion),
+                          ],
+                          borderColor: "red",
+                          backgroundColor: "red",
+                          borderDash: [5, 5],
+                          tension: 0.3,
+                          pointRadius: 5,
+                        },
+                      ],
+                    }}
+                    options={{
+                      responsive: true,
+                      plugins: {
+                        legend: {
+                          position: "top",
+                        },
+                        title: {
+                          display: true,
+                          text: "Ventas Reales + Predicción",
+                        },
+                      },
+                      scales: {
+                        y: {
+                          beginAtZero: true,
+                          title: {
+                            display: true,
+                            text: "Unidades vendidas",
+                          },
+                        },
+                        x: {
+                          title: {
+                            display: true,
+                            text: "Semana",
+                          },
+                        },
+                      },
+                    }}
+                  />
+                </div>
+                
+                
+              )}              
+            </div>
+            <button className="p-2 bg-pink-600 text-white rounded"
+             onClick={() => navigate(`/admin/gestionProductos/grafica/${productoSeleccionado}`)}>
+
+              ver grafica completa
+
+            </button>
+
           </div>
-        </>
-      )}
-    </div>
+          {/* Columna derecha - abajo */}
+          <div className="bg-white p-6 rounded-lg shadow border border-black">
+            {/* Sección para predecir semanas para alcanzar una meta */}
+            <div className="p-4 bg-white shadow-md rounded-lg">
+              <h2 className="text-xl font-bold mb-4">Predecir Semanas para Alcanzar Meta</h2>
+              <div className="flex items-center mb-4">
+                <input
+                  type="number"
+                  value={meta}
+                  onChange={(e) => setMeta(e.target.value)}
+                  placeholder="Meta de Ventas"
+                  className="p-2 border rounded"
+                />
+                <button
+                  onClick={predecirSemanasPorMeta}
+                  className="ml-2 p-2 bg-pink-600 text-white rounded"
+                >
+                  Predecir
+                </button>
+              </div>
+              {error && <p className="text-red-500">{error}</p>}
+              {prediccionMeta && (
+                <div>
+                  <p>
+                    Se estima que tomará {prediccionMeta.semanas} semanas vender {prediccionMeta.meta}{" "}
+                    unidades.
+                  </p>
+                </div>
+              )}
+            </div>
+            
+          </div>
+
+          {/* Columna izquierda - abajo */}
+          <div className="bg-white p-6 rounded-lg shadow border border-black">
+            {/* Sección para predecir ventas futuras */}
+            <div className="mb-8 p-4 bg-white shadow-md rounded-lg">
+              <h2 className="text-xl font-bold mb-4">Predecir Ventas Futuras</h2>
+              <div className="flex items-center mb-4">
+                <input
+                  type="number"
+                  value={semana}
+                  onChange={(e) => setSemana(e.target.value)}
+                  placeholder="Número de Semana"
+                  className="p-2 border rounded"
+                />
+                <button
+                  onClick={predecirVentasFuturas}
+                  className="ml-2 p-2 bg-pink-600 text-white rounded"
+                >
+                  Predecir
+                </button>
+              </div>
+              {error && <p className="text-red-500">{error}</p>}
+              {prediccionVentas && (
+                <div>
+                  <p>
+                    Se estima que en la semana {prediccionVentas.semana} se venderán aproximadamente{" "}
+                    {prediccionVentas.prediccion} unidades.
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          
+          {/* Columna derecha - abajo */}
+          <div className="bg-white p-6 rounded-lg shadow border border-black">
+                {/* Sección para predecir semanas para alcanzar una meta */}
+                <div className="p-4 bg-white shadow-md rounded-lg">
+                  <h2 className="text-xl font-bold mb-4">Hostorial ventas semanal</h2>
+                  {ventasSemanales.length === 0 ? (
+                      <p className="text-gray-500">No hay datos disponibles.</p>
+                    ) : (
+                      <div className="overflow-x-auto">
+                        <table className="min-w-full text-sm text-left text-gray-700">
+                          <thead className="bg-gray-200 text-gray-800 font-semibold">
+                            <tr>
+                              <th className="px-4 py-2 border-b">Semana</th>
+                              <th className="px-4 py-2 border-b">Fecha</th>
+                              <th className="px-4 py-2 border-b">Unidades Vendidas</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-gray-200">
+                            {ventasSemanales.map((venta, index) => (
+                              <tr key={index} className="hover:bg-gray-50">
+                                <td className="px-4 py-2">Semana {venta.semana}</td>
+                                <td className="px-4 py-2 text-sm italic text-gray-600">
+                                  {new Date(venta.fecha).toLocaleDateString("es-MX", {
+                                    day: "2-digit",
+                                    month: "2-digit",
+                                    year: "numeric",
+                                  })}
+                                </td>
+                                <td className="px-4 py-2">{venta.unidades_vendidas} unidades</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
+                </div>
+            </div>
+        </div>
+      </div>
+    </div> 
   );
 };
 
-export default AnalisisProductos;
+export default AnalisisVentas;

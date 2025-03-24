@@ -12,7 +12,7 @@ const RegresarButton = () => {
   return (
     <button
       onClick={handleRegresar}
-      className="absolute -top-3 left-20 text-blue-500 font-semibold hover:text-blue-700 transition duration-200"
+      className="absolute top-6 left-20 text-blue-500 font-semibold hover:text-blue-700 transition duration-200"
     >
       ← Regresar
     </button>

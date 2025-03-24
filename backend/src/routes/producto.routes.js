@@ -1,8 +1,10 @@
+import {validarRol, verificarToken  } from '../middleware/auth.js';
 import express from 'express';
 import { buscarProductos, allProductos, obtenerProductoPorId, 
-    filtrarProductos,obtenerCategorias,obtenerSubcategorias} from '../controllers/producto.controller.js';
+    filtrarProductos,obtenerCategorias,obtenerSubcategorias, eliminarProducto} from '../controllers/producto.controller.js';
 
 const router = express.Router();
+const admin = validarRol(['administrador']);
 
 // Ruta para obtener todas las categorías
 router.get('/categorias', obtenerCategorias);
@@ -14,6 +16,8 @@ router.get('/filtrar', filtrarProductos);
 router.get('/buscar', buscarProductos);
 // Ruta para obtener todos los productos
 router.get('/allProductos', allProductos);
+
+
 // Ruta para obtener un producto por su ID
 router.get('/:id', obtenerProductoPorId);
 

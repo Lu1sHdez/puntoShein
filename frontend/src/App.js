@@ -12,6 +12,7 @@ const AllProductos = lazy(() => import("./components/productos/AllProductos"));
 const BuscarProductos = lazy(() => import("./components/productos/BuscarProductos")); 
 const ProductosFiltrados = lazy(() => import("./components/productos/ProductosFiltrados")); 
 const GestionProductos = lazy(() => import("./admin/productos/analisis/AnalisisVentas.js")); 
+const GestionProductosGrafica = lazy(() => import("./admin/productos/analisis/AnalisisGrafica.js")); 
 
 
 
@@ -169,6 +170,10 @@ const App = () => {
                 <Route
                   path="/admin/gestionProductos"
                   element={<ProteccionRutas element={GestionProductos} allowedRoles={['administrador']} />}
+                />
+                <Route
+                  path="/admin/gestionProductos/grafica/:id"
+                  element={<ProteccionRutas element={GestionProductosGrafica} allowedRoles={['administrador']} />}
                 />
                 <Route
                   path="/admin/productos/detalle/:id"

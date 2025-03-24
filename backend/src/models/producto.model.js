@@ -30,6 +30,10 @@ const Producto = sequelize.define('Producto', {
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW,
   },
+  color: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
   subcategoria_id: {
     type: DataTypes.INTEGER,
     references: {
@@ -45,5 +49,6 @@ const Producto = sequelize.define('Producto', {
 
 // Definir relaciones
 Producto.belongsTo(Subcategoria, { foreignKey: "subcategoria_id", as: "subcategoria" });
+
 
 export default Producto;

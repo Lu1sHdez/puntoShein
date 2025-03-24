@@ -11,7 +11,7 @@ const Breadcrumbs = ({ producto }) => {
   const excluirRutas = (segment) => rutasExcluir.includes(segment);
 
   return (
-    <nav className="mt-12 px-6 py-2 flex items-center justify-start space-x-2 max-w-screen-sm text-black" aria-label="Breadcrumb">
+    <nav className="mt-9 px-6 py-2 flex items-center justify-start space-x-2 max-w-screen-sm text-black" aria-label="Breadcrumb">
       <ol className="inline-flex items-center space-x-2">
         {/* Home */}
         <li className="inline-flex items-center">
