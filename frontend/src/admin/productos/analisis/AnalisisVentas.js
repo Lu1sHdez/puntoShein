@@ -468,7 +468,7 @@ const AnalisisVentas = () => {
                           </p>
                         ) : (
                           <h2 className="text-green-600 font-bold mt-2">
-                            El stock es suficiente para la siguiente semana
+                            El stock es suficiente para la siguiente semana.
                           </h2>
                         )}
                       </>
