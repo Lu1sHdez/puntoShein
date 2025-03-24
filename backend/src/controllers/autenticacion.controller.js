@@ -396,10 +396,10 @@ export const solicitarRecuperacionTelefono = async (req, res) => {
     await usuario.save();
 
     // Enviar SMS con Twilio
-    const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+    const client = twilio(process.env.T_ACCOUNT_SID, process.env.T_AUTH_TOKEN);
     await client.messages.create({
       body: `Tu código de recuperación es: ${codigo}`,
-      from: process.env.TWILIO_PHONE_NUMBER,
+      from: process.env.T_PHONE_NUMBER,
       to: `+52${telefono}`, // Asegúrate de tener formato internacional
     });
 
