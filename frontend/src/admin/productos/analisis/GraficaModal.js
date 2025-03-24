@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   LineElement,
@@ -11,7 +11,6 @@ import {
   Legend,
   CategoryScale,
 } from "chart.js";
-import { Line } from "react-chartjs-2";
 
 ChartJS.register(
   CategoryScale,
@@ -23,8 +22,7 @@ ChartJS.register(
   Legend
 );
 
-const AnalisisGrafica = () => {
-  const { id } = useParams();
+const GraficaModal = ({ idProducto, onClose }) => {
   const [datos, setDatos] = useState([]);
   const [predicciones, setPredicciones] = useState([]);
   const [producto, setProducto] = useState(null);
@@ -32,41 +30,37 @@ const AnalisisGrafica = () => {
   const API_URL = "http://localhost:4000/api";
 
   useEffect(() => {
-    const obtenerDatos = async () => {
+    const fetchData = async () => {
       try {
         const resProd = await axios.get(`${API_URL}/ventas/productosVendidos`, { withCredentials: true });
-        const prod = resProd.data.find(p => p.producto.id === parseInt(id));
+        const prod = resProd.data.find(p => p.producto.id === parseInt(idProducto));
         setProducto(prod?.producto || null);
 
-        const res1 = await axios.get(`${API_URL}/ventas/ventaSemanal/${id}`, { withCredentials: true });
+        const res1 = await axios.get(`${API_URL}/ventas/ventaSemanal/${idProducto}`, { withCredentials: true });
         const ventas = res1.data;
         setDatos(ventas);
 
-        const prediccionesTemp = [];
+        const predTemp = [];
         for (let i = ventas.length + 1; i <= ventas.length + 5; i++) {
-          const res2 = await axios.get(`${API_URL}/ventas/predecir/${id}?semana=${i}`, { withCredentials: true });
-          prediccionesTemp.push({
-            semana: i,
-            prediccion: res2.data.prediccion,
-          });
+          const res2 = await axios.get(`${API_URL}/ventas/predecir/${idProducto}?semana=${i}`, { withCredentials: true });
+          predTemp.push({ semana: i, prediccion: res2.data.prediccion });
         }
-
-        setPredicciones(prediccionesTemp);
+        setPredicciones(predTemp);
       } catch (error) {
         console.error("Error al cargar datos:", error);
       }
     };
 
-    if (id) obtenerDatos();
-  }, [id]);
+    if (idProducto) fetchData();
+  }, [idProducto]);
+
+  const totalVentas = datos.reduce((sum, v) => sum + v.unidades_vendidas, 0);
+  const promedioSemanal = (datos.length ? (totalVentas / datos.length).toFixed(2) : 0);
 
   const labels = [
     ...datos.map((v) => `Semana ${v.semana}`),
     ...predicciones.map((p) => `Semana ${p.semana}`),
   ];
-
-  const totalVentas = datos.reduce((sum, v) => sum + v.unidades_vendidas, 0);
-  const promedioSemanal = (totalVentas / datos.length).toFixed(2);
 
   const data = {
     labels,
@@ -100,7 +94,7 @@ const AnalisisGrafica = () => {
       legend: { position: "bottom" },
       title: {
         display: true,
-        text: "Predicción de Ventas Semanales",
+        text: `Predicción de ventas semanales para "${producto?.nombre || "Producto"}"`,
       },
     },
     scales: {
@@ -115,9 +109,16 @@ const AnalisisGrafica = () => {
   };
 
   return (
-    <div className="w-full px-6 py-10 bg-gray-100 min-h-screen">
-      <div className="bg-white p-8 rounded-lg shadow border border-gray-300">
-        <h2 className="text-3xl font-bold text-center mb-4">
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center">
+      <div className="bg-white w-[95%] md:w-[90%] lg:w-[80%] h-[90%] p-6 rounded-lg shadow-xl overflow-y-auto relative">
+        <button
+          onClick={onClose}
+          className="absolute top-3 right-3 bg-red-500 text-white px-3 py-1 rounded"
+        >
+          Cerrar
+        </button>
+
+        <h2 className="text-2xl font-bold text-center mb-4">
           Análisis de Ventas: {producto?.nombre || "Producto"}
         </h2>
 
@@ -165,18 +166,9 @@ const AnalisisGrafica = () => {
             </div>
           )}
         </div>
-
-        <div className="flex justify-center mt-6">
-          <button
-            onClick={() => window.history.back()}
-            className="bg-pink-600 text-white py-2 px-4 rounded hover:bg-pink-700 transition"
-          >
-            Regresar
-          </button>
-        </div>
       </div>
     </div>
   );
 };
 
-export default AnalisisGrafica;
+export default GraficaModal;
