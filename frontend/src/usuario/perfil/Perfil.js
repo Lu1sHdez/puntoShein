@@ -88,7 +88,7 @@ const Perfil = () => {
             onClick={() => navigate('/usuario/actualizarPerfil')}
             className="w-full bg-pink-600 text-white py-2 rounded-lg hover:bg-pink-700 transition"
           >
-            Editar Perfil
+            Editar mi perfil
           </button>
         </div>
       </div>

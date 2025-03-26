@@ -4,7 +4,7 @@ import { useNavigate, Link, Routes, Route } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FaBox, FaShoppingCart, FaClipboardList, FaUserCircle } from 'react-icons/fa';
 import { dashboardAnimation } from '../../components/Funciones.js';
-import Perfil from '../perfil/UserPerfil.js';
+import Perfil from '../perfil/Perfil.js';
 /* import Productos from '../productos/Productos';
 import Carrito from '../carrito/Carrito';
 import Pedidos from '../pedidos/Pedidos'; */
