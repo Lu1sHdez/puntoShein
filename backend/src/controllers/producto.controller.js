@@ -2,6 +2,9 @@ import Producto from "../models/producto.model.js";
 import Categoria from "../models/categoria.model.js"; //  Importar Categoria
 import Subcategoria from "../models/subcategoria.model.js"; // 
 import { Op, Sequelize } from "sequelize";
+import Talla from "../models/tallas.model.js";
+import ProductoTalla from "../models/productoTalla.model.js";
+
 
 
 // Función para buscar productos por nombre
@@ -44,6 +47,13 @@ export const allProductos = async (req, res) => {
             as: "categoria",
           },
         },
+        {
+          model: Talla,
+          as: "tallas",
+          through: {
+            attributes: ['stock'], // stock por talla
+          },
+        },
       ],
     });
 
@@ -53,6 +63,7 @@ export const allProductos = async (req, res) => {
     res.status(500).json({ mensaje: "Error interno del servidor" });
   }
 };
+
 
 //  Obtener un producto por su ID
 export const obtenerProductoPorId = async (req, res) => {
@@ -69,6 +80,13 @@ export const obtenerProductoPorId = async (req, res) => {
             as: "categoria",
           },
         },
+        {
+          model: Talla,
+          as: "tallas",
+          through: {
+            attributes: ['stock'],
+          },
+        },
       ],
     });
 
@@ -83,38 +101,47 @@ export const obtenerProductoPorId = async (req, res) => {
   }
 };
 
+
 export const filtrarProductos = async (req, res) => {
-    try {
-      const { categoria_id, subcategoria_id } = req.query;
-      let filtros = {};
-  
-      if (categoria_id) {
-        filtros["$subcategoria.categoria_id$"] = categoria_id; // Filtra por categoría
-      }
-      if (subcategoria_id) {
-        filtros.subcategoria_id = subcategoria_id; // Filtra por subcategoría
-      }
-  
-      const productos = await Producto.findAll({
-        where: filtros,
-        include: [
-          {
-            model: Subcategoria,
-            as: "subcategoria",
-            include: {
-              model: Categoria,
-              as: "categoria",
-            },
-          },
-        ],
-      });
-  
-      res.json(productos);
-    } catch (error) {
-      console.error("Error al filtrar productos:", error);
-      res.status(500).json({ mensaje: "Error al filtrar productos." });
+  try {
+    const { categoria_id, subcategoria_id } = req.query;
+    let filtros = {};
+
+    if (categoria_id) {
+      filtros["$subcategoria.categoria_id$"] = categoria_id;
     }
+    if (subcategoria_id) {
+      filtros.subcategoria_id = subcategoria_id;
+    }
+
+    const productos = await Producto.findAll({
+      where: filtros,
+      include: [
+        {
+          model: Subcategoria,
+          as: "subcategoria",
+          include: {
+            model: Categoria,
+            as: "categoria",
+          },
+        },
+        {
+          model: Talla,
+          as: "tallas",
+          through: {
+            attributes: ['stock'],
+          },
+        },
+      ],
+    });
+
+    res.json(productos);
+  } catch (error) {
+    console.error("Error al filtrar productos:", error);
+    res.status(500).json({ mensaje: "Error al filtrar productos." });
+  }
 };
+
   
 //  Obtener todas las categorías
 export const obtenerCategorias = async (req, res) => {
@@ -145,6 +172,43 @@ export const obtenerSubcategorias = async (req, res) => {
     res.status(500).json({ mensaje: "Error interno del servidor" });
   }
 };
+export const obtenerProductosPorSubcategoria = async (req, res) => {
+  try {
+    const { subcategoria_id } = req.query;
+
+    if (!subcategoria_id) {
+      return res.status(400).json({ mensaje: "Se requiere el ID de la subcategoría." });
+    }
+
+    const productos = await Producto.findAll({
+      where: { subcategoria_id },
+      include: [
+        {
+          model: Subcategoria,
+          as: "subcategoria",
+          include: {
+            model: Categoria,
+            as: "categoria",
+          },
+        },
+        {
+          model: Talla,
+          as: "tallas",
+          through: {
+            attributes: ['stock'],
+          },
+        },
+      ],
+    });
+
+    res.json(productos);
+  } catch (error) {
+    console.error("Error al obtener productos por subcategoría:", error);
+    res.status(500).json({ mensaje: "Error al obtener productos por subcategoría." });
+  }
+};
+
+
 export const eliminarProducto = async (req, res) => {
   try {
     const { id } = req.params;
@@ -168,6 +232,59 @@ export const eliminarProducto = async (req, res) => {
   } catch (error) {
     console.error('Error al eliminar el producto:', error);
     res.status(500).json({ mensaje: 'Error al eliminar el producto' });
+  }
+};
+
+export const obtenerDetalleProductoPorTalla = async (req, res) => {
+  try {
+    const { producto_id, talla_id } = req.query;
+
+    // 1. Obtener el producto
+    const producto = await Producto.findByPk(producto_id, {
+      include: [
+        {
+          model: Subcategoria,
+          as: "subcategoria",
+          include: {
+            model: Categoria,
+            as: "categoria",
+          },
+        },
+      ],
+    });
+
+    if (!producto) {
+      return res.status(404).json({ mensaje: "Producto no encontrado" });
+    }
+
+    // 2. Obtener la relación con la talla específica (stock)
+    const relacion = await ProductoTalla.findOne({
+      where: {
+        producto_id,
+        talla_id,
+      },
+    });
+
+    if (!relacion) {
+      return res.status(404).json({ mensaje: "Talla no asignada al producto" });
+    }
+
+    // 3. Obtener la talla (para nombre de la talla)
+    const talla = await Talla.findByPk(talla_id);
+    if (!talla) {
+      return res.status(404).json({ mensaje: "Talla no encontrada" });
+    }
+
+    // 4. Devolver toda la  info del producto + talla y stock específico
+    res.json({
+      ...producto.toJSON(),
+      stock: relacion.stock, // sobrescribimos el stock total con el de la talla seleccionada
+      talla: talla.nombre,
+    });
+
+  } catch (error) {
+    console.error("Error al obtener detalle por talla:", error);
+    res.status(500).json({ mensaje: "Error interno al obtener detalle del producto" });
   }
 };
 

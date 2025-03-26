@@ -2,46 +2,45 @@ import Venta from "../models/ventas.model.js";
 import Producto from "../models/producto.model.js";
 import { Op } from "sequelize";
 
-export const obtenerProductosVendidos = async (req, res) => {
+export const obtenerVentasPorMes = async (req, res) => {
   try {
-    // Obtener IDs únicos de productos vendidos
-    const ventas = await Venta.findAll({
-      attributes: ["producto_id"],
-      group: ["producto_id"],
-    });
+    const { producto_id } = req.params;
+    const { talla_id } = req.query;
 
-    const productoIds = ventas.map((v) => v.producto_id);
-
-    if (productoIds.length === 0) {
-      return res.status(404).json({ mensaje: "No hay productos vendidos aún." });
+    const where = { producto_id };
+    if (talla_id) {
+      where.talla_id = talla_id;
     }
 
-    // Obtener información de los productos vendidos
-
-    const productos = await Producto.findAll({
-      where: {
-        id: {
-          [Op.in]: productoIds,
-        },
-      },
+    const ventas = await Venta.findAll({
+      where,
+      order: [["fecha_venta", "ASC"]],
     });
 
-    // Formato de respuesta
-    const resultado = productos.map((producto) => ({
-      producto: {
-        id: producto.id,
-        imagen:producto.imagen,
-        nombre: producto.nombre,
-        descripcion: producto.descripcion,
-        precio: producto.precio,
-        stock: producto.stock,
-        // Puedes agregar más campos si quieres
-      },
+    if (ventas.length === 0) {
+      return res.status(404).json({ mensaje: "No hay ventas registradas para este producto o talla." });
+    }
+
+    const ventasPorMes = {};
+
+    ventas.forEach((venta) => {
+      const fecha = new Date(venta.fecha_venta);
+      const mes = fecha.toLocaleDateString('es-MX', { year: 'numeric', month: 'long' }); 
+      if (!ventasPorMes[mes]) ventasPorMes[mes] = 0;
+      ventasPorMes[mes] += venta.cantidad;
+    });
+
+    const resultado = Object.entries(ventasPorMes)
+    .sort((a, b) => new Date(`01/${a[0]}`) - new Date(`01/${b[0]}`)) // orden por fecha
+    .map(([mes, cantidad]) => ({
+      mes,
+      unidades_vendidas: cantidad,
     }));
+
 
     res.json(resultado);
   } catch (error) {
-    console.error("Error al obtener productos vendidos:", error);
+    console.error("Error al obtener ventas por mes:", error);
     res.status(500).json({ mensaje: "Error interno del servidor" });
   }
 };
@@ -49,18 +48,22 @@ export const obtenerProductosVendidos = async (req, res) => {
 export const obtenerVentasSemanales = async (req, res) => {
   try {
     const { producto_id } = req.params;
+    const { talla_id } = req.query;
 
-    // Obtener todas las ventas del producto ordenadas por fecha
+    const where = { producto_id };
+    if (talla_id) {
+      where.talla_id = talla_id;
+    }
+
     const ventas = await Venta.findAll({
-      where: { producto_id },
+      where,
       order: [["fecha_venta", "ASC"]],
     });
 
     if (ventas.length === 0) {
-      return res.status(404).json({ mensaje: "No hay ventas registradas para este producto" });
+      return res.status(404).json({ mensaje: "No hay ventas registradas para este producto o talla." });
     }
 
-    // Agrupar ventas por semana
     const ventasSemanales = {};
 
     ventas.forEach((venta) => {
@@ -70,18 +73,18 @@ export const obtenerVentasSemanales = async (req, res) => {
       if (!ventasSemanales[semana]) {
         ventasSemanales[semana] = {
           unidades_vendidas: 0,
-          fecha: fechaVenta, // guardar la primera fecha de esa semana
+          fecha: fechaVenta,
         };
       }
 
       ventasSemanales[semana].unidades_vendidas += venta.cantidad;
     });
 
-    // Formatear la respuesta
     const resultado = Object.entries(ventasSemanales).map(([semana, data]) => ({
       semana: parseInt(semana),
       unidades_vendidas: data.unidades_vendidas,
-      fecha: data.fecha, // incluir la fecha en la respuesta
+      fecha: data.fecha.toISOString().split('T')[0]  // Resultado: "2025-03-08"
+
     }));
 
     res.json(resultado);
@@ -90,136 +93,187 @@ export const obtenerVentasSemanales = async (req, res) => {
     res.status(500).json({ mensaje: "Error interno del servidor" });
   }
 };
-// Función para obtener el número de semana a partir de una fecha
-const getWeekNumber = (date) => {
-  const startOfYear = new Date(date.getFullYear(), 0, 1);
-  const pastDaysOfYear = (date - startOfYear) / 86400000;
-  return Math.ceil((pastDaysOfYear + startOfYear.getDay() + 1) / 7);
-};
-export const predecirVentasFuturas = async (req, res) => {
+
+export const obtenerVentasPorDia = async (req, res) => {
   try {
     const { producto_id } = req.params;
-    const { semana } = req.query;
+    const { talla_id } = req.query;
 
-    if (!semana) {
-      return res.status(400).json({ mensaje: "Se requiere el número de semana para la predicción." });
-    }
-
-    const s = parseInt(semana); // ✅ Conversión segura
-
-    const producto = await Producto.findByPk(producto_id);
-    if (!producto) {
-      return res.status(404).json({ mensaje: "Producto no encontrado" });
+    const where = { producto_id };
+    if (talla_id) {
+      where.talla_id = talla_id;
     }
 
     const ventas = await Venta.findAll({
-      where: { producto_id },
+      where,
       order: [["fecha_venta", "ASC"]],
     });
 
-    if (ventas.length < 2) {
-      return res.status(400).json({ mensaje: "Se necesitan al menos 2 ventas para predecir." });
+    if (ventas.length === 0) {
+      return res.status(404).json({ mensaje: "No hay ventas registradas para este producto o talla." });
     }
 
-    // Agrupar ventas por semana
-    const fechaInicio = new Date(ventas[0].fecha_venta);
-    const ventasSemanas = [];
+    const ventasPorDia = {};
 
     ventas.forEach((venta) => {
-      const fecha = new Date(venta.fecha_venta);
-      const semanaVenta = Math.floor((fecha - fechaInicio) / (1000 * 60 * 60 * 24 * 7)) + 1;
-
-      if (!ventasSemanas[semanaVenta - 1]) ventasSemanas[semanaVenta - 1] = 0;
-      ventasSemanas[semanaVenta - 1] += venta.cantidad;
+      const fecha = new Date(venta.fecha_venta).toISOString().split('T')[0]; // Formato "2025-03-25"
+      if (!ventasPorDia[fecha]) ventasPorDia[fecha] = 0;
+      ventasPorDia[fecha] += venta.cantidad;
     });
 
-    // Ajuste exponencial usando regresión logarítmica
-    const x = ventasSemanas.map((_, i) => i + 1);
-    const y = ventasSemanas;
-    const logY = y.map(v => Math.log(v));
+    const resultado = Object.entries(ventasPorDia).map(([fecha, cantidad]) => ({
+      fecha,
+      unidades_vendidas: cantidad,
+    }));
 
-    const n = x.length;
-    const sumX = x.reduce((a, b) => a + b, 0);
-    const sumLogY = logY.reduce((a, b) => a + b, 0);
-    const sumXLogY = x.reduce((sum, xi, i) => sum + xi * logY[i], 0);
-    const sumX2 = x.reduce((sum, xi) => sum + xi * xi, 0);
+    res.json(resultado);
+  } catch (error) {
+    console.error("Error al obtener ventas por día:", error);
+    res.status(500).json({ mensaje: "Error interno del servidor" });
+  }
+};
+// Función para obtener el número de semana de una fecha
+const getWeekNumber = (date) => {
+  const startOfYear = new Date(date.getFullYear(), 0, 1);
+  const pastDaysOfYear = Math.floor((date - startOfYear) / 86400000);
+  return Math.ceil((pastDaysOfYear + startOfYear.getDay() + 1) / 7);
+};
 
-    const b = (n * sumXLogY - sumX * sumLogY) / (n * sumX2 - sumX * sumX);
-    const a = (sumLogY - b * sumX) / n;
+function calcularK(P0, Pt, t) {
+  if (P0 <= 0 || Pt <= 0 || t <= 0) return null;
+  return (1 / t) * Math.log(Pt / P0);
+}
 
-    const P1 = Math.exp(a);
-    const k = b;
-    const prediccion = Math.round(P1 * Math.exp(k * (s - 1)));
+function predecirValores(P0, k, tInicial, cantidad) {
+  const predicciones = [];
+  for (let t = 1; t <= cantidad; t++) {
+    const tActual = tInicial + t;
+    const P = Math.round(P0 * Math.exp(k * tActual));
+    predicciones.push(P);
+  }
+  return predicciones;
+}
 
-    res.json({
-      producto_id,
-      nombre: producto.nombre,
-      semana: s,
-      prediccion,
-      P1: P1.toFixed(2),
-      k: k.toFixed(5),
-      mensaje: `Se estima que en la semana ${s} se venderán aproximadamente ${prediccion} unidades.`,
+export const predecirVentasPorDia = async (req, res) => {
+  try {
+    const { producto_id } = req.params;
+    const { talla_id } = req.query;
+
+    const where = { producto_id };
+    if (talla_id) where.talla_id = talla_id;
+
+    const ventas = await Venta.findAll({ where, order: [['fecha_venta', 'ASC']] });
+    if (ventas.length < 1) return res.status(400).json({ mensaje: 'No hay datos suficientes para predecir.' });
+
+    const ventasPorDia = {};
+    ventas.forEach(v => {
+      const fecha = new Date(v.fecha_venta).toISOString().split('T')[0]; // "2025-03-25"
+
+      ventasPorDia[fecha] = (ventasPorDia[fecha] || 0) + v.cantidad;
     });
+
+    const fechas = Object.keys(ventasPorDia);
+    if (fechas.length < 2) return res.status(400).json({ mensaje: 'Se necesitan al menos dos registros para predecir.' });
+
+    const P0 = ventasPorDia[fechas[0]];
+    const Pt = ventasPorDia[fechas[fechas.length - 1]];
+    const t = fechas.length - 1;
+    const k = calcularK(P0, Pt, t);
+    if (!k) return res.status(400).json({ mensaje: 'No se pudo calcular k.' });
+
+    const predicciones = [];
+    for (let i = 1; i <= 7; i++) {
+      const fecha = new Date();
+      fecha.setDate(fecha.getDate() + i);
+      const unidades = Math.round(P0 * Math.exp(k * (t + i)));
+      predicciones.push({ fecha: fecha.toLocaleDateString("es-MX"), unidades_estimadas: unidades });
+    }
+
+    res.json(predicciones);
+  } catch (error) {
+    console.error("Error al predecir ventas por día:", error);
+    res.status(500).json({ mensaje: "Error interno del servidor" });
+  }
+};
+
+export const predecirVentasPorSemana = async (req, res) => {
+  try {
+    const { producto_id } = req.params;
+    const { talla_id } = req.query;
+
+    const where = { producto_id };
+    if (talla_id) where.talla_id = talla_id;
+
+    const ventas = await Venta.findAll({ where, order: [['fecha_venta', 'ASC']] });
+    if (ventas.length < 1) return res.status(400).json({ mensaje: 'No hay datos suficientes para predecir.' });
+
+    const ventasSemanales = {};
+    ventas.forEach(v => {
+      const semana = getWeekNumber(new Date(v.fecha_venta));
+      ventasSemanales[semana] = (ventasSemanales[semana] || 0) + v.cantidad;
+    });
+
+    const semanas = Object.keys(ventasSemanales);
+    if (semanas.length < 2) return res.status(400).json({ mensaje: 'Se necesitan al menos dos semanas para predecir.' });
+
+    const P0 = ventasSemanales[semanas[0]];
+    const Pt = ventasSemanales[semanas[semanas.length - 1]];
+    const t = semanas.length - 1;
+    const k = calcularK(P0, Pt, t);
+    if (!k) return res.status(400).json({ mensaje: 'No se pudo calcular k.' });
+
+    const predicciones = [];
+    for (let i = 1; i <= 4; i++) {
+      const unidades = Math.round(P0 * Math.exp(k * (t + i)));
+      predicciones.push({ semana: `Semana +${i}`, unidades_estimadas: unidades });
+    }
+
+    res.json(predicciones);
   } catch (error) {
     console.error("Error al predecir ventas por semana:", error);
     res.status(500).json({ mensaje: "Error interno del servidor" });
   }
 };
 
-export const predecirSemanasPorMeta = async (req, res) => {
+export const predecirVentasPorMes = async (req, res) => {
   try {
     const { producto_id } = req.params;
-    const { meta } = req.query;
+    const { talla_id } = req.query;
 
-    if (!meta) {
-      return res.status(400).json({ mensaje: "Se requiere la meta de ventas para la predicción." });
-    }
+    const where = { producto_id };
+    if (talla_id) where.talla_id = talla_id;
 
-    const producto = await Producto.findByPk(producto_id);
-    if (!producto) {
-      return res.status(404).json({ mensaje: "Producto no encontrado" });
-    }
+    const ventas = await Venta.findAll({ where, order: [['fecha_venta', 'ASC']] });
+    if (ventas.length < 1) return res.status(400).json({ mensaje: 'No hay datos suficientes para predecir.' });
 
-    const ventas = await Venta.findAll({
-      where: { producto_id },
-      order: [["fecha_venta", "ASC"]],
+    const ventasPorMes = {};
+    ventas.forEach(v => {
+      const fecha = new Date(v.fecha_venta);
+      const mes = `${fecha.getMonth() + 1}/${fecha.getFullYear()}`;
+      ventasPorMes[mes] = (ventasPorMes[mes] || 0) + v.cantidad;
     });
 
-    if (ventas.length < 2) {
-      return res.status(400).json({ mensaje: "Se necesitan al menos 2 ventas para predecir." });
+    const meses = Object.keys(ventasPorMes);
+    if (meses.length < 2) return res.status(400).json({ mensaje: 'Se necesitan al menos dos meses para predecir.' });
+
+    const P0 = ventasPorMes[meses[0]];
+    const Pt = ventasPorMes[meses[meses.length - 1]];
+    const t = meses.length - 1;
+    const k = calcularK(P0, Pt, t);
+    if (!k) return res.status(400).json({ mensaje: 'No se pudo calcular k.' });
+
+    const predicciones = [];
+    const hoy = new Date();
+    for (let i = 1; i <= 3; i++) {
+      const fecha = new Date(hoy);
+      fecha.setMonth(hoy.getMonth() + i);
+      const unidades = Math.round(P0 * Math.exp(k * (t + i)));
+      predicciones.push({ mes: `${fecha.getMonth() + 1}/${fecha.getFullYear()}`, unidades_estimadas: unidades });
     }
 
-    // Agrupar ventas por semana
-    const fechaInicio = new Date(ventas[0].fecha_venta);
-    const ventasSemanas = [];
-
-    ventas.forEach((venta) => {
-      const fecha = new Date(venta.fecha_venta);
-      const semanaVenta = Math.floor((fecha - fechaInicio) / (1000 * 60 * 60 * 24 * 7)) + 1;
-
-      if (!ventasSemanas[semanaVenta - 1]) ventasSemanas[semanaVenta - 1] = 0;
-      ventasSemanas[semanaVenta - 1] += venta.cantidad;
-    });
-
-    const P1 = ventasSemanas[0]; // Ventas en la primera semana
-    const P2 = ventasSemanas[1]; // Ventas en la segunda semana
-    const k = Math.log(P2 / P1); // Tasa de crecimiento
-
-    const metaUnidades = parseInt(meta); // Meta de ventas
-    const semanas = Math.ceil(Math.log(metaUnidades / P1) / k); // Semanas necesarias
-
-    res.json({
-      producto_id,
-      nombre: producto.nombre,
-      meta: metaUnidades,
-      semanas,
-      P1,
-      P2,
-      k: k.toFixed(5),
-      mensaje: `Se estima que tomará ${semanas} semanas vender ${metaUnidades} unidades.`,
-    });
+    res.json(predicciones);
   } catch (error) {
-    console.error("Error al predecir semanas por meta:", error);
+    console.error("Error al predecir ventas por mes:", error);
     res.status(500).json({ mensaje: "Error interno del servidor" });
   }
 };
