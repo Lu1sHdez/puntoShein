@@ -55,8 +55,8 @@ const Error500 = lazy(() => import("./components/error/Error500"));
 const Error400 = lazy(() => import("./components/error/Error400"));
 
 //perfil de usuario
-const PerfilUsuario = lazy(() => import("./usuario/perfil/Perfil.js"));
-const ActualizarPerfilUsuario = lazy(() => import("./usuario/perfil/ActualizarPerfil.js"));
+const PerfilUsuario = lazy(() => import("./usuario/perfil/UserPerfil.js"));
+const ActualizarPerfilUsuario = lazy(() => import("./usuario/perfil/UpdatePerfil.js"));
 const DashboardUsuario = lazy(() => import("./usuario/dashboard/Dashboard.js"));
 const ProductosA = lazy(() => import("./components/cart/Agregar.js"));
 
