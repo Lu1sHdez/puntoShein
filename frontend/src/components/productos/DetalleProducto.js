@@ -16,6 +16,7 @@ const DetalleProducto = () => {
   const navigate = useNavigate();
   const [producto, setProducto] = useState(null);
   const [usuario, setUsuario] = useState(null); // Estado para almacenar el usuario
+  const [tallaSeleccionada, setTallaSeleccionada] = useState("");
 
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
@@ -81,11 +82,22 @@ const DetalleProducto = () => {
       return;
     }
   
+    if (!tallaSeleccionada) {
+      Swal.fire({
+        icon: "warning",
+        title: "Selecciona una talla",
+        text: "Debes seleccionar una talla para continuar con la compra.",
+        confirmButtonText: "Aceptar",
+      });
+      return;
+    }
+  
     try {
       const response = await axios.post(
         "http://localhost:4000/api/compra/comprar",
         {
           producto_id: producto.id,
+          talla_id: tallaSeleccionada,
           cantidad: 1,
           usuario_id: usuario.id,
         },
@@ -93,10 +105,9 @@ const DetalleProducto = () => {
           withCredentials: true,
         }
       );
-      mostrarNotificacion("success", "La compra se ha registrado exitosamente.")
-
   
-      // Opcional: puedes volver a cargar el producto para actualizar el stock
+      mostrarNotificacion("success", "La compra se ha registrado exitosamente.");
+  
       const updatedProducto = await axios.get(`http://localhost:4000/api/productos/${id}`);
       setProducto(updatedProducto.data);
   
@@ -110,6 +121,7 @@ const DetalleProducto = () => {
       });
     }
   };
+  
   
 
   return (
@@ -127,6 +139,24 @@ const DetalleProducto = () => {
             className="rounded-lg shadow-md object-cover w-full max-w-md h-auto"
           />
         </div>
+        <div className="mt-4">
+
+          <label htmlFor="talla" className="block text-sm font-medium text-gray-700">Selecciona tu talla:</label>
+          <select
+            id="talla"
+            value={tallaSeleccionada}
+            onChange={(e) => setTallaSeleccionada(e.target.value)}
+            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+          >
+            <option value="">-- Selecciona una talla --</option>
+            {producto.tallas?.map((talla) => (
+              <option key={talla.id} value={talla.id}>
+                {talla.nombre} - Stock: {talla.ProductoTalla.stock}
+              </option>
+            ))}
+          </select>
+        </div>
+
 
         {/* Detalles del producto */}
         <div className="w-full lg:w-1/2 p-6">

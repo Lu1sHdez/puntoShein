@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { mostrarNotificacion } from "../Animations/NotificacionSwal";
 
 const useFormulario = (initialState, url, redirigir, isAuthForm = false) => {
   const [datos, setDatos] = useState(initialState);
@@ -26,14 +27,7 @@ const useFormulario = (initialState, url, redirigir, isAuthForm = false) => {
 
     // Si es un formulario de autenticación (Login o Registro)
     if (isAuthForm) {
-      await Swal.fire({
-        icon: "success",
-        title: "Inicio de sesión exitoso",
-        text: "Operación exitosa, redirigiendo...",
-        timer: 1500,
-        timerProgressBar: true,
-        showConfirmButton: false,
-      });
+      mostrarNotificacion("success", "Inicio de sesion exitoso. Redirigiendo...")
 
       // Guardar el token en localStorage
       localStorage.setItem("token", respuesta.data.token);
@@ -42,15 +36,7 @@ const useFormulario = (initialState, url, redirigir, isAuthForm = false) => {
       setTimeout(() => navigate(redirigir), 1500);
     } else {
       //  Formulario de recuperación o restablecimiento de contraseña
-      await Swal.fire({
-        icon: "success",
-        title: "Operación exitosa",
-        text: respuesta.data.mensaje || "Proceso realizado correctamente.",
-        confirmButtonColor: "#3085d6",
-        timer: 1500,
-        timerProgressBar: true,
-        showConfirmButton: false,
-      });
+      mostrarNotificacion("success", "Proceso realizado exitosamente")
 
       // Redirigir después de 3 segundos si todo salió bien
       setTimeout(() => navigate(redirigir), 1500);

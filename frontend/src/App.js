@@ -12,8 +12,10 @@ const AllProductos = lazy(() => import("./components/productos/AllProductos"));
 const BuscarProductos = lazy(() => import("./components/productos/BuscarProductos")); 
 const ProductosFiltrados = lazy(() => import("./components/productos/ProductosFiltrados")); 
 const GestionProductos = lazy(() => import("./admin/productos/analisis/AnalisisVentas.js")); 
-const GestionProductosGrafica = lazy(() => import("./admin/productos/analisis/AnalisisGrafica.js")); 
 
+
+//Sidebar users
+const SidebarAdmin = lazy(() => import("./admin/sidebar/Sidebar.js")); 
 
 
 //Autenticacion
@@ -142,6 +144,10 @@ const App = () => {
                   path="/admin/dashboard"
                   element={<ProteccionRutas element={DashboardAdmin} allowedRoles={['administrador']} />}
                 />
+                <Route
+                  path="/admin/sidebar"
+                  element={<ProteccionRutas element={SidebarAdmin} allowedRoles={['administrador']} />}
+                />
 
                 <Route
                   path="/admin/preguntasFrecuentes"
@@ -171,10 +177,7 @@ const App = () => {
                   path="/admin/gestionProductos"
                   element={<ProteccionRutas element={GestionProductos} allowedRoles={['administrador']} />}
                 />
-                <Route
-                  path="/admin/gestionProductos/grafica/:id"
-                  element={<ProteccionRutas element={GestionProductosGrafica} allowedRoles={['administrador']} />}
-                />
+
                 <Route
                   path="/admin/productos/detalle/:id"
                   element={<ProteccionRutas element={DetalleProductos} allowedRoles={['administrador']} />}
