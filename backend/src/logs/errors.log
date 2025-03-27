@@ -1,0 +1,48 @@
+{
+  message: 'Credenciales inválidas - Contraseña incorrecta',
+  level: 'error',
+  codigo_error: '400',
+  ip_cliente: '::ffff:127.0.0.1',
+  usuario: 'luis2004hdez@gmail.com',
+  fecha_hora: '26/3/2025, 20:00:20'
+}
+{
+  message: 'Credenciales inválidas - Contraseña incorrecta',
+  level: 'error',
+  codigo_error: '400',
+  ip_cliente: '::ffff:127.0.0.1',
+  usuario: 'luis2004hdez@gmail.com',
+  fecha_hora: '26/3/2025, 20:00:23'
+}
+{
+  message: 'Credenciales inválidas - Contraseña incorrecta',
+  level: 'error',
+  codigo_error: '400',
+  ip_cliente: '::ffff:127.0.0.1',
+  usuario: 'luis2004hdez@gmail.com',
+  fecha_hora: '26/3/2025, 20:00:23'
+}
+{
+  message: 'Credenciales inválidas - Contraseña incorrecta',
+  level: 'error',
+  codigo_error: '400',
+  ip_cliente: '::ffff:127.0.0.1',
+  usuario: 'luis2004hdez@gmail.com',
+  fecha_hora: '26/3/2025, 20:00:24'
+}
+{
+  message: 'Credenciales inválidas - Contraseña incorrecta',
+  level: 'error',
+  codigo_error: '400',
+  ip_cliente: '::ffff:127.0.0.1',
+  usuario: 'luis2004hdez@gmail.com',
+  fecha_hora: '26/3/2025, 20:00:24'
+}
+{
+  message: 'Credenciales inválidas - Contraseña incorrecta',
+  level: 'error',
+  codigo_error: '400',
+  ip_cliente: '::ffff:127.0.0.1',
+  usuario: 'luis2004hdez@gmail.com',
+  fecha_hora: '26/3/2025, 20:00:24'
+}
