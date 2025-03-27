@@ -27,7 +27,7 @@ app.set('trust proxy', true);
 app.use(cookieParser());
 
 const corsOpcion ={
-  origin: ['http://localhost:3000'],
+  origin: ['http://localhost:3000','https://puntoshein.vercel.app/'],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
