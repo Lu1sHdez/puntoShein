@@ -27,7 +27,7 @@ app.set('trust proxy', true);
 app.use(cookieParser());
 
 const corsOpcion ={
-  origin: ['http://localhost:3000','https://puntoshein.vercel.app/'],
+  origin: ['http://localhost:3000','https://puntoshein.vercel.app'],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
@@ -64,6 +64,12 @@ app.use('/api/empresa', empresaRutas);
 app.use('/api/admin', adminRutas);
 app.use('/api/empleado', empleadoRutas);
 app.use('/api/preguntas', preguntaFrecuenteRutas)
+
+// Ruta raíz para verificar que la API está en línea
+app.get('/', (req, res) => {
+  res.send('✅ API Punto Shein funcionando correctamente');
+});
+
 
 // Middleware de manejo de errores para capturar errores no controlados
 app.use((err, req, res, next) => {
