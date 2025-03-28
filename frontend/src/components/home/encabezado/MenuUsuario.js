@@ -9,7 +9,7 @@ import { API_URL } from "../../../ApiConexion";
 
 const MenuUsuario = ({ usuarioAutenticado, handleLogout }) => {
   const [menuAbierto, setMenuAbierto] = useState(false);
-  const [setEsTactil] = useState(false);
+  const [esTactil, setEsTactil] = useState(false);
   const [nombreUsuario, setNombreUsuario] = useState("");
   const [rolUsuario, setRolUsuario] = useState("");
   const menuRef = useRef(null); 
