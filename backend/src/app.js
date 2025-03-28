@@ -26,14 +26,14 @@ app.use(express.json());
 app.set('trust proxy', true);
 app.use(cookieParser());
 
-const corsOpcion ={
-  origin: ['http://localhost:3000','https://puntoshein.vercel.app'],
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+const corsOpcion = {
+  origin: process.env.FRONTEND_URL,
   credentials: true,
-}
-app.use(cors(corsOpcion));
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+};
 
+app.use(cors(corsOpcion));
 
 // uso de Helmet para configurar csp
 app.use(helmet());
