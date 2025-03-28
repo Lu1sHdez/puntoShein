@@ -4,8 +4,17 @@ import ProductoCard from "../../productos/ProductoCard";
 import Fondo from "./Fondo";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { aparecer, deslizarIzquierda, contenedorEscalonado, itemEscalonado } from "../../../Animations/Animacion";
-import { transicionPagina, hoverBoton, clicBoton } from "../../../Animations/Transicion";
+import {
+  aparecer,
+  deslizarIzquierda,
+  contenedorEscalonado,
+  itemEscalonado
+} from "../../../Animations/Animacion";
+import {
+  transicionPagina,
+  hoverBoton,
+  clicBoton
+} from "../../../Animations/Transicion";
 import { API_URL } from "../../../ApiConexion";
 
 const Cuerpo = () => {
@@ -17,18 +26,30 @@ const Cuerpo = () => {
     const fetchProductos = async () => {
       try {
         const response = await axios.get(`${API_URL}/api/productos/destacados`);
-        setProductosDestacados(response.data);
+        if (Array.isArray(response.data)) {
+          setProductosDestacados(response.data);
+        } else {
+          console.warn("Respuesta no válida para productosDestacados:", response.data);
+          setProductosDestacados([]);
+        }
       } catch (error) {
         console.error("Error al obtener productos destacados:", error);
+        setProductosDestacados([]);
       }
     };
 
     const fetchOfertas = async () => {
       try {
         const response = await axios.get(`${API_URL}/api/ofertas`);
-        setOfertas(response.data);
+        if (Array.isArray(response.data)) {
+          setOfertas(response.data);
+        } else {
+          console.warn("Respuesta no válida para ofertas:", response.data);
+          setOfertas([]);
+        }
       } catch (error) {
         console.error("Error al obtener ofertas:", error);
+        setOfertas([]);
       }
     };
 
@@ -82,16 +103,18 @@ const Cuerpo = () => {
         <h2 className="text-4xl font-extrabold text-center mb-12">
           Productos Destacados
         </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
-          {productosDestacados.map((producto) => (
-            <motion.div
-              key={producto.id}
-              variants={itemEscalonado}
-            >
-              <ProductoCard producto={producto} />
-            </motion.div>
-          ))}
-        </div>
+
+        {productosDestacados.length === 0 ? (
+          <p className="text-center text-gray-500">No hay productos destacados por ahora.</p>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
+            {productosDestacados.map((producto) => (
+              <motion.div key={producto.id} variants={itemEscalonado}>
+                <ProductoCard producto={producto} />
+              </motion.div>
+            ))}
+          </div>
+        )}
       </motion.section>
 
       {/* Ofertas Especiales */}
@@ -104,30 +127,35 @@ const Cuerpo = () => {
         <h2 className="text-4xl font-extrabold text-center mb-12">
           Ofertas Especiales
         </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10">
-          {ofertas.map((oferta) => (
-            <motion.div
-              key={oferta.id}
-              className="bg-white text-black p-6 rounded-lg shadow-lg"
-              variants={itemEscalonado}
-            >
-              <img
-                src={oferta.imagen}
-                alt={oferta.titulo}
-                className="w-full h-64 object-cover rounded-lg shadow-md"
-              />
-              <h3 className="text-2xl font-semibold mt-6">{oferta.titulo}</h3>
-              <p className="mt-2 text-lg">{oferta.descripcion}</p>
-              <motion.button
-                className="mt-6 inline-block bg-red-600 text-white py-3 px-8 rounded-lg text-xl shadow-md hover:bg-red-700 transition-all"
-                whileHover={hoverBoton}
-                whileTap={clicBoton}
+
+        {ofertas.length === 0 ? (
+          <p className="text-center text-white">No hay ofertas activas por ahora.</p>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10">
+            {ofertas.map((oferta) => (
+              <motion.div
+                key={oferta.id}
+                className="bg-white text-black p-6 rounded-lg shadow-lg"
+                variants={itemEscalonado}
               >
-                Ver Oferta
-              </motion.button>
-            </motion.div>
-          ))}
-        </div>
+                <img
+                  src={oferta.imagen}
+                  alt={oferta.titulo}
+                  className="w-full h-64 object-cover rounded-lg shadow-md"
+                />
+                <h3 className="text-2xl font-semibold mt-6">{oferta.titulo}</h3>
+                <p className="mt-2 text-lg">{oferta.descripcion}</p>
+                <motion.button
+                  className="mt-6 inline-block bg-red-600 text-white py-3 px-8 rounded-lg text-xl shadow-md hover:bg-red-700 transition-all"
+                  whileHover={hoverBoton}
+                  whileTap={clicBoton}
+                >
+                  Ver Oferta
+                </motion.button>
+              </motion.div>
+            ))}
+          </div>
+        )}
       </motion.section>
 
       {/* Testimonios de Clientes */}
