@@ -13,6 +13,7 @@
   import Busqueda from "./Busqueda";
   import { obtenerCantidad } from "../../cart/Funciones";
   import Usuarios from "./Usuarios"; // Importar el componente Usuarios
+  import { API_URL } from "../../../ApiConexion";
   
 
   const Encabezado = () => {
@@ -28,7 +29,7 @@
     // Función para obtener los datos de la empresa desde la API
     const fetchEmpresa = async () => {
       try {
-        const response = await axios.get("http://localhost:4000/api/empresa/empresa", {
+        const response = await axios.get(`${API_URL}/api/empresa/empresa`, {
           withCredentials: true,
         });
         setEmpresa(response.data);

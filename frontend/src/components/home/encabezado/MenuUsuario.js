@@ -5,13 +5,14 @@ import { menuAnimado } from "../../home/encabezado/Funciones";
 import { motion } from "framer-motion";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
+import { API_URL } from "../../../ApiConexion";
 
 const MenuUsuario = ({ usuarioAutenticado, handleLogout }) => {
   const [menuAbierto, setMenuAbierto] = useState(false);
-  const [esTactil, setEsTactil] = useState(false);
+  const [setEsTactil] = useState(false);
   const [nombreUsuario, setNombreUsuario] = useState("");
   const [rolUsuario, setRolUsuario] = useState("");
-  const menuRef = useRef(null); // Referencia al menú
+  const menuRef = useRef(null); 
 
   useEffect(() => {
     const detectarTactil = () => {
@@ -30,10 +31,10 @@ const MenuUsuario = ({ usuarioAutenticado, handleLogout }) => {
         const decoded = jwtDecode(token);
         const rol = decoded.rol;
         let endpoint = rol === "administrador"
-          ? "http://localhost:4000/api/admin/perfil"
+          ? `${API_URL}/api/admin/perfil`
           : rol === "empleado"
-          ? "http://localhost:4000/api/empleado/perfil"
-          : "http://localhost:4000/api/usuario/perfil";
+          ? `${API_URL}/api/empleado/perfil`
+          : `${API_URL}/api/usuario/perfil`;
         const response = await axios.get(endpoint, { withCredentials: true });
         setNombreUsuario(response.data.nombre);
         setRolUsuario(rol);

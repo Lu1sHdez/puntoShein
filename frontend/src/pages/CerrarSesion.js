@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2"; // Para mostrar una alerta
 import axios from "axios";
 import useAuth from "../hooks/useAuth"; // Hook de autenticación
+import { API_URL } from "../ApiConexion";
+
 
 const CerrarSesion = () => {
   const navigate = useNavigate();
@@ -11,7 +13,7 @@ const CerrarSesion = () => {
   useEffect(() => {
     const cerrarSesion = async () => {
       try {
-        await axios.post("http://localhost:4000/api/autenticacion/logout", {}, { withCredentials: true });
+        await axios.post(`${API_URL}/api/autenticacion/logout`, {}, { withCredentials: true });
         
         logout(); //Borra la autenticación
 

@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { aparecer, deslizarIzquierda, contenedorEscalonado, itemEscalonado } from "../../../Animations/Animacion";
 import { transicionPagina, hoverBoton, clicBoton } from "../../../Animations/Transicion";
+import { API_URL } from "../../../ApiConexion";
 
 const Cuerpo = () => {
   const [productosDestacados, setProductosDestacados] = useState([]);
@@ -15,7 +16,7 @@ const Cuerpo = () => {
   useEffect(() => {
     const fetchProductos = async () => {
       try {
-        const response = await axios.get("http://localhost:4000/api/productos/destacados");
+        const response = await axios.get(`${API_URL}/api/productos/destacados`);
         setProductosDestacados(response.data);
       } catch (error) {
         console.error("Error al obtener productos destacados:", error);
@@ -24,7 +25,7 @@ const Cuerpo = () => {
 
     const fetchOfertas = async () => {
       try {
-        const response = await axios.get("http://localhost:4000/api/ofertas");
+        const response = await axios.get(`${API_URL}/api/ofertas`);
         setOfertas(response.data);
       } catch (error) {
         console.error("Error al obtener ofertas:", error);

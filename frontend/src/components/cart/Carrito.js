@@ -21,7 +21,7 @@ const Carrito = () => {
   useEffect(() => {
     const fetchUsuario = async () => {
       try {
-        const respuesta = await axios.get("http://localhost:4000/api/usuario/perfil", { withCredentials: true });
+        const respuesta = await axios.get("${API_URL}/api/usuario/perfil", { withCredentials: true });
         setUsuario(respuesta.data);
       } catch (error) {
         Swal.fire({

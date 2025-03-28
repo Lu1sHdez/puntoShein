@@ -11,6 +11,8 @@ import '../../css/Botones.css';
 import BuscarProducto from './BuscarProductos'; 
 import ProductoCard from './ProductoCard'; 
 import { mostrarNotificacion } from '../../Animations/NotificacionSwal.js';
+import { API_URL } from '../../ApiConexion.js';
+
 
 
 const Productos = () => {
@@ -28,7 +30,7 @@ const Productos = () => {
   useEffect(() => {
     const fetchCategorias = async () => {
       try {
-        const response = await axios.get('http://localhost:4000/api/productos/categorias', {
+        const response = await axios.get(`${API_URL}/api/productos/categorias`, {
           withCredentials: true,
         });
         setCategorias(response.data);
@@ -44,7 +46,7 @@ const Productos = () => {
     const fetchSubcategorias = async () => {
       if (selectedCategoria) {
         try {
-          const response = await axios.get(`http://localhost:4000/api/productos/subcategorias?categoria_id=${selectedCategoria}`, {
+          const response = await axios.get(`${API_URL}/api/productos/subcategorias?categoria_id=${selectedCategoria}`, {
             withCredentials: true,
           });
           setSubcategorias(response.data);
@@ -61,7 +63,7 @@ const Productos = () => {
     // Función para obtener los productos filtrados
     const fetchProductos = async () => {
       try {
-        const response = await axios.get(`http://localhost:4000/api/admin/filtrar?categoria_id=${selectedCategoria}&subcategoria_id=${selectedSubcategoria}&nombre=${searchTerm}`, {
+        const response = await axios.get(`${API_URL}/api/admin/filtrar?categoria_id=${selectedCategoria}&subcategoria_id=${selectedSubcategoria}&nombre=${searchTerm}`, {
           withCredentials: true,
         });
         setProductos(response.data);  // Establece los productos filtrados
@@ -89,7 +91,7 @@ const Productos = () => {
       });
 
       if (confirmacion.isConfirmed) {
-        await axios.delete(`http://localhost:4000/api/admin/eliminar/${id}`, {
+        await axios.delete(`${API_URL}/api/admin/eliminar/${id}`, {
           withCredentials: true,
         });
         setProductos(productos.filter((producto) => producto.id !== id));  // Elimina el producto de la lista
@@ -112,7 +114,7 @@ const Productos = () => {
     setSelectedSubcategoria('');  // Restablece la subcategoría seleccionada
     setLoading(true);
     try {
-      const response = await axios.get('http://localhost:4000/api/admin/productos', { withCredentials: true });
+      const response = await axios.get(`${API_URL}/api/admin/productos`, { withCredentials: true });
       setProductos(response.data);  // Establece los productos
     } catch (err) {
       setError('No se pudo obtener los productos');

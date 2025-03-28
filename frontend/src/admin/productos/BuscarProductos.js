@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FaSearch } from 'react-icons/fa';  // Importamos el ícono de búsqueda
+import { API_URL } from '../../ApiConexion';
+
 
 const BuscarProducto = ({ setProductos, setError, setLoading }) => {
   const [searchTerm, setSearchTerm] = useState('');  // Almacena el término de búsqueda actual
@@ -33,7 +35,7 @@ const BuscarProducto = ({ setProductos, setError, setLoading }) => {
       setError(null);
 
       try {
-        const response = await axios.get(`http://localhost:4000/api/admin/buscar?nombre=${debouncedSearchTerm}`, {
+        const response = await axios.get(`${API_URL}/api/admin/buscar?nombre=${debouncedSearchTerm}`, {
           withCredentials: true,
         });
         setProductos(response.data);  // Establece los productos encontrados basado en el término de búsqueda

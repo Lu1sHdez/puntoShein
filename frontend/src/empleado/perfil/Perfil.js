@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { API_URL } from '../../ApiConexion';
 
 const Perfil = () => {
   const [usuario, setUsuario] = useState(null);
@@ -12,7 +13,7 @@ const Perfil = () => {
     const obtenerPerfil = async () => {
       try {
         // Realizar la solicitud para obtener los datos del perfil
-        const response = await axios.get('http://localhost:4000/api/empleado/perfil', { withCredentials: true });
+        const response = await axios.get(`${API_URL}/api/empleado/perfil`, { withCredentials: true });
         setUsuario(response.data);
       } catch (err) {
         setError('No se pudo obtener los datos del perfil');

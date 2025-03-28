@@ -6,6 +6,7 @@ import ProductoCard from "./ProductoCard";  // Importa el componente ProductoCar
 import RegresarButton from "../Regresar";
 import "../../css/Botones.css"
 import { motion } from "framer-motion"; 
+import { API_URL } from "../../ApiConexion";
 
 const AllProductos = () => {
   const [productos, setProductos] = useState([]);
@@ -18,7 +19,7 @@ const AllProductos = () => {
     const fetchProductos = async () => {
       setCargando(true);
       try {
-        const response = await axios.get(`http://localhost:4000/api/productos/allProductos${location.search}`);
+        const response = await axios.get(`${API_URL}/api/productos/allProductos${location.search}`);
         setProductos(response.data);
       } catch (error) {
         console.error("Error al obtener productos:", error);

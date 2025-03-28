@@ -7,6 +7,7 @@ import { formAnimation } from "./Funciones";
 import { motion } from "framer-motion";
 import Boton from "../elements/Boton";
 import RegresarButton from "../components/Regresar";
+import { API_URL } from "../ApiConexion";
 
 
 
@@ -106,7 +107,7 @@ const Registro = () => {
     }
 
     try {
-      await axios.post("http://localhost:4000/api/autenticacion/registro", datos);
+      await axios.post(`${API_URL}/api/autenticacion/registro`, datos);
 
       setErrores({ general: "Registro exitoso. Serás redirigido..." });
       setTimeout(() => navigate("/login"), 1000); 

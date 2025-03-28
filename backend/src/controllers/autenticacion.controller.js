@@ -264,7 +264,7 @@ export const recuperarPassword = async (req, res) => {
         <p>Hola ${usuario.nombre},</p>
         <p>Hemos recibido una solicitud para restablecer tu contraseña.</p>
         <p>Haz clic en el siguiente enlace para continuar:</p>
-        <p><a href="http://localhost:3000/restablecerPassword?token=${tokenRecuperacion}">Restablecer Contraseña</a></p>
+        <p><a href="${process.env.FRONTEND_URL}/restablecerPassword?token=${tokenRecuperacion}">Restablecer Contraseña</a></p>
         <p>Si no solicitaste este cambio, ignora este mensaje.</p>
       `,
     };

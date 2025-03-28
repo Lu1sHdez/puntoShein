@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import Swal from 'sweetalert2';
+import { API_URL } from '../../../ApiConexion';
 import { useNavigate, useParams } from 'react-router-dom';
 import RegresarButton from '../../../components/Regresar';
 import { mostrarNotificacion } from '../../../Animations/NotificacionSwal';
@@ -24,7 +24,7 @@ const EditarProducto = () => {
   useEffect(() => {
     const fetchProducto = async () => {
       try {
-        const response = await axios.get(`http://localhost:4000/api/admin/productos/${id}`, {
+        const response = await axios.get(`${API_URL}/api/admin/productos/${id}`, {
           withCredentials: true,
         });
         const producto = response.data;
@@ -49,7 +49,7 @@ const EditarProducto = () => {
   useEffect(() => {
     const fetchCategorias = async () => {
       try {
-        const response = await axios.get('http://localhost:4000/api/admin/categorias', {
+        const response = await axios.get(`${API_URL}/api/admin/categorias`, {
           withCredentials: true,
         });
         setCategorias(response.data);
@@ -67,7 +67,7 @@ const EditarProducto = () => {
     const fetchSubcategorias = async () => {
       if (categoriaId) {
         try {
-          const response = await axios.get(`http://localhost:4000/api/admin/subcategorias?categoria_id=${categoriaId}`, {
+          const response = await axios.get(`${API_URL}/api/admin/subcategorias?categoria_id=${categoriaId}`, {
             withCredentials: true,
           });
           setSubcategorias(response.data);
@@ -98,7 +98,7 @@ const EditarProducto = () => {
       };
 
       // Hacemos una solicitud PUT para actualizar el producto
-      await axios.put(`http://localhost:4000/api/admin/productos/${id}`, producto, {
+      await axios.put(`${API_URL}/api/admin/productos/${id}`, producto, {
         withCredentials: true,
       });
 

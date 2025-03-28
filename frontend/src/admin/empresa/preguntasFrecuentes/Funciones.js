@@ -1,9 +1,11 @@
 import axios from "axios";
+import { API_URL } from '../../../ApiConexion.js';
+
 
 // Obtener todas las preguntas
 export const fetchPreguntas = async () => {
   try {
-    const response = await axios.get("http://localhost:4000/api/preguntas/obtener", {
+    const response = await axios.get(`${API_URL}/api/preguntas/obtener`, {
       withCredentials: true, // si usas autenticación con cookies
     });
     return response.data;
@@ -17,7 +19,7 @@ export const fetchPreguntas = async () => {
 export const crearPregunta = async (newPregunta, newRespuesta) => {
   try {
     const response = await axios.post(
-      "http://localhost:4000/api/preguntas/crear",
+      `${API_URL}/api/preguntas/crear`,
       { pregunta: newPregunta, respuesta: newRespuesta },
       { withCredentials: true }
     );
@@ -32,7 +34,7 @@ export const crearPregunta = async (newPregunta, newRespuesta) => {
 export const editarPregunta = async (id, editedPregunta, editedRespuesta) => {
   try {
     const response = await axios.put(
-      `http://localhost:4000/api/preguntas/editar/${id}`,
+      `${API_URL}/api/preguntas/editar/${id}`,
       { pregunta: editedPregunta, respuesta: editedRespuesta },
       { withCredentials: true }
     );
@@ -46,7 +48,7 @@ export const editarPregunta = async (id, editedPregunta, editedRespuesta) => {
 // Eliminar una pregunta
 export const eliminarPregunta = async (id) => {
   try {
-    await axios.delete(`http://localhost:4000/api/preguntas/eliminar/${id}`, {
+    await axios.delete(`${API_URL}/api/preguntas/eliminar/${id}`, {
       withCredentials: true,
     });
   } catch (error) {

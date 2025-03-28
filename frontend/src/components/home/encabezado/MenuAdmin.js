@@ -5,6 +5,7 @@ import { motion } from "framer-motion"; // Importamos motion para las animacione
 import { menuAnimado } from "../../home/encabezado/Funciones"; // Importamos las animaciones
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
+import { API_URL } from "../../../ApiConexion";
 
 const MenuAdmin = ({ usuarioAutenticado, handleLogout }) => {
   const [menuAbierto, setMenuAbierto] = useState(false);
@@ -20,10 +21,10 @@ const MenuAdmin = ({ usuarioAutenticado, handleLogout }) => {
         const decoded = jwtDecode(token);
         const rol = decoded.rol;
         let endpoint = rol === "administrador"
-          ? "http://localhost:4000/api/admin/perfil"
+          ? `${API_URL}/api/admin/perfil`
           : rol === "empleado"
-          ? "http://localhost:4000/api/empleado/perfil"
-          : "http://localhost:4000/api/usuario/perfil";
+          ? `${API_URL}/api/empleado/perfil`
+          : `${API_URL}/api/usuario/perfil`;
         const response = await axios.get(endpoint, { withCredentials: true });
         setNombreUsuario(response.data.nombre);
         setRolUsuario(rol);

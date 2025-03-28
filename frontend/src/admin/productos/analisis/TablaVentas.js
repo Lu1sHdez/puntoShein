@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { API_URL } from '../../../ApiConexion';
 import GraficaPrediccion from './GraficaPrediccion';
 
 
@@ -23,9 +24,9 @@ const TablaVentas = ({ productoId, tallaId }) => {
       setError(null);
 
       let url = '';
-      if (modo === 'dia') url = `http://localhost:4000/api/ventas/ventasPorDia/${productoId}`;
-      if (modo === 'semana') url = `http://localhost:4000/api/ventas/ventaSemanal/${productoId}`;
-      if (modo === 'mes') url = `http://localhost:4000/api/ventas/ventasPorMes/${productoId}`;
+      if (modo === 'dia') url = `${API_URL}/api/ventas/ventasPorDia/${productoId}`;
+      if (modo === 'semana') url = `${API_URL}/api/ventas/ventaSemanal/${productoId}`;
+      if (modo === 'mes') url = `${API_URL}/api/ventas/ventasPorMes/${productoId}`;
 
       try {
         const res = await axios.get(url, {

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2';
 import ResultadosVentas from './ResultadosVentas'; 
 import axios from 'axios';
+import { API_URL } from '../../../ApiConexion';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -62,19 +63,17 @@ const k = calcularConstanteCrecimiento();
         setError(null);
   
         // 1. Obtener información del producto
-        const resProducto = await axios.get(`http://localhost:4000/api/productos/${productoId}`, {
+        const resProducto = await axios.get(`${API_URL}/api/productos/${productoId}`, {
           withCredentials: true
         });
   
         // 2. Obtener ventas reales
-        const urlReal = `http://localhost:4000/api/ventas/${
+        const urlReal = `${API_URL}/api/ventas/${
           modo === 'dia' ? 'ventasPorDia' 
           : modo === 'semana' ? 'ventaSemanal' 
           : 'ventasPorMes'
         }/${productoId}`;
 
-        
-        
   
         const resVentas = await axios.get(urlReal, {
           withCredentials: true,
@@ -88,7 +87,7 @@ const k = calcularConstanteCrecimiento();
         let nombreTalla = '';
   
         if (tallaId) {
-          const resDetalle = await axios.get(`http://localhost:4000/api/productos/detallePorTalla`, {
+          const resDetalle = await axios.get(`${API_URL}/api/productos/detallePorTalla`, {
             withCredentials: true,
             params: {
               producto_id: productoId,
@@ -114,7 +113,7 @@ const k = calcularConstanteCrecimiento();
         setDatosReales(resVentas.data);
   
         // 4. Obtener predicción
-        const urlPred = `http://localhost:4000/api/ventas/prediccion/${modo}/${productoId}`;
+        const urlPred = `${API_URL}/api/ventas/prediccion/${modo}/${productoId}`;
         const resPred = await axios.get(urlPred, {
           withCredentials: true,
           params: tallaId ? { talla_id: tallaId } : {}

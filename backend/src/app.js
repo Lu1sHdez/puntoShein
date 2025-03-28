@@ -70,7 +70,6 @@ app.get('/', (req, res) => {
   res.send('✅ API Punto Shein funcionando correctamente');
 });
 
-
 // Middleware de manejo de errores para capturar errores no controlados
 app.use((err, req, res, next) => {
   console.error(err.stack);  // Imprimir el error en la consola para depuración

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
 import ProductoCard from "./ProductoCard";
+import { API_URL } from "../../ApiConexion";
 
 const ProductosFiltrados = () => {
   const [productos, setProductos] = useState([]);
@@ -10,7 +11,6 @@ const ProductosFiltrados = () => {
   const [error, setError] = useState(null);
 
   const location = useLocation();
-
 
   useEffect(() => {
     const fetchProductos = async () => {
@@ -21,7 +21,7 @@ const ProductosFiltrados = () => {
       setCargando(true);
 
       try {
-        const response = await axios.get("http://localhost:4000/api/productos/filtrar", {
+        const response = await axios.get(`${API_URL}/api/productos/filtrar`, {
           params: {
             categoria_id: categoriaId,
             subcategoria_id: subcategoriaId,

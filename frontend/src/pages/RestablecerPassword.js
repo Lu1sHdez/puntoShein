@@ -6,6 +6,7 @@ import { formAnimation } from "./Funciones";
 import { motion } from "framer-motion";
 import Boton from "../elements/Boton";
 import RegresarButton from "../components/Regresar";
+import { API_URL } from "../ApiConexion";
 
 const RestablecerPassword = () => {
   const navigate = useNavigate();
@@ -22,8 +23,8 @@ const RestablecerPassword = () => {
 
   const { datos, mensaje, handleChange, handleSubmit, loading } = useFormulario(
     { nuevaContrasena: "", confirmarContrasena: "", token },
-    "http://localhost:4000/api/autenticacion/restablecerPassword",
-    "/login"
+    `${API_URL}/api/autenticacion/restablecerPassword`,
+    `/login`
   );
 
   useEffect(() => {

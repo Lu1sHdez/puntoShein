@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { API_URL } from "../../ApiConexion";
+
 
 const FiltrosAvanzados = () => {
   const [categorias, setCategorias] = useState([]); // Lista de categorías
@@ -13,7 +15,7 @@ const FiltrosAvanzados = () => {
   useEffect(() => {
     const fetchCategorias = async () => {
       try {
-        const response = await axios.get("http://localhost:4000/api/productos/categorias");
+        const response = await axios.get(`${API_URL}/api/productos/categorias`);
         setCategorias(response.data); // Establecer las categorías obtenidas
       } catch (error) {
         console.error("Error al obtener categorías:", error);
@@ -28,7 +30,7 @@ const FiltrosAvanzados = () => {
     if (categoriaId) {
       const fetchSubcategorias = async () => {
         try {
-          const response = await axios.get(`http://localhost:4000/api/productos/subcategorias?categoria_id=${categoriaId}`);
+          const response = await axios.get(`${API_URL}/api/productos/subcategorias?categoria_id=${categoriaId}`);
           setSubcategorias(response.data); // Establecer las subcategorías obtenidas
         } catch (error) {
           console.error("Error al obtener subcategorías:", error);

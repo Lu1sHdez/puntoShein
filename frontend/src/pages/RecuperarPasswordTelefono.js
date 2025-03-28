@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState} from "react";
 import { useNavigate } from "react-router-dom";
 import FormularioInput from "../components/form/FormularioInput";
 import { motion } from "framer-motion";
 import Boton from "../elements/Boton";
 import { formAnimation } from "./Funciones";
 import RegresarButton from "../components/Regresar";
+import { API_URL } from "../ApiConexion";
 
 const RecuperarPasswordTelefono = () => {
   const navigate = useNavigate();
@@ -35,7 +36,7 @@ const RecuperarPasswordTelefono = () => {
 
     try {
       setLoading(true);
-      const respuesta = await fetch("http://localhost:4000/api/autenticacion/solicitar", {
+      const respuesta = await fetch(`${API_URL}/api/autenticacion/solicitar`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ telefono }),

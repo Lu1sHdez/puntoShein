@@ -4,6 +4,8 @@ import { useParams } from 'react-router-dom';
 import RegresarButton from '../../components/Regresar';
 import { motion } from 'framer-motion';
 import { dataLoadingAnimation } from '../../components/Funciones.js';
+import { API_URL } from '../../ApiConexion.js';
+
 
 const DetalleProducto = () => {
   const [producto, setProducto] = useState(null);
@@ -14,7 +16,7 @@ const DetalleProducto = () => {
   useEffect(() => {
     const fetchProducto = async () => {
       try {
-        const response = await axios.get(`http://localhost:4000/api/admin/productos/${id}`, {
+        const response = await axios.get(`${API_URL}/api/admin/productos/${id}`, {
           withCredentials: true,
         }); 
         setProducto(response.data);

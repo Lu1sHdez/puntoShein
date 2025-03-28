@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { API_URL } from "../ApiConexion";
 
 const useBuscarProductos = () => {
   const [productos, setProductos] = useState([]);
@@ -17,7 +18,7 @@ const useBuscarProductos = () => {
     setError("");
 
     try {
-      const response = await axios.get(`http://localhost:4000/api/productos/buscar?nombre=${nombre}`);
+      const response = await axios.get(`${API_URL}/api/productos/buscar?nombre=${nombre}`);
       setProductos(response.data); // Actualiza los productos con la respuesta de la API
     } catch (error) {
       setError(error.response?.data?.mensaje || "Error al buscar productos.");

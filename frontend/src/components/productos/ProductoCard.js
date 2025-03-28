@@ -6,6 +6,7 @@ import agregarCarrito from "../cart/Agregar"; // Importamos la función agregarC
 import axios from "axios";
 import "../../css/TarjetaProductos.css";
 import "../../css/Botones.css"
+import { API_URL } from "../../ApiConexion";
 
 const ProductoCard = ({ producto }) => {
   const [usuario, setUsuario] = useState(null); // Estado para almacenar los datos del usuario
@@ -16,7 +17,7 @@ const ProductoCard = ({ producto }) => {
     // Función para obtener los datos del usuario
     const obtenerUsuario = async () => {
       try {
-        const response = await axios.get("http://localhost:4000/api/usuario/perfil", {
+        const response = await axios.get(`${API_URL}/api/usuario/perfil`, {
           withCredentials: true, // Asegura que las cookies se envíen con la solicitud
         });
         setUsuario(response.data); // Almacena los datos del usuario en el estado
@@ -42,7 +43,7 @@ const ProductoCard = ({ producto }) => {
       setMensaje("Por favor, inicia sesión para agregar productos al carrito.");
     }
   };
-
+  
   return (
     <motion.div
       className="tarjeta-producto"

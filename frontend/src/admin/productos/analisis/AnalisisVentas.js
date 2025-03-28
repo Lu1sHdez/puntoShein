@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import TablaVentas from './TablaVentas';
+import { API_URL } from '../../../ApiConexion';
 
 
 import { useNavigate } from 'react-router-dom';
@@ -27,7 +28,7 @@ const AnalisisVentas = () => {
   useEffect(() => {
     const fetchCategorias = async () => {
       try {
-        const res = await axios.get('http://localhost:4000/api/productos/categorias');
+        const res = await axios.get(`${API_URL}/api/productos/categorias`);
         setCategorias(res.data || []);
       } catch (error) {
         console.error("Error al obtener categorías:", error);
@@ -55,7 +56,7 @@ const AnalisisVentas = () => {
     if (!id) return;
   
     try {
-      const res = await axios.get(`http://localhost:4000/api/productos/subcategorias?categoria_id=${id}`);
+      const res = await axios.get(`${API_URL}/api/productos/subcategorias?categoria_id=${id}`);
       setSubcategorias(res.data);
     } catch (error) {
       console.error("Error al obtener subcategorías:", error);
@@ -78,7 +79,7 @@ const AnalisisVentas = () => {
     }
   
     try {
-      const res = await axios.get(`http://localhost:4000/api/productos/productosPorSubcategoria?subcategoria_id=${id}`);
+      const res = await axios.get(`${API_URL}/api/productos/productosPorSubcategoria?subcategoria_id=${id}`);
       setProductos(res.data || []);
     } catch (error) {
       console.error("Error al obtener productos:", error);
@@ -123,7 +124,7 @@ const AnalisisVentas = () => {
     }
   
     try {
-      const res = await axios.get(`http://localhost:4000/api/productos/detallePorTalla?producto_id=${productoSeleccionado.id}&talla_id=${tallaId}`);
+      const res = await axios.get(`${API_URL}/api/productos/detallePorTalla?producto_id=${productoSeleccionado.id}&talla_id=${tallaId}`);
       setDetalleProducto(res.data || null);
     } catch (error) {
       console.error("Error al obtener detalle por talla:", error);

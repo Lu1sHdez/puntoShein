@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams} from "react-router-dom";
 import axios from "axios";
 import Breadcrumbs from "../home/Breadcrumbs"; // Importamos las migas de pan personalizadas
 import { mostrarStock } from "../../utils/funtionProductos"; 
@@ -8,12 +8,12 @@ import agregarCarrito from "../cart/Agregar";
 import Swal from "sweetalert2"; 
 import "../../css/Botones.css"
 import { motion } from "framer-motion";
+import { API_URL } from "../../ApiConexion";
 import { mostrarNotificacion } from "../../Animations/NotificacionSwal";
 
 
 const DetalleProducto = () => {
   const { id } = useParams();
-  const navigate = useNavigate();
   const [producto, setProducto] = useState(null);
   const [usuario, setUsuario] = useState(null); // Estado para almacenar el usuario
   const [tallaSeleccionada, setTallaSeleccionada] = useState("");
@@ -25,7 +25,7 @@ const DetalleProducto = () => {
     // Obtener los detalles del producto
     const fetchProducto = async () => {
       try {
-        const response = await axios.get(`http://localhost:4000/api/productos/${id}`);
+        const response = await axios.get(`${API_URL}/api/productos/${id}`);
         setProducto(response.data);
       } catch (error) {
         console.error("Error al obtener detalles del producto:", error);
@@ -38,7 +38,7 @@ const DetalleProducto = () => {
     // Obtener los datos del usuario
     const obtenerUsuario = async () => {
       try {
-        const response = await axios.get("http://localhost:4000/api/usuario/perfil", {
+        const response = await axios.get(`${API_URL}/api/usuario/perfil`, {
           withCredentials: true, // Asegura que las cookies se envíen con la solicitud
         });
         setUsuario(response.data); // Almacena los datos del usuario en el estado
@@ -93,8 +93,8 @@ const DetalleProducto = () => {
     }
   
     try {
-      const response = await axios.post(
-        "http://localhost:4000/api/compra/comprar",
+      await axios.post(
+        `${API_URL}/api/compra/comprar`,
         {
           producto_id: producto.id,
           talla_id: tallaSeleccionada,
@@ -108,7 +108,7 @@ const DetalleProducto = () => {
   
       mostrarNotificacion("success", "La compra se ha registrado exitosamente.");
   
-      const updatedProducto = await axios.get(`http://localhost:4000/api/productos/${id}`);
+      const updatedProducto = await axios.get(`${API_URL}/api/productos/${id}`);
       setProducto(updatedProducto.data);
   
     } catch (error) {

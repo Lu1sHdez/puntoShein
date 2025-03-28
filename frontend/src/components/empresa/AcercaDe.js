@@ -2,17 +2,17 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { dataLoadingAnimation} from '../Funciones';
 import { motion } from 'framer-motion';
+import { API_URL } from '../../ApiConexion';
 
 const AcercaDe = () => {
   const [empresa, setEmpresa] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
 
   // Función para obtener los datos de la empresa desde la API
   const fetchEmpresa = async () => {
     try {
-      const response = await axios.get('http://localhost:4000/api/empresa/empresa', {
+      const response = await axios.get(`${API_URL}/api/empresa/empresa`, {
         withCredentials: true,  // Si usas autenticación basada en cookies
       });
       setEmpresa(response.data);  // Guardamos los datos de la empresa en el estado

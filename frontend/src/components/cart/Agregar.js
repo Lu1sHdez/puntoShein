@@ -2,6 +2,7 @@
 import Swal from "sweetalert2";
 import axios from "axios";
 import { mostrarNotificacion } from "../../Animations/NotificacionSwal";
+import { API_URL } from "../../ApiConexion";
 
 mostrarNotificacion();
 // Función para agregar productos al carrito
@@ -18,7 +19,7 @@ const agregarCarrito = async (usuario, producto) => {
 
   try {
     const response = await axios.post(
-      "http://localhost:4000/api/carrito/agregar",
+      `${API_URL}/api/carrito/agregar`,
       {
         usuario_id: usuario.id,
         producto_id: producto.id,

@@ -1,10 +1,12 @@
 // src/utils/funtionProductos.js
 import axios from "axios";
+import { API_URL } from '../ApiConexion';
+
 
 export const obtenerProductosPorFiltros = async (filtros) => {
   try {
     const params = new URLSearchParams(filtros).toString();
-    const url = `http://localhost:4000/api/productos/filtrar?${params}`;
+    const url = `${API_URL}/api/productos/filtrar?${params}`;
     const response = await axios.get(url);
     return response.data;
   } catch (error) {

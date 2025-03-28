@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'; // Para redirigir al formulario de actu
 import RegresarButton from '../../components/Regresar.js';
 import { dataLoadingAnimation} from '../../components/Funciones.js';
 import { motion } from 'framer-motion';
+import { API_URL } from '../../ApiConexion.js';
 
 const Empresa = () => {
   const [empresa, setEmpresa] = useState(null);
@@ -13,7 +14,7 @@ const Empresa = () => {
   // Función para obtener los datos de la empresa
   const fetchEmpresa = async () => {
     try {
-      const response = await axios.get('http://localhost:4000/api/admin/empresa', {
+      const response = await axios.get(`${API_URL}/api/admin/empresa`, {
         withCredentials: true,  // Si usas autenticación basada en cookies
       });
       setEmpresa(response.data);

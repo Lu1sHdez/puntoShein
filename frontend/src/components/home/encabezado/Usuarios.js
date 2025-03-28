@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
+import { API_URL } from "../../../ApiConexion";
 
 const Usuarios = () => {
   const [nombreUsuario, setNombreUsuario] = useState("");
@@ -24,11 +25,11 @@ const Usuarios = () => {
 
         let endpoint = "";
         if (rol === "administrador") {
-          endpoint = "http://localhost:4000/api/admin/perfil";
+          endpoint = `${API_URL}/api/admin/perfil`;
         } else if (rol === "empleado") {
-          endpoint = "http://localhost:4000/api/empleado/perfil";
+          endpoint = `${API_URL}/api/empleado/perfil`;
         } else {
-          endpoint = "http://localhost:4000/api/usuario/perfil";
+          endpoint = `${API_URL}/api/usuario/perfil`;
         }
 
         const response = await axios.get(endpoint, { withCredentials: true });

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { mostrarNotificacion } from '../../Animations/NotificacionSwal';
+import { API_URL } from '../../ApiConexion';
 
 const ActualizarPerfil = () => {
   const [usuario, setUsuario] = useState(null);
@@ -12,7 +13,7 @@ const ActualizarPerfil = () => {
   useEffect(() => {
     const obtenerPerfil = async () => {
       try {
-        const response = await axios.get('http://localhost:4000/api/empleado/perfil', { withCredentials: true });
+        const response = await axios.get(`${API_URL}/api/empleado/perfil`, { withCredentials: true });
         setUsuario(response.data);
         setDatos({
           nombre_usuario: response.data.nombre_usuario,
@@ -50,7 +51,7 @@ const ActualizarPerfil = () => {
 
     try {
       // Enviar los datos actualizados al backend
-      const response = await axios.put('http://localhost:4000/api/empleado/perfil', datos, { withCredentials: true });
+      await axios.put(`${API_URL}/api/empleado/perfil`, datos, { withCredentials: true });
       
       mostrarNotificacion("success", "¡Perfil actualizado!");
 

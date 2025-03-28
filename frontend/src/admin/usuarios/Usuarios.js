@@ -6,6 +6,7 @@ import Swal from 'sweetalert2';
 import { dataLoadingAnimation } from '../../components/Funciones.js';
 import { motion } from 'framer-motion';
 import { mostrarNotificacion } from '../../Animations/NotificacionSwal.js';
+import { API_URL } from '../../ApiConexion.js';
 
 const Usuarios = () => {
   const [usuarios, setUsuarios] = useState([]);
@@ -38,7 +39,7 @@ const Usuarios = () => {
   // Función para obtener los usuarios según el rol y la búsqueda
   const fetchUsuarios = useCallback(async () => {
     try {
-      const response = await axios.get(`http://localhost:4000/api/admin/usuarios?rol=${rol}&search=${debouncedSearch}`, {
+      const response = await axios.get(`${API_URL}/api/admin/usuarios?rol=${rol}&search=${debouncedSearch}`, {
         withCredentials: true,
       });
       setUsuarios(response.data);
@@ -61,7 +62,7 @@ const Usuarios = () => {
       // Verificar si el usuario a eliminar es el único administrador
       const usuarioAEliminar = usuarios.find((usuario) => usuario.id === id);
       if (usuarioAEliminar.rol === 'administrador') {
-        const totalAdmins = await axios.get('http://localhost:4000/api/admin/usuarios?rol=administrador', {
+        const totalAdmins = await axios.get(`${API_URL}/api/admin/usuarios?rol=administrador`, {
           withCredentials: true,
         });
   
@@ -88,7 +89,7 @@ const Usuarios = () => {
   
       if (confirmacion.isConfirmed) {
         // Si el usuario confirma, proceder con la eliminación
-        await axios.delete(`http://localhost:4000/api/admin/usuarios/${id}`, {
+        await axios.delete(`${API_URL}/api/admin/usuarios/${id}`, {
           withCredentials: true,
         });
         setUsuarios(usuarios.filter((usuario) => usuario.id !== id));  // Actualizamos la lista de usuarios
@@ -107,7 +108,7 @@ const Usuarios = () => {
       const usuarioAEliminar = usuarios.find((usuario) => usuario.id === userId);
   
       if (usuarioAEliminar.rol === 'administrador' && (newRole === 'usuario' || newRole === 'empleado')) {
-        const totalAdmins = await axios.get('http://localhost:4000/api/admin/usuarios?rol=administrador', {
+        const totalAdmins = await axios.get(`${API_URL}/api/admin/usuarios?rol=administrador`, {
           withCredentials: true,
         });
   
@@ -135,7 +136,7 @@ const Usuarios = () => {
       if (confirmacion.isConfirmed) {
         // Si el usuario confirma, proceder con el cambio de rol
         await axios.put(
-          `http://localhost:4000/api/admin/usuarios/${userId}/rol`,
+          `${API_URL}/api/admin/usuarios/${userId}/rol`,
           { rol: newRole }, // Enviamos el nuevo rol
           { withCredentials: true }
         );

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { dataLoadingAnimation } from '../Funciones';
 import { motion } from 'framer-motion';
-
+import { API_URL } from "../../ApiConexion";
 const PreguntasFrecuentes = () => {
   const [preguntas, setPreguntas] = useState([]);
   const [activeQuestion, setActiveQuestion] = useState(null);
@@ -12,7 +12,7 @@ const PreguntasFrecuentes = () => {
   // Función para obtener las preguntas frecuentes desde la API
   const fetchPreguntas = async () => {
     try {
-      const response = await axios.get('http://localhost:4000/api/preguntas/obtener', {
+      const response = await axios.get(`${API_URL}/api/preguntas/obtener`, {
         withCredentials: true,  // Si usas autenticación basada en cookies
       });
       setPreguntas(response.data);  // Almacena las preguntas en el estado

@@ -1,8 +1,9 @@
 import axios from "axios";
+import { API_URL } from "../../ApiConexion";
 
 export const obtenerCarrito = async (usuarioId) => {
   try {
-    const response = await axios.get(`http://localhost:4000/api/carrito/${usuarioId}`, {
+    const response = await axios.get(`${API_URL}/api/carrito/${usuarioId}`, {
       withCredentials: true,
     });
     return response.data || [];
@@ -16,7 +17,7 @@ export const obtenerCarrito = async (usuarioId) => {
 export const actualizarCantidad = async (usuarioId, productoId, cantidad) => {
   try {
     const response = await axios.put(
-      "http://localhost:4000/api/carrito/actualizarCantidad",
+      `${API_URL}/api/carrito/actualizarCantidad`,
       { usuario_id: usuarioId, producto_id: productoId, cantidad },
       { withCredentials: true }
     );
@@ -30,7 +31,7 @@ export const actualizarCantidad = async (usuarioId, productoId, cantidad) => {
 // Eliminar un producto del carrito
 export const eliminarDelCarrito = async (usuarioId, productoId) => {
   try {
-    const response = await axios.delete("http://localhost:4000/api/carrito/eliminar", {
+    const response = await axios.delete(`${API_URL}/api/carrito/eliminar`, {
       data: { usuario_id: usuarioId, producto_id: productoId },
       withCredentials: true,
     });
@@ -44,7 +45,7 @@ export const eliminarDelCarrito = async (usuarioId, productoId) => {
 // Vaciar el carrito
 export const vaciarCarrito = async (usuarioId) => {
   try {
-    const response = await axios.delete("http://localhost:4000/api/carrito/vaciar", {
+    const response = await axios.delete(`${API_URL}/api/carrito/vaciar`, {
       data: { usuario_id: usuarioId },
       withCredentials: true,
     });
@@ -58,7 +59,7 @@ export const vaciarCarrito = async (usuarioId) => {
 
 export const obtenerCantidad = async (usuarioId) => {
   try {
-    const response = await axios.get(`http://localhost:4000/api/carrito/cantidad/${usuarioId}`, {
+    const response = await axios.get(`${API_URL}/api/carrito/cantidad/${usuarioId}`, {
       withCredentials: true,
     });
     return response.data.totalCantidad || 0; // Retorna la cantidad total de productos o 0 si está vacío

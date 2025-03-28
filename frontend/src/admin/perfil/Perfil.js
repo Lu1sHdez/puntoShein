@@ -5,6 +5,8 @@ import Skeleton from "../../components/Skeleton.js";
 import { formAnimation, userDetailsLoadingAnimation } from '../../components/Funciones.js';
 import { motion } from 'framer-motion';
 import RegresarButton from '../../components/Regresar.js';
+import { API_URL } from '../../ApiConexion.js';
+
 
 const Perfil = () => {
   const [usuario, setUsuario] = useState(null);
@@ -15,7 +17,7 @@ const Perfil = () => {
   useEffect(() => {
     const obtenerPerfil = async () => {
       try {
-        const response = await axios.get('http://localhost:4000/api/admin/perfil', { withCredentials: true });
+        const response = await axios.get(`${API_URL}/api/admin/perfil`, { withCredentials: true });
         setUsuario(response.data);
       } catch (err) {
         setError('No se pudo obtener los datos del perfil');

@@ -11,7 +11,7 @@ const comprarProducto = async (usuario, producto) => {
     useEffect(() => {
         const fetchUsuario = async () => {
           try {
-            const respuesta = await axios.get("http://localhost:4000/api/usuario/perfil", { withCredentials: true });
+            const respuesta = await axios.get("${API_URL}/api/usuario/perfil", { withCredentials: true });
             setUsuario(respuesta.data);
           } catch (error) {
             Swal.fire({
@@ -40,7 +40,7 @@ const comprarProducto = async (usuario, producto) => {
 
   try {
     const response = await axios.post(
-      "http://localhost:4000/api/compra/comprar",
+      "${API_URL}/api/compra/comprar",
       {
         producto_id: producto.id,
         cantidad: 1,

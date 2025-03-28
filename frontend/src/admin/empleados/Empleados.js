@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom';
 import RegresarButton from '../../components/Regresar.js';
 import { dataLoadingAnimation} from '../../components/Funciones.js';
 import { motion } from 'framer-motion';
+import { API_URL } from '../../ApiConexion.js'; // Ajusta la ruta según tu estructura
+
 
 
 const Empleados = () => {
@@ -14,7 +16,7 @@ const Empleados = () => {
         // Hacer la solicitud con axios
         const fetchEmpleados = async () => {
             try {
-                const response = await axios.get('http://localhost:4000/api/admin/empleados', {
+                const response = await axios.get(`${API_URL}/api/admin/empleados`, {
                     withCredentials: true,
                 });
                 setEmpleados(response.data);  // Guardamos los empleados en el estado
@@ -32,7 +34,7 @@ const Empleados = () => {
     const handleEliminar = async (id) => {
         try {
             // Lógica para eliminar un empleado (esto también debe ir al backend)
-            await axios.delete(`http://localhost:4000/api/admin/empleados/${id}`, {
+            await axios.delete(`${API_URL}/api/admin/empleados/${id}`, {
                 withCredentials: true, // Esto es necesario si estás usando cookies
             });
             // Si se elimina correctamente, actualizamos la lista de empleados
@@ -46,7 +48,7 @@ const Empleados = () => {
         try {
             // Hacemos la solicitud PUT para actualizar el rol
             await axios.put(
-                `http://localhost:4000/api/admin/usuarios/${empleadoId}/rol`,
+                `${API_URL}/api/admin/usuarios/${empleadoId}/rol`,
                 { rol: newRole }, // Enviamos el nuevo rol
                 { withCredentials: true }
             );

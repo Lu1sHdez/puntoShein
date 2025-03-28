@@ -5,6 +5,7 @@ import { formAnimation} from '../../components/Funciones.js';
 import { motion } from 'framer-motion';
 import RegresarButton from '../../components/Regresar.js';  // Importamos el botón de regreso
 import { mostrarNotificacion } from '../../Animations/NotificacionSwal.js';
+import { API_URL } from '../../ApiConexion.js'
 
 const ActualizarPerfil = () => {
   const [usuario, setUsuario] = useState(null);
@@ -15,7 +16,7 @@ const ActualizarPerfil = () => {
   useEffect(() => {
     const obtenerPerfil = async () => {
       try {
-        const response = await axios.get('http://localhost:4000/api/usuario/perfil', { withCredentials: true });
+        const response = await axios.get(`${API_URL}/api/usuario/perfil`, { withCredentials: true });
         setUsuario(response.data);
         setDatos({
           nombre_usuario: response.data.nombre_usuario,
@@ -53,7 +54,7 @@ const ActualizarPerfil = () => {
 
     try {
       // Enviar los datos actualizados al backend
-      const response = await axios.put('http://localhost:4000/api/usuario/perfil', datos, { withCredentials: true });
+      await axios.put(`${API_URL}/api/usuario/perfil`, datos, { withCredentials: true });
       
       mostrarNotificacion("success", "¡Perfil actualizado!");
 

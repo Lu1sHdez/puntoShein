@@ -5,6 +5,7 @@ import Boton from "../elements/Boton";
 import { motion } from "framer-motion";
 import { formAnimation } from "./Funciones";
 import RegresarButton from "../components/Regresar";
+import { API_URL } from "../ApiConexion";
 
 const VerificarCodigoTelefono = () => {
   const navigate = useNavigate();
@@ -31,7 +32,7 @@ const VerificarCodigoTelefono = () => {
     setLoading(true);
 
     try {
-      const respuesta = await fetch("http://localhost:4000/api/autenticacion/verificar", {
+      const respuesta = await fetch(`${API_URL}/api/autenticacion/verificar`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ telefono, codigo }),

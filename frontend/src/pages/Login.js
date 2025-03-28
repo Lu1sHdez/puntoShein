@@ -5,6 +5,7 @@ import useFormulario from "../hooks/useFormulario";
 import { formAnimation } from "./Funciones"; 
 import { motion } from "framer-motion";
 import Boton from "../elements/Boton";
+import { API_URL } from '../ApiConexion';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -15,8 +16,8 @@ const Login = () => {
   //  Se indica que es un formulario de autenticación
   const { datos, mensaje, handleChange, handleSubmit, loading } = useFormulario(
     { correo: "", password: "" },
-    "http://localhost:4000/api/autenticacion/login",
-    "/",
+    `${API_URL}/api/autenticacion/login`,
+    `/`,
     true
   ); 
 

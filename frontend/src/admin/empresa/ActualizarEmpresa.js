@@ -5,7 +5,7 @@ import RegresarButton from '../../components/Regresar.js';
 import { dataLoadingAnimation} from '../../components/Funciones.js';
 import { motion } from 'framer-motion';
 import { mostrarNotificacion } from '../../Animations/NotificacionSwal.js';
-
+import { API_URL } from '../../ApiConexion.js';
 const ActualizarEmpresa = () => {
   const [empresa, setEmpresa] = useState({
     nombre: '',
@@ -26,7 +26,7 @@ const ActualizarEmpresa = () => {
   // Obtener los datos de la empresa
   const fetchEmpresa = async () => {
     try {
-      const response = await axios.get('http://localhost:4000/api/admin/empresa', {
+      const response = await axios.get(`${API_URL}/api/admin/empresa`, {
         withCredentials: true,
       });
       setEmpresa(response.data);
@@ -77,7 +77,7 @@ const ActualizarEmpresa = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.put('http://localhost:4000/api/admin/empresa', empresa, {
+      await axios.put(`${API_URL}/api/admin/empresa`, empresa, {
         withCredentials: true,
       });
       mostrarNotificacion("success", "Datos actualizados correctamente")

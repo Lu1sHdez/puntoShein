@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { formAnimation } from '../../../components/Funciones.js';
 import { motion } from 'framer-motion';
 import { mostrarNotificacion } from '../../../Animations/NotificacionSwal.js';
+import { API_URL } from '../../../ApiConexion.js';
 
 const CrearProducto = () => {
   const [nombre, setNombre] = useState('');
@@ -28,7 +29,7 @@ const CrearProducto = () => {
   useEffect(() => {
     const fetchCategorias = async () => {
       try {
-        const response = await axios.get('http://localhost:4000/api/admin/categorias', { withCredentials: true });
+        const response = await axios.get(`${API_URL}/api/admin/categorias`, { withCredentials: true });
         setCategorias(response.data);
       } catch (err) {
         setError('Error al obtener las categorías');
@@ -38,7 +39,7 @@ const CrearProducto = () => {
 
     const fetchSubcategorias = async () => {
       try {
-        const response = await axios.get('http://localhost:4000/api/admin/subcategorias', { withCredentials: true });
+        const response = await axios.get(`${API_URL}/api/admin/subcategorias`, { withCredentials: true });
         setSubcategorias(response.data);
       } catch (err) {
         setError('Error al obtener las subcategorías');
@@ -67,7 +68,7 @@ const CrearProducto = () => {
 
       console.log('Producto a enviar:', producto);
 
-      await axios.post('http://localhost:4000/api/admin/productos', producto, { withCredentials: true });
+      await axios.post(`${API_URL}/api/admin/productos`, producto, { withCredentials: true });
 
       mostrarNotificacion("success", "Producto creado exitosamente");
 
@@ -85,7 +86,7 @@ const CrearProducto = () => {
 
   const handleCrearCategoria = async () => {
     try {
-      const response = await axios.post('http://localhost:4000/api/admin/categorias', { nombre: nuevaCategoria }, { withCredentials: true });
+      const response = await axios.post(`${API_URL}/api/admin/categorias`, { nombre: nuevaCategoria }, { withCredentials: true });
       setCategorias([...categorias, response.data]);
       setCategoriaId(response.data.id);
       mostrarNotificacion("success", "Categoria creada correctamente");
@@ -98,7 +99,7 @@ const CrearProducto = () => {
 
   const handleCrearSubcategoria = async () => {
     try {
-      const response = await axios.post('http://localhost:4000/api/admin/subcategorias', { nombre: nuevaSubcategoria, categoria_id: categoriaId }, { withCredentials: true });
+      const response = await axios.post(`${API_URL}/api/admin/subcategorias`, { nombre: nuevaSubcategoria, categoria_id: categoriaId }, { withCredentials: true });
       setSubcategorias([...subcategorias, response.data]);
       setSubcategoriaId(response.data.id);
       mostrarNotificacion("success", "Subcategoria creada correctamente");

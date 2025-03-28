@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import RegresarButton from '../../components/Regresar.js';  // Importamos el botón
 import { formAnimation } from '../../components/Funciones.js';
 import { motion } from 'framer-motion';
+import { API_URL } from '../../ApiConexion.js';
 
 const UsuarioDetalles = () => {
   const { id } = useParams();  // Obtén el ID del usuario desde la URL
@@ -15,7 +16,7 @@ const UsuarioDetalles = () => {
     const fetchUsuario = async () => {
       try {
         // Realiza la solicitud para obtener los detalles del usuario
-        const response = await axios.get(`http://localhost:4000/api/admin/usuarios/${id}`, {
+        const response = await axios.get(`${API_URL}/api/admin/usuarios/${id}`, {
           withCredentials: true,
         });
         setUsuario(response.data);  // Guarda los detalles del usuario
