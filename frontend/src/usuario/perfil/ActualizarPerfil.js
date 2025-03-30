@@ -57,7 +57,6 @@ const ActualizarPerfil = () => {
       await axios.put(`${API_URL}/api/usuario/perfil`, datos, { withCredentials: true });
       
       mostrarNotificacion("success", "¡Perfil actualizado!");
-;
       navigate('/usuario/perfil'); // Redirigir al perfil actualizado
     } catch (error) {
       setErrores({ general: error.response?.data?.mensaje || 'Error al actualizar el perfil.' });

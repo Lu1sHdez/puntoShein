@@ -1,6 +1,4 @@
 import Venta from "../models/ventas.model.js";
-import Producto from "../models/producto.model.js";
-import { Op } from "sequelize";
 
 export const obtenerVentasPorMes = async (req, res) => {
   try {

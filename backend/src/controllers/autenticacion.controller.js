@@ -343,11 +343,13 @@ export const restablecerPassword = async (req, res) => {
 export const obtenerPerfil = async (req, res) => {
   try {
     // Obtener el token de las cookies
-    const token = req.cookies.token;
+    const token = req.cookies.token || req.query.token;
 
     if (!token) {
       return res.status(401).json({ mensaje: 'No autorizado, token no encontrado.' });
     }
+
+    
 
     // Verificar el token
     const decoded = jwt.verify(token, process.env.TOKEN_SECRET);

@@ -1,6 +1,5 @@
 // src/controllers/admin.controller.js
 import Sequelize from 'sequelize';
-
 import Usuario from '../models/usuario.model.js';  // Asegúrate de tener el modelo de usuario correctamente importado
 import Producto from '../models/producto.model.js';  // Modelo de productos
 import Subcategoria from '../models/subcategoria.model.js';
@@ -139,7 +138,6 @@ export const crearProducto = async (req, res) => {
     });
   }
 };
-// src/controllers/admin.controller.js
 
 // Función para editar un producto
 export const editarProducto = async (req, res) => {

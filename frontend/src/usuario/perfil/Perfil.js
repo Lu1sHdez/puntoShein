@@ -18,6 +18,7 @@ const Perfil = () => {
         // Realizar la solicitud para obtener los datos del perfil
         const response = await axios.get(`${API_URL}/api/usuario/perfil`, { withCredentials: true });
         setUsuario(response.data);
+
       } catch (err) {
         setError('No se pudo obtener los datos del perfil');
         if (err.response?.status === 401) {
