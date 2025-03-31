@@ -67,7 +67,7 @@ app.use('/api/preguntas', preguntaFrecuenteRutas)
 
 // Ruta raíz para verificar que la API está en línea
 app.get('/', (req, res) => {
-  res.send('✅ API Punto Shein funcionando correctamente');
+  res.send('API Punto Shein funcionando correctamente');
 });
 
 // Middleware de manejo de errores para capturar errores no controlados

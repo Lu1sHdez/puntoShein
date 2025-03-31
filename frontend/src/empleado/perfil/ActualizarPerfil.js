@@ -55,7 +55,7 @@ const ActualizarPerfil = () => {
       
       mostrarNotificacion("success", "¡Perfil actualizado!");
 
-      navigate('/perfil'); // Redirigir al perfil actualizado
+      navigate('/empleado/perfil'); // Redirigir al perfil actualizado
     } catch (error) {
       setErrores({ general: error.response?.data?.mensaje || 'Error al actualizar el perfil.' });
     }
