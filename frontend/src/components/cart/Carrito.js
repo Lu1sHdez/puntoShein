@@ -7,6 +7,7 @@ import axios from "axios";
 import { dataLoadingAnimation} from '../../components/Funciones.js';
 import { motion } from 'framer-motion';
 import { mostrarNotificacion } from "../../Animations/NotificacionSwal.js";
+import { API_URL } from "../../ApiConexion.js";
 
 mostrarNotificacion();
 
@@ -21,7 +22,7 @@ const Carrito = () => {
   useEffect(() => {
     const fetchUsuario = async () => {
       try {
-        const respuesta = await axios.get("${API_URL}/api/usuario/perfil", { withCredentials: true });
+        const respuesta = await axios.get(`${API_URL}/api/usuario/perfil`, { withCredentials: true });
         setUsuario(respuesta.data);
       } catch (error) {
         Swal.fire({
@@ -54,7 +55,7 @@ const Carrito = () => {
         Swal.fire({
           icon: "error",
           title: "Error",
-          text: "Hubo un problema al obtener el carrito.",
+          text: "No se pudo obtener el carrito. Hubo un problema",
           confirmButtonText: "Aceptar",
         });
       } finally {

@@ -18,7 +18,7 @@ const agregarCarrito = async (usuario, producto) => {
   }
 
   try {
-    const response = await axios.post(
+    await axios.post(
       `${API_URL}/api/carrito/agregar`,
       {
         usuario_id: usuario.id,

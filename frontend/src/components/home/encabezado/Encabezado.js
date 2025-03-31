@@ -178,50 +178,54 @@
         </div>
 
         {menuMovilAbierto && (
-        <nav className="lg:hidden w-full bg-gray-900 text-white px-4 py-4">
-          <div className="flex flex-col gap-4 bg-gray-800 rounded-lg shadow-lg p-4 max-h-[calc(100vh-5rem)] overflow-y-auto">
+        <nav className="lg:hidden w-full bg-gray-900 text-white px-4 py-2 fixed top-20 left-0 shadow-lg animate-fadeIn">
+          <div className="flex flex-col gap-3 bg-gray-800 rounded-lg p-3 max-h-[70vh] overflow-y-auto">
 
-            {/* Enlaces de navegación */}
-            <div className="flex flex-col gap-2">
-              <button
-                onClick={() => navigate("/productos")}
-                className="boton-nav"
+             {/* Buscador primero para móvil */}
+              <div className="mb-2">
+                <Busqueda busqueda={busqueda} setBusqueda={setBusqueda} mobile />
+              </div>
+
+              {/* Enlaces principales */}
+              <div className="flex flex-col gap-1">
+                <button
+                  onClick={() => {navigate("/productos"); setMenuMovilAbierto(false)}}
+                  className="boton-nav-mobile py-2 px-3 text-left"
+                >
+                  Productos
+                </button>
+                <button
+                  onClick={() => {navigate("/ofertas"); setMenuMovilAbierto(false)}}
+                  className="boton-nav-mobile py-2 px-3 text-left"
+                >
+                  Ofertas
+                </button>
+                <button
+                  onClick={() => {navigate("/contacto"); setMenuMovilAbierto(false)}}
+                  className="boton-nav-mobile py-2 px-3 text-left"
+                >
+                  Contacto
+                </button>
+              </div>
+
+            {/* Carrito con mejor espaciado */}
+              <div 
+                className="boton-nav-mobile py-2 px-3 flex items-center justify-between"
+                onClick={() => {navigate("productos/carrito"); setMenuMovilAbierto(false)}}
               >
-                Productos
-              </button>
-              <button
-                onClick={() => navigate("/ofertas")}
-                className="boton-nav"
-              >
-                Ofertas
-              </button>
-              <button
-                onClick={() => navigate("/contacto")}
-                className="boton-nav"
-              >
-                Contacto
-              </button>
-            </div>
+                <div className="relative">
+                  <FaShoppingCart className="text-xl" />
+                  {totalCantidad > 0 && (
+                    <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                      {totalCantidad}
+                    </span>
+                  )}
+                </div>
+              </div>
 
-            {/* Carrito */}
-            <div className="relative boton-nav flex items-center">
-              <FaShoppingCart
-                className="text-2xl cursor-pointer"
-                onClick={() => navigate("productos/carrito")}
-              />
-              {totalCantidad > 0 && (
-                <span className="absolute -top-1 -right-2 bg-red-600 text-white text-xs rounded-full px-1 py-0.5">
-                  {totalCantidad}
-                </span>
-              )}
-            </div>
-
-            {/* Menú de acuerdo al rol */}
-            <div>{menu}</div>
-
-            {/* Buscador */}
-            <div className="pt-2 boton-nav border-t border-gray-700">
-              <Busqueda busqueda={busqueda} setBusqueda={setBusqueda} />
+            {/* Menú de usuario/administrador */}
+            <div className="border-t border-gray-700 pt-2">
+              {React.cloneElement(menu, { mobile: true, onItemClick: () => setMenuMovilAbierto(false) })}
             </div>
           </div>
         </nav>

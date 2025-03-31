@@ -23,7 +23,7 @@ const Login = () => {
 
   useEffect(() => {
     if (localStorage.getItem("token")) {
-      navigate("usuario/dashboard");
+      navigate("/");
     }
   }, [navigate]);
 
