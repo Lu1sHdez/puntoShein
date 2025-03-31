@@ -1,26 +1,27 @@
 import React, { useState, useEffect, useRef } from "react";
-import { FaUser, FaUsers, FaSignInAlt, FaSignOutAlt, FaUserPlus } from "react-icons/fa";
+import { FaUser, FaUsers, FaSignInAlt, FaSignOutAlt, FaUserPlus, FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { menuAnimado } from "../../home/encabezado/Funciones";
 import { motion } from "framer-motion";
+import { menuAnimado } from "../../home/encabezado/Funciones";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { API_URL } from "../../../ApiConexion";
 
-const MenuUsuario = ({ usuarioAutenticado, handleLogout }) => {
+const MenuUsuario = ({ usuarioAutenticado, handleLogout, mobile, onItemClick }) => {
   const [menuAbierto, setMenuAbierto] = useState(false);
-  const [esTactil, setEsTactil] = useState(false);
   const [nombreUsuario, setNombreUsuario] = useState("");
   const [rolUsuario, setRolUsuario] = useState("");
-  const menuRef = useRef(null); 
+  const menuRef = useRef(null);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    const detectarTactil = () => {
-      setEsTactil(window.matchMedia("(pointer: coarse)").matches);
+    const checkIfMobile = () => {
+      setIsMobile(window.matchMedia("(pointer: coarse)").matches);
     };
-    detectarTactil();
-    window.addEventListener("resize", detectarTactil);
-    return () => window.removeEventListener("resize", detectarTactil);
+    
+    checkIfMobile();
+    window.addEventListener("resize", checkIfMobile);
+    return () => window.removeEventListener("resize", checkIfMobile);
   }, []);
 
   useEffect(() => {
@@ -30,11 +31,7 @@ const MenuUsuario = ({ usuarioAutenticado, handleLogout }) => {
       try {
         const decoded = jwtDecode(token);
         const rol = decoded.rol;
-        let endpoint = rol === "administrador"
-          ? `${API_URL}/api/admin/perfil`
-          : rol === "empleado"
-          ? `${API_URL}/api/empleado/perfil`
-          : `${API_URL}/api/usuario/perfil`;
+        const endpoint = `${API_URL}/api/usuario/perfil`;
         const response = await axios.get(endpoint, { withCredentials: true });
         setNombreUsuario(response.data.nombre);
         setRolUsuario(rol);
@@ -53,33 +50,63 @@ const MenuUsuario = ({ usuarioAutenticado, handleLogout }) => {
         setMenuAbierto(false);
       }
     };
+
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener("touchstart", handleClickOutside);
+    
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
+    };
   }, []);
 
+  const toggleMenu = () => {
+    setMenuAbierto(!menuAbierto);
+  };
+
+  const handleMenuClick = () => {
+    setMenuAbierto(false);
+    if (onItemClick) onItemClick();
+  };
+
   return (
-    <div className="relative z-40" ref={menuRef}>
+    <div 
+      className={`relative ${mobile ? 'w-full' : ''}`} 
+      ref={menuRef}
+    >
       <button
-        onClick={() => setMenuAbierto(!menuAbierto)}
-        className="flex items-center space-x-2 px-2 py-1 boton-nav cursor-pointer"
+        onClick={toggleMenu}
+        onMouseEnter={!isMobile ? () => setMenuAbierto(true) : undefined}
+        className={`flex items-center ${mobile ? 'w-full justify-between px-4 py-3' : 'space-x-2 px-2 py-1'} boton-nav cursor-pointer`}
       >
-        <FaUser className="text-xl sm:text-2xl" />
-        <div className="text-left">
-          <p className="text-xs sm:text-sm text-white leading-tight">{nombreUsuario}</p>
-          <p className="text-[10px] sm:text-xs text-gray-400 leading-tight capitalize">{rolUsuario}</p>
+        <div className="flex items-center space-x-2">
+          <FaUser className="text-xl sm:text-2xl" />
+          <div className="text-left">
+            <p className="text-xs sm:text-sm text-white leading-tight">{nombreUsuario}</p>
+            {rolUsuario && (
+              <p className="text-[10px] sm:text-xs text-gray-400 leading-tight capitalize">{rolUsuario}</p>
+            )}
+          </div>
         </div>
+        
+        {mobile && (
+          <span className="ml-2">
+            {menuAbierto ? <FaChevronUp /> : <FaChevronDown />}
+          </span>
+        )}
       </button>
 
       {menuAbierto && (
         <motion.div
-          className="absolute right-0 mt-2 w-48 sm:w-56 bg-white text-black shadow-lg rounded-md p-2 overflow-hidden max-h-[50vh] overflow-y-auto"
+          className={`absolute ${mobile ? 'w-full mt-1' : 'right-0 mt-2 w-48 sm:w-56'} bg-white text-black shadow-lg rounded-md p-2 z-50`}
+          onMouseLeave={!isMobile ? () => setMenuAbierto(false) : undefined}
           {...menuAnimado}
         >
           {usuarioAutenticado ? (
             <>
               <Link
                 to="/usuario/perfil"
-                onClick={() => setMenuAbierto(false)}
+                onClick={handleMenuClick}
                 className="w-full text-left px-4 py-2 hover:bg-gray-200 flex items-center text-sm"
               >
                 <FaUsers className="mr-2" />
@@ -87,7 +114,7 @@ const MenuUsuario = ({ usuarioAutenticado, handleLogout }) => {
               </Link>
               <Link
                 to="/usuario/dashboard"
-                onClick={() => setMenuAbierto(false)}
+                onClick={handleMenuClick}
                 className="w-full text-left px-4 py-2 hover:bg-gray-200 flex items-center text-sm"
               >
                 <FaUsers className="mr-2" />
@@ -96,7 +123,7 @@ const MenuUsuario = ({ usuarioAutenticado, handleLogout }) => {
               <button
                 onClick={() => {
                   handleLogout();
-                  setMenuAbierto(false);
+                  handleMenuClick();
                 }}
                 className="w-full text-left px-4 py-2 hover:bg-gray-200 flex items-center text-sm"
               >
@@ -106,10 +133,9 @@ const MenuUsuario = ({ usuarioAutenticado, handleLogout }) => {
             </>
           ) : (
             <>
-
               <Link
                 to="/login"
-                onClick={() => setMenuAbierto(false)}
+                onClick={handleMenuClick}
                 className="w-full text-left px-4 py-2 hover:bg-gray-200 flex items-center text-sm"
               >
                 <FaSignInAlt className="mr-2" />
@@ -117,7 +143,7 @@ const MenuUsuario = ({ usuarioAutenticado, handleLogout }) => {
               </Link>
               <Link
                 to="/registro"
-                onClick={() => setMenuAbierto(false)}
+                onClick={handleMenuClick}
                 className="w-full text-left px-4 py-2 hover:bg-gray-200 flex items-center text-sm"
               >
                 <FaUserPlus className="mr-2" />

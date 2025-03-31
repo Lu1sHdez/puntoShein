@@ -26,6 +26,8 @@
     const filtroRef = useRef(null);
     const [totalCantidad, setTotalCantidad] = useState(0);
     const { usuarioAutenticado, logout } = useAuth();
+    const menuMovilRef = useRef(null);
+
 
     // Función para obtener los datos de la empresa desde la API
     const fetchEmpresa = async () => {
@@ -69,17 +71,30 @@
     // Detectar clic fuera del filtro
     useEffect(() => {
       const handleClickOutside = (event) => {
-        if (filtroRef.current && !filtroRef.current.contains(event.target)) {
-          setFiltrosVisible(false);
+        if (
+          menuMovilRef.current &&
+          !menuMovilRef.current.contains(event.target) &&
+          menuMovilAbierto
+        ) {
+          setMenuMovilAbierto(false);
         }
       };
-
+    
+      const handleEscapeKey = (event) => {
+        if (event.key === "Escape") {
+          setMenuMovilAbierto(false);
+        }
+      };
+    
       document.addEventListener("mousedown", handleClickOutside);
-
+      document.addEventListener("keydown", handleEscapeKey);
+    
       return () => {
         document.removeEventListener("mousedown", handleClickOutside);
+        document.removeEventListener("keydown", handleEscapeKey);
       };
-    }, []);
+    }, [menuMovilAbierto]);
+    
 
     // Determinar el menú a mostrar según el rol del usuario
     const token = localStorage.getItem("token");
@@ -179,7 +194,8 @@
         </div>
 
         {menuMovilAbierto && (
-        <nav className="lg:hidden w-full bg-gray-900 text-white px-4 py-2 fixed top-20 left-0 shadow-lg animate-fadeIn">
+          
+        <nav ref={menuMovilRef} className="lg:hidden w-full bg-gray-900 text-white px-4 py-2 fixed top-20 left-0 shadow-lg animate-fadeIn">
           <div className="flex flex-col gap-3 bg-gray-800 rounded-lg p-3 max-h-[70vh] overflow-y-auto">
 
              {/* Buscador primero para móvil */}

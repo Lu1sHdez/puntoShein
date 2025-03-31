@@ -23,3 +23,20 @@
       font-size: 1rem;
     }
   }
+  /* Para el menú móvil */
+@media (max-width: 1023px) {
+    .menu-mobile {
+      max-height: 60vh;
+      overflow-y: auto;
+    }
+    
+    .menu-item-mobile {
+      padding: 0.75rem 1rem;
+      font-size: 0.9rem;
+    }
+    
+    .menu-icon-mobile {
+      margin-right: 0.75rem;
+      min-width: 1.25rem;
+    }
+  }

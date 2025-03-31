@@ -1,17 +1,28 @@
-import React, { useState, useEffect } from "react";
-import { FaUserCircle, FaUsers, FaSignOutAlt } from "react-icons/fa"; // Usamos los iconos correctos
+import React, { useState, useEffect, useRef } from "react";
+import { FaUserCircle, FaUsers, FaSignOutAlt, FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion"; // Importamos motion para las animaciones
-import { menuAnimado } from "../../home/encabezado/Funciones"; // Importamos las animaciones
+import { motion } from "framer-motion";
+import { menuAnimado } from "../../home/encabezado/Funciones";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { API_URL } from "../../../ApiConexion";
 
-const MenuEmpleado = ({ usuarioAutenticado, handleLogout }) => {
+const MenuEmpleado = ({ usuarioAutenticado, handleLogout, mobile, onItemClick }) => {
   const [menuAbierto, setMenuAbierto] = useState(false);
-  const [timeoutId, setTimeoutId] = useState(null);
   const [nombreUsuario, setNombreUsuario] = useState("");
   const [rolUsuario, setRolUsuario] = useState("");
+  const menuRef = useRef(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkIfMobile = () => {
+      setIsMobile(window.matchMedia("(pointer: coarse)").matches);
+    };
+    
+    checkIfMobile();
+    window.addEventListener("resize", checkIfMobile);
+    return () => window.removeEventListener("resize", checkIfMobile);
+  }, []);
 
   useEffect(() => {
     const obtenerDatosUsuario = async () => {
@@ -20,11 +31,7 @@ const MenuEmpleado = ({ usuarioAutenticado, handleLogout }) => {
       try {
         const decoded = jwtDecode(token);
         const rol = decoded.rol;
-        let endpoint = rol === "administrador"
-          ? `${API_URL}/api/admin/perfil`
-          : rol === "empleado"
-          ? `${API_URL}/api/empleado/perfil`
-          : `${API_URL}/api/usuario/perfil`;
+        const endpoint = `${API_URL}/api/empleado/perfil`;
         const response = await axios.get(endpoint, { withCredentials: true });
         setNombreUsuario(response.data.nombre);
         setRolUsuario(rol);
@@ -35,60 +42,83 @@ const MenuEmpleado = ({ usuarioAutenticado, handleLogout }) => {
 
     obtenerDatosUsuario();
   }, []);
-  const handleMouseEnter = () => {
-    if (timeoutId) {
-      clearTimeout(timeoutId);
-      setTimeoutId(null);
-    }
-    setMenuAbierto(true);
+
+  // Cierra el menú si el usuario hace clic fuera de él
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setMenuAbierto(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("touchstart", handleClickOutside);
+    
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
+    };
+  }, []);
+
+  const toggleMenu = () => {
+    setMenuAbierto(!menuAbierto);
   };
 
-  const handleMouseLeave = () => {
-    const id = setTimeout(() => {
-      setMenuAbierto(false);
-    }, 1000);
-    setTimeoutId(id);
+  const handleMenuClick = () => {
+    setMenuAbierto(false);
+    if (onItemClick) onItemClick();
   };
 
   return (
-    <div
-      className="relative"
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+    <div 
+      className={`relative ${mobile ? 'w-full' : ''}`} 
+      ref={menuRef}
     >
-      <button className="flex items-center space-x-2">
-        <FaUserCircle className="text-xl sm:text-2xl" />
-        <div className="text-left">
-          <p className="text-xs sm:text-sm text-white leading-tight">{nombreUsuario}</p>
-          <p className="text-[10px] sm:text-xs text-gray-400 leading-tight capitalize">{rolUsuario}</p>
+      <button
+        onClick={toggleMenu}
+        onMouseEnter={!isMobile ? () => setMenuAbierto(true) : undefined}
+        className={`flex items-center ${mobile ? 'w-full justify-between px-4 py-3' : 'space-x-2 px-2 py-1'} boton-nav cursor-pointer`}
+      >
+        <div className="flex items-center space-x-2">
+          <FaUserCircle className="text-xl sm:text-2xl" />
+          <div className="text-left">
+            <p className="text-xs sm:text-sm text-white leading-tight">{nombreUsuario || "Empleado"}</p>
+            {rolUsuario && (
+              <p className="text-[10px] sm:text-xs text-gray-400 leading-tight capitalize">{rolUsuario}</p>
+            )}
+          </div>
         </div>
+        
+        {mobile && (
+          <span className="ml-2">
+            {menuAbierto ? <FaChevronUp /> : <FaChevronDown />}
+          </span>
+        )}
       </button>
 
       {menuAbierto && (
         <motion.div
-          className="absolute right-0 mt-2 w-48 bg-white text-black shadow-lg rounded-md p-2"
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-          {...menuAnimado} // Aplicamos las animaciones del menú
+          className={`absolute ${mobile ? 'w-full mt-1' : 'right-0 mt-2 w-48'} bg-white text-black shadow-lg rounded-md p-2 z-50`}
+          onMouseLeave={!isMobile ? () => setMenuAbierto(false) : undefined}
+          {...menuAnimado}
         >
           {usuarioAutenticado ? (
             <>
-              {/* Animación para "Mi perfil" */}
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }}>
                 <Link
                   to="/empleado/perfil"
-                  onClick={() => setMenuAbierto(false)}
+                  onClick={handleMenuClick}
                   className="w-full text-left px-4 py-2 hover:bg-gray-200 flex items-center"
                 >
                   <FaUsers className="mr-2" />
                   Mi perfil
                 </Link>
               </motion.div>
-              {/* Animación para "Mi perfil" */}
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }}>
+              
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.15 }}>
                 <Link
                   to="/empleado/dashboard"
-                  onClick={() => setMenuAbierto(false)}
+                  onClick={handleMenuClick}
                   className="w-full text-left px-4 py-2 hover:bg-gray-200 flex items-center"
                 >
                   <FaUsers className="mr-2" />
@@ -96,12 +126,11 @@ const MenuEmpleado = ({ usuarioAutenticado, handleLogout }) => {
                 </Link>
               </motion.div>
 
-              {/* Animación para "Cerrar sesión" */}
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}>
                 <button
                   onClick={() => {
                     handleLogout();
-                    setMenuAbierto(false);
+                    handleMenuClick();
                   }}
                   className="w-full text-left px-4 py-2 hover:bg-gray-200 flex items-center"
                 >
