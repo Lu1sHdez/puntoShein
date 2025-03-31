@@ -10,6 +10,7 @@
   import { jwtDecode } from "jwt-decode";
   import axios from "axios";
   import "../../../css/Texto.css";
+  import "../../../css/EncabezadoMovil.css";
   import Busqueda from "./Busqueda";
   import { obtenerCantidad } from "../../cart/Funciones";
   import Usuarios from "./Usuarios"; // Importar el componente Usuarios
@@ -112,7 +113,7 @@
                   <img
                     src={empresa.logo}
                     alt="Logo"
-                    className="h-20 w-auto"
+                    className="h-16 w-auto lg:h-20"
                   />
                   <h2 className="texto-grande boton-nav">{empresa.nombre}</h2>
                 </>

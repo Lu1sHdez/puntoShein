@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useRef} from "react";
 import { FaUserCircle, FaCog, FaUsers, FaBox, FaUserTie, FaTh, FaSignOutAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion"; // Importamos motion para las animaciones
@@ -7,11 +7,12 @@ import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { API_URL } from "../../../ApiConexion";
 
-const MenuAdmin = ({ usuarioAutenticado, handleLogout }) => {
+const MenuAdmin = ({ usuarioAutenticado, handleLogout, mobile, onItemClick }) => {
   const [menuAbierto, setMenuAbierto] = useState(false);
   const [timeoutId, setTimeoutId] = useState(null);
   const [nombreUsuario, setNombreUsuario] = useState("");
   const [rolUsuario, setRolUsuario] = useState("");
+  const menuRef = useRef(null);
 
   useEffect(() => {
     const obtenerDatosUsuario = async () => {
@@ -36,6 +37,32 @@ const MenuAdmin = ({ usuarioAutenticado, handleLogout }) => {
     obtenerDatosUsuario();
   }, []);
 
+  // Cerrar menú al hacer clic fuera
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setMenuAbierto(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("touchstart", handleClickOutside);
+    
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
+    };
+  }, []);
+
+  const toggleMenu = () => {
+    setMenuAbierto(!menuAbierto);
+  };
+
+  const handleItemClick = () => {
+    setMenuAbierto(false);
+    if (onItemClick) onItemClick();
+  };
+
   const handleMouseEnter = () => {
     if (timeoutId) {
       clearTimeout(timeoutId);
@@ -53,26 +80,29 @@ const MenuAdmin = ({ usuarioAutenticado, handleLogout }) => {
 
   return (
     <div
-      className="relative"
-
-      onMouseEnter={handleMouseEnter}
-      
-      onMouseLeave={handleMouseLeave}
-    >
-      <button className="flex items-center space-x-2">
+      className="relative" ref={menuRef}>
+      <button 
+        onClick={mobile ? toggleMenu : undefined}
+        onMouseEnter={!mobile ? () => setMenuAbierto(true) : undefined}
+        className="flex items-center space-x-2 w-full"
+      >
         <FaUserCircle className="text-xl sm:text-2xl" />
         <div className="text-left">
           <p className="text-xs sm:text-sm text-white leading-tight">{nombreUsuario}</p>
           <p className="text-[10px] sm:text-xs text-gray-400 leading-tight capitalize">{rolUsuario}</p>
         </div>
+        {mobile && (
+          <span className="ml-auto transform transition-transform duration-200">
+            {menuAbierto ? "▲" : "▼"}
+          </span>
+        )}
       </button>
 
       {menuAbierto && (
         <motion.div
-          className="absolute right-0 mt-2 w-48 bg-white text-black shadow-lg rounded-md p-2"
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-          {...menuAnimado} // Aplicamos la animación del menú
+          className={`absolute ${mobile ? 'relative w-full mt-2' : 'right-0 mt-2 w-48'} bg-white text-black shadow-lg rounded-md p-2 z-50`}
+          onMouseLeave={!mobile ? () => setMenuAbierto(false) : undefined}
+          {...menuAnimado}
         >
           {usuarioAutenticado ? (
             <>
@@ -80,7 +110,7 @@ const MenuAdmin = ({ usuarioAutenticado, handleLogout }) => {
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }}>
                 <Link
                   to="/admin/perfil"
-                  onClick={() => setMenuAbierto(false)}
+                  onClick={handleItemClick}
                   className="w-full text-left px-4 py-2 hover:bg-gray-200 flex items-center"
                 >
                   <FaUserCircle className="mr-2" />
@@ -92,7 +122,7 @@ const MenuAdmin = ({ usuarioAutenticado, handleLogout }) => {
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}>
                 <Link
                   to="/admin/configuracion"
-                  onClick={() => setMenuAbierto(false)}
+                  onClick={handleItemClick}
                   className="w-full text-left px-4 py-2 hover:bg-gray-200 flex items-center"
                 >
                   <FaCog className="mr-2" />
@@ -104,7 +134,7 @@ const MenuAdmin = ({ usuarioAutenticado, handleLogout }) => {
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}>
                 <Link
                   to="/admin/dashboard"
-                  onClick={() => setMenuAbierto(false)}
+                  onClick={handleItemClick}
                   className="w-full text-left px-4 py-2 hover:bg-gray-200 flex items-center"
                 >
                   <FaTh className="mr-2" />
@@ -116,7 +146,7 @@ const MenuAdmin = ({ usuarioAutenticado, handleLogout }) => {
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }}>
                 <Link
                   to="/admin/empresa"
-                  onClick={() => setMenuAbierto(false)}
+                  onClick={handleItemClick}
                   className="w-full text-left px-4 py-2 hover:bg-gray-200 flex items-center"
                 >
                   <FaBox className="mr-2" />
@@ -128,7 +158,7 @@ const MenuAdmin = ({ usuarioAutenticado, handleLogout }) => {
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}>
                 <Link
                   to="/admin/productos"
-                  onClick={() => setMenuAbierto(false)}
+                  onClick={handleItemClick}
                   className="w-full text-left px-4 py-2 hover:bg-gray-200 flex items-center"
                 >
                   <FaBox className="mr-2" />
@@ -140,7 +170,7 @@ const MenuAdmin = ({ usuarioAutenticado, handleLogout }) => {
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }}>
                 <Link
                   to="/admin/empleados"
-                  onClick={() => setMenuAbierto(false)}
+                  onClick={handleItemClick}
                   className="w-full text-left px-4 py-2 hover:bg-gray-200 flex items-center"
                 >
                   <FaUserTie className="mr-2" />
@@ -152,7 +182,7 @@ const MenuAdmin = ({ usuarioAutenticado, handleLogout }) => {
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.7 }}>
                 <Link
                   to="/admin/usuarios"
-                  onClick={() => setMenuAbierto(false)}
+                  onClick={handleItemClick}
                   className="w-full text-left px-4 py-2 hover:bg-gray-200 flex items-center"
                 >
                   <FaUsers className="mr-2" />

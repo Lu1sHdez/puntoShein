@@ -1,0 +1,25 @@
+/* Agrega esto en tu archivo de CSS */
+.boton-nav-mobile {
+    @apply transition-colors duration-200 rounded-md hover:bg-gray-700 active:bg-gray-600;
+  }
+  
+  .animate-fadeIn {
+    animation: fadeIn 0.3s ease-out;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  /* Ajustar el logo para móvil */
+  @media (max-width: 1023px) {
+    .logo-mobile {
+      height: 16px;
+      width: auto;
+    }
+    
+    .texto-mobile {
+      font-size: 1rem;
+    }
+  }
