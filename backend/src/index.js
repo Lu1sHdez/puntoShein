@@ -5,12 +5,31 @@ import { sequelize } from './database/database.js';
 
 async function main() {
   try {
-    await sequelize.authenticate(); // Se asegura de que la conexión a la base de datos sea exitosa.
-    await sequelize.sync({ alter: true }); // Sincroniza la base de datos sin eliminar datos.
-    app.listen(4000);
-    console.log('Servidor escuchando en el puerto 4000');
+    // Configuración del puerto
+    const PORT = process.env.PORT || 4000;
+    
+    // Verificar conexión a la base de datos
+    await sequelize.authenticate();
+    
+    // Sincronizar modelos con la base de datos
+    if (process.env.NODE_ENV !== 'production') {
+      await sequelize.sync({ alter: true });
+      console.log('Modelos sincronizados (modo desarrollo)');
+    } else {
+      await sequelize.sync();
+      console.log('Modelos sincronizados (modo producción)');
+    }
+    
+    // Iniciar servidor
+    app.listen(PORT, () => {
+      console.log(`Servidor escuchando en el puerto ${PORT}`);
+      console.log(`URL Frontend: ${process.env.FRONTEND_URL}`);
+    });
+    
   } catch (error) {
-    console.error('Error al conectar con la base de datos:', error);
+    console.error('Error al iniciar el servidor:', error);
+    process.exit(1); // Salir con código de error
   }
 }
+
 main();

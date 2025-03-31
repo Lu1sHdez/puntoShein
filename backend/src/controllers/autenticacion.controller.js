@@ -185,7 +185,7 @@ export const login = async (req, res) => {
     res.cookie('token', token, {
       httpOnly: true, //Necesario en produccion
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'Strict',
+      sameSite: 'None',
       maxAge: 24 * 60 * 60 * 1000,
     });
 
@@ -221,7 +221,7 @@ export const cerrarSesion = (req, res) => {
     expires: new Date(0), // Expira inmediatamente
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
-    sameSite: 'Strict',
+    sameSite: 'None',
   });
   return res.json({ mensaje: "Sesión cerrada exitosamente." });
 };

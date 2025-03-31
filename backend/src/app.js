@@ -40,12 +40,12 @@ app.use(helmet());
 
 app.use(helmet.contentSecurityPolicy({
   directives: {
-    defaultSrc: ["'self'"],  
-    scriptSrc: ["'self'"],  
-    styleSrc: ["'self'"],  
-    imgSrc: ["'self'"],  
-    connectSrc: ["'self'"], 
-    frameAncestors: ["'none'"],  
+    defaultSrc: ["'self'", 'https://puntoshein-k2jq.onrender.com'],
+    scriptSrc: ["'self'", "'unsafe-inline'", 'https://cdn.jsdelivr.net'],
+    styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
+    imgSrc: ["'self'", 'data:', 'https://res.cloudinary.com'],
+    connectSrc: ["'self'", 'https://puntoshein-k2jq.onrender.com'],
+    fontSrc: ["'self'", 'https://fonts.gstatic.com'],
   },
 }));
 
