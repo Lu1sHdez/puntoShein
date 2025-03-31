@@ -53,6 +53,11 @@ const MenuAdmin = ({ usuarioAutenticado, handleLogout, mobile, onItemClick }) =>
     };
   }, []);
 
+  const handleMenuClick = () => {
+    setMenuAbierto(false);
+    if (onItemClick) onItemClick();
+  };
+
   const toggleMenu = () => {
     setMenuAbierto(!menuAbierto);
   };
@@ -174,17 +179,20 @@ const MenuAdmin = ({ usuarioAutenticado, handleLogout, mobile, onItemClick }) =>
                 </Link>
               </motion.div>
 
-              {/* Icono de Cerrar sesión */}
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8 }}>
+              {/* Divider */}
+              <div className="border-t border-gray-300 my-1"></div>
+
+              {/* Cerrar Sesión */}
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }}>
                 <button
                   onClick={() => {
                     handleLogout();
-                    setMenuAbierto(false);
+                    handleMenuClick();
                   }}
-                  className="w-full text-left px-4 py-2 hover:bg-gray-200 flex items-center"
+                  className="w-full text-left px-4 py-2 hover:bg-gray-200 flex items-center text-red-600"
                 >
                   <FaSignOutAlt className="mr-2" />
-                  Cerrar sesión
+                  Cerrar Sesión
                 </button>
               </motion.div>
             </>
