@@ -9,7 +9,6 @@ import { API_URL } from "../../../ApiConexion";
 
 const MenuAdmin = ({ usuarioAutenticado, handleLogout, mobile, onItemClick }) => {
   const [menuAbierto, setMenuAbierto] = useState(false);
-  const [timeoutId, setTimeoutId] = useState(null);
   const [nombreUsuario, setNombreUsuario] = useState("");
   const [rolUsuario, setRolUsuario] = useState("");
   const menuRef = useRef(null);
@@ -61,21 +60,6 @@ const MenuAdmin = ({ usuarioAutenticado, handleLogout, mobile, onItemClick }) =>
   const handleItemClick = () => {
     setMenuAbierto(false);
     if (onItemClick) onItemClick();
-  };
-
-  const handleMouseEnter = () => {
-    if (timeoutId) {
-      clearTimeout(timeoutId);
-      setTimeoutId(null);
-    }
-    setMenuAbierto(true);
-  };
-
-  const handleMouseLeave = () => {
-    const id = setTimeout(() => {
-      setMenuAbierto(false);
-    }, 1000);
-    setTimeoutId(id);
   };
 
   return (

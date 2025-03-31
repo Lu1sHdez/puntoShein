@@ -1,7 +1,7 @@
   // src/components/home/encabezado/Encabezado.js
   import React, { useState, useEffect, useRef } from "react";
   import { useNavigate, Link } from "react-router-dom";
-  import { FaShoppingCart, FaBars, FaChevronDown, FaUser } from "react-icons/fa";
+  import { FaShoppingCart, FaBars, FaChevronDown} from "react-icons/fa";
   import MenuUsuario from "./MenuUsuario";
   import MenuAdmin from "./MenuAdmin";
   import MenuEmpleado from "./MenuEmpleado";

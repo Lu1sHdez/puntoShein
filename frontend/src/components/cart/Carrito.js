@@ -103,7 +103,7 @@ const Carrito = () => {
 
     if (result.isConfirmed) {
       try {
-        const response = await eliminarDelCarrito(usuario.id, productoId);
+        await eliminarDelCarrito(usuario.id, productoId);
         mostrarNotificacion("success", "Producto eliminado");       
 
         // Actualizar el carrito localmente para reflejar la eliminación
@@ -131,7 +131,7 @@ const Carrito = () => {
 
     if (result.isConfirmed) {
       try {
-        const response = await vaciarCarrito(usuario.id);
+        await vaciarCarrito(usuario.id);
         mostrarNotificacion("success", "Carrito vaciado"); 
         setCarrito([]); // Limpiar el carrito localmente
 
