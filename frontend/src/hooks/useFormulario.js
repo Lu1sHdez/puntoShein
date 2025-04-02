@@ -52,16 +52,15 @@ const useFormulario = (initialState, url, redirigir, isAuthForm = false) => {
 
     if (error.response.status === 400) {
       const mensajeError = error.response.data.mensaje || "Solicitud incorrecta.";
-
-      // Si el error es por credenciales incorrectas en Login, mostrar alerta y NO redirigir
-      if (mensajeError === "Credenciales inválidas") {
-        setMensaje({ tipo: "error", texto: mensajeError }); // Guardar mensaje en el estado
-        return false; // Evita que el formulario actúe como si fue exitoso
-      }
-
-      setMensaje({ tipo: "error", texto: mensajeError }); // Manejar otros errores 400
+    
+      setMensaje({ tipo: "error", texto: mensajeError }); // aplica a todos los formularios
+    
+      // También puedes mostrarlo directamente en pantalla:
+      mostrarNotificacion("error", mensajeError);
+    
       return false;
     }
+    
 
     // Si el recurso no existe (Error 404)
     if (error.response.status === 404) {

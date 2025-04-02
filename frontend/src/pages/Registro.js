@@ -8,6 +8,7 @@ import { motion } from "framer-motion";
 import Boton from "../elements/Boton";
 import RegresarButton from "../components/Regresar";
 import { API_URL } from "../ApiConexion";
+import { mostrarNotificacion } from "../Animations/NotificacionSwal";
 
 
 
@@ -109,7 +110,8 @@ const Registro = () => {
     try {
       await axios.post(`${API_URL}/api/autenticacion/registro`, datos);
 
-      setErrores({ general: "Registro exitoso. Serás redirigido..." });
+      
+      setErrores({ general: mostrarNotificacion("success", "Registro exitoso. Redirigiendo...") });
       setTimeout(() => navigate("/login"), 1000); 
     } catch (error) {
       const mensajeError = error.response?.data?.mensaje;
