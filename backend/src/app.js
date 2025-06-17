@@ -13,6 +13,7 @@ import empresaRutas from './routes/empresa.routes.js';
 import empleadoRutas from './routes/empleado.routes.js'; 
 import preguntaFrecuenteRutas from './routes/preguntaFrecuente.routes.js'; 
 import ventaRutas from './routes/ventas.routes.js'; 
+import loginPin from './routes/pin.routes.js';
 
 const app = express();
 
@@ -38,11 +39,11 @@ app.use(helmet());
 
 app.use(helmet.contentSecurityPolicy({
   directives: {
-    defaultSrc: ["'self'", 'https://puntoshein-k2jq.onrender.com'],
+    defaultSrc: ["'self'", 'https://puntoshein-kdxn.onrender.com/'],
     scriptSrc: ["'self'", "'unsafe-inline'", 'https://cdn.jsdelivr.net'],
     styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
     imgSrc: ["'self'", 'data:', 'https://res.cloudinary.com'],
-    connectSrc: ["'self'", 'https://puntoshein-k2jq.onrender.com'],
+    connectSrc: ["'self'", 'https://puntoshein-kdxn.onrender.com/'],
     fontSrc: ["'self'", 'https://fonts.gstatic.com'],
   },
 }));
@@ -62,6 +63,7 @@ app.use('/api/empresa', empresaRutas);
 app.use('/api/admin', adminRutas);
 app.use('/api/empleado', empleadoRutas);
 app.use('/api/preguntas', preguntaFrecuenteRutas)
+app.use('/api/pin', loginPin)
 
 // Ruta raíz para verificar que la API está en línea
 app.get('/', (req, res) => {
