@@ -5,13 +5,12 @@ import nodemailer from 'nodemailer';
 import jwt from 'jsonwebtoken';
 import logger from '../libs/logger.js'; 
 import { body, validationResult } from 'express-validator';
-import obtenerFechaHora from '../utils/funciones.js';
 import twilio from 'twilio';
+import obtenerFechaHora from '../utils/funciones.js';
 
 
 export const registro = async (req, res) => {
   try {
-    const fecha = obtenerFechaHora();
     // Validación de campos usando express-validator
     await body('correo')
       .isEmail().withMessage('El correo no tiene un formato válido.')
@@ -48,42 +47,36 @@ export const registro = async (req, res) => {
     // Verificar si el correo ya está registrado
     const correoExistente = await Usuario.findOne({ where: { correo } });
     if (correoExistente) {
-      const errorMessage = {
+      logger.warn({
         message: "Correo ya registrado",
-        level: "warn",
         codigo_error: "400",
         ip_cliente: req.ip,
         usuario: correo,
-      };
-      logger.warn(errorMessage);  // Registra el error
-      return res.status(400).json({ mensaje: "Correo ya registrado" });
+      });
+      return res.status(400).json({ mensaje: "Intenta con otro correo" });
     }
 
     // Verificar si el teléfono ya está registrado
     const telefonoExistente = await Usuario.findOne({ where: { telefono } });
     if (telefonoExistente) {
-      const errorMessage = {
+      logger.warn({
         message: "Teléfono ya registrado",
-        level: "warn",
         codigo_error: "400",
         ip_cliente: req.ip,
         telefono,
-      };
-      logger.warn(errorMessage);  // Registra el error
-      return res.status(400).json({ mensaje: "Teléfono ya registrado" });
+      });
+      return res.status(400).json({ mensaje: "Intenta con otro telefono" });
     }
 
     // Verificar si el nombre de usuario ya está registrado
     const usuarioExistente = await Usuario.findOne({ where: { nombre_usuario } });
     if (usuarioExistente) {
-      const errorMessage = {
-        message: "Intenta con otro nombre de usuario",
-        level: "warn",
+      logger.warn({
+        message: "Nombre de usuario ya existe",
         codigo_error: "400",
         ip_cliente: req.ip,
         usuario: nombre_usuario,
-      };
-      logger.warn(errorMessage);  // Registra el error
+      });
       return res.status(400).json({ mensaje: "Intenta con otro nombre de usuario" });
     }
 
@@ -99,33 +92,47 @@ export const registro = async (req, res) => {
       correo,
       telefono,
       password: contraseñaHasheada,
-      rol: rol || 'usuario',  // Asignar rol por defecto si no se especifica
+      rol: rol || 'usuario',
     });
 
+    // Log del registro exitoso
+    logger.info({
+      message: "Usuario registrado exitosamente",
+      usuario_id: nuevoUsuario.id,
+      correo: nuevoUsuario.correo,
+      ip_cliente: req.ip,
+    });
+
+    // Respuesta única con toda la información
     return res.status(201).json({
+      success: true,
       mensaje: "Usuario registrado exitosamente.",
       usuario: {
         id: nuevoUsuario.id,
         nombre_usuario: nuevoUsuario.nombre_usuario,
+        nombre: nuevoUsuario.nombre,
+        apellido_paterno: nuevoUsuario.apellido_paterno,
+        apellido_materno: nuevoUsuario.apellido_materno,
         correo: nuevoUsuario.correo,
+        telefono: nuevoUsuario.telefono,
         rol: nuevoUsuario.rol,
-      },
+        createdAt: nuevoUsuario.createdAt
+      }
     });
 
   } catch (error) {
-    // Crear un mensaje estructurado para el log en caso de error
-    const errorMessage = {
+    logger.error({
       message: error.message,
       level: 'error',
-      codigo_error: error.code || 'No especificado',
+      codigo_error: error.code || '500',
       stack: error.stack,
       ip_cliente: req.ip,
-      fecha_hora: fecha,
-    };
-
-    // Registrar el error en el log
-    logger.error(errorMessage);
-    return res.status(500).json({ mensaje: "Error interno del servidor." });
+    });
+    return res.status(500).json({ 
+      success: false,
+      mensaje: "Error interno del servidor.",
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
   }
 };
 
@@ -133,7 +140,6 @@ export const login = async (req, res) => {
   try {
     const { correo, password } = req.body;
 
-    const fecha = obtenerFechaHora();
 
     // Validar que los campos no estén vacíos
     if (!correo || !password) {
@@ -142,7 +148,6 @@ export const login = async (req, res) => {
         level: "warn",
         codigo_error: "400",
         ip_cliente: req.ip,
-        fecha_hora: fecha,
       };
       logger.warn(errorMessage);
       return res.status(400).json({ mensaje: errorMessage.message });
@@ -157,7 +162,7 @@ export const login = async (req, res) => {
         codigo_error: "400",
         ip_cliente: req.ip,
         usuario: correo,
-        fecha_hora: fecha,
+        
       };
       logger.error(errorMessage);
       return res.status(400).json({ mensaje: "Credenciales invalidas" });
@@ -172,7 +177,7 @@ export const login = async (req, res) => {
         codigo_error: "400",
         ip_cliente: req.ip,
         usuario: correo,
-        fecha_hora: fecha,
+        
       };
       logger.error(errorMessage);
       return res.status(400).json({ mensaje: "Credenciales invalidas" });
@@ -180,6 +185,17 @@ export const login = async (req, res) => {
 
     // Generar token JWT
     const token = crearTokenAcceso(usuario);
+
+    const fecha =obtenerFechaHora();
+
+    // Después de generar el token
+    logger.info({
+      message: "Inicio de sesión exitoso",
+      usuario_id: usuario.id,
+      correo: usuario.correo,
+      ip_cliente: req.ip,
+      fecha_hora: fecha
+    });
 
     // Configurar cookie con el token
     res.cookie('token', token, {
@@ -203,13 +219,14 @@ export const login = async (req, res) => {
     });
 
   } catch (error) {
+
     const errorMessage = {
       message: error.message,
       level: 'error',
       codigo_error: error.code || 'No especificado',
       stack: error.stack,
       ip_cliente: req.ip,
-      fecha_hora: fecha,
+      
     };
     logger.error(errorMessage);
     return res.status(500).json({ mensaje: "Error interno del servidor." });
@@ -222,6 +239,12 @@ export const cerrarSesion = (req, res) => {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'None',
+  });
+
+  // Antes de devolver la respuesta
+  logger.info({
+    message: "Sesión cerrada",
+    ip_cliente: req.ip,
   });
   return res.json({ mensaje: "Sesión cerrada exitosamente." });
 };
@@ -242,6 +265,14 @@ export const recuperarPassword = async (req, res) => {
     // Guardar el token en la base de datos
     usuario.tokenRecuperacion = tokenRecuperacion;
     await usuario.save();
+
+    // Después de guardar el token
+    logger.info({
+      message: "Solicitud de recuperación de contraseña",
+      usuario_id: usuario.id,
+      correo: usuario.correo,
+      ip_cliente: req.ip,
+      });
 
     // Configurar el transporte de correo electrónico
     const transporter = nodemailer.createTransport({
@@ -332,6 +363,14 @@ export const restablecerPassword = async (req, res) => {
     usuario.tokenRecuperacion = null;
     usuario.ultimoCambioPassword= new Date();
     await usuario.save();
+
+
+    // Después de guardar la nueva contraseña
+    logger.info({
+      message: "Contraseña restablecida",
+      usuario_id: usuario.id,
+      ip_cliente: req.ip,
+      });
 
     res.status(200).json({ mensaje: "Contraseña restablecida exitosamente." });
 

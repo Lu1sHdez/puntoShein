@@ -14,8 +14,6 @@ import empleadoRutas from './routes/empleado.routes.js';
 import preguntaFrecuenteRutas from './routes/preguntaFrecuente.routes.js'; 
 import ventaRutas from './routes/ventas.routes.js'; 
 
-
-
 const app = express();
 
 //Deshabilitar la divulgación de la tecnología (X-Powered-By)
@@ -30,7 +28,7 @@ const corsOpcion = {
   origin: process.env.FRONTEND_URL,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 };
 
 app.use(cors(corsOpcion));
@@ -77,6 +75,9 @@ app.use((err, req, res, next) => {
 });
 
 export default app;
+
+
+
 
 
 

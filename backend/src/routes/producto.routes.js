@@ -1,10 +1,8 @@
-import {validarRol, verificarToken  } from '../middleware/auth.js';
 import express from 'express';
 import { buscarProductos, allProductos, obtenerProductoPorId, 
     filtrarProductos,obtenerCategorias,obtenerSubcategorias,obtenerProductosPorSubcategoria, obtenerDetalleProductoPorTalla} from '../controllers/producto.controller.js';
 
 const router = express.Router();
-const admin = validarRol(['administrador']);
 
 // Ruta para obtener todas las categorías
 router.get('/categorias', obtenerCategorias);

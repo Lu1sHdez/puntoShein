@@ -35,6 +35,7 @@ export const agregarAlCarrito = async (req, res) => {
       itemCarrito.cantidad = verificarCantidadLimite(itemCarrito.cantidad);
 
       await itemCarrito.save();
+      
     } else {
       // Si no está, crear un nuevo registro
       itemCarrito = await Carrito.create({ usuario_id, producto_id, cantidad: cantidadVerificada });

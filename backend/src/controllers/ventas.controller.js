@@ -141,17 +141,6 @@ function calcularK(P0, Pt, t) {
   if (P0 <= 0 || Pt <= 0 || t <= 0) return null;
   return (1 / t) * Math.log(Pt / P0);
 }
-
-function predecirValores(P0, k, tInicial, cantidad) {
-  const predicciones = [];
-  for (let t = 1; t <= cantidad; t++) {
-    const tActual = tInicial + t;
-    const P = Math.round(P0 * Math.exp(k * tActual));
-    predicciones.push(P);
-  }
-  return predicciones;
-}
-
 export const predecirVentasPorDia = async (req, res) => {
   try {
     const { producto_id } = req.params;

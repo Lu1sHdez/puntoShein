@@ -1,9 +1,10 @@
 import Producto from "../models/producto.model.js";
 import Categoria from "../models/categoria.model.js"; //  Importar Categoria
 import Subcategoria from "../models/subcategoria.model.js"; // 
-import { Op, Sequelize } from "sequelize";
+import {Sequelize } from "sequelize";
 import Talla from "../models/tallas.model.js";
 import ProductoTalla from "../models/productoTalla.model.js";
+import Venta from "../models/ventas.model.js";
 
 
 
