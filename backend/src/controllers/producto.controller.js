@@ -289,3 +289,28 @@ export const obtenerDetalleProductoPorTalla = async (req, res) => {
   }
 };
 
+export const resumenStock = async (req, res) => {
+  try {
+    const productos = await Producto.findAll();
+
+    let agotados = 0;
+    let critico = 0;
+    let ok = 0;
+
+    productos.forEach(p => {
+      if (p.stock === 0) agotados++;
+      else if (p.stock <= 5) critico++;
+      else ok++;
+    });
+
+    res.json({
+      agotados,
+      critico,
+      ok
+    });
+  } catch (error) {
+    console.error("Error al obtener resumen de stock:", error);
+    res.status(500).json({ mensaje: "Error al obtener resumen de stock" });
+  }
+};
+

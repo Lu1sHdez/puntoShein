@@ -1,6 +1,6 @@
 import express from 'express';
 import { buscarProductos, allProductos, obtenerProductoPorId, 
-    filtrarProductos,obtenerCategorias,obtenerSubcategorias,obtenerProductosPorSubcategoria, obtenerDetalleProductoPorTalla} from '../controllers/producto.controller.js';
+    filtrarProductos,obtenerCategorias,obtenerSubcategorias,obtenerProductosPorSubcategoria, obtenerDetalleProductoPorTalla, resumenStock} from '../controllers/producto.controller.js';
 
 const router = express.Router();
 
@@ -18,6 +18,7 @@ router.get('/buscar', buscarProductos);
 // Ruta para obtener todos los productos
 router.get('/allProductos', allProductos);
 
+router.get('/resumen-stock', resumenStock);
 
 // Ruta para obtener un producto por su ID
 router.get('/:id', obtenerProductoPorId);
