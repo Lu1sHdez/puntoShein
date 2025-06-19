@@ -6,21 +6,6 @@ import Talla from "../models/tallas.model.js";
 import ProductoTalla from "../models/productoTalla.model.js";
 import Venta from "../models/ventas.model.js";
 
-import admin from 'firebase-admin';
-import path from 'path'; // Importar path para manejar rutas
-import { fileURLToPath } from 'url'; // Importar fileURLToPath para usar con import.meta.url
-
-// Obtener la ruta del archivo actual y luego la ruta del archivo JSON
-const __filename = fileURLToPath(import.meta.url); // obtener el nombre del archivo actual
-const __dirname = path.dirname(__filename); // obtener el directorio donde se encuentra el archivo actual
-
-// Cargar las credenciales desde el archivo serviceAccountKey.json
-const serviceAccount = path.resolve(__dirname, '../config/serviceAccountKey.json');
-
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-});
-
 // Función para buscar productos por nombre
 export const buscarProductos = async (req, res) => {
   try {
@@ -302,54 +287,19 @@ export const obtenerDetalleProductoPorTalla = async (req, res) => {
   }
 };
 
-const sendNotification = async (token, message) => {
-  const payload = {
-    notification: {
-      title: 'Alerta de Stock',
-      body: message,
-    },
-  };
-
-  try {
-    await admin.messaging().sendToDevice(token, payload);
-    console.log('Notificación enviada');
-  } catch (error) {
-    console.error('Error al enviar notificación:', error);
-  }
-};
-
 export const resumenStock = async (req, res) => {
   try {
-    const productos = await Producto.findAll();
+    const productos = await Producto.findAll();  // Obtener todos los productos
 
-    let agotados = 0;
-    let critico = 0;
-    let ok = 0;
-    let mensaje = '';
-
-    productos.forEach(p => {
-      if (p.stock === 0) {
-        agotados++;
-        mensaje += `El producto ${p.nombre} está agotado.\n`;
-      } else if (p.stock <= 5) {
-        critico++;
-        mensaje += `El producto ${p.nombre} está próximo a agotarse.\n`;
-      } else {
-        ok++;
-      }
+    const productosConEstado = productos.map(p => {
+      return {
+        nombre: p.nombre,  // Asumiendo que `nombre` es el campo del producto
+        cantidad: p.stock,  // Asumiendo que `stock` es el campo que tiene la cantidad
+        estado: p.stock === 0 ? 'agotado' : p.stock <= 5 ? 'critico' : 'ok'
+      };
     });
 
-    // Aquí debes enviar la notificación
-    if (mensaje) {
-      const adminToken = 'ADMIN_FCM_TOKEN';  // El token de FCM del administrador
-      sendNotification(adminToken, mensaje);  // Envía el mensaje al administrador
-    }
-
-    res.json({
-      agotados,
-      critico,
-      ok,
-    });
+    res.json(productosConEstado);  // Devuelve la lista de productos con estado
   } catch (error) {
     console.error("Error al obtener resumen de stock:", error);
     res.status(500).json({ mensaje: "Error al obtener resumen de stock" });
