@@ -305,3 +305,25 @@ export const resumenStock = async (req, res) => {
     res.status(500).json({ mensaje: "Error al obtener resumen de stock" });
   }
 };
+export const productosCriticosYAgotados = async (req, res) => {
+  try {
+    const productos = await Producto.findAll();
+
+    const criticos = [];
+    const agotados = [];
+
+    productos.forEach(p => {
+      if (p.stock === 0) {
+        agotados.push({ nombre: p.nombre });
+      } else if (p.stock > 0 && p.stock <= 5) {
+        criticos.push({ nombre: p.nombre, cantidad: p.stock });
+      }
+    });
+
+    res.json({ criticos, agotados });
+  } catch (error) {
+    console.error("Error al obtener productos críticos/agotados:", error);
+    res.status(500).json({ mensaje: "Error al obtener productos críticos/agotados" });
+  }
+};
+
