@@ -21,12 +21,11 @@ router.get('/filtrar', filtrarProductos);
 router.get('/buscar', buscarProductos);
 // Ruta para obtener todos los productos
 router.get('/allProductos', allProductos);
-
+router.get('/notificaciones', productosCriticosYAgotados);
 router.get('/resumen-stock', resumenStock);
-
 
 // Ruta para obtener un producto por su ID
 router.get('/:id', obtenerProductoPorId);
-router.get('/notificaciones', productosCriticosYAgotados);
+
 
 export default router;
