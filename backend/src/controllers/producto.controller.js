@@ -289,22 +289,31 @@ export const obtenerDetalleProductoPorTalla = async (req, res) => {
 
 export const resumenStock = async (req, res) => {
   try {
-    const productos = await Producto.findAll();  // Obtener todos los productos
+    const productos = await Producto.findAll();
 
-    const productosConEstado = productos.map(p => {
-      return {
-        nombre: p.nombre,  // Asumiendo que `nombre` es el campo del producto
-        cantidad: p.stock,  // Asumiendo que `stock` es el campo que tiene la cantidad
-        estado: p.stock === 0 ? 'agotado' : p.stock <= 5 ? 'critico' : 'ok'
-      };
+    let agotados = 0;
+    let critico = 0;
+    let ok = 0;
+
+    productos.forEach(p => {
+      const cantidad = p.stock ?? 0;
+
+      if (cantidad === 0) {
+        agotados++;
+      } else if (cantidad <= 5) {
+        critico++;
+      } else {
+        ok++;
+      }
     });
 
-    res.json(productosConEstado);  // Devuelve la lista de productos con estado
+    res.json({ agotados, critico, ok });
   } catch (error) {
     console.error("Error al obtener resumen de stock:", error);
     res.status(500).json({ mensaje: "Error al obtener resumen de stock" });
   }
 };
+
 export const productosCriticosYAgotados = async (req, res) => {
   try {
     const productos = await Producto.findAll();
