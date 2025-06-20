@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import Swal from "sweetalert2";
 import { mostrarNotificacion } from "../Animations/NotificacionSwal";
 
 const useFormulario = (initialState, url, redirigir, isAuthForm = false) => {
@@ -18,7 +17,6 @@ const useFormulario = (initialState, url, redirigir, isAuthForm = false) => {
   e.preventDefault();
   setLoading(true);
   setMensaje({ tipo: "", texto: "" });
-
 
   try {
     const respuesta = await axios.post(url, datos, { 
@@ -41,7 +39,6 @@ const useFormulario = (initialState, url, redirigir, isAuthForm = false) => {
       // Redirigir después de 3 segundos si todo salió bien
       setTimeout(() => navigate(redirigir), 1500);
     }
-
     return true; //  Indica que la operación fue exitosa
   } catch (error) {
     //  Si el backend no responde (Error 500)
@@ -53,28 +50,16 @@ const useFormulario = (initialState, url, redirigir, isAuthForm = false) => {
     if (error.response.status === 400) {
       const mensajeError = error.response.data.mensaje || "Solicitud incorrecta.";
     
-      setMensaje({ tipo: "error", texto: mensajeError }); // aplica a todos los formularios
-    
-      // También puedes mostrarlo directamente en pantalla:
-      mostrarNotificacion("error", mensajeError);
-    
+      setMensaje({ tipo: "error", texto: mensajeError }); 
+        
       return false;
     }
-    
 
     // Si el recurso no existe (Error 404)
     if (error.response.status === 404) {
       navigate("/error404");
       return false;
     }
-
-    // Otros errores no manejados explícitamente
-    Swal.fire({
-      icon: "error",
-      title: "Error",
-      text: error.response?.data?.mensaje || "Error en la solicitud.",
-    });
-
     setMensaje({
       tipo: "error",
       texto: error.response?.data?.mensaje || "Error en la solicitud.",
@@ -85,7 +70,6 @@ const useFormulario = (initialState, url, redirigir, isAuthForm = false) => {
     setLoading(false);
   }
 };
-
   return { datos, mensaje, handleChange, handleSubmit, loading };
 };
 

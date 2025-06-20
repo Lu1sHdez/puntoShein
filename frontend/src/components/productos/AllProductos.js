@@ -7,6 +7,7 @@ import RegresarButton from "../Regresar";
 import "../../css/Botones.css"
 import { motion } from "framer-motion"; 
 import { API_URL } from "../../ApiConexion";
+import { Cargando } from "../../Animations/Cargando";
 
 const AllProductos = () => {
   const [productos, setProductos] = useState([]);
@@ -39,7 +40,15 @@ const AllProductos = () => {
   return (
     <div className="container mx-auto px-4 mt-0">
       <h2 className="text-2xl font-bold mb-4">Todos los productos</h2>
-      {cargando && <p>Cargando productos...</p>}
+      {cargando && (
+        <div className="flex justify-center items-center py-8">
+          <Cargando 
+            size="md" 
+            color="primary" 
+            message="Cargando productos..." 
+          />
+        </div>
+      )}
       {error && <p className="text-red-500">{error}</p>}
       {!cargando && productos.length === 0 && <p>No hay productos disponibles.</p>}
 

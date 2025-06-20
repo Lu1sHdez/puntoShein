@@ -55,10 +55,9 @@ const ActualizarPerfil = () => {
 
     try {
       // Enviar los datos actualizados al backend
-      const response = await axios.put(`${API_URL}/api/admin/perfil`, datos, { withCredentials: true });
+      await axios.put(`${API_URL}/api/admin/perfil`, datos, { withCredentials: true });
       
       mostrarNotificacion("success", "¡Perfil actualizado!");
-
 
       navigate('/admin/perfil'); // Redirigir al perfil actualizado
     } catch (error) {

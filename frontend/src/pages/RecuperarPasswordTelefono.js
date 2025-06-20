@@ -4,7 +4,6 @@ import FormularioInput from "../components/form/FormularioInput";
 import { motion } from "framer-motion";
 import Boton from "../elements/Boton";
 import { formAnimation } from "./Funciones";
-import RegresarButton from "../components/Regresar";
 import { API_URL } from "../ApiConexion";
 
 const RecuperarPasswordTelefono = () => {
@@ -101,7 +100,6 @@ const RecuperarPasswordTelefono = () => {
               estiloPersonalizado="mt-3 w-full text-pink-600 hover:underline"
             />
           </form>
-          <RegresarButton/>
         </motion.div>
       </div>
     </div>

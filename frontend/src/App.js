@@ -12,6 +12,8 @@ const AllProductos = lazy(() => import("./components/productos/AllProductos"));
 const BuscarProductos = lazy(() => import("./components/productos/BuscarProductos")); 
 const ProductosFiltrados = lazy(() => import("./components/productos/ProductosFiltrados")); 
 const GestionProductos = lazy(() => import("./admin/productos/analisis/AnalisisVentas.js")); 
+const Pago = lazy(() => import("./components/store/compra/pago.js"));
+
 
 
 //Sidebar users
@@ -76,6 +78,8 @@ const ActualizarPerfilAdmin = lazy(() => import("./admin/perfil/ActualizarPerfil
 const Configuracion = lazy(() => import("./admin/setting/Configuracion.js"));
 const CrearProducto = lazy(() => import("./admin/productos/crearProducto/CrearProducto.js"));
 const EditarProducto = lazy(() => import ("./admin/productos/editarProducto/EditarProducto.js")); 
+const PinInicioRapido = lazy(() => import("./admin/pin/pinInicioRapido.js"));
+
 
 
 
@@ -136,6 +140,7 @@ const App = () => {
                   path="/empleado/dashboard"
                   element={<ProteccionRutas element={DashboardEmpleado} allowedRoles={['empleado']} />}
                 />
+
                 <Route
                   path="/empleado/configuracion"
                   element={<ProteccionRutas element={ConfiguracionEmpleado} allowedRoles={['empleado']} />}
@@ -148,6 +153,12 @@ const App = () => {
                   path="/admin/sidebar"
                   element={<ProteccionRutas element={SidebarAdmin} allowedRoles={['administrador']} />}
                 />
+                <Route
+                  path="/admin/inicio-rapido"
+                  element={<ProteccionRutas element={PinInicioRapido} allowedRoles={['administrador']} />}
+                />
+
+                
 
                 <Route
                   path="/admin/preguntasFrecuentes"
@@ -226,6 +237,11 @@ const App = () => {
                   path="/usuario/perfil"
                   element={<ProteccionRutas element={PerfilUsuario} allowedRoles={['usuario']} />}
                 />
+                <Route
+                    path="/checkout/pago"
+                    element={<ProteccionRutas element={Pago} allowedRoles={['usuario']} />}
+                  />
+
                 <Route
                   path="/productos/agregar"
                   element={<ProteccionRutas element={ProductosA} allowedRoles={['usuario']} />}

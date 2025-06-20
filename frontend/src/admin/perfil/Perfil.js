@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import Skeleton from "../../components/Skeleton.js";
 import { formAnimation, userDetailsLoadingAnimation } from '../../components/Funciones.js';
 import { motion } from 'framer-motion';
 import RegresarButton from '../../components/Regresar.js';
 import { API_URL } from '../../ApiConexion.js';
+import { Cargando } from '../../Animations/Cargando.js';
 
 
 const Perfil = () => {
@@ -33,11 +33,7 @@ const Perfil = () => {
   }, [navigate]);
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Skeleton />
-      </div>
-    );
+    return <Cargando message='Cargando perfil...'/>;
   }
 
   if (error) {

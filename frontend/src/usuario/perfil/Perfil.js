@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { dataLoadingAnimation} from '../../components/Funciones.js';
 import { motion } from 'framer-motion';
 import { API_URL } from '../../ApiConexion.js'
+import { Cargando } from '../../Animations/Cargando.js';
 
 
 const Perfil = () => {
@@ -34,11 +35,7 @@ const Perfil = () => {
   }, [navigate]);
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-xl text-gray-600">Cargando...</div>
-      </div>
-    );
+    return <Cargando message='Cargando perfil...'/>
   }
 
   if (error) {

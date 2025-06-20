@@ -11,8 +11,8 @@ const Login = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [errorValidacion, setErrorValidacion] = useState(""); // Estado para error
-  const [errorCampos, setErrorCampos] = useState({ correo: false, password: false }); // Estados para errores en campos específicos
-
+  const [errorCampos, setErrorCampos] = useState({ correo: false, password: false }); 
+  
   //  Se indica que es un formulario de autenticación
   const { datos, mensaje, handleChange, handleSubmit, loading } = useFormulario(
     { correo: "", password: "" },
@@ -67,6 +67,7 @@ const Login = () => {
   return (
     <div className="flex items-center justify-center mt-0">
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+        
         <h2 className="text-2xl font-semibold text-center text-gray-700">Iniciar Sesión</h2>
 
         {/* Mensaje de error estático en rojo arriba de los inputs */}

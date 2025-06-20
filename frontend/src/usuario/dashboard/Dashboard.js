@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { FaBox, FaShoppingCart, FaClipboardList, FaUserCircle } from 'react-icons/fa';
 import { dashboardAnimation } from '../../components/Funciones.js';
 import Perfil from '../perfil/Perfil.js';
+import { Cargando } from '../../Animations/Cargando.js';
 /* import Productos from '../productos/Productos';
 import Carrito from '../carrito/Carrito';
 import Pedidos from '../pedidos/Pedidos'; */
@@ -33,7 +34,7 @@ const DashboardUsuario = () => {
     }
   }, [navigate]);
 
-  if (!user) return <div className="text-center text-xl">Cargando...</div>;
+  if (!user) return <Cargando message='Cargando...'/>;
 
   return (
     <motion.div {...dashboardAnimation} className="p-6">

@@ -6,7 +6,6 @@ import validaPassword from "../hooks/useValidaPassword";
 import { formAnimation } from "./Funciones"; 
 import { motion } from "framer-motion";
 import Boton from "../elements/Boton";
-import RegresarButton from "../components/Regresar";
 import { API_URL } from "../ApiConexion";
 import { mostrarNotificacion } from "../Animations/NotificacionSwal";
 
@@ -249,7 +248,6 @@ const Registro = () => {
             </p>
           </div>
         </form>
-        <RegresarButton/>
         </motion.div>
       </div>
     </div>

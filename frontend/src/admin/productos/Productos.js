@@ -12,6 +12,7 @@ import BuscarProducto from './BuscarProductos';
 import ProductoCard from './ProductoCard'; 
 import { mostrarNotificacion } from '../../Animations/NotificacionSwal.js';
 import { API_URL } from '../../ApiConexion.js';
+import { Cargando } from '../../Animations/Cargando.js';
 
 
 
@@ -131,7 +132,7 @@ const Productos = () => {
 
   // Cargando productos o error
   if (loading) {
-    return <motion.div {...dataLoadingAnimation} className="text-center">Cargando...</motion.div>;
+    return <Cargando message='Cargando productos...'/>;
   }
 
   if (error) {

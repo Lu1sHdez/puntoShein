@@ -10,6 +10,7 @@ import "../../css/Botones.css"
 import { motion } from "framer-motion";
 import { API_URL } from "../../ApiConexion";
 import { mostrarNotificacion } from "../../Animations/NotificacionSwal";
+import { Cargando } from "../../Animations/Cargando";
 
 
 const DetalleProducto = () => {
@@ -51,7 +52,15 @@ const DetalleProducto = () => {
     obtenerUsuario(); // Llamamos a la función para obtener el perfil del usuario
   }, [id]);
 
-  if (cargando) return <p className="text-center text-gray-500">Cargando producto...</p>;
+  if (cargando) return (
+    <div className="flex justify-center items-center h-screen">
+      <Cargando 
+        size="lg" 
+        color="primary" 
+        message="Cargando detalles del producto..." 
+      />
+    </div>
+  );
   if (error) return <p className="text-center text-red-500">{error}</p>;
 
   const { mensaje, color, icono } = mostrarStock(producto.stock);
@@ -121,7 +130,6 @@ const DetalleProducto = () => {
       });
     }
   };
-  
   
 
   return (

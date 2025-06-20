@@ -7,6 +7,7 @@ import { dataLoadingAnimation } from '../../components/Funciones.js';
 import { motion } from 'framer-motion';
 import { mostrarNotificacion } from '../../Animations/NotificacionSwal.js';
 import { API_URL } from '../../ApiConexion.js';
+import { Cargando } from '../../Animations/Cargando.js';
 
 const Usuarios = () => {
   const [usuarios, setUsuarios] = useState([]);
@@ -157,7 +158,7 @@ const Usuarios = () => {
 
   // Cargando productos o error
   if (loading) {
-    return <motion.div {...dataLoadingAnimation} className="text-center">Cargando...</motion.div>;
+    return <Cargando message='Cargando usuarios...'/>;
   }
 
   if (error) {

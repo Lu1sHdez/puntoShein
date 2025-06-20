@@ -8,6 +8,7 @@ import { dataLoadingAnimation} from '../../components/Funciones.js';
 import { motion } from 'framer-motion';
 import { mostrarNotificacion } from "../../Animations/NotificacionSwal.js";
 import { API_URL } from "../../ApiConexion.js";
+import { Cargando } from "../../Animations/Cargando.js";
 
 mostrarNotificacion();
 
@@ -152,14 +153,14 @@ const Carrito = () => {
   const calcularTotalGeneral = () => 
     carrito.reduce((total, item) => total + calcularTotalProducto(item.producto.precio, item.cantidad), 0);
 
-  if (!usuario) return <p className="text-center text-gray-500">Cargando...</p>;
+  if (!usuario) return <Cargando message="Cargando "/>;
 
   return (
     <motion.div {...dataLoadingAnimation} className="container mx-auto py-6 text-left">
       <h2 className="text-3xl font-bold text-gray-900 mb-8">Mi Carrito</h2>
 
       {loading ? (
-        <p className="text-center text-gray-500">Cargando carrito...</p>
+        <p className="text-center text-gray-500"></p>
       ) : carrito.length === 0 ? (
         <div className="flex flex-col items-center justify-center text-center py-12 px-4 bg-white rounded-lg shadow-md">
           <FaShoppingCart className="text-6xl text-gray-400 mb-4" />
@@ -241,12 +242,13 @@ const Carrito = () => {
               <span>${calcularTotalGeneral()}</span>
             </div>
             <div className="mt-6">
-              <button
-                onClick={() => navigate("/checkout")}
+            <button
+                onClick={() => navigate("/checkout/pago")}
                 className="w-full bg-pink-600 text-white py-3 rounded-lg shadow-md text-lg font-semibold transition transform hover:scale-105 hover:bg-pink-700"
               >
                 Continuar la compra
               </button>
+
             </div>
           </div>
         </div>

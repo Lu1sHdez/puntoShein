@@ -1,13 +1,28 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, Routes, Route } from 'react-router-dom';
 import { FaClipboardList, FaCog, FaFileAlt, FaChartBar } from 'react-icons/fa';
 import { BsPersonLinesFill } from 'react-icons/bs';
 import { motion } from 'framer-motion';
 import { dashboardAnimation } from '../../components/Funciones.js';
+import { Cargando } from '../../Animations/Cargando.js';
 
 import Perfil from '../perfil/Perfil';
 
 const DashboardEmpleado = () => {
+
+    const[loading, setLoading] = useState(true);
+    useEffect(() =>{
+        const timer= setTimeout(()=>{
+            setLoading(false);
+        },1500);
+
+        return ()=> clearTimeout(timer);
+    })
+
+    if (loading) {
+        return <Cargando message="Cargando..." />;
+    }
+
     return (
         <motion.div {...dashboardAnimation} className="p-6">
             <h1 className="text-3xl font-bold mb-6">Dashboard - Empleado</h1>

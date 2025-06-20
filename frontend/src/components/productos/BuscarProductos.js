@@ -1,12 +1,15 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import useBuscarProductos from "../../hooks/useBuscarProductos"; // Hook para obtener los productos
 import ProductoCard from "./ProductoCard";
+import { Cargando } from "../../Animations/Cargando";
 
 const BuscarProductos = () => {
   const [searchParams] = useSearchParams();  // Obtener los parámetros de búsqueda de la URL
   const nombre = searchParams.get("nombre"); // Parámetro de búsqueda (nombre del producto)
   const { productos, loading, error, setDebouncedNombre } = useBuscarProductos();  // Agregar setDebouncedNombre
+  const [cargando,] = useState(false);
+
 
   useEffect(() => {
     // Ejecuta la búsqueda solo si el nombre de búsqueda cambia
@@ -21,7 +24,15 @@ const BuscarProductos = () => {
       <h2 className="text-2xl font-bold mb-4">Resultados de búsqueda para "{nombre}"</h2>
 
       {/* Estado de carga */}
-      {loading && <p>Cargando...</p>}
+      {cargando && (
+        <div className="flex justify-center items-center py-8">
+          <Cargando 
+            size="md" 
+            color="primary" 
+            message="Cargando productos..." 
+          />
+        </div>
+      )}
 
       {/* Mostrar el error si ocurre algún problema */}
       {error && <p className="text-red-500">{error}</p>}

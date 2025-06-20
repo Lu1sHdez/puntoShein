@@ -1,6 +1,6 @@
-// src/admin/setting/Configuracion.js
-import React, { useState } from 'react';
-import RegresarButton from '../../components/Regresar.js';  // Importamos el botón
+import React, { useState, useEffect } from 'react';
+import RegresarButton from '../../components/Regresar.js';
+import { Cargando } from '../../Animations/Cargando.js';
 
 const Configuracion = () => {
   const [formData, setFormData] = useState({
@@ -8,6 +8,14 @@ const Configuracion = () => {
     email: '',
     password: '',
   });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -19,16 +27,18 @@ const Configuracion = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Aquí iría la lógica para enviar los datos al servidor
     console.log('Configuración guardada:', formData);
   };
+
+  if (loading) {
+    return <Cargando message="Cargando configuración..." />;
+  }
 
   return (
     <div className="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-lg">
       <h1 className="text-3xl font-bold text-center text-gray-700 mb-6">Configuración del Sistema</h1>
 
       <form onSubmit={handleSubmit}>
-        {/* Nombre del sitio */}
         <div className="mb-4">
           <label htmlFor="siteName" className="block text-sm font-medium text-gray-600 mb-2">
             Nombre del Sitio
@@ -44,7 +54,6 @@ const Configuracion = () => {
           />
         </div>
 
-        {/* Correo electrónico */}
         <div className="mb-4">
           <label htmlFor="email" className="block text-sm font-medium text-gray-600 mb-2">
             Correo Electrónico
@@ -60,7 +69,6 @@ const Configuracion = () => {
           />
         </div>
 
-        {/* Contraseña */}
         <div className="mb-6">
           <label htmlFor="password" className="block text-sm font-medium text-gray-600 mb-2">
             Nueva Contraseña
@@ -76,15 +84,14 @@ const Configuracion = () => {
           />
         </div>
 
-        {/* Botón de enviar */}
         <button
           type="submit"
           className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-200"
         >
           Guardar Cambios
         </button>
-        
-        <RegresarButton/>
+
+        <RegresarButton />
       </form>
     </div>
   );

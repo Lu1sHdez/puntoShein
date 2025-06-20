@@ -5,6 +5,7 @@ import RegresarButton from '../../components/Regresar.js';
 import { dataLoadingAnimation} from '../../components/Funciones.js';
 import { motion } from 'framer-motion';
 import { API_URL } from '../../ApiConexion.js'; // Ajusta la ruta según tu estructura
+import { Cargando } from '../../Animations/Cargando.js';
 
 
 
@@ -64,7 +65,7 @@ const Empleados = () => {
     };
 
     if (loading) {
-        return <div>Cargando...</div>;  // Mostrar mensaje mientras cargan los empleados
+        return <Cargando message='Cargando empleados...'/>;  // Mostrar mensaje mientras cargan los empleados
     }
 
     return (
