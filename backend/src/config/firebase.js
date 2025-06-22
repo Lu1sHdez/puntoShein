@@ -1,16 +1,13 @@
 import admin from "firebase-admin";
-import path from "path";
-import { createRequire } from "module";
-import { fileURLToPath } from "url";
+import dotenv from "dotenv";
+dotenv.config();
 
-const require = createRequire(import.meta.url);
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const serviceAccount = JSON.parse(process.env.FIREBASE_CONFIG);
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
+  credential: admin.credential.cert({
+    projectId: process.env.FIREBASE_PROJECT_ID,
+    clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+    privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+  }),
 });
-
 
 export default admin;
