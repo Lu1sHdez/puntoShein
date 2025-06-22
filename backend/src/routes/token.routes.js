@@ -3,6 +3,6 @@ import { registrarToken } from "../controllers/token.controller.js";
 
 const router = express.Router();
 
-router.post("/", registrarToken);
+router.post("/registrar-token", registrarToken);
 
 export default router;
