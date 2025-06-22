@@ -300,7 +300,7 @@ export const resumenStock = async (req, res) => {
 
       if (cantidad === 0) {
         agotados++;
-      } else if (cantidad <= 5) {
+      } else if (cantidad <= 10) {
         critico++;
       } else {
         ok++;
