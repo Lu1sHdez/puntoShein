@@ -14,6 +14,7 @@ import empleadoRutas from './routes/empleado.routes.js';
 import preguntaFrecuenteRutas from './routes/preguntaFrecuente.routes.js'; 
 import ventaRutas from './routes/ventas.routes.js'; 
 import loginPin from './routes/pin.routes.js';
+import tokenRoutes from "./routes/token.routes.js";
 
 const app = express();
 
@@ -64,6 +65,8 @@ app.use('/api/admin', adminRutas);
 app.use('/api/empleado', empleadoRutas);
 app.use('/api/preguntas', preguntaFrecuenteRutas)
 app.use('/api/pin', loginPin)
+app.use("/api/token-dispositivo", tokenRoutes);
+
 
 // Ruta raíz para verificar que la API está en línea
 app.get('/', (req, res) => {

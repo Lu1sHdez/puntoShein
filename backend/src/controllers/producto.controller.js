@@ -5,6 +5,7 @@ import {Sequelize } from "sequelize";
 import Talla from "../models/tallas.model.js";
 import ProductoTalla from "../models/productoTalla.model.js";
 import Venta from "../models/ventas.model.js";
+import TokenDispositivo from "../models/tokenDispositivo.model.js";
 
 // Función para buscar productos por nombre
 export const buscarProductos = async (req, res) => {
