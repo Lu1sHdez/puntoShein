@@ -3,7 +3,7 @@ import { buscarProductos, allProductos, obtenerProductoPorId,
     filtrarProductos,obtenerCategorias,obtenerSubcategorias,obtenerProductosPorSubcategoria, 
     obtenerDetalleProductoPorTalla, 
     resumenStock,
-    productosCriticosYAgotados
+    notificaciones
 } from '../controllers/producto.controller.js';
 
 const router = express.Router();
@@ -21,7 +21,7 @@ router.get('/filtrar', filtrarProductos);
 router.get('/buscar', buscarProductos);
 // Ruta para obtener todos los productos
 router.get('/allProductos', allProductos);
-router.get('/notificaciones', productosCriticosYAgotados);
+router.get('/notificaciones', notificaciones);
 router.get('/resumen-stock', resumenStock);
 
 // Ruta para obtener un producto por su ID

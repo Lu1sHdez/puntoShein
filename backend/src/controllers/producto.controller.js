@@ -314,25 +314,44 @@ export const resumenStock = async (req, res) => {
   }
 };
 
-export const productosCriticosYAgotados = async (req, res) => {
+// Enviar notificaciones automáticas para productos agotados o críticos
+export const notificaciones = async (req, res) => {
   try {
     const productos = await Producto.findAll();
+    const tokens = await TokenDispositivo.findAll();
 
-    const criticos = [];
-    const agotados = [];
+    const criticos = productos.filter(p => p.stock > 0 && p.stock <= 5);
+    const agotados = productos.filter(p => p.stock === 0);
 
-    productos.forEach(p => {
-      if (p.stock === 0) {
-        agotados.push({ nombre: p.nombre });
-      } else if (p.stock > 0 && p.stock <= 5) {
-        criticos.push({ nombre: p.nombre, cantidad: p.stock });
+    if (tokens.length === 0) {
+      return res.status(200).json({ mensaje: "No hay dispositivos registrados para enviar notificaciones." });
+    }
+
+    for (const { token } of tokens) {
+      for (const p of criticos) {
+        await enviarNotificacionStock(
+          token,
+          "⚠️ Producto en stock crítico",
+          `Solo quedan ${p.stock} unidades de "${p.nombre}"`
+        );
       }
-    });
 
-    res.json({ criticos, agotados });
+      for (const p of agotados) {
+        await enviarNotificacionStock(
+          token,
+          "🚫 Producto agotado",
+          `El producto "${p.nombre}" está agotado`
+        );
+      }
+    }
+
+    res.status(200).json({
+      mensaje: "Notificaciones enviadas",
+      criticos: criticos.map(p => p.nombre),
+      agotados: agotados.map(p => p.nombre),
+    });
   } catch (error) {
-    console.error("Error al obtener productos críticos/agotados:", error);
-    res.status(500).json({ mensaje: "Error al obtener productos críticos/agotados" });
+    console.error("Error al notificar productos críticos/agotados:", error);
+    res.status(500).json({ mensaje: "Error al enviar notificaciones" });
   }
 };
-
