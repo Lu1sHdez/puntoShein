@@ -334,17 +334,19 @@ export const notificaciones = async (req, res) => {
       for (const p of criticos) {
         await enviarNotificacionStock(
           token,
-          "⚠️ Producto en stock crítico",
-          `Solo quedan ${p.stock} unidades de "${p.nombre}"`
-        );
+          `⚠️ Stock bajo: ${p.nombre}`,
+          `Quedan ${p.stock} unidades`
+            );
+        
       }
 
       for (const p of agotados) {
         await enviarNotificacionStock(
           token,
-          "🚫 Producto agotado",
-          `El producto "${p.nombre}" está agotado`
+          `🚫 Agotado: ${p.nombre}`,
+          `Sin unidades disponibles`
         );
+        
       }
     }
 
