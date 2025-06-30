@@ -118,9 +118,7 @@ const PinInicioRapido = () => {
               <p className="text-lg font-semibold text-gray-800">PIN generado:</p>
               <p className="text-4xl font-mono text-blue-600 mt-2">{pin}</p>
               <p className="text-sm text-gray-500 mt-1">Expira a las: {expira}</p>
-              {loginStatus === null && (
-                <p className="text-sm text-yellow-600 mt-2">Esperando inicio de sesión en el dispositivo...</p>
-              )}
+              
             </div>
           )}
         </div>

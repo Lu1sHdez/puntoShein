@@ -1,44 +1,58 @@
-import React from "react";
-import { dataLoadingAnimation} from '../Funciones';
-import { motion } from 'framer-motion';
+import React, { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { dataLoadingAnimation } from "../Funciones";
+import axios from "axios";
+import { API_URL } from "../../ApiConexion";
 
 const PoliticaPrivacidad = () => {
+  const [contenido, setContenido] = useState("");
+  const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const obtenerDocumento = async () => {
+      try {
+        const res = await axios.get(`${API_URL}/api/documento/documentos/Aviso%20de%20Privacidad`);
+        setContenido(res.data.contenido);
+      } catch (err) {
+        setError("No se pudo cargar el aviso de privacidad.");
+      } finally {
+        setCargando(false);
+      }
+    };
+
+    obtenerDocumento();
+  }, []);
+
   return (
-    <motion.div {...dataLoadingAnimation} className="p-4 max-w-3xl mx-auto text-justify">
-      <h2 className="text-2xl font-bold text-center mb-4">Política de Privacidad</h2>
-      <p className="mb-4">
-        En <strong>Punto Shein</strong>, nos comprometemos a proteger la privacidad
-        de nuestros usuarios y clientes. La presente política describe qué datos
-        personales recopilamos, cómo los utilizamos y cuáles son los derechos de
-        los usuarios sobre dicha información.
-      </p>
+    <motion.section
+      {...dataLoadingAnimation}
+      className="px-6 sm:px-10 py-10 max-w-5xl mx-auto bg-white border border-gray-300 rounded-md shadow-md"
+    >
+      <header className="mb-10 text-center">
+        <h1 className="text-4xl font-serif font-semibold text-gray-800 tracking-wide">
+          Aviso de Privacidad
+        </h1>
+        <p className="text-sm text-gray-500 mt-2">
+          Última actualización: junio de 2025
+        </p>
+      </header>
 
-      <h3 className="text-xl font-semibold mb-2">1. Datos que recopilamos</h3>
-      <ul className="list-disc ml-8 mb-4">
-        <li>Información de contacto (nombre, correo electrónico, dirección, etc.).</li>
-        <li>Detalles de pago (de manera encriptada).</li>
-        <li>Historial de compras y preferencias.</li>
-      </ul>
+      {cargando && (
+        <p className="text-center text-gray-500 text-sm">Cargando contenido...</p>
+      )}
 
-      <h3 className="text-xl font-semibold mb-2">2. Uso de datos</h3>
-      <p className="mb-4">
-        Utilizamos la información para procesar pedidos, brindar soporte al cliente, 
-        mejorar nuestro servicio y personalizar la experiencia de los usuarios. 
-        No vendemos ni compartimos datos personales con terceros ajenos a la operación, 
-        salvo requerimiento legal.
-      </p>
+      {error && (
+        <p className="text-center text-red-600 text-base font-medium">{error}</p>
+      )}
 
-      <h3 className="text-xl font-semibold mb-2">3. Derechos del usuario</h3>
-      <p className="mb-4">
-        Los usuarios tienen derecho a acceder, corregir y/o eliminar sus datos. 
-        Pueden contactarnos en <em>privacidad@puntoshein.com</em> para ejercer estos derechos.
-      </p>
-
-      <p className="mt-6">
-        Para más información acerca de nuestra política de privacidad, contáctanos. 
-        Nos reservamos el derecho de actualizar esta política en cualquier momento.
-      </p>
-    </motion.div>
+      {!cargando && !error && (
+        <article
+          className="prose prose-gray max-w-none text-justify leading-relaxed text-base text-gray-700"
+          dangerouslySetInnerHTML={{ __html: contenido }}
+        />
+      )}
+    </motion.section>
   );
 };
 

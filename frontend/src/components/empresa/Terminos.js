@@ -1,57 +1,58 @@
-import React from "react";
-import { dataLoadingAnimation} from '../Funciones';
-import { motion } from 'framer-motion';
+import React, { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { dataLoadingAnimation } from "../Funciones";
+import axios from "axios";
+import { API_URL } from "../../ApiConexion";
 
 const Terminos = () => {
+  const [contenido, setContenido] = useState("");
+  const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const obtenerDocumento = async () => {
+      try {
+        const res = await axios.get(`${API_URL}/api/documento/documentos/Términos%20y%20Condiciones`);
+        setContenido(res.data.contenido);
+      } catch (err) {
+        setError("No se pudieron cargar los términos y condiciones.");
+      } finally {
+        setCargando(false);
+      }
+    };
+
+    obtenerDocumento();
+  }, []);
+
   return (
-    <motion.div {...dataLoadingAnimation} className="p-4 max-w-3xl mx-auto text-justify">
-      <h2 className="text-2xl font-bold text-center mb-4">Términos y Condiciones</h2>
+    <motion.section
+      {...dataLoadingAnimation}
+      className="px-6 sm:px-10 py-10 max-w-5xl mx-auto bg-white border border-gray-300 rounded-md shadow-md"
+    >
+      <header className="mb-10 text-center">
+        <h1 className="text-4xl font-serif font-semibold text-gray-800 tracking-wide">
+          Términos y Condiciones
+        </h1>
+        <p className="text-sm text-gray-500 mt-2">
+          Última actualización: junio de 2025
+        </p>
+      </header>
 
-      <p className="mb-4">
-        Los presentes términos y condiciones regulan el acceso y uso de la plataforma
-        de <strong>Punto Shein</strong>. Al utilizar nuestros servicios, el usuario 
-        acepta las disposiciones aquí establecidas.
-      </p>
+      {cargando && (
+        <p className="text-center text-gray-500 text-sm">Cargando contenido...</p>
+      )}
 
-      <h3 className="text-xl font-semibold mb-2">1. Registro de Usuario</h3>
-      <p className="mb-4">
-        El usuario debe proporcionar información veraz y actualizada en el registro. 
-        Es responsable de mantener la confidencialidad de sus credenciales de acceso.
-      </p>
+      {error && (
+        <p className="text-center text-red-600 text-base font-medium">{error}</p>
+      )}
 
-      <h3 className="text-xl font-semibold mb-2">2. Ventas y Pagos</h3>
-      <p className="mb-4">
-        Los precios y promociones están sujetos a cambios sin previo aviso. 
-        Nos reservamos el derecho de cancelar pedidos en casos excepcionales, 
-        notificando al cliente oportunamente.
-      </p>
-
-      <h3 className="text-xl font-semibold mb-2">3. Devoluciones y Cambios</h3>
-      <p className="mb-4">
-        Los usuarios pueden solicitar devoluciones o cambios dentro de los primeros
-        15 días hábiles tras la entrega del producto. Las condiciones específicas
-        se detallan en la sección de “Devoluciones” del sitio.
-      </p>
-
-      <h3 className="text-xl font-semibold mb-2">4. Responsabilidades</h3>
-      <p className="mb-4">
-        <strong>Punto Shein</strong> no se hace responsable por daños, pérdidas o 
-        perjuicios derivados del uso inadecuado de la plataforma. Hacemos todo lo 
-        posible por asegurar la disponibilidad y funcionalidad del servicio.
-      </p>
-
-      <h3 className="text-xl font-semibold mb-2">5. Modificaciones de los Términos</h3>
-      <p className="mb-4">
-        Nos reservamos el derecho de modificar estos términos en cualquier momento, 
-        publicando la nueva versión en el sitio web. El uso continuo de la plataforma
-        tras la modificación implica la aceptación de las modificaciones.
-      </p>
-
-      <p className="mt-6">
-        Si tienes preguntas sobre estos términos, contáctanos en:{" "}
-        <em>terminos@puntoshein.com</em>.
-      </p>
-    </motion.div>
+      {!cargando && !error && (
+        <article
+          className="prose prose-gray max-w-none text-justify leading-relaxed text-base text-gray-700"
+          dangerouslySetInnerHTML={{ __html: contenido }}
+        />
+      )}
+    </motion.section>
   );
 };
 
