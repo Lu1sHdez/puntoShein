@@ -7,13 +7,40 @@ import Skeleton from "./components/Skeleton";
 import Layout from "./components/home/Layout";         // Layout general
 import LayoutVacio from "./components/home/LayoutVacio";
 import LayoutGeneral from "./components/home/LayoutGeneral";
+import LayoutAdmin from "./components/home/LayoutAdmin.js";
+
 
 // Rutas protegidas
 import ProteccionRutas from "./utils/ProteccionRutas";
-import AdminRoutes from "./routes/AdminRoutes";
-import UsuarioRoutes from "./routes/UsuarioRoutes";
-import EmpleadoRoutes from "./routes/EmpleadoRoutes";
 import ErrorRoutes from "./routes/ErrorRoutes";
+
+
+// Lazy imports
+const DashboardAdmin = lazy(() => import("./admin/dashboard/Dashboard"));
+const SidebarAdmin = lazy(() => import("./admin/sidebar/Sidebar"));
+const Empresa = lazy(() => import("./admin/empresa/Empresa"));
+const Usuarios = lazy(() => import("./admin/usuarios/Usuarios"));
+const UsuarioDetalles = lazy(() => import("./admin/usuarios/UsuarioDetalles"));
+const Empleados = lazy(() => import("./admin/empleados/Empleados"));
+const Productos = lazy(() => import("./admin/productos/Productos"));
+const DetalleProductos = lazy(() => import("./admin/productos/DetalleProducto"));
+const ActualizarEmpresa = lazy(() => import("./admin/empresa/ActualizarEmpresa"));
+const PerfilAdmin = lazy(() => import("./admin/perfil/Perfil"));
+const ActualizarPerfilAdmin = lazy(() => import("./admin/perfil/ActualizarPerfil"));
+const Configuracion = lazy(() => import("./admin/setting/Configuracion"));
+const CrearProducto = lazy(() => import("./admin/productos/crearProducto/CrearProducto"));
+const EditarProducto = lazy(() => import("./admin/productos/editarProducto/EditarProducto"));
+const PinInicioRapido = lazy(() => import("./admin/pin/pinInicioRapido"));
+const PreguntasFrecuentes = lazy(() => import("./admin/empresa/preguntasFrecuentes/PreguntasFrecuentes"));
+const GestionProductos = lazy(() => import("./admin/productos/analisis/AnalisisVentas"));
+
+// Componentes con Lazy Loading
+const DashboardUsuario = lazy(() => import("./usuario/dashboard/Dashboard.js"));
+const PerfilUsuario = lazy(() => import("./usuario/perfil/Perfil.js"));
+const ActualizarPerfilUsuario = lazy(() => import("./usuario/perfil/ActualizarPerfil.js"));
+const Pago = lazy(() => import("./components/store/compra/pago.js"));
+const ProductosA = lazy(() => import("./components/cart/Agregar.js"));
+
 
 // Lazy loaded pages
 const WelcomePage = lazy(() => import("./welcome/WelcomePage"));
@@ -92,16 +119,35 @@ const App = () => {
             <Route path="/productos/agregar" element={<ProteccionRutas element={AgregarProducto} allowedRoles={["usuario"]} />} />
             <Route path="/productos/Carrito" element={<ProteccionRutas element={Carrito} allowedRoles={["usuario"]} />} />
             <Route path="/autenticacion-requerida" element={<AutenticacionRequerida />} />
+            <Route path="/usuario/dashboard"element={<ProteccionRutas element={DashboardUsuario} allowedRoles={["usuario"]} />}/>
+            <Route path="/usuario/perfil" element={<ProteccionRutas element={PerfilUsuario} allowedRoles={["usuario"]} />}/>
+            <Route path="/usuario/actualizarPerfil"element={<ProteccionRutas element={ActualizarPerfilUsuario} allowedRoles={["usuario"]} />}/>
+            <Route path="/checkout/pago" element={<ProteccionRutas element={Pago} allowedRoles={["usuario"]} />}/>
+            <Route path="/productos/agregar"element={<ProteccionRutas element={ProductosA} allowedRoles={["usuario"]} />}/>
+            <Route path="/productos/carrito"element={<ProteccionRutas element={Carrito} allowedRoles={["usuario"]} />}/>
 
-           
+          </Route>
+          <Route element = {<LayoutAdmin/>}>
 
-            {/* Rutas protegidas */}
-            {AdminRoutes}
-            {EmpleadoRoutes}
-            {UsuarioRoutes}
+            <Route path="/admin/dashboard" element={<ProteccionRutas element={DashboardAdmin} allowedRoles={["administrador"]} />} />
+            <Route path="/admin/sidebar" element={<ProteccionRutas element={SidebarAdmin} allowedRoles={["administrador"]} />} />
+            <Route path="/admin/empresa" element={<ProteccionRutas element={Empresa} allowedRoles={["administrador"]} />} />
+            <Route path="/admin/perfil" element={<ProteccionRutas element={PerfilAdmin} allowedRoles={["administrador"]} />} />
+            <Route path="/admin/actualizarPerfil" element={<ProteccionRutas element={ActualizarPerfilAdmin} allowedRoles={["administrador"]} />} />
+            <Route path="/admin/configuracion" element={<ProteccionRutas element={Configuracion} allowedRoles={["administrador"]} />} />
+            <Route path="/admin/usuarios" element={<ProteccionRutas element={Usuarios} allowedRoles={["administrador"]} />} />
+            <Route path="/admin/usuarios/:id" element={<ProteccionRutas element={UsuarioDetalles} allowedRoles={["administrador"]} />} />
+            <Route path="/admin/empleados" element={<ProteccionRutas element={Empleados} allowedRoles={["administrador"]} />} />
+            <Route path="/admin/productos" element={<ProteccionRutas element={Productos} allowedRoles={["administrador"]} />} />
+            <Route path="/admin/gestionProductos" element={<ProteccionRutas element={GestionProductos} allowedRoles={["administrador"]} />} />
+            <Route path="/admin/productos/detalle/:id" element={<ProteccionRutas element={DetalleProductos} allowedRoles={["administrador"]} />} />
+            <Route path="/admin/empresa/actualizar" element={<ProteccionRutas element={ActualizarEmpresa} allowedRoles={["administrador"]} />} />
+            <Route path="/admin/productos/crear" element={<ProteccionRutas element={CrearProducto} allowedRoles={["administrador"]} />} />
+            <Route path="/admin/productos/editar/:id" element={<ProteccionRutas element={EditarProducto} allowedRoles={["administrador"]} />} />
+            <Route path="/admin/inicio-rapido" element={<ProteccionRutas element={PinInicioRapido} allowedRoles={["administrador"]} />} />
+            <Route path="/admin/preguntasFrecuentes" element={<ProteccionRutas element={PreguntasFrecuentes} allowedRoles={["administrador"]} />} />
           </Route>
 
-          {/* Rutas de error (404, 500, etc) */}
           {ErrorRoutes}
 
         </Routes>

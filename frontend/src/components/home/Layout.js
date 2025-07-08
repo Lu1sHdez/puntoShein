@@ -1,6 +1,6 @@
 // src/components/Layout.js
 import React from "react";
-import { useLocation } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import Encabezado from "./encabezado/Encabezado";
 import PieDePagina from "./pie/PieDePagina";
 import Breadcrumbs from "./Breadcrumbs";
@@ -31,6 +31,7 @@ const Layout = ({ children }) => {
           <main className="relative">{children}</main>
         </div>
       </div>
+      <Outlet />
       <Chat />
       <PieDePagina />
     </div>
