@@ -1,8 +1,26 @@
-import React from "react";
-import { dataLoadingAnimation} from '../Funciones';
+import React, { useState, useEffect } from "react";
 import { motion } from 'framer-motion';
+import { Cargando } from "../../Animations/Cargando"; // Componente para mostrar el estado de carga
+import { dataLoadingAnimation } from '../Funciones'; // Animación para framer-motion
 
 const DeslindeLegal = () => {
+  const [cargando, setCargando] = useState(true);
+
+  useEffect(() => {
+    // Simulación de carga de datos (puedes reemplazar esto con una llamada API real)
+    setTimeout(() => {
+      setCargando(false); // Después de 2 segundos, se muestra el contenido
+    }, 2000);
+  }, []); // Solo se ejecuta una vez al montar el componente
+
+  if (cargando) {
+    return (
+      <div className="flex justify-center items-center py-8">
+        <Cargando message="Cargando información legal..." />
+      </div>
+    );
+  }
+
   return (
     <motion.div {...dataLoadingAnimation} className="p-4 max-w-3xl mx-auto text-justify">
       <h2 className="text-2xl font-bold text-center mb-4">Deslinde Legal (Disclaimer)</h2>

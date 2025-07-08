@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useParams} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import ModalAutenticacion from "../../components/cart/Autenticacion";
+
 import Breadcrumbs from "../home/Breadcrumbs"; // Importamos las migas de pan personalizadas
 import { mostrarStock } from "../../utils/funtionProductos"; 
 import RegresarButton from "../Regresar";
@@ -18,9 +21,12 @@ const DetalleProducto = () => {
   const [producto, setProducto] = useState(null);
   const [usuario, setUsuario] = useState(null); // Estado para almacenar el usuario
   const [tallaSeleccionada, setTallaSeleccionada] = useState("");
+  const [mostrarModal, setMostrarModal] = useState(false);
 
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate(); // <--- Esto hace falta
+
 
   useEffect(() => {
     // Obtener los detalles del producto
@@ -66,20 +72,15 @@ const DetalleProducto = () => {
   const { mensaje, color, icono } = mostrarStock(producto.stock);
 
   const handleAgregarCarrito = () => {
-    // Verificamos si el usuario está logueado antes de agregar al carrito
     if (!usuario) {
-      Swal.fire({
-        icon: "warning",
-        title: "Inicia sesión o regístrate",
-        text: "Para agregar este producto al carrito, debes iniciar sesión o registrarte.",
-        confirmButtonText: "Aceptar",
-      });
+      setMostrarModal(true);
       return;
     }
-    
-    // Si está logueado, llamamos a la función de agregar al carrito
+  
     agregarCarrito(usuario, producto);
   };
+  
+  
   const handleComprarAhora = async () => {
     if (!usuario || !usuario.id) {
       Swal.fire({
@@ -198,6 +199,8 @@ const DetalleProducto = () => {
             </motion.button>
             <RegresarButton/>
           </div>
+          {mostrarModal && <ModalAutenticacion onClose={() => setMostrarModal(false)} />}
+
         </div>
       </div>
     </div>

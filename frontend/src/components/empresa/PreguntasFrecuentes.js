@@ -3,6 +3,8 @@ import axios from "axios";
 import { dataLoadingAnimation } from '../Funciones';
 import { motion } from 'framer-motion';
 import { API_URL } from "../../ApiConexion";
+import { Cargando } from "../../Animations/Cargando";
+
 const PreguntasFrecuentes = () => {
   const [preguntas, setPreguntas] = useState([]);
   const [activeQuestion, setActiveQuestion] = useState(null);
@@ -38,7 +40,11 @@ const PreguntasFrecuentes = () => {
   };
 
   if (loading) {
-    return <div className="text-center py-4 text-lg">Cargando...</div>;
+    return (
+      <div className="flex justify-center items-center py-8">
+        <Cargando message="Cargando preguntas frecuentes..." />
+      </div>
+    );
   }
 
   if (error) {

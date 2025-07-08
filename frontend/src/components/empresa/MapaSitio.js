@@ -1,9 +1,28 @@
-import React from "react";
+import React,{useState, useEffect} from "react";
 import { Link } from "react-router-dom";
 import { dataLoadingAnimation} from '../Funciones';
 import { motion } from 'framer-motion';
+import { Cargando } from "../../Animations/Cargando";
 
 const MapaSitio = () => {
+
+  const [cargando, setCargando] = useState(true);
+
+  useEffect(() => {
+    // Simulación de carga de datos (puedes reemplazar esto con una llamada API real)
+    setTimeout(() => {
+      setCargando(false); // Después de 2 segundos, se muestra el contenido
+    }, 2000);
+  }, []); // Solo se ejecuta una vez al montar el componente
+
+  if (cargando) {
+    return (
+      <div className="flex justify-center items-center py-8">
+        <Cargando message="Mapa del sitio..." />
+      </div>
+    );
+  }
+
   return (
     <motion.div {...dataLoadingAnimation} className="flex justify-center items-center min-h-screen">
       <div className="container max-w-3xl shadow-md rounded-lg p-8">

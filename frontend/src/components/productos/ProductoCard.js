@@ -5,6 +5,7 @@ import { motion } from "framer-motion"; // Importamos framer-motion para las ani
 import agregarCarrito from "../cart/Agregar"; // Importamos la función agregarCarrito desde los servicios
 import axios from "axios";
 import "../../css/TarjetaProductos.css";
+import ModalAutenticacion from "../../components/cart/Autenticacion";
 import "../../css/Botones.css"
 import { API_URL } from "../../ApiConexion";
 
@@ -12,6 +13,7 @@ const ProductoCard = ({ producto }) => {
   const [usuario, setUsuario] = useState(null); // Estado para almacenar los datos del usuario
   const [mensaje, setMensaje] = useState(""); // Estado para mostrar el mensaje
   const navigate = useNavigate();
+  const [mostrarModal, setMostrarModal] = useState(false);
 
   useEffect(() => {
     // Función para obtener los datos del usuario
@@ -35,14 +37,14 @@ const ProductoCard = ({ producto }) => {
 
   const handleAgregarCarrito = () => {
     if (usuario) {
-      // Llama a la función de agregar al carrito
       agregarCarrito(usuario, producto).then((responseMessage) => {
-        setMensaje(responseMessage); // Muestra el mensaje después de agregar al carrito
+        setMensaje(responseMessage);
       });
     } else {
-      setMensaje("Por favor, inicia sesión para agregar productos al carrito.");
+      setMostrarModal(true);
     }
   };
+  
   
   return (
     <motion.div
@@ -54,6 +56,7 @@ const ProductoCard = ({ producto }) => {
       <img
         src={producto.imagen}
         alt={producto.nombre}
+        onClick={handleVerDetalles}
         className="w-full h-64 object-cover"
       />
       <h3 className="nombre-producto">{producto.nombre}</h3>
@@ -78,9 +81,12 @@ const ProductoCard = ({ producto }) => {
           Ver detalles
         </motion.button>
       </div>
+      {mostrarModal && <ModalAutenticacion onClose={() => setMostrarModal(false)} />}
+
 
       {mensaje && <p className="mensaje">{mensaje}</p>} {/* Mostrar mensaje de estado */}
     </motion.div>
+    
   );
 };
 

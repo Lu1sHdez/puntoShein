@@ -9,11 +9,21 @@ mostrarNotificacion();
 const agregarCarrito = async (usuario, producto) => {
   if (!usuario || !usuario.id) {
     Swal.fire({
-      icon: "warning",
-      title: "Inicia sesión o regístrate",
-      text: "Para agregar este producto al carrito, debes iniciar sesión o registrarte.",
-      confirmButtonText: "Aceptar",
+      title: "Necesitas iniciar sesión",
+      text: "Para agregar productos al carrito, debes iniciar sesión o registrarte.",
+      icon: "info",
+      showCancelButton: true,
+      confirmButtonText: "Iniciar sesión",
+      cancelButtonText: "Registrarse",
+      reverseButtons: true,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        window.location.href = "/login";
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        window.location.href = "/registro";
+      }
     });
+    
     return;
   }
 

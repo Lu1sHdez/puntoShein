@@ -1,11 +1,22 @@
 import React, { useState } from "react";
 import { dataLoadingAnimation} from '../Funciones';
 import { motion } from 'framer-motion';
+import { Cargando } from "../../Animations/Cargando";
+
 
 const Contacto = () => {
   const [nombre, setNombre] = useState("");
   const [correo, setCorreo] = useState("");
   const [mensaje, setMensaje] = useState("");
+  const [loading, setLoading] = useState(true);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center py-8">
+        <Cargando message="Cargando la información..." />
+      </div>
+    );
+  }
 
   const handleSubmit = (event) => {
     event.preventDefault();

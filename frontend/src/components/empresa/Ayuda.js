@@ -1,11 +1,24 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { dataLoadingAnimation} from '../Funciones';
-import { motion } from 'framer-motion';
+import { motion } from "framer-motion";
+import { Cargando } from "../../Animations/Cargando";
 
 const Ayuda = () => {
+  const [loading, setLoading] = useState(true); // Para simular carga de datos
+
+  // Simulación de carga de datos
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false); // Después de un delay, se quita el estado de carga
+    }, 2000); // 2 segundos de carga simulada
+  }, []);
+
+  if (loading) {
+    return <Cargando message="Cargando el centro de ayuda..." />;
+  }
+
   return (
-    <motion.div {...dataLoadingAnimation} className="container mx-auto p-6">
+    <motion.div className="container mx-auto p-6">
       <h1 className="text-2xl font-bold text-gray-800 mb-4">Centro de Ayuda</h1>
       <p className="text-gray-600 mb-6">
         Encuentra respuestas a las preguntas más frecuentes y obtén asistencia para tu compra en Punto Shein.
