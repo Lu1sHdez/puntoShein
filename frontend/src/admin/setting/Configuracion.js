@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import RegresarButton from '../../components/Regresar.js';
-import { Cargando } from '../../Animations/Cargando.js';
+import { Cargando  } from '../../Animations/Cargando.js';
+import CargandoBarra from '../../Animations/CargandoBarra.js';
 
 const Configuracion = () => {
   const [formData, setFormData] = useState({
@@ -31,7 +32,7 @@ const Configuracion = () => {
   };
 
   if (loading) {
-    return <Cargando message="Cargando configuración..." />;
+    return <CargandoBarra message="Cargando configuración..." />;
   }
 
   return (

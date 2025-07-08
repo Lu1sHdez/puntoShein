@@ -13,63 +13,58 @@ const useFormulario = (initialState, url, redirigir, isAuthForm = false) => {
     setDatos({ ...datos, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
-  e.preventDefault();
-  setLoading(true);
-  setMensaje({ tipo: "", texto: "" });
-
-  try {
-    const respuesta = await axios.post(url, datos, { 
-      withCredentials: true // Asegura que las cookies se envíen con la solicitud
-    });
-
-    // Si es un formulario de autenticación (Login o Registro)
-    if (isAuthForm) {
-      mostrarNotificacion("success", "Inicio de sesion exitoso. Redirigiendo...")
-
-      // Guardar el token en localStorage
-      localStorage.setItem("token", respuesta.data.token);
-
-      // Redirigir después de 2 segundos
-      setTimeout(() => navigate(redirigir), 1500);
-    } else {
-      //  Formulario de recuperación o restablecimiento de contraseña
-      mostrarNotificacion("success", "Proceso realizado exitosamente")
-
-      // Redirigir después de 3 segundos si todo salió bien
-      setTimeout(() => navigate(redirigir), 1500);
-    }
-    return true; //  Indica que la operación fue exitosa
-  } catch (error) {
-    //  Si el backend no responde (Error 500)
-    if (!error.response) {
-      navigate("/error500");
+  const handleSubmit = async (e, datosExtra = {}) => {
+    e.preventDefault();
+    setLoading(true);
+    setMensaje({ tipo: "", texto: "" });
+  
+    try {
+      const respuesta = await axios.post(
+        url,
+        { ...datos, ...datosExtra }, // ⬅️ Se unen los datos del formulario + extra
+        { withCredentials: true }
+      );
+  
+      if (isAuthForm) {
+        mostrarNotificacion("success", "Inicio de sesión exitoso. Redirigiendo...");
+        localStorage.setItem("token", respuesta.data.token);
+        return respuesta.data;
+      } else {
+        mostrarNotificacion("success", "Proceso realizado exitosamente");
+        setTimeout(() => navigate(redirigir), 1500);
+      }
+  
+      return respuesta.data;
+  
+    } catch (error) {
+      if (!error.response) {
+        navigate("/error500");
+        return false;
+      }
+  
+      if (error.response.status === 400) {
+        const mensajeError = error.response.data.mensaje || "Solicitud incorrecta.";
+        setMensaje({ tipo: "error", texto: mensajeError }); 
+        return false;
+      }
+  
+      if (error.response.status === 404) {
+        navigate("/error404");
+        return false;
+      }
+  
+      setMensaje({
+        tipo: "error",
+        texto: error.response?.data?.mensaje || "Error en la solicitud.",
+      });
+  
       return false;
+  
+    } finally {
+      setLoading(false);
     }
-
-    if (error.response.status === 400) {
-      const mensajeError = error.response.data.mensaje || "Solicitud incorrecta.";
-    
-      setMensaje({ tipo: "error", texto: mensajeError }); 
-        
-      return false;
-    }
-
-    // Si el recurso no existe (Error 404)
-    if (error.response.status === 404) {
-      navigate("/error404");
-      return false;
-    }
-    setMensaje({
-      tipo: "error",
-      texto: error.response?.data?.mensaje || "Error en la solicitud.",
-    });
-
-    return false;
-  } finally {
-    setLoading(false);
-  }
-};
+  };
+  
   return { datos, mensaje, handleChange, handleSubmit, loading };
 };
 

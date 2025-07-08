@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { formAnimation, userDetailsLoadingAnimation } from '../../components/Funciones.js';
-import { Cargando } from '../../Animations/Cargando.js';
+import CargandoBarra from '../../Animations/CargandoBarra.js';
 import RegresarButton from '../../components/Regresar.js';
 import { API_URL } from '../../ApiConexion.js';
 
@@ -76,7 +76,7 @@ const PinInicioRapido = () => {
   };
 
   if (loading) {
-    return <Cargando message="Cargando información..." />;
+    return <CargandoBarra message="Cargando información..." />;
   }
 
   if (error) {

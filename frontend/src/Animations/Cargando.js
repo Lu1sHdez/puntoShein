@@ -16,3 +16,4 @@ export const Cargando = ({ message = 'Cargando...' }) => {
     </div>
   );
 };
+

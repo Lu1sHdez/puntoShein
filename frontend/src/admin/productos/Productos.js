@@ -12,7 +12,7 @@ import BuscarProducto from './BuscarProductos';
 import ProductoCard from './ProductoCard'; 
 import { mostrarNotificacion } from '../../Animations/NotificacionSwal.js';
 import { API_URL } from '../../ApiConexion.js';
-import { Cargando } from '../../Animations/Cargando.js';
+import CargandoBarra from '../../Animations/CargandoBarra.js';
 
 
 
@@ -130,9 +130,9 @@ const Productos = () => {
     setVisibleProductos((prevVisible) => prevVisible + 4);  
   };
 
-  // Cargando productos o error
+  // CargandoBarra productos o error
   if (loading) {
-    return <Cargando message='Cargando productos...'/>;
+    return <CargandoBarra message='Cargando productos...'/>;
   }
 
   if (error) {

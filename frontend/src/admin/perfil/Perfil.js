@@ -5,7 +5,7 @@ import { formAnimation, userDetailsLoadingAnimation } from '../../components/Fun
 import { motion } from 'framer-motion';
 import RegresarButton from '../../components/Regresar.js';
 import { API_URL } from '../../ApiConexion.js';
-import { Cargando } from '../../Animations/Cargando.js';
+import CargandoBarra from '../../Animations/CargandoBarra.js';
 
 
 const Perfil = () => {
@@ -33,7 +33,7 @@ const Perfil = () => {
   }, [navigate]);
 
   if (loading) {
-    return <Cargando message='Cargando perfil...'/>;
+    return <CargandoBarra message='Cargando perfil...'/>;
   }
 
   if (error) {

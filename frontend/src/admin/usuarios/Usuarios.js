@@ -1,13 +1,12 @@
 import React, { useEffect, useState,useCallback } from 'react';
 import axios from 'axios'; 
 import { Link } from 'react-router-dom'; 
-import RegresarButton from '../../components/Regresar.js';
 import Swal from 'sweetalert2';
 import { dataLoadingAnimation } from '../../components/Funciones.js';
 import { motion } from 'framer-motion';
 import { mostrarNotificacion } from '../../Animations/NotificacionSwal.js';
 import { API_URL } from '../../ApiConexion.js';
-import { Cargando } from '../../Animations/Cargando.js';
+import CargandoBarra from '../../Animations/CargandoBarra.js';
 
 const Usuarios = () => {
   const [usuarios, setUsuarios] = useState([]);
@@ -158,7 +157,7 @@ const Usuarios = () => {
 
   // Cargando productos o error
   if (loading) {
-    return <Cargando message='Cargando usuarios...'/>;
+    return <CargandoBarra message='Cargando usuarios...'/>;
   }
 
   if (error) {
@@ -246,8 +245,6 @@ const Usuarios = () => {
           </tbody>
         </table>
       </div>
-
-      <RegresarButton />
     </motion.div>
   );
 };

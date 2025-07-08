@@ -6,6 +6,7 @@ import jwt from 'jsonwebtoken';
 import logger from '../libs/logger.js'; 
 import { body, validationResult } from 'express-validator';
 import twilio from 'twilio';
+import axios from 'axios';
 import obtenerFechaHora from '../utils/funciones.js';
 
 
@@ -138,20 +139,40 @@ export const registro = async (req, res) => {
 
 export const login = async (req, res) => {
   try {
-    const { correo, password } = req.body;
+    const { correo, password, tokenRecaptcha } = req.body;
 
 
-    // Validar que los campos no estén vacíos
-    if (!correo || !password) {
-      const errorMessage = {
-        message: "El correo y la contraseña son obligatorios.",
+    // Validar campos básicos
+    if (!correo || !password || !tokenRecaptcha) {
+      logger.warn({
+        message: "Faltan campos obligatorios",
         level: "warn",
         codigo_error: "400",
         ip_cliente: req.ip,
-      };
-      logger.warn(errorMessage);
-      return res.status(400).json({ mensaje: errorMessage.message });
+      });
+      return res.status(400).json({ mensaje: "Correo, contraseña y reCAPTCHA son obligatorios." });
     }
+    // Verificar el reCAPTCHA con Google
+    const verificacion = await axios.post(
+      `https://www.google.com/recaptcha/api/siteverify`,
+      null,
+      {
+        params: {
+          secret: process.env.RECAPTCHA_SECRET,  // En tu .env
+          response: tokenRecaptcha,
+        },
+      }
+    );
+
+    if (!verificacion.data.success) {
+      logger.warn({
+        message: "Fallo en reCAPTCHA",
+        ip_cliente: req.ip,
+        score: verificacion.data.score,
+      });
+      return res.status(400).json({ mensaje: "Verificación de reCAPTCHA fallida." });
+    }
+
 
     // Buscar al usuario en la base de datos
     const usuario = await Usuario.findOne({ where: { correo } });
@@ -185,7 +206,6 @@ export const login = async (req, res) => {
 
     // Generar token JWT
     const token = crearTokenAcceso(usuario);
-
     const fecha =obtenerFechaHora();
 
     // Después de generar el token
@@ -197,7 +217,7 @@ export const login = async (req, res) => {
       fecha_hora: fecha
     });
 
-    // Configurar cookie con el token
+    // Guardar token en cookie
     res.cookie('token', token, {
       httpOnly: true, //Necesario en produccion
       secure: process.env.NODE_ENV === 'production',
@@ -219,18 +239,18 @@ export const login = async (req, res) => {
     });
 
   } catch (error) {
-
+    console.error("Error al iniciar sesión:", error);
     const errorMessage = {
       message: error.message,
       level: 'error',
       codigo_error: error.code || 'No especificado',
       stack: error.stack,
       ip_cliente: req.ip,
-      
     };
     logger.error(errorMessage);
     return res.status(500).json({ mensaje: "Error interno del servidor." });
   }
+  
 };
 
 export const cerrarSesion = (req, res) => {

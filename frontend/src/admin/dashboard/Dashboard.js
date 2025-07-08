@@ -11,9 +11,7 @@ import Empleados from '../empleados/Empleados';  // Componente para los empleado
 import Productos from '../productos/Productos';  
 import { dashboardAnimation } from '../../components/Funciones.js';
 import { motion } from 'framer-motion';
-import { Cargando } from '../../Animations/Cargando.js';
-
-
+import CargandoBarra from '../../Animations/CargandoBarra.js';
 
 const Dashboard = () => {
     const[loading, setLoading] = useState(true);
@@ -26,7 +24,7 @@ const Dashboard = () => {
     })
 
     if (loading) {
-        return <Cargando message="Cargando..." />;
+        return <CargandoBarra message="Cargando..." />;
     }
   
     return (

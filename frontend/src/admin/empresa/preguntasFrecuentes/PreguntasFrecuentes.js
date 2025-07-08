@@ -8,6 +8,7 @@ import {
   eliminarPregunta,
 } from "./Funciones"; // Importamos las funciones CRUD
 import { dataLoadingAnimation } from "../../../components/Funciones";
+import CargandoBarra from "../../../Animations/CargandoBarra";
 
 const PreguntasFrecuentes = () => {
   const [preguntas, setPreguntas] = useState([]);
@@ -95,7 +96,7 @@ const PreguntasFrecuentes = () => {
   };
 
   if (loading) {
-    return <div className="text-center py-4 text-lg">Cargando...</div>;
+    return <CargandoBarra message='Cargando preguntas...'/>;
   }
 
   if (error) {

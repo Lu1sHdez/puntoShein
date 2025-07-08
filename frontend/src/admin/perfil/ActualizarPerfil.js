@@ -3,9 +3,9 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { formAnimation} from '../../components/Funciones.js';
 import { motion } from 'framer-motion';
-import RegresarButton from '../../components/Regresar.js';  // Importamos el botón de regreso
 import { mostrarNotificacion } from '../../Animations/NotificacionSwal.js';
 import { API_URL } from '../../ApiConexion.js';
+import CargandoBarra from '../../Animations/CargandoBarra.js';
 
 
 const ActualizarPerfil = () => {
@@ -70,7 +70,8 @@ const ActualizarPerfil = () => {
     navigate('/admin/perfil');
   };
 
-  if (!usuario) return <div>Cargando...</div>; // Mientras se obtiene el perfil
+  if (!usuario) return <CargandoBarra message='Cargando perfil...'/>;
+
 
   return (
     <motion.div {...formAnimation} className="flex items-center justify-center mt-0 py-8 px-4">
@@ -117,7 +118,6 @@ const ActualizarPerfil = () => {
             </button>
           </div>
         </form>
-        <RegresarButton/>
       </div>
     </motion.div>
   );

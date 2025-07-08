@@ -1,3 +1,4 @@
+//src\pages\CerrarSesion.js
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2"; // Para mostrar una alerta

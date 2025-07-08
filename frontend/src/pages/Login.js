@@ -6,8 +6,13 @@ import { formAnimation } from "./Funciones";
 import { motion } from "framer-motion";
 import Boton from "../elements/Boton";
 import { API_URL } from '../ApiConexion';
+import ReCAPTCHA from "react-google-recaptcha";
+
+const siteKey = process.env.REACT_APP_RECAPTCHA_SITE_KEY;
 
 const Login = () => {
+  const [captchaToken, setCaptchaToken] = useState(null);
+
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [errorValidacion, setErrorValidacion] = useState(""); // Estado para error
@@ -33,34 +38,44 @@ const Login = () => {
     }
   }, [mensaje.texto]);
 
-  //Funcion sincrona
   const validarYEnviar = async (e) => {
     e.preventDefault();
-
-    // Validación de campos vacíos
+  
     if (!datos.correo || !datos.password) {
       setErrorValidacion("El correo y la contraseña son obligatorios.");
       setErrorCampos({
-        correo: !datos.correo, 
-        password: !datos.password, 
+        correo: !datos.correo,
+        password: !datos.password,
       });
       return;
     }
-
-    //Sincrona
-    setErrorValidacion(""); // Limpiar el mensaje de error
-    setErrorCampos({ correo: false, password: false }); // Resetear los errores en los campos
-
-    // Función asíncrona envia datos de sesion al servidor
-    const success = await handleSubmit(e); 
-
-    if(success){
-      if (success.token) {  // Asegúrate de que la respuesta contiene el token
-        localStorage.setItem("token", success.token);
+  
+    if (!captchaToken) {
+      setErrorValidacion("Por favor verifica que no eres un robot.");
+      return;
+    }
+  
+    setErrorValidacion("");
+    setErrorCampos({ correo: false, password: false });
+  
+    // ✅ Llama al hook pasándole el token
+    const resultado = await handleSubmit(e, { tokenRecaptcha: captchaToken });
+  
+    if (resultado && resultado.token && resultado.usuario) {
+      const { token, usuario } = resultado;
+      localStorage.setItem("token", token);
+  
+      if (usuario.rol === "administrador") {
+        navigate("/admin/dashboard");
+      } else if (usuario.rol === "usuario") {
+        navigate("/productos");
+      } else {
+        navigate("/");
       }
     }
-    
   };
+  
+  
 
   return (
     <div className="flex items-center justify-center mt-0">
@@ -98,6 +113,12 @@ const Login = () => {
             togglePassword={() => setShowPassword(!showPassword)}
             error={errorCampos.password} // Agregar propiedad error
           />
+          <ReCAPTCHA
+            sitekey={siteKey}
+            onChange={(token) => setCaptchaToken(token)}
+            className="mt-4 mx-auto"
+          />
+
 
           <div className="mt-3 text-right">
             <button

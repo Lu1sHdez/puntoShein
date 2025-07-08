@@ -1,11 +1,29 @@
-// src/components/home/LayoutAdmin.js
-import React from "react";
+// src/admin/secciones/LayoutAdmin.js
+import React, { useEffect, useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
-import EncabezadoAdmin from "../home/encabezado/EncabezadoAdmin"; // Importar el encabezado para admins
-import PieDePagina from "../../welcome/pie/pie"; // Pie de página general
+import EncabezadoAdmin from "./EncabezadoAdmin";
+import Sidebar from "../sidebar/Sidebar";
+import axios from "axios";
+import { API_URL } from "../../ApiConexion";
 
 const LayoutAdmin = () => {
   const location = useLocation();
+  const [admin, setAdmin] = useState(null);
+
+  useEffect(() => {
+    const obtenerAdmin = async () => {
+      try {
+        const res = await axios.get(`${API_URL}/api/admin/perfil`, {
+          withCredentials: true,
+        });
+        setAdmin(res.data);
+      } catch (error) {
+        console.error("Error al cargar el admin:", error);
+      }
+    };
+
+    obtenerAdmin();
+  }, []);
 
   // Opcional: en ciertas rutas como /registro, también mostrar el encabezado simple
   const mostrarEncabezado = ["/admin/dashboard", "/admin/sidebar", "/admin/empresa", "/admin/perfil",
@@ -17,14 +35,20 @@ const LayoutAdmin = () => {
                              "/admin/preguntasFrecuentes"].includes(location.pathname);
     
   return (
-    <div className="min-h-screen pt-20">
+    <>
+      {/* Encabezado fijo arriba */}
       {mostrarEncabezado && <EncabezadoAdmin />}
+
+      {/* Sidebar fijo a la izquierda */}
       <div className="flex">
-        <div className="flex-1">
+        {mostrarEncabezado && <Sidebar admin={admin} />}
+
+        {/* Contenido principal ajustado */}
+        <main className="flex-1 ml-64 pt-20 p-6 bg-gray-50 min-h-screen">
           <Outlet />
-        </div>
+        </main>
       </div>
-    </div>
+    </>
   );
 };
 

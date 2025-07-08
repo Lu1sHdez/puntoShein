@@ -7,7 +7,7 @@ import Skeleton from "./components/Skeleton";
 import Layout from "./components/home/Layout";         // Layout general
 import LayoutVacio from "./components/home/LayoutVacio";
 import LayoutGeneral from "./components/home/LayoutGeneral";
-import LayoutAdmin from "./components/home/LayoutAdmin.js";
+import LayoutAdmin from "./admin/secciones/LayoutAdmin.js";
 
 
 // Rutas protegidas

@@ -5,7 +5,7 @@ import RegresarButton from '../../components/Regresar.js';
 import { dataLoadingAnimation} from '../../components/Funciones.js';
 import { motion } from 'framer-motion';
 import { API_URL } from '../../ApiConexion.js';
-import { Cargando } from '../../Animations/Cargando.js';
+import CargandoBarra from '../../Animations/CargandoBarra.js';
 
 const Empresa = () => {
   const [empresa, setEmpresa] = useState(null);
@@ -34,7 +34,7 @@ const Empresa = () => {
   }, []);  // Solo se ejecuta una vez al montar el componente
 
   if (loading) {
-    return <Cargando message='Cargando empresa...'/>;
+    return <CargandoBarra message='Cargando empresa...'/>;
   }
 
   if (error) {

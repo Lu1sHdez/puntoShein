@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import Swal from 'sweetalert2';
 import '../../css/TarjetaProductos.css';
 import '../../css/Botones.css';
 import { motion } from 'framer-motion';
