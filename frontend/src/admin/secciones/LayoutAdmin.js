@@ -5,9 +5,11 @@ import EncabezadoAdmin from "./EncabezadoAdmin";
 import Sidebar from "../sidebar/Sidebar";
 import axios from "axios";
 import { API_URL } from "../../ApiConexion";
+import { useSidebar } from "../../context/SidebarContext";
 
 const LayoutAdmin = () => {
   const location = useLocation();
+  const { colapsado } = useSidebar(); 
   const [admin, setAdmin] = useState(null);
 
   useEffect(() => {
@@ -43,8 +45,9 @@ const LayoutAdmin = () => {
       <div className="flex">
         {mostrarEncabezado && <Sidebar admin={admin} />}
 
-        {/* Contenido principal ajustado */}
-        <main className="flex-1 ml-64 pt-20 p-6 bg-gray-50 min-h-screen">
+        <main className={`flex-1 transition-all duration-300 pt-16 p-6 bg-gray-50 min-h-screen ${
+          mostrarEncabezado ? (colapsado ? "ml-20" : "ml-64") : ""
+        }`}>
           <Outlet />
         </main>
       </div>

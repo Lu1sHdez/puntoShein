@@ -32,11 +32,11 @@ const Dashboard = () => {
             <h1 className="text-3xl font-bold mb-6">Dashboard - Administrador</h1>
 
             {/* Sección de tarjetas con opciones */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 justify-items-center">
                 {/* Tarjeta de Configuración */}
                 <Link
                     to="/admin/configuracion"
-                    className="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition duration-300 transform hover:scale-105"
+                    className="bg-white p-4 sm:p-5 md:p-6 rounded-lg shadow-md hover:shadow-xl transition duration-300 transform hover:scale-105 max-w-sm w-full mx-auto"
                 >
                     <FaCog className="text-4xl text-gray-700 mb-4" />
                     <h2 className="text-xl font-semibold">Configuración</h2>
@@ -46,7 +46,7 @@ const Dashboard = () => {
                 {/* Tarjeta de Usuarios */}
                 <Link
                     to="/admin/usuarios"
-                    className="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition duration-300 transform hover:scale-105"
+                    className="bg-white p-4 sm:p-5 md:p-6 rounded-lg shadow-md hover:shadow-xl transition duration-300 transform hover:scale-105 max-w-sm w-full mx-auto"
                 >
                     <FaUsers className="text-4xl text-gray-700 mb-4" />
                     <h2 className="text-xl font-semibold">Usuarios</h2>
@@ -56,7 +56,7 @@ const Dashboard = () => {
                 {/* Tarjeta de Productos */}
                 <Link
                     to="/admin/productos"
-                    className="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition duration-300 transform hover:scale-105"
+                    className="bg-white p-4 sm:p-5 md:p-6 rounded-lg shadow-md hover:shadow-xl transition duration-300 transform hover:scale-105 max-w-sm w-full mx-auto"
                 >
                     <FaBox className="text-4xl text-gray-700 mb-4" />
                     <h2 className="text-xl font-semibold">Productos</h2>
@@ -66,7 +66,7 @@ const Dashboard = () => {
                 {/* Tarjeta de Empleados */}
                 <Link
                     to="/admin/empleados"
-                    className="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition duration-300 transform hover:scale-105"
+                    className="bg-white p-4 sm:p-5 md:p-6 rounded-lg shadow-md hover:shadow-xl transition duration-300 transform hover:scale-105 max-w-sm w-full mx-auto"
                 >
                     <FaUserTie className="text-4xl text-gray-700 mb-4" />
                     <h2 className="text-xl font-semibold">Empleados</h2>
@@ -76,7 +76,7 @@ const Dashboard = () => {
                 {/* Tarjeta de Perfil */}
                 <Link
                     to="/admin/perfil"
-                    className="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition duration-300 transform hover:scale-105"
+                    className="bg-white p-4 sm:p-5 md:p-6 rounded-lg shadow-md hover:shadow-xl transition duration-300 transform hover:scale-105 max-w-sm w-full mx-auto"
                 >
                     <BsPersonLinesFill className="text-4xl text-gray-700 mb-4" />
                     <h2 className="text-xl font-semibold">Perfil</h2>
@@ -86,7 +86,7 @@ const Dashboard = () => {
                 {/* Tarjeta de Empresa */}
                 <Link
                     to="/admin/empresa"
-                    className="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition duration-300 transform hover:scale-105"
+                    className="bg-white p-4 sm:p-5 md:p-6 rounded-lg shadow-md hover:shadow-xl transition duration-300 transform hover:scale-105 max-w-sm w-full mx-auto"
                 >
                     <FaBox className="text-4xl text-gray-700 mb-4" />
                     <h2 className="text-xl font-semibold">Empresa</h2>
@@ -95,7 +95,7 @@ const Dashboard = () => {
                 {/* Tarjeta de Preguntas */}
                 <Link
                     to="/admin/preguntasFrecuentes"
-                    className="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition duration-300 transform hover:scale-105"
+                    className="bg-white p-4 sm:p-5 md:p-6 rounded-lg shadow-md hover:shadow-xl transition duration-300 transform hover:scale-105 max-w-sm w-full mx-auto"
                 >
                     <FaQuestionCircle className="text-4xl text-gray-700 mb-4" />
                     <h2 className="text-xl font-semibold">Preguntas Frecuentes</h2>
@@ -103,7 +103,7 @@ const Dashboard = () => {
                 </Link>
                 <Link
                     to="/admin/gestionProductos"
-                    className="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition duration-300 transform hover:scale-105"
+                    className="bg-white p-4 sm:p-5 md:p-6 rounded-lg shadow-md hover:shadow-xl transition duration-300 transform hover:scale-105 max-w-sm w-full mx-auto"
                 >
                     <FaChartLine className="text-4xl text-gray-700 mb-4" />
                     <h2 className="text-xl font-semibold">Analisis de ventas</h2>
@@ -111,7 +111,7 @@ const Dashboard = () => {
                 </Link>
                 <Link
                     to="/admin/inicio-rapido"
-                    className="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition duration-300 transform hover:scale-105"
+                    className="bg-white p-4 sm:p-5 md:p-6 rounded-lg shadow-md hover:shadow-xl transition duration-300 transform hover:scale-105 max-w-sm w-full mx-auto"
                 >
                     <FaChartLine className="text-4xl text-gray-700 mb-4" />
                     <h2 className="text-xl font-semibold">Inicio rápido (PIN)</h2>

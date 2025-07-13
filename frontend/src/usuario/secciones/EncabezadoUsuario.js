@@ -71,8 +71,8 @@ const EncabezadoUsuario = () => {
   }, []);
 
   return (
-    <header className="fixed top-0 left-0 w-full bg-white shadow-md z-50">
-      <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+    <header className="fixed top-0 left-0 w-full bg-white shadow-md z-50 h-16">
+      <div className="h-full max-w-7xl mx-auto px-6 flex items-center justify-between gap-4">
         {/* Empresa */}
         <Link to="/inicio" className="flex items-center space-x-4 hover:opacity-80 transition">
           {empresa && (

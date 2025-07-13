@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import EncabezadoUsuario from "./EncabezadoUsuario";
-import Sidebar from "../sidebar/Sidebar";
+import Sidebar from "../sidebar/Sidebar"; // Asegúrate de que este sea SidebarUsuario
 import axios from "axios";
 import { API_URL } from "../../ApiConexion";
+import { useSidebar } from "../../context/SidebarContext";
 
 const LayoutUsuario = () => {
   const location = useLocation();
   const [usuario, setUsuario] = useState(null);
+  const { colapsado } = useSidebar(); // 🎯 Usamos el contexto
 
   useEffect(() => {
     const obtenerPerfil = async () => {
@@ -24,7 +26,6 @@ const LayoutUsuario = () => {
     obtenerPerfil();
   }, []);
 
-  // Verifica si la ruta actual requiere encabezado y sidebar
   const mostrarLayout =
     [
       "/usuario/carrito",
@@ -47,7 +48,11 @@ const LayoutUsuario = () => {
       <div className="flex">
         {mostrarLayout && <Sidebar usuario={usuario} />}
 
-        <main className="flex-1 ml-64 pt-20 p-6 bg-gray-50 min-h-screen">
+        <main
+          className={`flex-1 transition-all duration-300 p-6 bg-gray-50 min-h-screen pt-16 ${
+            mostrarLayout ? (colapsado ? "ml-20" : "ml-64") : ""
+          }`}
+        >
           <Outlet />
         </main>
       </div>

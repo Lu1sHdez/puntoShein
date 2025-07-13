@@ -1,6 +1,7 @@
-// src/admin/sidebar/Sidebar.js
-import React from "react";
+import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
+import { useSidebar } from "../../context/SidebarContext"; 
+
 import {
   FaCog,
   FaUsers,
@@ -10,9 +11,13 @@ import {
   FaChartLine,
   FaTachometerAlt,
   FaKey,
+  FaAngleLeft,
+  FaAngleRight,
 } from "react-icons/fa";
 
-const Sidebar = ({ admin }) =>  {
+const Sidebar = ({ admin }) => {
+  const { colapsado, setColapsado } = useSidebar(); 
+
   const menuItems = [
     { label: "Dashboard", icon: <FaTachometerAlt />, path: "/admin/dashboard" },
     { label: "Configuración", icon: <FaCog />, path: "/admin/configuracion" },
@@ -25,33 +30,48 @@ const Sidebar = ({ admin }) =>  {
   ];
 
   return (
-    <aside className="w-64 min-h-screen bg-white border-r shadow-md p-4 fixed top-6 left-0 z-40 pt-20">
-    <div className="mb-4 border-b pb-3">
-        <p className="text-sm font-semibold text-black">
-        Administrador{admin?.nombre ? ` - ${admin.nombre}` : ""}
-        </p>
-    </div>
+    <aside
+      className={`min-h-screen bg-white border-r shadow-md p-4 fixed top-16 left-0 z-40 pt-4 transition-all duration-300 ${
+        colapsado ? "w-20" : "w-64"
+      }`}
+    >
+      {/* Botón para colapsar/expandir */}
+      <div className="absolute top-4 right-[-12px] bg-white border rounded-full shadow p-1 z-50 cursor-pointer"
+           onClick={() => setColapsado(!colapsado)}
+      >
+        {colapsado ? <FaAngleRight /> : <FaAngleLeft />}
+      </div>
 
-    <nav className="flex flex-col gap-4">
+      {/* Encabezado */}
+      {!colapsado && (
+        <div className="mb-4 border-b pb-3">
+          <p className="text-sm font-semibold text-black">
+            Administrador{admin?.nombre ? ` - ${admin.nombre}` : ""}
+          </p>
+        </div>
+      )}
+
+      {/* Menú de navegación */}
+      <nav className="flex flex-col gap-4">
         {menuItems.map((item, idx) => (
-        <NavLink
+          <NavLink
             key={idx}
             to={item.path}
             className={({ isActive }) =>
-            `flex items-center gap-3 p-2 rounded-md text-sm font-medium transition-all ${
+              `flex items-center gap-3 p-2 rounded-md text-sm font-medium transition-all ${
                 isActive
-                ? "bg-pink-600 text-white"
-                : "text-gray-700 hover:bg-gray-100"
-            }`
+                  ? "bg-pink-600 text-white"
+                  : "text-gray-700 hover:bg-gray-100"
+              } ${colapsado ? "justify-center" : ""}`
             }
-        >
+            title={colapsado ? item.label : ""}
+          >
             {item.icon}
-            {item.label}
-        </NavLink>
+            {!colapsado && item.label}
+          </NavLink>
         ))}
-    </nav>
+      </nav>
     </aside>
-
   );
 };
 
