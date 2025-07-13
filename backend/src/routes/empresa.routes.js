@@ -1,9 +1,22 @@
+// src/routes/empresa.routes.js
 import express from 'express';
-import { obtenerEmpresa } from '../controllers/empresa.controller.js';
+import multer from 'multer';
+import {
+  obtenerEmpresa,
+  actualizarEmpresa,
+  subirLogoEmpresa
+} from '../controllers/empresa.controller.js';
+import { verificarToken, validarRol } from '../middleware/auth.js';
 
 const router = express.Router();
+const admin = validarRol(['administrador']);
+const upload = multer({ dest: 'uploads/' });
 
-// Ruta para obtener los datos de la empresa
+// ✅ Ruta pública
 router.get('/empresa', obtenerEmpresa);
+
+// ✅ Rutas protegidas (admin)
+router.put('/empresa', verificarToken, admin, actualizarEmpresa);
+router.post('/empresa/logo', verificarToken, admin, upload.single('imagen'), subirLogoEmpresa);
 
 export default router;

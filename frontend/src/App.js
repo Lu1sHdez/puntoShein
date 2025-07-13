@@ -23,7 +23,6 @@ const UsuarioDetalles = lazy(() => import("./admin/usuarios/UsuarioDetalles"));
 const Empleados = lazy(() => import("./admin/empleados/Empleados"));
 const Productos = lazy(() => import("./admin/productos/Productos"));
 const DetalleProductos = lazy(() => import("./admin/productos/DetalleProducto"));
-const ActualizarEmpresa = lazy(() => import("./admin/empresa/ActualizarEmpresa"));
 const PerfilAdmin = lazy(() => import("./admin/perfil/Perfil"));
 const ActualizarPerfilAdmin = lazy(() => import("./admin/perfil/ActualizarPerfil"));
 const Configuracion = lazy(() => import("./admin/setting/Configuracion"));
@@ -146,7 +145,6 @@ const App = () => {
             <Route path="/admin/productos" element={<ProteccionRutas element={Productos} allowedRoles={["administrador"]} />} />
             <Route path="/admin/gestionProductos" element={<ProteccionRutas element={GestionProductos} allowedRoles={["administrador"]} />} />
             <Route path="/admin/productos/detalle/:id" element={<ProteccionRutas element={DetalleProductos} allowedRoles={["administrador"]} />} />
-            <Route path="/admin/empresa/actualizar" element={<ProteccionRutas element={ActualizarEmpresa} allowedRoles={["administrador"]} />} />
             <Route path="/admin/productos/crear" element={<ProteccionRutas element={CrearProducto} allowedRoles={["administrador"]} />} />
             <Route path="/admin/productos/editar/:id" element={<ProteccionRutas element={EditarProducto} allowedRoles={["administrador"]} />} />
             <Route path="/admin/inicio-rapido" element={<ProteccionRutas element={PinInicioRapido} allowedRoles={["administrador"]} />} />

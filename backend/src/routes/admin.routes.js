@@ -18,7 +18,6 @@ import {
   cambiarPasswordAdmin,
   validarCodigoAdmin
 } from '../controllers/admin.controller.js';
-import { actualizarEmpresa, obtenerEmpresa } from '../controllers/empresa.controller.js';
 import { actualizarPerfil } from '../controllers/usuario.controller.js';
 import { obtenerPerfil } from '../controllers/autenticacion.controller.js';
 import {
@@ -71,10 +70,6 @@ router.post('/subcategorias', verificarToken, admin, crearSubcategoria);  // Cre
 // Rutas para roles
 router.put('/usuarios/:id/rol', verificarToken, admin, actualizarRol);  // Actualizar rol de usuario
 router.get('/roles', verificarToken, admin, obtenerRoles);  // Obtener roles disponibles
-
-// Rutas para la empresa
-router.get('/empresa', verificarToken, admin, obtenerEmpresa);  // Obtener datos de la empresa
-router.put('/empresa', verificarToken, admin, actualizarEmpresa);  // Actualizar datos de la empresa
 
 // Rutas de recuperación de contraseña para el administrador
 router.put('/cambiar-contrasena', express.json(), verificarToken, admin, cambiarPasswordAdmin);  // requiere sesión
