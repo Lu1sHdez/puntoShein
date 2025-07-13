@@ -1,53 +1,62 @@
-// frontend/src/admin/perfil/modales/RestablecerPasswordAdmin.js
+// frontend/src/usuario/modales/RestablecerPassword.js
 import React, { useState } from 'react';
 import axios from 'axios';
 import { API_URL } from '../../../ApiConexion';
 import FormularioInput from '../../../components/form/FormularioInput';
 
-const RestablecerPasswordAdmin = ({ onClose }) => {
-  const [form, setForm] = useState({ nueva: '', confirmar: '' });
+const RestablecerPassword = ({ onClose }) => {
+  const [form, setForm] = useState({
+    nuevaContrasena: '',
+    confirmar: ''
+  });
+
   const [showNueva, setShowNueva] = useState(false);
   const [showConfirmar, setShowConfirmar] = useState(false);
   const [mensaje, setMensaje] = useState(null);
   const [exito, setExito] = useState(false);
 
-  const handleChange = (e) => {
+  const handleChange = e => {
     const { name, value } = e.target;
     setForm(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
-    const datos = JSON.parse(localStorage.getItem('codigoVerificacionAdmin'));
+    setMensaje(null);
 
-    if (!datos) {
+    const datosGuardados = JSON.parse(localStorage.getItem('codigoVerificacionUsuario'));
+
+    if (!datosGuardados || !datosGuardados.correo || !datosGuardados.codigo) {
       setMensaje({ tipo: 'error', texto: 'Faltan datos del código de verificación.' });
       return;
     }
 
-    if (!form.nueva || !form.confirmar) {
+    if (!form.nuevaContrasena || !form.confirmar) {
       setMensaje({ tipo: 'error', texto: 'Todos los campos son obligatorios.' });
       return;
     }
 
-    if (form.nueva !== form.confirmar) {
+    if (form.nuevaContrasena !== form.confirmar) {
       setMensaje({ tipo: 'error', texto: 'Las contraseñas no coinciden.' });
       return;
     }
 
     try {
-      await axios.put(`${API_URL}/api/admin/restablecer-password`, {
-        correo: datos.correo,
-        codigo: datos.codigo,
-        nuevaContrasena: form.nueva
+      await axios.post(`${API_URL}/api/usuario/restablecer-password`, {
+        correo: datosGuardados.correo,
+        codigo: datosGuardados.codigo,
+        nuevaContrasena: form.nuevaContrasena
       });
 
-      localStorage.removeItem('codigoVerificacionAdmin');
       setMensaje({ tipo: 'success', texto: 'Contraseña actualizada correctamente.' });
+      localStorage.removeItem('codigoVerificacionUsuario');
       setExito(true);
       setTimeout(() => onClose(), 1500);
     } catch (err) {
-      setMensaje({ tipo: 'error', texto: err.response?.data?.mensaje || 'Error al cambiar la contraseña.' });
+      setMensaje({
+        tipo: 'error',
+        texto: err.response?.data?.mensaje || 'No se pudo cambiar la contraseña.'
+      });
     }
   };
 
@@ -55,23 +64,30 @@ const RestablecerPasswordAdmin = ({ onClose }) => {
     <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
       <div className="bg-white p-6 rounded-lg shadow-lg w-96">
         <h2 className="text-xl font-semibold mb-4 text-center">Restablecer Contraseña</h2>
+
         {mensaje && (
-          <div className={`text-sm mb-2 text-center ${mensaje.tipo === 'success' ? 'text-green-600' : 'text-red-600'}`}>
+          <div
+            className={`text-sm mb-4 text-center ${
+              mensaje.tipo === 'success' ? 'text-green-600' : 'text-red-600'
+            }`}
+          >
             {mensaje.texto}
           </div>
         )}
+
         <form onSubmit={handleSubmit} className="space-y-3">
           <FormularioInput
             label="Nueva contraseña"
             type="password"
-            name="nueva"
-            value={form.nueva}
+            name="nuevaContrasena"
+            value={form.nuevaContrasena}
             placeholder="Ingresa nueva contraseña"
             onChange={handleChange}
             showPassword={showNueva}
             togglePassword={() => setShowNueva(prev => !prev)}
-            error={!form.nueva && mensaje?.tipo === 'error'}
+            error={!form.nuevaContrasena && mensaje?.tipo === 'error'}
           />
+
           <FormularioInput
             label="Confirmar contraseña"
             type="password"
@@ -83,6 +99,7 @@ const RestablecerPasswordAdmin = ({ onClose }) => {
             togglePassword={() => setShowConfirmar(prev => !prev)}
             error={!form.confirmar && mensaje?.tipo === 'error'}
           />
+
           <div className="flex justify-end space-x-2 mt-2">
             <button
               type="button"
@@ -93,6 +110,7 @@ const RestablecerPasswordAdmin = ({ onClose }) => {
             </button>
             <button
               type="submit"
+              disabled={exito}
               className="bg-pink-600 text-white px-4 py-1 rounded hover:bg-pink-700"
             >
               Cambiar Contraseña
@@ -104,4 +122,4 @@ const RestablecerPasswordAdmin = ({ onClose }) => {
   );
 };
 
-export default RestablecerPasswordAdmin;
+export default RestablecerPassword;

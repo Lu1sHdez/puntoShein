@@ -15,7 +15,8 @@ import {
   editarProducto,
   recuperarPasswordAdmin,
   restablecerPasswordAdmin,
-  cambiarPasswordAdmin
+  cambiarPasswordAdmin,
+  validarCodigoAdmin
 } from '../controllers/admin.controller.js';
 import { actualizarEmpresa, obtenerEmpresa } from '../controllers/empresa.controller.js';
 import { actualizarPerfil } from '../controllers/usuario.controller.js';
@@ -79,6 +80,7 @@ router.put('/empresa', verificarToken, admin, actualizarEmpresa);  // Actualizar
 router.put('/cambiar-contrasena', express.json(), verificarToken, admin, cambiarPasswordAdmin);  // requiere sesión
 router.post('/recuperar-password', express.json(), recuperarPasswordAdmin);  // no requiere sesión
 router.put('/restablecer-password', express.json(), restablecerPasswordAdmin);  // no requiere sesión
+router.post('/validar-codigo', express.json(), validarCodigoAdmin);  // no requiere sesión
 
 
 export default router;

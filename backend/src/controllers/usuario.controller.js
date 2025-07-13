@@ -1,8 +1,162 @@
+//puntoshein\backend\src\controllers\usuario.controller.js
 import Usuario from '../models/usuario.model.js';
-import jwt from 'jsonwebtoken';
-
 import validator from 'validator';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import nodemailer from 'nodemailer';
 
+// ✅ Enviar código al correo
+export const recuperarPasswordUsuario = async (req, res) => {
+  try {
+    const { correo } = req.body;
+
+    const usuario = await Usuario.findOne({ where: { correo, rol: 'usuario' } });
+    if (!usuario) {
+      return res.status(400).json({ mensaje: "Correo no registrado o no corresponde a un usuario." });
+    }
+
+    const codigo = Math.floor(100000 + Math.random() * 900000).toString();
+    const expiracion = new Date(Date.now() + 10 * 60 * 1000);
+
+    usuario.codigoCambioPassword = codigo;
+    usuario.codigoCambioExpira = expiracion;
+    await usuario.save();
+
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+      tls: { rejectUnauthorized: false },
+    });
+
+    const mailOptions = {
+      from: `"Punto Shein" <${process.env.EMAIL_USER}>`,
+      to: correo,
+      subject: 'Código de recuperación de contraseña',
+      html: `
+        <p>Hola ${usuario.nombre},</p>
+        <p>Tu código de recuperación es:</p>
+        <h2>${codigo}</h2>
+        <p>Este código expirará en 10 minutos.</p>
+      `,
+    };
+
+    transporter.sendMail(mailOptions, (error) => {
+      if (error) return res.status(500).json({ mensaje: "Error al enviar correo." });
+      res.status(200).json({ mensaje: "Código enviado correctamente al correo." });
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ mensaje: "Error interno del servidor." });
+  }
+};
+
+// ✅ Restablecer con código
+export const restablecerPasswordUsuario = async (req, res) => {
+  try {
+    const { correo, codigo, nuevaContrasena } = req.body;
+
+    const usuario = await Usuario.findOne({ where: { correo, rol: 'usuario' } });
+    if (!usuario || usuario.codigoCambioPassword !== codigo) {
+      return res.status(400).json({ mensaje: "Código incorrecto o usuario inválido." });
+    }
+
+    if (new Date() > new Date(usuario.codigoCambioExpira)) {
+      return res.status(400).json({ mensaje: "El código ha expirado." });
+    }
+
+    // 🕒 Validar política de espera de 24 horas
+    const ultimoCambioPassword = usuario.ultimoCambioPassword ? new Date(usuario.ultimoCambioPassword).getTime() : 0;
+    const tiempoActual = Date.now();
+    const tiempoLimite = 24 * 60 * 60 * 1000;
+    const tiempoRestante = tiempoLimite - (tiempoActual - ultimoCambioPassword);
+
+    if (tiempoRestante > 0) {
+      const horasRestantes = Math.floor(tiempoRestante / (1000 * 60 * 60));
+      const minutosRestantes = Math.floor((tiempoRestante % (1000 * 60 * 60)) / (1000 * 60));
+
+      return res.status(400).json({
+        mensaje: `Cambiaste tu contraseña recientemente. Intenta nuevamente en ${horasRestantes} horas y ${minutosRestantes} minutos.`,
+      });
+    }
+
+    // 🔐 Validar formato de contraseña
+    if (!/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/.test(nuevaContrasena)) {
+      return res.status(400).json({
+        mensaje: "Contraseña inválida. Debe tener mínimo 8 caracteres, una mayúscula, una minúscula, un número y un símbolo.",
+      });
+    }
+
+    usuario.password = await bcrypt.hash(nuevaContrasena, 10);
+    usuario.codigoCambioPassword = null;
+    usuario.codigoCambioExpira = null;
+    usuario.ultimoCambioPassword = new Date();
+    await usuario.save();
+
+    res.status(200).json({ mensaje: "Contraseña restablecida correctamente." });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ mensaje: "Error al restablecer la contraseña." });
+  }
+};
+
+// ✅ Cambio manual desde perfil
+export const cambiarPasswordUsuario = async (req, res) => {
+  try {
+    const { actual, nueva, confirmar } = req.body;
+    const usuarioId = req.usuario.id;
+
+    const usuario = await Usuario.findByPk(usuarioId);
+    if (!usuario || usuario.rol !== 'usuario') {
+      return res.status(403).json({ mensaje: 'Acceso no autorizado.' });
+    }
+
+    const validPassword = await bcrypt.compare(actual, usuario.password);
+    if (!validPassword) {
+      return res.status(400).json({ mensaje: 'Contraseña actual incorrecta.' });
+    }
+
+    if (nueva !== confirmar) {
+      return res.status(400).json({ mensaje: 'Las contraseñas nuevas no coinciden.' });
+    }
+
+    if (!/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/.test(nueva)) {
+      return res.status(400).json({ mensaje: "Contraseña inválida. Debe tener mínimo 8 caracteres, una mayúscula, una minúscula, un número y un símbolo." });
+    }
+
+    usuario.password = await bcrypt.hash(nueva, 10);
+    usuario.ultimoCambioPassword = new Date();
+    await usuario.save();
+
+    res.status(200).json({ mensaje: "Contraseña actualizada correctamente." });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ mensaje: "Error al cambiar la contraseña." });
+  }
+};
+
+// En usuario.controller.js
+export const validarCodigoUsuario = async (req, res) => {
+  const { correo, codigo } = req.body;
+
+  const usuario = await Usuario.findOne({ where: { correo, rol: 'usuario' } });
+  if (!usuario || usuario.codigoCambioPassword !== codigo) {
+    return res.status(400).json({ mensaje: "Código incorrecto." });
+  }
+
+  if (new Date() > new Date(usuario.codigoCambioExpira)) {
+    return res.status(400).json({ mensaje: "El código ha expirado." });
+  }
+
+  return res.status(200).json({ mensaje: "Código válido." });
+};
+
+
+// ✅ Cambio de datos generales del perfil
 export const actualizarPerfil = async (req, res) => {
   try {
     const { nombre_usuario, nombre, apellido_paterno, apellido_materno, telefono, correo } = req.body;

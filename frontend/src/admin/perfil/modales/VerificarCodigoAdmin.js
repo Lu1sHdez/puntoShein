@@ -1,20 +1,28 @@
 import React, { useState } from 'react';
-import Swal from 'sweetalert2';
+import axios from 'axios';
+import { API_URL } from '../../../ApiConexion';
 
 const VerificarCodigoAdmin = ({ correo, onCodigoCorrecto, onClose }) => {
   const [codigo, setCodigo] = useState('');
+  const [mensaje, setMensaje] = useState(null);
+  const [cargando, setCargando] = useState(false);
 
   const handleVerificar = async () => {
     if (!codigo.trim()) {
-      return Swal.fire('Código requerido', 'Debes ingresar el código recibido por correo.', 'warning');
+      setMensaje({ tipo: 'error', texto: 'Debes ingresar el código.' });
+      return;
     }
 
+    setCargando(true);
+    setMensaje(null);
     try {
-      // Puedes guardar temporalmente el código en localStorage o pasarlo como prop
+      await axios.post(`${API_URL}/api/admin/validar-codigo`, { correo, codigo });
       localStorage.setItem('codigoVerificacionAdmin', JSON.stringify({ correo, codigo }));
-      onCodigoCorrecto(); // Avanza al modal de restablecer contraseña
-    } catch (error) {
-      Swal.fire('Error', 'Error al verificar el código', 'error');
+      onCodigoCorrecto();
+    } catch (err) {
+      setMensaje({ tipo: 'error', texto: err.response?.data?.mensaje || 'Código inválido o expirado.' });
+    } finally {
+      setCargando(false);
     }
   };
 
@@ -22,9 +30,12 @@ const VerificarCodigoAdmin = ({ correo, onCodigoCorrecto, onClose }) => {
     <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg p-6 shadow-lg w-96">
         <h2 className="text-xl font-semibold mb-4 text-center">Verificar Código</h2>
-        <p className="mb-2 text-sm text-gray-600">
-          Ingresa el código enviado al correo <strong>{correo}</strong>.
-        </p>
+        <p className="mb-2 text-sm text-gray-600">Código enviado al correo <strong>{correo}</strong>.</p>
+        {mensaje && (
+          <div className={`text-sm mb-2 text-center text-${mensaje.tipo === 'error' ? 'red' : 'green'}-600`}>
+            {mensaje.texto}
+          </div>
+        )}
         <input
           type="text"
           value={codigo}
@@ -33,17 +44,15 @@ const VerificarCodigoAdmin = ({ correo, onCodigoCorrecto, onClose }) => {
           className="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-pink-400 mb-4"
         />
         <div className="flex justify-end space-x-2">
-          <button
-            onClick={onClose}
-            className="bg-gray-500 text-white px-4 py-1 rounded hover:bg-gray-600"
-          >
+          <button onClick={onClose} className="bg-gray-500 text-white px-4 py-1 rounded hover:bg-gray-600">
             Cancelar
           </button>
           <button
             onClick={handleVerificar}
+            disabled={cargando}
             className="bg-pink-600 text-white px-4 py-1 rounded hover:bg-pink-700"
           >
-            Verificar Código
+            {cargando ? 'Verificando...' : 'Verificar Código'}
           </button>
         </div>
       </div>

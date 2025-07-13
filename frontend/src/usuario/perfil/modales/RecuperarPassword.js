@@ -2,19 +2,25 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { API_URL } from '../../../ApiConexion';
 
-const RecuperarPasswordAdmin = ({ correo, onCodigoEnviado, onClose }) => {
-  const [mensaje, setMensaje] = useState(null);
+const RecuperarPassword = ({ correo, onCodigoEnviado, onClose }) => {
   const [cargando, setCargando] = useState(false);
+  const [mensaje, setMensaje] = useState(null); // 🆕 Para mostrar mensajes
 
   const handleEnviarCodigo = async () => {
+    setMensaje(null); // Limpia mensaje anterior
     setCargando(true);
-    setMensaje(null);
+
     try {
-      const res = await axios.post(`${API_URL}/api/admin/recuperar-password`, { correo });
+      const res = await axios.post(`${API_URL}/api/usuario/recuperar-password`, { correo });
       setMensaje({ tipo: 'success', texto: res.data.mensaje });
-      onCodigoEnviado();
+      setTimeout(() => {
+        onCodigoEnviado(); // Avanza al siguiente modal tras éxito
+      }, 1000);
     } catch (err) {
-      setMensaje({ tipo: 'error', texto: err.response?.data?.mensaje || 'Error al enviar código.' });
+      setMensaje({
+        tipo: 'error',
+        texto: err.response?.data?.mensaje || 'No se pudo enviar el código.'
+      });
     } finally {
       setCargando(false);
     }
@@ -27,19 +33,31 @@ const RecuperarPasswordAdmin = ({ correo, onCodigoEnviado, onClose }) => {
         <p className="mb-2 text-sm text-gray-600">
           Se enviará un código de verificación al correo <strong>{correo}</strong>.
         </p>
+
+        {/* 🆕 Mensaje de estado */}
         {mensaje && (
-          <div className={`text-sm mb-2 text-center ${mensaje.tipo === 'success' ? 'text-green-600' : 'text-red-600'}`}>
+          <div
+            className={`text-sm mt-2 mb-4 ${
+              mensaje.tipo === 'success' ? 'text-green-600' : 'text-red-600'
+            }`}
+          >
             {mensaje.texto}
           </div>
         )}
+
         <div className="flex justify-end mt-4 space-x-2">
-          <button onClick={onClose} className="bg-gray-500 text-white px-4 py-1 rounded hover:bg-gray-600">
+          <button
+            onClick={onClose}
+            className="bg-gray-500 text-white px-4 py-1 rounded hover:bg-gray-600"
+          >
             Cancelar
           </button>
           <button
             onClick={handleEnviarCodigo}
             disabled={cargando}
-            className={`px-4 py-1 rounded text-white ${cargando ? 'bg-gray-400' : 'bg-pink-600 hover:bg-pink-700'}`}
+            className={`px-4 py-1 rounded text-white ${
+              cargando ? 'bg-gray-400' : 'bg-pink-600 hover:bg-pink-700'
+            }`}
           >
             {cargando ? 'Enviando...' : 'Enviar Código'}
           </button>
@@ -49,4 +67,4 @@ const RecuperarPasswordAdmin = ({ correo, onCodigoEnviado, onClose }) => {
   );
 };
 
-export default RecuperarPasswordAdmin;
+export default RecuperarPassword;

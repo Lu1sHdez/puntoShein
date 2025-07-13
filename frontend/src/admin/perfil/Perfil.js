@@ -173,3 +173,4 @@ const Campo = ({ label, name, valor, onChange, editable, disabled = false }) => 
 );
 
 export default Perfil;
+

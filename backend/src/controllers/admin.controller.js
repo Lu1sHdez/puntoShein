@@ -6,7 +6,6 @@ import Usuario from '../models/usuario.model.js';  // Asegúrate de tener el mod
 import Producto from '../models/producto.model.js';  // Modelo de productos
 import Subcategoria from '../models/subcategoria.model.js';
 import nodemailer from 'nodemailer';
-import { crearTokenRecuperacion } from '../libs/crearTokenAcceso.js'; // Asegúrate que exista esta función
 import logger from '../libs/logger.js'; // Si ya usas winston u otro logger
 
 export const recuperarPasswordAdmin = async (req, res) => {
@@ -75,6 +74,21 @@ export const restablecerPasswordAdmin = async (req, res) => {
       return res.status(400).json({ mensaje: "El código ha expirado." });
     }
 
+    // 🕒 Validar política de espera de 24 horas desde el último cambio
+    const ultimoCambioPassword = usuario.ultimoCambioPassword ? new Date(usuario.ultimoCambioPassword).getTime() : 0;
+    const tiempoActual = Date.now();
+    const tiempoLimite = 24 * 60 * 60 * 1000; // 24 horas en milisegundos
+    const tiempoRestante = tiempoLimite - (tiempoActual - ultimoCambioPassword);
+
+    if (tiempoRestante > 0) {
+      const horasRestantes = Math.floor(tiempoRestante / (1000 * 60 * 60));
+      const minutosRestantes = Math.floor((tiempoRestante % (1000 * 60 * 60)) / (1000 * 60));
+      return res.status(400).json({
+        mensaje: `Cambiaste tu contraseña recientemente. Intenta nuevamente en ${horasRestantes} horas y ${minutosRestantes} minutos.`,
+      });
+    }
+
+    // 🔒 Validar seguridad de contraseña
     if (!/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/.test(nuevaContrasena)) {
       return res.status(400).json({
         mensaje: "Contraseña inválida. Mínimo 8 caracteres, mayúscula, minúscula, número y símbolo.",
@@ -87,12 +101,20 @@ export const restablecerPasswordAdmin = async (req, res) => {
     usuario.ultimoCambioPassword = new Date();
     await usuario.save();
 
+    logger.info({
+      message: "Contraseña ADMIN restablecida por código",
+      usuario_id: usuario.id,
+      ip_cliente: req.ip,
+    });
+
     res.status(200).json({ mensaje: "Contraseña actualizada correctamente." });
+
   } catch (error) {
     console.error(error);
     res.status(500).json({ mensaje: "Error al restablecer la contraseña." });
   }
 };
+
 
 export const cambiarPasswordAdmin = async (req, res) => {
   try {
@@ -114,6 +136,23 @@ export const cambiarPasswordAdmin = async (req, res) => {
       return res.status(400).json({ mensaje: 'Las nuevas contraseñas no coinciden.' });
     }
 
+    // Validar política de espera de 24 horas desde el último cambio
+    const ultimoCambio = usuario.ultimoCambioPassword ? new Date(usuario.ultimoCambioPassword).getTime() : 0;
+    const ahora = Date.now();
+    const limite24h = 24 * 60 * 60 * 1000;
+    const diferencia = ahora - ultimoCambio;
+
+    if (diferencia < limite24h) {
+      const tiempoRestante = limite24h - diferencia;
+      const horas = Math.floor(tiempoRestante / (1000 * 60 * 60));
+      const minutos = Math.floor((tiempoRestante % (1000 * 60 * 60)) / (1000 * 60));
+
+      return res.status(400).json({
+        mensaje: `Ya cambiaste tu contraseña recientemente. Intenta nuevamente en ${horas} horas y ${minutos} minutos.`,
+      });
+    }
+
+    // Validar formato seguro
     if (!/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(nueva)) {
       return res.status(400).json({
         mensaje: "Contraseña inválida. Debe tener mínimo 8 caracteres, una mayúscula, una minúscula, un número y un símbolo.",
@@ -138,6 +177,26 @@ export const cambiarPasswordAdmin = async (req, res) => {
   }
 };
 
+export const validarCodigoAdmin = async (req, res) => {
+  try {
+    const { correo, codigo } = req.body;
+
+    const usuario = await Usuario.findOne({ where: { correo, rol: 'administrador' } });
+
+    if (!usuario || usuario.codigoCambioPassword !== codigo) {
+      return res.status(400).json({ mensaje: "Código incorrecto o administrador inválido." });
+    }
+
+    if (new Date() > new Date(usuario.codigoCambioExpira)) {
+      return res.status(400).json({ mensaje: "El código ha expirado." });
+    }
+
+    return res.status(200).json({ mensaje: "Código válido." });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ mensaje: "Error al validar el código." });
+  }
+};
 
 // Funcion para btener los usuarios
 export const obtenerUsuarios = async (req, res) => {

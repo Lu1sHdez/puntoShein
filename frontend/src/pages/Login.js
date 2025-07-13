@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import FormularioInput from "../components/form/FormularioInput";
 import useFormulario from "../hooks/useFormulario";
@@ -12,7 +12,7 @@ const siteKey = process.env.REACT_APP_RECAPTCHA_SITE_KEY;
 
 const Login = () => {
   const [captchaToken, setCaptchaToken] = useState(null);
-
+  const recaptchaRef = useRef(null);
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [errorValidacion, setErrorValidacion] = useState(""); // Estado para error
@@ -73,6 +73,14 @@ const Login = () => {
         navigate("/");
       }
     }
+    
+    if (!resultado || !resultado.token || !resultado.usuario) {
+      setCaptchaToken(null); // Limpia el token
+      if (recaptchaRef.current) {
+        recaptchaRef.current.reset(); // Reinicia el captcha
+      }
+    }
+    
   };
   
   
@@ -114,6 +122,7 @@ const Login = () => {
             error={errorCampos.password} // Agregar propiedad error
           />
           <ReCAPTCHA
+            ref={recaptchaRef}
             sitekey={siteKey}
             onChange={(token) => setCaptchaToken(token)}
             className="mt-4 mx-auto"

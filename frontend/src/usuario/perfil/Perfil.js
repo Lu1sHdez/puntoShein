@@ -1,98 +1,171 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import { dataLoadingAnimation} from '../../components/Funciones.js';
 import { motion } from 'framer-motion';
-import { API_URL } from '../../ApiConexion.js'
-import { Cargando } from '../../Animations/Cargando.js';
+import { useNavigate } from 'react-router-dom';
+import { formAnimation } from '../../components/Funciones';
+import { API_URL } from '../../ApiConexion';
+import { mostrarNotificacion } from '../../Animations/NotificacionSwal';
+import CargandoBarra from '../../Animations/CargandoBarra';
+
+import RecuperarPassword from '../perfil/modales/RecuperarPassword';
+import VerificarCodigo from '../perfil/modales/VerificarCodigo';
+import RestablecerPassword from '../perfil/modales/RestablecerPassword';
 
 const Perfil = () => {
   const [usuario, setUsuario] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [datosOriginales, setDatosOriginales] = useState({});
+  const [datosEditables, setDatosEditables] = useState({});
+  const [modoEdicion, setModoEdicion] = useState(false);
+
+  const [mostrarRecuperacion, setMostrarRecuperacion] = useState(false);
+  const [mostrarVerificarCodigo, setMostrarVerificarCodigo] = useState(false);
+  const [mostrarRestablecer, setMostrarRestablecer] = useState(false);
+
   const navigate = useNavigate();
 
   useEffect(() => {
     const obtenerPerfil = async () => {
       try {
-        // Realizar la solicitud para obtener los datos del perfil
         const response = await axios.get(`${API_URL}/api/usuario/perfil`, { withCredentials: true });
         setUsuario(response.data);
-
-      } catch (err) {
-        setError('No se pudo obtener los datos del perfil');
-        if (err.response?.status === 401) {
-          // Redirigir al usuario si no está autenticado
-          navigate('/login');
-        }
-      } finally {
-        setLoading(false);
+        setDatosOriginales(response.data);
+        setDatosEditables({
+          nombre: response.data.nombre,
+          apellido_paterno: response.data.apellido_paterno,
+          apellido_materno: response.data.apellido_materno,
+          telefono: response.data.telefono,
+          correo: response.data.correo
+        });
+      } catch (error) {
+        if (error.response?.status === 401) navigate('/login');
       }
     };
-
     obtenerPerfil();
   }, [navigate]);
 
-  if (loading) {
-    return <Cargando message='Cargando perfil...'/>
-  }
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setDatosEditables(prev => ({ ...prev, [name]: value }));
+  };
 
-  if (error) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-xl text-red-500">{error}</div>
-      </div>
+  const seHizoCambio = () => {
+    return Object.keys(datosEditables).some(
+      key => datosEditables[key] !== datosOriginales[key]
     );
-  }
+  };
+
+  const guardarCambios = async () => {
+    try {
+      await axios.put(`${API_URL}/api/usuario/perfil`, datosEditables, { withCredentials: true });
+      mostrarNotificacion("success", "¡Perfil actualizado!");
+      setModoEdicion(false);
+      setDatosOriginales(datosEditables);
+    } catch (error) {
+      mostrarNotificacion("error", "Error al guardar cambios.");
+    }
+  };
+
+  if (!usuario) return <CargandoBarra message="Cargando perfil..." />;
 
   return (
-    <motion.div {...dataLoadingAnimation} className="flex items-center justify-center -mt-10 py-8 px-4">
-      <div className="bg-white p-5 rounded-lg shadow-lg w-full max-w-2xl">
-        <h1 className="text-2xl font-semibold text-center text-gray-700 mb-6">Perfil de Usuario</h1>
+    <motion.div {...formAnimation} className="p-6 max-w-2xl mx-auto">
+      <h2 className="text-2xl font-bold mb-6 text-center">Perfil del Usuario</h2>
 
-        <div className="space-y-4">
-        <div className="flex justify-between">
-            <span className="text-gray-600 font-medium">Nombre de Usuario:</span>
-            <span className="text-gray-800">{usuario.nombre_usuario}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-gray-600 font-medium">Nombre:</span>
-            <span className="text-gray-800">{usuario.nombre}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-gray-600 font-medium">Apellido Materno:</span>
-            <span className="text-gray-800">{usuario.apellido_paterno}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-gray-600 font-medium">Apellido Paterno:</span>
-            <span className="text-gray-800">{usuario.apellido_materno}</span>
-          </div>
-          
-          <div className="flex justify-between">
-            <span className="text-gray-600 font-medium">Correo Electrónico:</span>
-            <span className="text-gray-800">{usuario.correo}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-gray-600 font-medium">Teléfono:</span>
-            <span className="text-gray-800">{usuario.telefono}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-gray-600 font-medium">Rol:</span>
-            <span className="text-gray-800">{usuario.rol}</span>
-          </div>
-        </div>
-
-        <div className="mt-6">
-          <button
-            onClick={() => navigate('/usuario/actualizarPerfil')}
-            className="w-full bg-pink-600 text-white py-2 rounded-lg hover:bg-pink-700 transition"
-          >
-            Editar mi perfil
-          </button>
-        </div>
+      <div className="grid grid-cols-1 gap-4">
+        <Campo label="Nombre de Usuario:" valor={usuario.nombre_usuario} disabled />
+        <Campo label="Nombre:" name="nombre" valor={datosEditables.nombre} onChange={handleChange} editable={modoEdicion} />
+        <Campo label="Apellido Paterno:" name="apellido_paterno" valor={datosEditables.apellido_paterno} onChange={handleChange} editable={modoEdicion} />
+        <Campo label="Apellido Materno:" name="apellido_materno" valor={datosEditables.apellido_materno} onChange={handleChange} editable={modoEdicion} />
+        <Campo label="Correo:" name="correo" valor={datosEditables.correo} onChange={handleChange} editable={modoEdicion} />
+        <Campo label="Teléfono:" name="telefono" valor={datosEditables.telefono} onChange={handleChange} editable={modoEdicion} />
+        <Campo label="Rol:" valor={usuario.rol} disabled />
       </div>
+
+      <div className="flex justify-center mt-6">
+        <button
+          onClick={() => setMostrarRecuperacion(true)}
+          className="text-pink-600 underline hover:text-pink-800 transition text-sm"
+        >
+          Cambiar contraseña
+        </button>
+      </div>
+
+      <div className="flex justify-end mt-4 space-x-4">
+        {!modoEdicion ? (
+          <button
+            onClick={() => setModoEdicion(true)}
+            className="bg-pink-600 text-white px-4 py-2 rounded-lg hover:bg-pink-700 transition"
+          >
+            Editar perfil
+          </button>
+        ) : (
+          <>
+            <button
+              onClick={guardarCambios}
+              disabled={!seHizoCambio()}
+              className={`px-4 py-2 rounded-lg text-white transition ${
+                seHizoCambio()
+                  ? 'bg-pink-600 hover:bg-pink-700'
+                  : 'bg-gray-400 cursor-not-allowed'
+              }`}
+            >
+              Guardar cambios
+            </button>
+            <button
+              onClick={() => {
+                setModoEdicion(false);
+                setDatosEditables({ ...datosOriginales });
+              }}
+              className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition"
+            >
+              Cancelar
+            </button>
+          </>
+        )}
+      </div>
+
+      {/* Modales de cambio de contraseña */}
+      {mostrarRecuperacion && (
+        <RecuperarPassword
+          correo={usuario.correo}
+          onClose={() => setMostrarRecuperacion(false)}
+          onCodigoEnviado={() => {
+            setMostrarRecuperacion(false);
+            setMostrarVerificarCodigo(true);
+          }}
+        />
+      )}
+      {mostrarVerificarCodigo && (
+        <VerificarCodigo
+          correo={usuario.correo}
+          onClose={() => setMostrarVerificarCodigo(false)}
+          onCodigoCorrecto={() => {
+            setMostrarVerificarCodigo(false);
+            setMostrarRestablecer(true);
+          }}
+        />
+      )}
+      {mostrarRestablecer && (
+        <RestablecerPassword onClose={() => setMostrarRestablecer(false)} />
+      )}
     </motion.div>
   );
 };
+
+const Campo = ({ label, name, valor, onChange, editable, disabled = false }) => (
+  <div className="flex items-center">
+    <label className="w-1/3 text-sm font-medium text-gray-600">{label}</label>
+    <input
+      type="text"
+      name={name}
+      value={valor}
+      disabled={disabled || !editable}
+      onChange={onChange}
+      className={`w-full px-4 py-2 border rounded-md focus:outline-none ${
+        disabled || !editable ? 'bg-gray-100 text-gray-600' : 'focus:ring-2 focus:ring-pink-400'
+      }`}
+    />
+  </div>
+);
 
 export default Perfil;

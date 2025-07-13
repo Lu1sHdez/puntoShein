@@ -74,7 +74,7 @@ const EncabezadoUsuario = () => {
     <header className="fixed top-0 left-0 w-full bg-white shadow-md z-50">
       <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
         {/* Empresa */}
-        <div className="flex items-center space-x-4">
+        <Link to="/inicio" className="flex items-center space-x-4 hover:opacity-80 transition">
           {empresa && (
             <>
               <img
@@ -85,7 +85,8 @@ const EncabezadoUsuario = () => {
               <h1 className="text-xl font-bold text-pink-600">{empresa.nombre}</h1>
             </>
           )}
-        </div>
+        </Link>
+
 
         {/* Perfil + Logout */}
         <div className="flex items-center space-x-5">
