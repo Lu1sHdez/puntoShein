@@ -2,7 +2,7 @@ import React,{useState, useEffect} from "react";
 import { Link } from "react-router-dom";
 import { dataLoadingAnimation} from '../Funciones';
 import { motion } from 'framer-motion';
-import { Cargando } from "../../Animations/Cargando";
+import CargandoBarra from "../../Animations/CargandoBarra";
 
 const MapaSitio = () => {
 
@@ -18,7 +18,7 @@ const MapaSitio = () => {
   if (cargando) {
     return (
       <div className="flex justify-center items-center py-8">
-        <Cargando message="Mapa del sitio..." />
+        <CargandoBarra message="Mapa del sitio..." />
       </div>
     );
   }

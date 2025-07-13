@@ -10,7 +10,7 @@ const Layout = ({ children }) => {
   const location = useLocation(); // Obtiene la ruta actual
 
   // Verifica si estamos en la página de inicio
-  const esInicio = location.pathname === "/";
+  const esInicio = location.pathname === "/inicio";
 
   return (
     <div 

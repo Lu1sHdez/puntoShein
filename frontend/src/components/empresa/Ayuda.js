@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Cargando } from "../../Animations/Cargando";
+import CargandoBarra from "../../Animations/CargandoBarra";
 
 const Ayuda = () => {
   const [loading, setLoading] = useState(true); // Para simular carga de datos
@@ -14,7 +14,7 @@ const Ayuda = () => {
   }, []);
 
   if (loading) {
-    return <Cargando message="Cargando el centro de ayuda..." />;
+    return <CargandoBarra message="Cargando el centro de ayuda..." />;
   }
 
   return (

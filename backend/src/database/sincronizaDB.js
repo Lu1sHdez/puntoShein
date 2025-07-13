@@ -1,7 +1,14 @@
-import { sequelize } from './database.js'; // Asegúrate de importar la instancia de sequelize correctamente
+// src/database/sincronizaDB.js
+import { sequelize } from './database.js';
 import dotenv from 'dotenv';
 
-dotenv.config(); // Cargar las variables de entorno, si no lo has hecho antes
+dotenv.config();
+
+// Importar todos los modelos antes de sincronizar
+import '../models/usuario.model.js';
+import '../models/producto.model.js';
+import '../models/subcategoria.model.js';
+// Agrega aquí los demás modelos si tienes más
 
 sequelize.sync({ alter: true })
   .then(() => {
@@ -9,4 +16,4 @@ sequelize.sync({ alter: true })
   })
   .catch((error) => {
     console.error('Error al sincronizar la base de datos:', error);
-});
+  });

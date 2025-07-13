@@ -382,3 +382,9 @@
 [8/7/2025, 13:32:52] INFO: Sesión cerrada {"ip_cliente":"::ffff:127.0.0.1"}
 [8/7/2025, 14:54:30] WARN: Fallo en reCAPTCHA {"ip_cliente":"::ffff:127.0.0.1"}
 [8/7/2025, 14:54:39] WARN: Fallo en reCAPTCHA {"ip_cliente":"::ffff:127.0.0.1"}
+[8/7/2025, 15:00:27] INFO: Inicio de sesión exitoso {"usuario_id":"2b76e73a-2073-438b-b39f-ac2b7e152d4d","correo":"luis2004hdez@gmail.com","ip_cliente":"::ffff:127.0.0.1","fecha_hora":"8/7/2025, 15:00:27"}
+[8/7/2025, 15:25:53] INFO: Sesión cerrada {"ip_cliente":"::ffff:127.0.0.1"}
+[8/7/2025, 15:26:31] INFO: Inicio de sesión exitoso {"usuario_id":"b646c21c-3f81-4168-a29b-019f76d080c8","correo":"20221061@uthh.edu.mx","ip_cliente":"::ffff:127.0.0.1","fecha_hora":"8/7/2025, 15:26:31"}
+[9/7/2025, 9:00:32] INFO: Inicio de sesión exitoso {"usuario_id":"b646c21c-3f81-4168-a29b-019f76d080c8","correo":"20221061@uthh.edu.mx","ip_cliente":"::ffff:127.0.0.1","fecha_hora":"9/7/2025, 9:00:32"}
+[9/7/2025, 11:14:16] INFO: Inicio de sesión exitoso {"usuario_id":"b646c21c-3f81-4168-a29b-019f76d080c8","correo":"20221061@uthh.edu.mx","ip_cliente":"::ffff:127.0.0.1","fecha_hora":"9/7/2025, 11:14:16"}
+[9/7/2025, 11:20:19] INFO: Inicio de sesión exitoso {"usuario_id":"b646c21c-3f81-4168-a29b-019f76d080c8","correo":"20221061@uthh.edu.mx","ip_cliente":"::ffff:127.0.0.1","fecha_hora":"9/7/2025, 11:20:19"}

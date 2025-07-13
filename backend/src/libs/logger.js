@@ -1,4 +1,4 @@
-//Importacion de Winston para logging, fs/path para manejo de archivos/directorios,
+//src\libs\logger.js
 import winston from 'winston';
 import fs from 'fs';
 import path from 'path';

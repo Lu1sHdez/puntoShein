@@ -7,7 +7,7 @@ import RegresarButton from "../Regresar";
 import "../../css/Botones.css"
 import { motion } from "framer-motion"; 
 import { API_URL } from "../../ApiConexion";
-import { Cargando } from "../../Animations/Cargando";
+import CargandoBarra from "../../Animations/CargandoBarra";
 
 const AllProductos = () => {
   const [productos, setProductos] = useState([]);
@@ -42,7 +42,7 @@ const AllProductos = () => {
       <h2 className="text-2xl font-bold mb-4">Todos los productos</h2>
       {cargando && (
         <div className="flex justify-center items-center py-8">
-          <Cargando 
+          <CargandoBarra 
             size="md" 
             color="primary" 
             message="Cargando productos..." 

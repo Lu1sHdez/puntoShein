@@ -8,12 +8,11 @@ import Layout from "./components/home/Layout";         // Layout general
 import LayoutVacio from "./components/home/LayoutVacio";
 import LayoutGeneral from "./components/home/LayoutGeneral";
 import LayoutAdmin from "./admin/secciones/LayoutAdmin.js";
-
+import LayoutUsuario from "./usuario/secciones/LayoutUsuario.js";
 
 // Rutas protegidas
 import ProteccionRutas from "./utils/ProteccionRutas";
 import ErrorRoutes from "./routes/ErrorRoutes";
-
 
 // Lazy imports
 const DashboardAdmin = lazy(() => import("./admin/dashboard/Dashboard"));
@@ -36,7 +35,9 @@ const GestionProductos = lazy(() => import("./admin/productos/analisis/AnalisisV
 
 // Componentes con Lazy Loading
 const DashboardUsuario = lazy(() => import("./usuario/dashboard/Dashboard.js"));
+const Pedidos = lazy(() => import("./usuario/pedidos/pedidos.js"));
 const PerfilUsuario = lazy(() => import("./usuario/perfil/Perfil.js"));
+const MiCarrito = lazy(() => import("./usuario/cart/carrito.js"));
 const ActualizarPerfilUsuario = lazy(() => import("./usuario/perfil/ActualizarPerfil.js"));
 const Pago = lazy(() => import("./components/store/compra/pago.js"));
 const ProductosA = lazy(() => import("./components/cart/Agregar.js"));
@@ -44,6 +45,8 @@ const ProductosA = lazy(() => import("./components/cart/Agregar.js"));
 
 // Lazy loaded pages
 const WelcomePage = lazy(() => import("./welcome/WelcomePage"));
+const WelcomeAnimacion = lazy(() => import("./welcome/WelcomeAnimacion"));
+
 const Login = lazy(() => import("./pages/Login"));
 const Registro = lazy(() => import("./pages/Registro"));
 const CerrarSesion = lazy(() => import("./pages/CerrarSesion"));
@@ -77,9 +80,14 @@ const App = () => {
       <Suspense fallback={<Skeleton />}>
         <Routes>
 
+          {/* Layout vacío para página de bienvenida con animacion*/}
+          <Route element={<LayoutVacio />}>
+            <Route path="/" element={<WelcomeAnimacion />} />
+          </Route>
+
           {/* Layout vacío para página de bienvenida */}
           <Route element={<LayoutVacio />}>
-            <Route path="/" element={<WelcomePage />} />
+            <Route path="/inicio" element={<WelcomePage />} />
           </Route>
 
             {/* Layout vacío para autenticación (sin encabezado/pie general) */}
@@ -119,9 +127,6 @@ const App = () => {
             <Route path="/productos/agregar" element={<ProteccionRutas element={AgregarProducto} allowedRoles={["usuario"]} />} />
             <Route path="/productos/Carrito" element={<ProteccionRutas element={Carrito} allowedRoles={["usuario"]} />} />
             <Route path="/autenticacion-requerida" element={<AutenticacionRequerida />} />
-            <Route path="/usuario/dashboard"element={<ProteccionRutas element={DashboardUsuario} allowedRoles={["usuario"]} />}/>
-            <Route path="/usuario/perfil" element={<ProteccionRutas element={PerfilUsuario} allowedRoles={["usuario"]} />}/>
-            <Route path="/usuario/actualizarPerfil"element={<ProteccionRutas element={ActualizarPerfilUsuario} allowedRoles={["usuario"]} />}/>
             <Route path="/checkout/pago" element={<ProteccionRutas element={Pago} allowedRoles={["usuario"]} />}/>
             <Route path="/productos/agregar"element={<ProteccionRutas element={ProductosA} allowedRoles={["usuario"]} />}/>
             <Route path="/productos/carrito"element={<ProteccionRutas element={Carrito} allowedRoles={["usuario"]} />}/>
@@ -148,6 +153,16 @@ const App = () => {
             <Route path="/admin/preguntasFrecuentes" element={<ProteccionRutas element={PreguntasFrecuentes} allowedRoles={["administrador"]} />} />
           </Route>
 
+          <Route element = {<LayoutUsuario/>}>
+            <Route path="/usuario/carrito" element={<ProteccionRutas element={MiCarrito} allowedRoles={["usuario"]} />} />
+            <Route path="/usuario/dashboard" element={<ProteccionRutas element={DashboardUsuario} allowedRoles={["usuario"]} />}/>
+            <Route path="/usuario/perfil" element={<ProteccionRutas element={PerfilUsuario} allowedRoles={["usuario"]} />}/>
+            <Route path="/usuario/pedidos" element={<ProteccionRutas element={Pedidos} allowedRoles={["usuario"]} />}/>            
+            <Route path="/usuario/actualizarPerfil" element={<ProteccionRutas element={ActualizarPerfilUsuario} allowedRoles={["usuario"]} />}/>
+            <Route path="/checkout/pago"element={<ProteccionRutas element={Pago} allowedRoles={["usuario"]} />}/>
+            <Route path="/productos/agregar" element={<ProteccionRutas element={ProductosA} allowedRoles={["usuario"]} />} />
+
+          </Route>  
           {ErrorRoutes}
 
         </Routes>

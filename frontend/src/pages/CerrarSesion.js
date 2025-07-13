@@ -26,7 +26,7 @@ const CerrarSesion = () => {
           timer: 2000,
         });
 
-        setTimeout(() => navigate("/"), 2000); // Redirige después de 2 segundos
+        setTimeout(() => navigate("/inicio"), 2000); // Redirige después de 2 segundos
       } catch (error) {
         Swal.fire({
           icon: "error",

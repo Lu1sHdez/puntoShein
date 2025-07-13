@@ -1,0 +1,7 @@
+[12/7/2025, 19:06:19] INFO: Recuperación de contraseña ADMIN {"usuario_id":"2b76e73a-2073-438b-b39f-ac2b7e152d4d","correo":"luis2004hdez@gmail.com","ip_cliente":"::ffff:127.0.0.1"}
+[12/7/2025, 19:21:20] INFO: Sesión cerrada {"ip_cliente":"::ffff:127.0.0.1"}
+[12/7/2025, 19:21:51] ERROR: Credenciales inválidas - Contraseña incorrecta {"codigo_error":"400","ip_cliente":"::ffff:127.0.0.1","usuario":"luis2004hdez@gmail.com"}
+[12/7/2025, 19:21:56] WARN: Fallo en reCAPTCHA {"ip_cliente":"::ffff:127.0.0.1"}
+[12/7/2025, 19:22:34] INFO: Inicio de sesión exitoso {"usuario_id":"2b76e73a-2073-438b-b39f-ac2b7e152d4d","correo":"luis2004hdez@gmail.com","ip_cliente":"::ffff:127.0.0.1","fecha_hora":"12/7/2025, 19:22:34"}
+[12/7/2025, 19:22:53] INFO: Sesión cerrada {"ip_cliente":"::ffff:127.0.0.1"}
+[12/7/2025, 19:23:23] INFO: Solicitud de recuperación de contraseña {"usuario_id":"2b76e73a-2073-438b-b39f-ac2b7e152d4d","correo":"luis2004hdez@gmail.com","ip_cliente":"::ffff:127.0.0.1"}

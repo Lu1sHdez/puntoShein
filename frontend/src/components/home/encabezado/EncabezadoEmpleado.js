@@ -2,30 +2,65 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaUserCircle, FaSignOutAlt } from "react-icons/fa";
+import useAuth from "../../../hooks/useAuth";
+import useSesionUsuario from "../../../context/useSesionUsuario";
 
 const EncabezadoEmpleado = () => {
   const navigate = useNavigate();
+  const { logout } = useAuth();
+  const { usuarioAutenticado, datos } = useSesionUsuario();
+
+  const nombre = datos?.nombre || "Empleado";
+  const fotoPerfil = datos?.foto_perfil || "";
+
+  const generarIniciales = (nombre) => {
+    if (!nombre) return "";
+    const palabras = nombre.trim().split(" ");
+    return palabras.length >= 2
+      ? `${palabras[0][0]}${palabras[1][0]}`.toUpperCase()
+      : palabras[0][0].toUpperCase();
+  };
+
+  const iniciales = generarIniciales(nombre);
+
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    navigate("/login"); // Redirigir al login después de cerrar sesión
+    logout();
+    navigate("/login");
   };
 
   return (
     <header className="fixed top-0 left-0 w-full bg-white shadow-md z-50">
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
         {/* Logo o nombre del sitio */}
-        <Link to="/admin/dashboard" className="text-2xl font-bold text-pink-600 hover:text-pink-700">
-          Panel de Administrador - Punto Shein
+        <Link
+          to="/empleado/dashboard"
+          className="text-2xl font-bold text-pink-600 hover:text-pink-700"
+        >
+          Panel de Empleado - Punto Shein
         </Link>
 
-        {/* Barra de navegación */}
+        {/* Perfil y cerrar sesión */}
         <div className="flex items-center space-x-4">
-          <Link to="/admin/perfil" className="text-gray-700 flex items-center space-x-2">
-            <FaUserCircle className="text-xl" />
-            <span className="text-sm">Perfil</span>
+          {/* Perfil */}
+          <Link
+            to="/empleado/perfil"
+            className="flex items-center space-x-2 text-gray-700 hover:text-pink-600"
+          >
+            {fotoPerfil ? (
+              <img
+                src={fotoPerfil}
+                alt="Perfil"
+                className="h-9 w-9 rounded-full object-cover border border-gray-300 shadow"
+              />
+            ) : (
+              <div className="h-9 w-9 bg-pink-600 text-white rounded-full flex items-center justify-center font-semibold shadow">
+                {iniciales}
+              </div>
+            )}
+            <span className="text-sm">{nombre}</span>
           </Link>
-          
-          {/* Botón de cerrar sesión */}
+
+          {/* Cerrar sesión */}
           <button
             onClick={handleLogout}
             className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition flex items-center space-x-2"

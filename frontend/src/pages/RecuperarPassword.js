@@ -74,11 +74,11 @@ const RecuperarPassword = () => {
               estiloPersonalizado="w-full bg-pink-600 text-white py-2 rounded-lg hover:bg-pink-700 transition"
               disabled={loading}
             />
-            <Boton
+            {/* <Boton
               texto="Recuperar por teléfono"
               onClick={() => navigate("/solicitarPasswordTelefono")}
               estiloPersonalizado="mt-3 w-full text-blue-600 hover:underline"
-            />
+            /> */}
 
             <Boton
               texto="Volver al inicio de sesión"

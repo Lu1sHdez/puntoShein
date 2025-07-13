@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { dataLoadingAnimation} from '../Funciones';
 import { motion } from 'framer-motion';
-import { Cargando } from "../../Animations/Cargando";
+import CargandoBarra from "../../Animations/CargandoBarra";
 
 
 const Contacto = () => {
@@ -13,7 +13,7 @@ const Contacto = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center py-8">
-        <Cargando message="Cargando la información..." />
+        <CargandoBarra message="Cargando la información..." />
       </div>
     );
   }

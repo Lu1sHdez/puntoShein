@@ -9,8 +9,6 @@ import Boton from "../elements/Boton";
 import { API_URL } from "../ApiConexion";
 import { mostrarNotificacion } from "../Animations/NotificacionSwal";
 
-
-
 const Registro = () => {
   const [datos, setDatos] = useState({
     nombre_usuario: "",

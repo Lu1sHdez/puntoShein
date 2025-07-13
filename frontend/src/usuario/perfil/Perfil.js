@@ -6,7 +6,6 @@ import { motion } from 'framer-motion';
 import { API_URL } from '../../ApiConexion.js'
 import { Cargando } from '../../Animations/Cargando.js';
 
-
 const Perfil = () => {
   const [usuario, setUsuario] = useState(null);
   const [loading, setLoading] = useState(true);

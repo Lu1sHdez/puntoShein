@@ -13,7 +13,7 @@ import "../../css/Botones.css"
 import { motion } from "framer-motion";
 import { API_URL } from "../../ApiConexion";
 import { mostrarNotificacion } from "../../Animations/NotificacionSwal";
-import { Cargando } from "../../Animations/Cargando";
+import CargandoBarra from "../../Animations/CargandoBarra";
 
 
 const DetalleProducto = () => {
@@ -60,7 +60,7 @@ const DetalleProducto = () => {
 
   if (cargando) return (
     <div className="flex justify-center items-center h-screen">
-      <Cargando 
+      <CargandoBarra 
         size="lg" 
         color="primary" 
         message="Cargando detalles del producto..." 

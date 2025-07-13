@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { dataLoadingAnimation } from "../Funciones";
 import axios from "axios";
-import { Cargando } from "../../Animations/Cargando";
+import CargandoBarra from "../../Animations/CargandoBarra";
 import { API_URL } from "../../ApiConexion";
 
 const PoliticaPrivacidad = () => {
@@ -28,7 +28,7 @@ const PoliticaPrivacidad = () => {
   if(cargando){
     return (
       <div className="flex justify-center items-center py-8">
-        <Cargando message="Cargando aviso de privacidad..." />
+        <CargandoBarra message="Cargando aviso de privacidad..." />
       </div>
     );
   }

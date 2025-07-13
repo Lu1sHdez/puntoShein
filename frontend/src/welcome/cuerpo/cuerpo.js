@@ -1,12 +1,25 @@
-import React from "react";
+// src/components/home/cuerpo/CuerpoBienvenida.js
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaTags, FaTruck, FaShieldAlt } from "react-icons/fa";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Carousel } from "react-responsive-carousel";
-
+import CargandoBarra from "../../Animations/CargandoBarra";
+import useSesionUsuario from "../../context/useSesionUsuario";
 
 const CuerpoBienvenida = () => {
   const navigate = useNavigate();
+  const [cargando, setCargando] = useState(true);
+  const { usuarioAutenticado, datos } = useSesionUsuario();
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setCargando(false);
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (cargando) return <CargandoBarra />;
 
   return (
     <>
@@ -17,14 +30,13 @@ const CuerpoBienvenida = () => {
             'url("https://res.cloudinary.com/dgbs7sg9j/image/upload/v1738378032/pshein_dsluvs.jpg")',
         }}
       >
-        {/* Capa oscura sobre la imagen */}
         <div className="absolute inset-0 bg-black bg-opacity-50"></div>
 
         <div className="relative z-10 max-w-7xl mx-auto px-6 flex flex-col lg:flex-row items-center justify-between gap-10">
-          {/* Texto principal */}
           <div className="flex-1 text-center lg:text-left text-white">
             <h1 className="text-4xl lg:text-5xl font-extrabold mb-6 leading-tight">
-              Bienvenido a <span className="text-pink-400">Punto Shein</span>
+              Bienvenido{usuarioAutenticado && datos?.nombre ? `, ${datos.nombre}` : ""} a{" "}
+              <span className="text-pink-400">Punto Shein</span>
             </h1>
             <p className="text-lg mb-6">
               Explora nuestras últimas colecciones, descubre las mejores ofertas y mantén tu inventario bajo control desde cualquier lugar.
@@ -36,16 +48,25 @@ const CuerpoBienvenida = () => {
               >
                 Ver productos
               </button>
-              <button
-                onClick={() => navigate("/login")}
-                className="px-6 py-2 border border-white text-white rounded-lg hover:bg-white hover:text-pink-600 transition"
-              >
-                Iniciar sesión
-              </button>
+
+              {!usuarioAutenticado ? (
+                <button
+                  onClick={() => navigate("/login")}
+                  className="px-6 py-2 border border-white text-white rounded-lg hover:bg-white hover:text-pink-600 transition"
+                >
+                  Iniciar sesión
+                </button>
+              ) : (
+                <button
+                  onClick={() => navigate("/usuario/perfil")}
+                  className="px-6 py-2 border border-white text-white rounded-lg hover:bg-white hover:text-pink-600 transition"
+                >
+                  Ver perfil
+                </button>
+              )}
             </div>
           </div>
 
-          {/* Imagen lateral (oculta en móvil) */}
           <div className="flex-1 hidden lg:flex justify-center">
             <img
               src="https://illustrations.popsy.co/gray/shopping-bags.svg"
@@ -55,6 +76,7 @@ const CuerpoBienvenida = () => {
           </div>
         </div>
       </main>
+
       <Carousel
         autoPlay
         infiniteLoop

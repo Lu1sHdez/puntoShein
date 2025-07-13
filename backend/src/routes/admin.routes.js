@@ -13,6 +13,9 @@ import {
   actualizarRol,
   obtenerRoles,
   editarProducto,
+  recuperarPasswordAdmin,
+  restablecerPasswordAdmin,
+  cambiarPasswordAdmin
 } from '../controllers/admin.controller.js';
 import { actualizarEmpresa, obtenerEmpresa } from '../controllers/empresa.controller.js';
 import { actualizarPerfil } from '../controllers/usuario.controller.js';
@@ -71,5 +74,11 @@ router.get('/roles', verificarToken, admin, obtenerRoles);  // Obtener roles dis
 // Rutas para la empresa
 router.get('/empresa', verificarToken, admin, obtenerEmpresa);  // Obtener datos de la empresa
 router.put('/empresa', verificarToken, admin, actualizarEmpresa);  // Actualizar datos de la empresa
+
+// Rutas de recuperación de contraseña para el administrador
+router.put('/cambiar-contrasena', express.json(), verificarToken, admin, cambiarPasswordAdmin);  // requiere sesión
+router.post('/recuperar-password', express.json(), recuperarPasswordAdmin);  // no requiere sesión
+router.put('/restablecer-password', express.json(), restablecerPasswordAdmin);  // no requiere sesión
+
 
 export default router;

@@ -21,7 +21,7 @@ const OpcionRecuperarPassword = () => {
             Recuperar Contraseña
           </h2>
           <p className="text-gray-500">
-            Selecciona un método para recuperar tu contraseña.
+            Selecciona la opción de correo electronico para recuperar tu contraseña.
           </p>
         </div>
 
@@ -39,7 +39,7 @@ const OpcionRecuperarPassword = () => {
           </motion.button>
 
           {/* Opción por Teléfono */}
-          <motion.button
+          {/* <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => navigate("/solicitarPasswordTelefono")}
@@ -47,7 +47,7 @@ const OpcionRecuperarPassword = () => {
           >
             <FaPhone className="text-xl" />
             <span className="font-semibold">Recuperar por Teléfono</span>
-          </motion.button>
+          </motion.button> */}
         </div>
 
         {/* Botón para volver al inicio de sesión */}

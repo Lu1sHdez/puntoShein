@@ -6,9 +6,6 @@ import { FaBox, FaShoppingCart, FaClipboardList, FaUserCircle } from 'react-icon
 import { dashboardAnimation } from '../../components/Funciones.js';
 import Perfil from '../perfil/Perfil.js';
 import { Cargando } from '../../Animations/Cargando.js';
-/* import Productos from '../productos/Productos';
-import Carrito from '../carrito/Carrito';
-import Pedidos from '../pedidos/Pedidos'; */
 
 const DashboardUsuario = () => {
   const [user, setUser] = useState(null);
@@ -53,7 +50,7 @@ const DashboardUsuario = () => {
           <p className="text-gray-500 mt-2">Explora el catálogo de productos.</p>
         </Link>
 
-        <Link to="/usuario/carrito" className="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition duration-300 transform hover:scale-105">
+        <Link to="/productos/Carrito" className="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition duration-300 transform hover:scale-105">
           <FaShoppingCart className="text-4xl text-gray-700 mb-4" />
           <h2 className="text-xl font-semibold">Ver Carrito</h2>
           <p className="text-gray-500 mt-2">Revisa los productos agregados al carrito.</p>

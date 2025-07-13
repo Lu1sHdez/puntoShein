@@ -64,7 +64,14 @@ const Usuario = sequelize.define('Usuario', {
     type: DataTypes.DATE,     // fecha/hora de expiración del código
     allowNull: true,
   },
-  
+  codigoCambioPassword: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  codigoCambioExpira: {
+    type: DataTypes.DATE,
+    allowNull: true,
+  },  
 }, {
   tableName: 'usuarios',
   timestamps: true, // Agrega automáticamente los campos createdAt y updatedAt

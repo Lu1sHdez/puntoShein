@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import useBuscarProductos from "../../hooks/useBuscarProductos"; // Hook para obtener los productos
 import ProductoCard from "./ProductoCard";
-import { Cargando } from "../../Animations/Cargando";
+import CargandoBarra from "../../Animations/CargandoBarra";
 
 const BuscarProductos = () => {
   const [searchParams] = useSearchParams();  // Obtener los parámetros de búsqueda de la URL
@@ -26,7 +26,7 @@ const BuscarProductos = () => {
       {/* Estado de carga */}
       {cargando && (
         <div className="flex justify-center items-center py-8">
-          <Cargando 
+          <CargandoBarra 
             size="md" 
             color="primary" 
             message="Cargando productos..." 

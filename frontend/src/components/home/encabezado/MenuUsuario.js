@@ -110,7 +110,7 @@ const MenuUsuario = ({ usuarioAutenticado, handleLogout, mobile, onItemClick }) 
               {/* Inicio */}
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }}>
                 <Link
-                  to="/"
+                  to="/inicio"
                   onClick={handleMenuClick}
                   className="w-full text-left px-4 py-2 hover:bg-gray-200 flex items-center"
                 >

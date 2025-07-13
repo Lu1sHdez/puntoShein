@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { dataLoadingAnimation } from "../Funciones";
 import axios from "axios";
 import { API_URL } from "../../ApiConexion";
-import { Cargando } from "../../Animations/Cargando";
+import CargandoBarra from "../../Animations/CargandoBarra";
 
 const Terminos = () => {
   const [contenido, setContenido] = useState("");
@@ -28,7 +28,7 @@ const Terminos = () => {
   if(cargando){
     return (
       <div className="flex justify-center items-center py-8">
-        <Cargando message="Cargando términos y condiciones..." />
+        <CargandoBarra message="Cargando términos y condiciones..." />
       </div>
     );
   }

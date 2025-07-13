@@ -174,6 +174,7 @@ export const obtenerSubcategorias = async (req, res) => {
     res.status(500).json({ mensaje: "Error interno del servidor" });
   }
 };
+
 export const obtenerProductosPorSubcategoria = async (req, res) => {
   try {
     const { subcategoria_id } = req.query;
@@ -209,7 +210,6 @@ export const obtenerProductosPorSubcategoria = async (req, res) => {
     res.status(500).json({ mensaje: "Error al obtener productos por subcategoría." });
   }
 };
-
 
 export const eliminarProducto = async (req, res) => {
   try {

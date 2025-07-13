@@ -3,7 +3,7 @@ import axios from "axios";
 import { dataLoadingAnimation } from '../Funciones';
 import { motion } from 'framer-motion';
 import { API_URL } from "../../ApiConexion";
-import { Cargando } from "../../Animations/Cargando";
+import CargandoBarra from "../../Animations/CargandoBarra";
 
 const PreguntasFrecuentes = () => {
   const [preguntas, setPreguntas] = useState([]);
@@ -42,7 +42,7 @@ const PreguntasFrecuentes = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center py-8">
-        <Cargando message="Cargando preguntas frecuentes..." />
+        <CargandoBarra message="Cargando preguntas frecuentes..." />
       </div>
     );
   }

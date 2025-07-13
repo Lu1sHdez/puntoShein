@@ -3,7 +3,7 @@ import axios from 'axios';
 import { dataLoadingAnimation} from '../Funciones';
 import { motion } from 'framer-motion';
 import { API_URL } from '../../ApiConexion';
-import { Cargando } from "../../Animations/Cargando";
+import CargandoBarra from "../../Animations/CargandoBarra";
 
 
 const AcercaDe = () => {
@@ -33,7 +33,7 @@ const AcercaDe = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center py-8">
-        <Cargando message="Cargando la información..." />
+        <CargandoBarra message="Cargando la información..." />
       </div>
     );
   }

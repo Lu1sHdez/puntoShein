@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion } from 'framer-motion';
-import { Cargando } from "../../Animations/Cargando"; // Componente para mostrar el estado de carga
+import CargandoBarra from "../../Animations/CargandoBarra"; // Componente para mostrar el estado de carga
 import { dataLoadingAnimation } from '../Funciones'; // Animación para framer-motion
 
 const DeslindeLegal = () => {
@@ -16,7 +16,7 @@ const DeslindeLegal = () => {
   if (cargando) {
     return (
       <div className="flex justify-center items-center py-8">
-        <Cargando message="Cargando información legal..." />
+        <CargandoBarra message="Cargando información legal..." />
       </div>
     );
   }

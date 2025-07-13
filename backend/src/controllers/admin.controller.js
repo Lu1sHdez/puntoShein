@@ -1,8 +1,143 @@
 // src/controllers/admin.controller.js
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 import Sequelize from 'sequelize';
 import Usuario from '../models/usuario.model.js';  // Asegúrate de tener el modelo de usuario correctamente importado
 import Producto from '../models/producto.model.js';  // Modelo de productos
 import Subcategoria from '../models/subcategoria.model.js';
+import nodemailer from 'nodemailer';
+import { crearTokenRecuperacion } from '../libs/crearTokenAcceso.js'; // Asegúrate que exista esta función
+import logger from '../libs/logger.js'; // Si ya usas winston u otro logger
+
+export const recuperarPasswordAdmin = async (req, res) => {
+  try {
+    const { correo } = req.body;
+
+    const usuario = await Usuario.findOne({ where: { correo, rol: 'administrador' } });
+    if (!usuario) {
+      return res.status(400).json({ mensaje: "Correo no registrado o no es administrador." });
+    }
+
+    const codigo = Math.floor(100000 + Math.random() * 900000).toString(); // Genera código de 6 dígitos
+    const expiracion = new Date(Date.now() + 10 * 60 * 1000); // 10 minutos a partir de ahora
+
+    usuario.codigoCambioPassword = codigo;
+    usuario.codigoCambioExpira = expiracion;
+    await usuario.save();
+
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+      tls: {
+        rejectUnauthorized: false,
+      },
+    });
+
+    const mailOptions = {
+      from: `"Punto Shein Admin" <${process.env.EMAIL_USER}>`,
+      to: correo,
+      subject: 'Código de recuperación de contraseña',
+      html: `
+        <p>Hola ${usuario.nombre},</p>
+        <p>Tu código para restablecer la contraseña es:</p>
+        <h2>${codigo}</h2>
+        <p>Este código expira en 10 minutos.</p>
+        <p>Si no solicitaste esto, ignora este mensaje.</p>
+      `,
+    };
+
+    transporter.sendMail(mailOptions, (error) => {
+      if (error) {
+        return res.status(500).json({ mensaje: "Error al enviar el correo." });
+      }
+      res.status(200).json({ mensaje: "Código de verificación enviado al correo." });
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ mensaje: "Error interno del servidor." });
+  }
+};
+
+export const restablecerPasswordAdmin = async (req, res) => {
+  try {
+    const { correo, codigo, nuevaContrasena } = req.body;
+
+    const usuario = await Usuario.findOne({ where: { correo, rol: 'administrador' } });
+    if (!usuario || usuario.codigoCambioPassword !== codigo) {
+      return res.status(400).json({ mensaje: "Código incorrecto o usuario no válido." });
+    }
+
+    if (new Date() > new Date(usuario.codigoCambioExpira)) {
+      return res.status(400).json({ mensaje: "El código ha expirado." });
+    }
+
+    if (!/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/.test(nuevaContrasena)) {
+      return res.status(400).json({
+        mensaje: "Contraseña inválida. Mínimo 8 caracteres, mayúscula, minúscula, número y símbolo.",
+      });
+    }
+
+    usuario.password = await bcrypt.hash(nuevaContrasena, 10);
+    usuario.codigoCambioPassword = null;
+    usuario.codigoCambioExpira = null;
+    usuario.ultimoCambioPassword = new Date();
+    await usuario.save();
+
+    res.status(200).json({ mensaje: "Contraseña actualizada correctamente." });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ mensaje: "Error al restablecer la contraseña." });
+  }
+};
+
+export const cambiarPasswordAdmin = async (req, res) => {
+  try {
+    const { actual, nueva, confirmar } = req.body;
+    const usuarioId = req.usuario.id;
+
+    const usuario = await Usuario.findByPk(usuarioId);
+
+    if (!usuario || usuario.rol !== 'administrador') {
+      return res.status(403).json({ mensaje: 'Acceso no autorizado.' });
+    }
+
+    const validPassword = await bcrypt.compare(actual, usuario.password);
+    if (!validPassword) {
+      return res.status(400).json({ mensaje: 'Contraseña actual incorrecta.' });
+    }
+
+    if (nueva !== confirmar) {
+      return res.status(400).json({ mensaje: 'Las nuevas contraseñas no coinciden.' });
+    }
+
+    if (!/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(nueva)) {
+      return res.status(400).json({
+        mensaje: "Contraseña inválida. Debe tener mínimo 8 caracteres, una mayúscula, una minúscula, un número y un símbolo.",
+      });
+    }
+
+    usuario.password = await bcrypt.hash(nueva, 10);
+    usuario.ultimoCambioPassword = new Date();
+    await usuario.save();
+
+    logger.info({
+      message: "Contraseña ADMIN cambiada manualmente",
+      usuario_id: usuario.id,
+      ip_cliente: req.ip,
+    });
+
+    res.status(200).json({ mensaje: 'Contraseña actualizada correctamente.' });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ mensaje: 'Error al cambiar la contraseña.' });
+  }
+};
+
 
 // Funcion para btener los usuarios
 export const obtenerUsuarios = async (req, res) => {
