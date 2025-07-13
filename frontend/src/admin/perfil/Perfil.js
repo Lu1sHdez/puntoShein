@@ -81,7 +81,7 @@ const Perfil = () => {
         <Campo label="Rol:" valor={usuario.rol} disabled />
       </div>
 
-      <div className="flex justify-center mt-6">
+      <div className="flex justify-end mt-6">
       <button
         onClick={() => setMostrarRecuperacion(true)}
         className="text-pink-600 underline hover:text-pink-800 transition text-sm"

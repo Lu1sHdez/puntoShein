@@ -96,7 +96,7 @@ const ModalEditarLogo = ({ empresa, onClose, onActualizar }) => {
         />
         <label
           htmlFor="logo-upload"
-          className="cursor-pointer block text-sm text-pink-600 hover:underline mb-2 text-center"
+          className="cursor-pointer block text-sm text-blue-600 hover:underline mb-2 text-center"
         >
           O haz clic aquí para seleccionar una imagen
         </label>
@@ -127,7 +127,7 @@ const ModalEditarLogo = ({ empresa, onClose, onActualizar }) => {
           <button
             onClick={handleSubirLogo}
             disabled={guardando}
-            className="px-4 py-2 bg-pink-600 text-white rounded hover:bg-pink-700 transition"
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
           >
             {guardando ? "Subiendo..." : "Guardar"}
           </button>

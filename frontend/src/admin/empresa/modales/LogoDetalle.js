@@ -1,7 +1,5 @@
 // src/admin/empresa/modales/LogoDetalle.js
 import React from "react";
-import LogoArrastra from "./LogoArrastra";
-
 
 const LogoDetalle = ({ vistaPrevia, archivo, resolucion, onEliminar }) => {
   if (!vistaPrevia) return null;
