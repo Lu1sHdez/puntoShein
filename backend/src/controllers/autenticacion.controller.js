@@ -9,7 +9,6 @@ import twilio from 'twilio';
 import axios from 'axios';
 import obtenerFechaHora from '../utils/funciones.js';
 
-
 export const registro = async (req, res) => {
   try {
     // Validación de campos usando express-validator
