@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import DetallesProducto from '././modales/DetalleProducto';
 import RegresarButton from '../../components/Regresar.js';
 import Swal from 'sweetalert2';
 import { dataLoadingAnimation } from '../../components/Funciones.js';
@@ -28,6 +28,7 @@ const Productos = () => {
   const [modalGeneralVisible, setModalGeneralVisible] = useState(false);
   const [imagen, setImagen] = useState('');
   const [progreso, setProgreso] = useState(1); // si también usarás `setProgreso`
+  const [productoSeleccionado, setProductoSeleccionado] = useState(null);
 
   // Obtener todas las categorías
   useEffect(() => {
@@ -202,6 +203,7 @@ const Productos = () => {
             key={producto.id}
             producto={producto}
             onEliminar={handleEliminar}
+            onVerDetalles={(producto) => setProductoSeleccionado(producto)}
           />
         ))}
       </div>
@@ -226,13 +228,21 @@ const Productos = () => {
             visible={modalGeneralVisible}
             onClose={() => {
               setModalGeneralVisible(false);
-              setProgreso(1);  // Reiniciar progreso al cerrar
+              setProgreso(1);
             }}
             progreso={progreso}
             setProgreso={setProgreso}
             imagen={imagen}
             setImagen={setImagen}
           />
+        
+        )}
+        {productoSeleccionado && (
+        <DetallesProducto
+          visible={!!productoSeleccionado}
+          producto={productoSeleccionado}
+          onClose={() => setProductoSeleccionado(null)}
+        />
         )}
 
       <RegresarButton />

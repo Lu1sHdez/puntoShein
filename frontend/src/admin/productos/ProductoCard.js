@@ -6,7 +6,7 @@ import '../../css/Botones.css';
 import { motion } from 'framer-motion';
 import CargandoModal from '../../Animations/CargandoModal';
 
-const ProductoCard = ({ producto, onEliminar }) => {
+const ProductoCard = ({ producto, onEliminar, onVerDetalles }) => {
   const [cargando, setCargando] = useState(false);
   const [mensaje, setMensaje] = useState("Cargando...");
   const navigate = useNavigate();
@@ -16,14 +16,6 @@ const ProductoCard = ({ producto, onEliminar }) => {
     setCargando(true);
     setTimeout(() => {
       navigate(`/admin/productos/editar/${producto.id}`);
-    }, 1000);
-  };
-
-  const irADetalles = () => {
-    setMensaje("Cargando detalles...");
-    setCargando(true);
-    setTimeout(() => {
-      navigate(`/admin/productos/detalle/${producto.id}`);
     }, 1000);
   };
 
@@ -51,14 +43,15 @@ const ProductoCard = ({ producto, onEliminar }) => {
           <div className="precio">${producto.precio}</div>
 
           <div className="botones">
-            <motion.button
-              className="boton-detalles"
-              onClick={irADetalles}
-              whileHover={{ scale: 1.1 }}
-              transition={{ type: "spring", stiffness: 400 }}
-            >
-              Ver Detalles
-            </motion.button>
+          <motion.button
+            className="boton-detalles"
+            onClick={() => onVerDetalles(producto)}
+            whileHover={{ scale: 1.1 }}
+            transition={{ type: "spring", stiffness: 400 }}
+          >
+            Ver Detalles
+          </motion.button>
+
 
             <motion.button
               className="boton-editar"
@@ -93,6 +86,8 @@ ProductoCard.propTypes = {
     imagen: PropTypes.string.isRequired,
   }).isRequired,
   onEliminar: PropTypes.func.isRequired,
+  onVerDetalles: PropTypes.func.isRequired, 
+
 };
 
 export default ProductoCard;

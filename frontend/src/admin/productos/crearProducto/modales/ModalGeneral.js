@@ -3,10 +3,18 @@ import { createPortal } from 'react-dom';
 import PasoImagen from './pasos/PasoImagen';
 import PasoDatosBasicos from './pasos/PasoDatos';
 import PasoCategoria from './pasos/PasoCategoria';
-import PasoResumen from './pasos/PasoResumen';
-import PasoExito from './pasos/PasoExito';
+import axios from 'axios';
+import { API_URL } from '../../../../ApiConexion';
+import { mostrarNotificacion } from '../../../../Animations/NotificacionSwal';
 
-const ModalGeneral = ({ visible, onClose, progreso = 1, setProgreso, imagen, setImagen }) => {
+const ModalGeneral = ({
+  visible,
+  onClose,
+  progreso = 1,
+  setProgreso,
+  imagen,
+  setImagen
+}) => {
   const [datos, setDatos] = useState({
     nombre: '',
     descripcion: '',
@@ -17,9 +25,35 @@ const ModalGeneral = ({ visible, onClose, progreso = 1, setProgreso, imagen, set
     subcategoria_id: '',
   });
 
-  if (!visible) return null; // ← este condicional ya está después del hook
+  if (!visible) return null;
 
-  const totalPasos = 5;
+  const totalPasos = 3;
+
+  // Función para crear el producto directamente
+  const handleCrearProducto = async () => {
+    try {
+      const nuevoProducto = {
+        nombre: datos.nombre,
+        descripcion: datos.descripcion,
+        precio: datos.precio,
+        color: datos.color,
+        stock: datos.stock,
+        imagen: imagen,
+        subcategoria_id: datos.subcategoria_id,
+      };
+
+      await axios.post(`${API_URL}/api/admin/productos`, nuevoProducto, {
+        withCredentials: true,
+      });
+
+      mostrarNotificacion("success", "Producto creado exitosamente.");
+      onClose(); // Cierra el modal después de crear
+      setProgreso(1); // Reinicia al primer paso si se vuelve a abrir
+    } catch (error) {
+      console.error('Error al crear el producto:', error);
+      mostrarNotificacion("error", "No se pudo crear el producto.");
+    }
+  };
 
   const renderPasoActual = () => {
     switch (progreso) {
@@ -36,24 +70,22 @@ const ModalGeneral = ({ visible, onClose, progreso = 1, setProgreso, imagen, set
         );
       case 3:
         return (
-          <PasoCategoria
-            datos={datos}
-            setDatos={setDatos}
-            onNext={() => setProgreso(4)}
-            onBack={() => setProgreso(2)}
-          />
+          <>
+            <PasoCategoria
+              datos={datos}
+              setDatos={setDatos}
+              onBack={() => setProgreso(2)}
+            />
+            <div className="flex justify-end mt-6">
+              <button
+                onClick={handleCrearProducto}
+                className="px-6 py-2 bg-pink-600 text-white rounded hover:bg-pink-700"
+              >
+                Crear Producto
+              </button>
+            </div>
+          </>
         );
-      case 4:
-        return (
-          <PasoResumen
-            datos={datos}
-            imagen={imagen}
-            onConfirm={() => setProgreso(5)}
-            onBack={() => setProgreso(3)}
-          />
-        );
-      case 5:
-        return <PasoExito onClose={onClose} />;
       default:
         return null;
     }
@@ -66,7 +98,7 @@ const ModalGeneral = ({ visible, onClose, progreso = 1, setProgreso, imagen, set
           Crear un nuevo producto
         </h2>
 
-        {/* Barra de progreso de 5 pasos */}
+        {/* Barra de progreso */}
         <div className="flex items-center justify-between mb-6">
           {[...Array(totalPasos)].map((_, index) => (
             <div
@@ -78,10 +110,10 @@ const ModalGeneral = ({ visible, onClose, progreso = 1, setProgreso, imagen, set
           ))}
         </div>
 
-        {/* Contenido del paso actual */}
+        {/* Contenido actual */}
         <div className="mb-6">{renderPasoActual()}</div>
 
-        {/* Botón para cerrar */}
+        {/* Botón cerrar */}
         <div className="flex justify-end">
           <button
             onClick={onClose}
