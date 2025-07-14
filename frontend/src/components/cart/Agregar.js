@@ -40,8 +40,6 @@ const agregarCarrito = async (usuario, producto) => {
       }
     );
 
-    mostrarNotificacion("success", "Producto agregado al carrito");
-
   } catch (error) {
     console.error("Error al agregar al carrito:", error);
     Swal.fire({

@@ -6,14 +6,16 @@ import agregarCarrito from "../cart/Agregar"; // Importamos la función agregarC
 import axios from "axios";
 import "../../css/TarjetaProductos.css";
 import ModalAutenticacion from "../../components/cart/Autenticacion";
-import "../../css/Botones.css"
+import "../../css/Botones.css";
 import { API_URL } from "../../ApiConexion";
+import CargandoModal from "../../Animations/CargandoModal"; // Asegúrate de que la ruta sea correcta
 
 const ProductoCard = ({ producto }) => {
   const [usuario, setUsuario] = useState(null); // Estado para almacenar los datos del usuario
   const [mensaje, setMensaje] = useState(""); // Estado para mostrar el mensaje
-  const navigate = useNavigate();
+  const [cargando, setCargando] = useState(false); // Estado para mostrar el modal de carga
   const [mostrarModal, setMostrarModal] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Función para obtener los datos del usuario
@@ -35,17 +37,19 @@ const ProductoCard = ({ producto }) => {
     navigate(`/producto/${producto.id}`); // Redirige a la página de detalles del producto
   };
 
-  const handleAgregarCarrito = () => {
+  const handleAgregarCarrito = async () => {
     if (usuario) {
-      agregarCarrito(usuario, producto).then((responseMessage) => {
-        setMensaje(responseMessage);
-      });
+      setCargando(true); // Mostrar el modal de carga
+
+      const responseMessage = await agregarCarrito(usuario, producto);
+
+      setCargando(false); // Ocultar el modal de carga
+      setMensaje(responseMessage);
     } else {
       setMostrarModal(true);
     }
   };
-  
-  
+
   return (
     <motion.div
       className="tarjeta-producto"
@@ -81,12 +85,14 @@ const ProductoCard = ({ producto }) => {
           Ver detalles
         </motion.button>
       </div>
+
+      {/* Mostrar modal de carga mientras se procesa la solicitud */}
+      <CargandoModal mensaje="Agregando al carrito..." visible={cargando} />
+
       {mostrarModal && <ModalAutenticacion onClose={() => setMostrarModal(false)} />}
-
-
+      
       {mensaje && <p className="mensaje">{mensaje}</p>} {/* Mostrar mensaje de estado */}
     </motion.div>
-    
   );
 };
 

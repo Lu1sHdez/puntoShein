@@ -1,13 +1,18 @@
 // src/components/home/encabezado/EncabezadoGeneral.js
-import React from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../../../hooks/useAuth";
 import useSesionUsuario from "../../../context/useSesionUsuario";
+import axios from "axios";
+import Swal from "sweetalert2";
+import { API_URL } from "../../../ApiConexion";
+import CargandoModal from "../../../Animations/CargandoModal";
 
 const EncabezadoGeneral = () => {
   const navigate = useNavigate();
   const { logout } = useAuth();
   const { usuarioAutenticado, datos } = useSesionUsuario();
+  const [cargando, setCargando] = useState(false);
 
   const nombre = datos?.nombre || "Usuario";
   const fotoPerfil = datos?.foto_perfil || "";
@@ -22,9 +27,25 @@ const EncabezadoGeneral = () => {
 
   const iniciales = generarIniciales(nombre);
 
-  const cerrarSesion = () => {
-    logout();
-    navigate("/login");
+  const cerrarSesion = async () => {
+    setCargando(true);
+    try {
+      await axios.post(`${API_URL}/api/autenticacion/logout`, {}, { withCredentials: true });
+      logout();
+
+      setTimeout(() => {
+        setCargando(false);
+        navigate("/login");
+        window.location.reload(); // ✅ Recargar página después del logout
+      }, 2000);
+    } catch (error) {
+      setCargando(false);
+      Swal.fire({
+        icon: "error",
+        title: "Error al cerrar sesión",
+        text: error.response?.data?.mensaje || "Ocurrió un error inesperado.",
+      });
+    }
   };
 
   return (
@@ -44,7 +65,7 @@ const EncabezadoGeneral = () => {
             {/* Perfil */}
             <div
               className="flex items-center space-x-2 cursor-pointer"
-              onClick={() => navigate("/perfil")}
+              onClick={() => navigate("/usuario/perfil")}
             >
               {fotoPerfil ? (
                 <img
@@ -65,7 +86,7 @@ const EncabezadoGeneral = () => {
             {/* Cerrar sesión */}
             <button
               onClick={cerrarSesion}
-              className="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-red-400 hover:text-white transition"
+              className="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-pink-700 hover:text-white transition"
             >
               Cerrar sesión
             </button>
@@ -80,6 +101,9 @@ const EncabezadoGeneral = () => {
           </Link>
         )}
       </div>
+
+      {/* Modal de carga */}
+      <CargandoModal mensaje="Cerrando sesión..." visible={cargando} />
     </header>
   );
 };

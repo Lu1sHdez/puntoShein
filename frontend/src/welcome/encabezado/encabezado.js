@@ -1,15 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaStore, FaSignOutAlt } from "react-icons/fa";
 import useAuth from "../../hooks/useAuth";
+import axios from "axios";
+import Swal from "sweetalert2";
 import useSesionUsuario from "../../context/useSesionUsuario";
+import { API_URL } from "../../ApiConexion";
+import CargandoModal from "../../Animations/CargandoModal";
 
 const EncabezadoBienvenida = () => {
   const navigate = useNavigate();
   const { logout } = useAuth();
-
-  // ✅ Usamos el nuevo hook centralizado
   const { usuarioAutenticado, datos } = useSesionUsuario();
+  const [cargando, setCargando] = useState(false);
 
   // Iniciales
   const generarIniciales = (nombre) => {
@@ -24,9 +27,25 @@ const EncabezadoBienvenida = () => {
   const fotoPerfil = datos?.foto_perfil;
   const nombreUsuario = datos?.nombre;
 
-  const cerrarSesion = () => {
-    logout();
-    navigate("/inicio");
+  const cerrarSesion = async () => {
+    setCargando(true);
+    try {
+      await axios.post(`${API_URL}/api/autenticacion/logout`, {}, { withCredentials: true });
+      logout();
+
+      setTimeout(() => {
+        setCargando(false);
+        navigate("/inicio");
+        window.location.reload(); 
+      }, 2000);
+    } catch (error) {
+      setCargando(false);
+      Swal.fire({
+        icon: "error",
+        title: "Error al cerrar sesión",
+        text: error.response?.data?.mensaje || "Ocurrió un error inesperado.",
+      });
+    }
   };
 
   return (
@@ -94,6 +113,8 @@ const EncabezadoBienvenida = () => {
           </div>
         )}
       </div>
+       {/* Modal de carga */}
+       <CargandoModal mensaje="Cerrando sesión..." visible={cargando} />
     </header>
   );
 };

@@ -6,6 +6,7 @@ import Swal from "sweetalert2";
 import axios from "axios";
 import useAuth from "../../hooks/useAuth";
 import { API_URL } from "../../ApiConexion";
+import CargandoModal from "../../Animations/CargandoModal";
 
 const EncabezadoUsuario = () => {
   const [empresa, setEmpresa] = useState(null);
@@ -13,6 +14,7 @@ const EncabezadoUsuario = () => {
 
   const navigate = useNavigate();
   const { logout } = useAuth();
+  const[cargando, setCargando] = useState(false);
 
   const token = localStorage.getItem("token");
   const rolValido = token && jwtDecode(token).rol === "usuario";
@@ -26,20 +28,17 @@ const EncabezadoUsuario = () => {
   };
 
   const handleLogout = async () => {
+    setCargando(true);
     try {
       await axios.post(`${API_URL}/api/autenticacion/logout`, {}, { withCredentials: true });
       logout();
 
-      Swal.fire({
-        icon: "success",
-        title: "Sesión cerrada",
-        text: "Has cerrado sesión correctamente.",
-        showConfirmButton: false,
-        timer: 2000,
-      });
-
-      setTimeout(() => navigate("/inicio"), 2000);
+      setTimeout(() => {
+        setCargando(false); 
+        navigate("/inicio");
+      }, 2000);
     } catch (error) {
+      setCargando(false);
       Swal.fire({
         icon: "error",
         title: "Error al cerrar sesión",
@@ -120,6 +119,8 @@ const EncabezadoUsuario = () => {
           )}
         </div>
       </div>
+      <CargandoModal mensaje="Cerrando sesión..." visible={cargando} />
+
     </header>
   );
 };

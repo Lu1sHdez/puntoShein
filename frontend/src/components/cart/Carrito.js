@@ -9,6 +9,7 @@ import { motion } from 'framer-motion';
 import { mostrarNotificacion } from "../../Animations/NotificacionSwal.js";
 import { API_URL } from "../../ApiConexion.js";
 import { Cargando } from "../../Animations/Cargando.js";
+import CargandoModal from "../../Animations/CargandoModal.js";
 
 mostrarNotificacion();
 
@@ -19,6 +20,8 @@ const Carrito = () => {
   const [errorCantidad, setErrorCantidad] = useState({});
   const [totalCantidad, setTotalCantidad] = useState(0); // Nuevo estado para almacenar la cantidad total de productos
   const navigate = useNavigate();
+  const [cargando, setCargando] = useState(false);
+  const [vaciando, setVaciando] = useState(false);
 
   useEffect(() => {
     const fetchUsuario = async () => {
@@ -103,17 +106,19 @@ const Carrito = () => {
     });
 
     if (result.isConfirmed) {
+      setCargando(true); 
       try {
         await eliminarDelCarrito(usuario.id, productoId);
-        mostrarNotificacion("success", "Producto eliminado");       
-
         // Actualizar el carrito localmente para reflejar la eliminación
         setCarrito((prevCarrito) => prevCarrito.filter((item) => item.producto.id !== productoId));
 
         // También actualizamos la cantidad total
         const cantidadTotal = await obtenerCantidad(usuario.id);
         setTotalCantidad(cantidadTotal);
+
+        setCargando(false);
       } catch (error) {
+        setCargando(false); 
         mostrarNotificacion("error", "Hubo un problema al eliminar el producto del carrito.")
       }
     }
@@ -131,14 +136,14 @@ const Carrito = () => {
     });
 
     if (result.isConfirmed) {
+      setVaciando(true);
       try {
         await vaciarCarrito(usuario.id);
-        mostrarNotificacion("success", "Carrito vaciado"); 
-        setCarrito([]); // Limpiar el carrito localmente
-
-        // Actualizamos la cantidad total a 0 después de vaciar el carrito
+        setCarrito([]); 
         setTotalCantidad(0);
+        setVaciando(false);
       } catch (error) {
+        setVaciando(false);
         Swal.fire({
           icon: "error",
           title: "Error",
@@ -253,6 +258,10 @@ const Carrito = () => {
           </div>
         </div>
       )}
+       {/* Mostrar el modal de carga */}
+       <CargandoModal mensaje="Eliminando producto..." visible={cargando} />
+       {/* Mostrar el modal de carga */}
+      <CargandoModal mensaje="Vaciando carrito..." visible={vaciando} />
     </motion.div>
   );
 };
