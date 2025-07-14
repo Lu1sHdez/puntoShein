@@ -8,6 +8,7 @@ import { motion } from "framer-motion";
 import Boton from "../elements/Boton";
 import { API_URL } from "../ApiConexion";
 import { mostrarNotificacion } from "../Animations/NotificacionSwal";
+import CargandoModal from "../Animations/CargandoModal";
 
 const Registro = () => {
   const [datos, setDatos] = useState({
@@ -25,6 +26,8 @@ const Registro = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [showPasswordRules, setShowPasswordRules] = useState(false);
+  const [cargando, setCargando] = useState(false);
+
 
   const navigate = useNavigate();
   const { passwordRules, validar } = validaPassword();
@@ -105,12 +108,17 @@ const Registro = () => {
     }
 
     try {
+      setCargando(true);
       await axios.post(`${API_URL}/api/autenticacion/registro`, datos);
 
+      setTimeout(() => {
+        setCargando(false); // Ocultar modal antes de redirigir
+        navigate("/login");
+      }, 1000);
       
-      setErrores({ general: mostrarNotificacion("success", "Registro exitoso. Redirigiendo...") });
       setTimeout(() => navigate("/login"), 1000); 
     } catch (error) {
+      setCargando(false);
       const mensajeError = error.response?.data?.mensaje;
 
       if (mensajeError === "El correo ya está registrado.") {
@@ -248,6 +256,8 @@ const Registro = () => {
         </form>
         </motion.div>
       </div>
+      <CargandoModal mensaje="Registrando usuario..." visible={cargando} />
+
     </div>
   );
 };

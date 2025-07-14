@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import Boton from "../elements/Boton";
 import { API_URL } from '../ApiConexion';
 import ReCAPTCHA from "react-google-recaptcha";
+import CargandoModal from "../Animations/CargandoModal";
 
 const siteKey = process.env.REACT_APP_RECAPTCHA_SITE_KEY;
 
@@ -58,7 +59,7 @@ const Login = () => {
     setErrorValidacion("");
     setErrorCampos({ correo: false, password: false });
   
-    // ✅ Llama al hook pasándole el token
+    //Llama al hook pasándole el token
     const resultado = await handleSubmit(e, { tokenRecaptcha: captchaToken });
   
     if (resultado && resultado.token && resultado.usuario) {
@@ -88,6 +89,7 @@ const Login = () => {
   return (
     <div className="flex items-center justify-center mt-0">
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+      {loading && <CargandoModal mensaje="Iniciando sesión..." visible={true} />}
         
         <h2 className="text-2xl font-semibold text-center text-gray-700">Iniciar Sesión</h2>
 
