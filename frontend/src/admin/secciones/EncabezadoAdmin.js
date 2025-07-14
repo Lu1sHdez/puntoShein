@@ -5,31 +5,28 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { API_URL } from "../../ApiConexion";
 import useAuth from "../../hooks/useAuth"; // Asegúrate de ajustar la ruta si es necesario
+import CargandoModal from "../../Animations/CargandoModal";
 
 
 const EncabezadoAdmin = () => {
   const [empresa, setEmpresa] = useState(null);
   const [admin, setAdmin] = useState(null);
+  const [cargando, setCargando] = useState(false); // Estado para el modal de carga
+
   const { logout } = useAuth(); // usa el hook global de auth
 
   const navigate = useNavigate();
 
   const handleLogout = async () => {
+    setCargando(true);
     try {
       await axios.post(`${API_URL}/api/autenticacion/logout`, {}, { withCredentials: true });
 
       logout(); // borra auth en contexto
 
-      Swal.fire({
-        icon: "success",
-        title: "Sesión cerrada",
-        text: "Has cerrado sesión correctamente.",
-        showConfirmButton: false,
-        timer: 2000,
-      });
-
       setTimeout(() => navigate("/"), 2000); // volver al inicio
     } catch (error) {
+      setCargando(false);
       Swal.fire({
         icon: "error",
         title: "Error al cerrar sesión",
@@ -113,6 +110,8 @@ const EncabezadoAdmin = () => {
           </button>
         </div>
       </div>
+      {/* Modal de carga */}
+      <CargandoModal mensaje="Cerrando sesión..." visible={cargando} />
     </header>
   );
 };

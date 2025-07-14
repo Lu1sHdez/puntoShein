@@ -2,6 +2,7 @@
 import React, { Suspense, lazy } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Skeleton from "./components/Skeleton";
+import {verificarExpToken} from "./context/verificarExpToken";
 
 // Layouts
 import Layout from "./components/home/Layout";         // Layout general
@@ -26,7 +27,6 @@ const DetalleProductos = lazy(() => import("./admin/productos/DetalleProducto"))
 const PerfilAdmin = lazy(() => import("./admin/perfil/Perfil"));
 const ActualizarPerfilAdmin = lazy(() => import("./admin/perfil/ActualizarPerfil"));
 const Configuracion = lazy(() => import("./admin/setting/Configuracion"));
-const CrearProducto = lazy(() => import("./admin/productos/crearProducto/CrearProducto"));
 const EditarProducto = lazy(() => import("./admin/productos/editarProducto/EditarProducto"));
 const PinInicioRapido = lazy(() => import("./admin/pin/pinInicioRapido"));
 const PreguntasFrecuentes = lazy(() => import("./admin/empresa/preguntasFrecuentes/PreguntasFrecuentes"));
@@ -49,6 +49,7 @@ const WelcomeAnimacion = lazy(() => import("./welcome/WelcomeAnimacion"));
 const Login = lazy(() => import("./pages/Login"));
 const Registro = lazy(() => import("./pages/Registro"));
 const CerrarSesion = lazy(() => import("./pages/CerrarSesion"));
+const Logout = lazy(() => import("./pages/Logout"));
 const RecuperarPassword = lazy(() => import("./pages/RecuperarPassword"));
 const SolicitarPasswordTelefono = lazy(() => import("./pages/RecuperarPasswordTelefono"));
 const VerificarTelefono = lazy(() => import("./pages/VerificarCodigoTelefono"));
@@ -74,6 +75,7 @@ const MapaSitio = lazy(() => import("./components/empresa/MapaSitio"));
 const PreguntasFrecuentesAll = lazy(() => import("./components/empresa/PreguntasFrecuentes"));
 
 const App = () => {
+  verificarExpToken(); 
   return (
     <Router>
       <Suspense fallback={<Skeleton />}>
@@ -94,6 +96,7 @@ const App = () => {
             <Route path="/login" element={<Login />} />
             <Route path="/registro" element={<Registro />} />
             <Route path="/cerrar-sesion" element={<CerrarSesion />} />
+            <Route path="/logout" element={<Logout />} />
             <Route path="/recuperarPassword" element={<RecuperarPassword />} />
             <Route path="/solicitarPasswordTelefono" element={<SolicitarPasswordTelefono />} />
             <Route path="/verificarTelefono" element={<VerificarTelefono />} />
@@ -145,7 +148,6 @@ const App = () => {
             <Route path="/admin/productos" element={<ProteccionRutas element={Productos} allowedRoles={["administrador"]} />} />
             <Route path="/admin/gestionProductos" element={<ProteccionRutas element={GestionProductos} allowedRoles={["administrador"]} />} />
             <Route path="/admin/productos/detalle/:id" element={<ProteccionRutas element={DetalleProductos} allowedRoles={["administrador"]} />} />
-            <Route path="/admin/productos/crear" element={<ProteccionRutas element={CrearProducto} allowedRoles={["administrador"]} />} />
             <Route path="/admin/productos/editar/:id" element={<ProteccionRutas element={EditarProducto} allowedRoles={["administrador"]} />} />
             <Route path="/admin/inicio-rapido" element={<ProteccionRutas element={PinInicioRapido} allowedRoles={["administrador"]} />} />
             <Route path="/admin/preguntasFrecuentes" element={<ProteccionRutas element={PreguntasFrecuentes} allowedRoles={["administrador"]} />} />

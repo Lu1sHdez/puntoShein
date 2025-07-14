@@ -26,7 +26,6 @@ const useFormulario = (initialState, url, redirigir, isAuthForm = false) => {
       );
   
       if (isAuthForm) {
-        mostrarNotificacion("success", "Inicio de sesión exitoso. Redirigiendo...");
         localStorage.setItem("token", respuesta.data.token);
         return respuesta.data;
       } else {

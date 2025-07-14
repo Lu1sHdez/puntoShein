@@ -2,6 +2,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import { API_URL } from '../../../../../ApiConexion';
 import { mostrarNotificacion } from '../../../../../Animations/NotificacionSwal';
+import CargandoModal from '../../../../../Animations/CargandoModal.js';
+
 
 const PasoImagen = ({ imagen, setImagen, onNext }) => {
   const [archivo, setArchivo] = useState(null);
@@ -46,10 +48,6 @@ const PasoImagen = ({ imagen, setImagen, onNext }) => {
   };
 
   const handleSubirImagen = async () => {
-    if (!archivo) {
-      mostrarNotificacion('warning', 'Selecciona una imagen antes de continuar.');
-      return;
-    }
   
     try {
       setSubiendo(true);
@@ -66,11 +64,9 @@ const PasoImagen = ({ imagen, setImagen, onNext }) => {
   
       const { imagenUrl } = response.data;
       setImagen(imagenUrl);
-      mostrarNotificacion('success', 'Imagen subida correctamente.');
       onNext(); // continuar al siguiente paso
     } catch (error) {
       console.error('Error al subir imagen:', error);
-      mostrarNotificacion('error', 'Error al subir la imagen.');
     } finally {
       setSubiendo(false);
     }
@@ -132,9 +128,11 @@ const PasoImagen = ({ imagen, setImagen, onNext }) => {
           disabled={subiendo || !archivo}
           className="bg-pink-600 text-white px-4 py-2 rounded hover:bg-pink-700 disabled:opacity-50"
         >
-          {subiendo ? 'Subiendo...' : 'Subir y continuar'}
+          {subiendo ? 'Subiendo...' : 'Continuar'}
         </button>
       </div>
+      {/* Modal de carga */}
+      <CargandoModal mensaje="Subiendo imagen..." visible={subiendo} />
     </div>
   );
 };

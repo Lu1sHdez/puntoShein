@@ -5,7 +5,7 @@ import PasoDatosBasicos from './pasos/PasoDatos';
 import PasoCategoria from './pasos/PasoCategoria';
 import axios from 'axios';
 import { API_URL } from '../../../../ApiConexion';
-import { mostrarNotificacion } from '../../../../Animations/NotificacionSwal';
+import CargandoModal from '../../../../Animations/CargandoModal';
 
 const ModalGeneral = ({
   visible,
@@ -25,12 +25,38 @@ const ModalGeneral = ({
     subcategoria_id: '',
   });
 
+  const [errores, setErrores] = useState({
+    categoria: '',
+    subcategoria: ''
+  });
+  const [cargando, setCargando] = useState(false);
+
   if (!visible) return null;
 
   const totalPasos = 3;
+  
 
-  // Función para crear el producto directamente
   const handleCrearProducto = async () => {
+    const nuevosErrores = {};
+  
+    if (!datos.categoria_id) {
+      nuevosErrores.categoria = 'Debes seleccionar una categoría.';
+    }
+  
+    if (!datos.subcategoria_id) {
+      nuevosErrores.subcategoria = 'Debes seleccionar una subcategoría.';
+    }
+  
+    // Si hay errores, actualiza el estado y detén el flujo
+    if (Object.keys(nuevosErrores).length > 0) {
+      setErrores(nuevosErrores);
+      return;
+    }
+  
+    // Si no hay errores, limpia y continúa
+    setErrores({ categoria: '', subcategoria: '' });
+    setCargando(true); 
+  
     try {
       const nuevoProducto = {
         nombre: datos.nombre,
@@ -41,19 +67,19 @@ const ModalGeneral = ({
         imagen: imagen,
         subcategoria_id: datos.subcategoria_id,
       };
-
+  
       await axios.post(`${API_URL}/api/admin/productos`, nuevoProducto, {
         withCredentials: true,
       });
-
-      mostrarNotificacion("success", "Producto creado exitosamente.");
-      onClose(); // Cierra el modal después de crear
-      setProgreso(1); // Reinicia al primer paso si se vuelve a abrir
+        onClose();
+      setProgreso(1);
     } catch (error) {
       console.error('Error al crear el producto:', error);
-      mostrarNotificacion("error", "No se pudo crear el producto.");
-    }
+    }finally {
+        setCargando(false); // ✅ Ocultar cargando cuando termina
+      }
   };
+  
 
   const renderPasoActual = () => {
     switch (progreso) {
@@ -75,6 +101,8 @@ const ModalGeneral = ({
               datos={datos}
               setDatos={setDatos}
               onBack={() => setProgreso(2)}
+              errores={errores}
+
             />
             <div className="flex justify-end mt-6">
               <button
@@ -122,6 +150,8 @@ const ModalGeneral = ({
             Cerrar
           </button>
         </div>
+        <CargandoModal visible={cargando} mensaje="Guardando producto..." />
+
       </div>
     </div>,
     document.body

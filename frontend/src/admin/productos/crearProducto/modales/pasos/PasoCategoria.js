@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { API_URL } from '../../../../../ApiConexion';
-import { mostrarNotificacion } from '../../../../../Animations/NotificacionSwal';
+import CargandoModal from '../../../../../Animations/CargandoModal';
 
-const PasoCategoria = ({ datos, setDatos, onBack }) => {
+const PasoCategoria = ({ datos, setDatos, onBack, errores  }) => {
   const [categorias, setCategorias] = useState([]);
   const [subcategorias, setSubcategorias] = useState([]);
   const [filteredSubcategorias, setFilteredSubcategorias] = useState([]);
@@ -11,6 +11,8 @@ const PasoCategoria = ({ datos, setDatos, onBack }) => {
   const [nuevaSubcategoria, setNuevaSubcategoria] = useState('');
   const [showCrearCategoria, setShowCrearCategoria] = useState(false);
   const [showCrearSubcategoria, setShowCrearSubcategoria] = useState(false);
+  const [cargando, setCargando] = useState(false); // nuevo estado
+  const [mensajeCarga, setMensajeCarga] = useState("Guardando información...");
 
   useEffect(() => {
     const fetchCategorias = async () => {
@@ -60,6 +62,9 @@ const PasoCategoria = ({ datos, setDatos, onBack }) => {
   };
 
   const handleCrearCategoria = async () => {
+
+    setMensajeCarga("Creando categoría...");
+    setCargando(true);
     try {
       const res = await axios.post(
         `${API_URL}/api/admin/categorias`,
@@ -70,13 +75,18 @@ const PasoCategoria = ({ datos, setDatos, onBack }) => {
       setDatos({ ...datos, categoria_id: res.data.id, subcategoria_id: '' });
       setNuevaCategoria('');
       setShowCrearCategoria(false);
-      mostrarNotificacion("success", "Categoría creada correctamente.");
     } catch (error) {
       console.error('Error al crear categoría:', error);
+    }finally{
+      setCargando(false); 
     }
   };
 
   const handleCrearSubcategoria = async () => {
+    setMensajeCarga("Creando subcategoría...");
+    setCargando(true);
+
+
     try {
       const res = await axios.post(
         `${API_URL}/api/admin/subcategorias`,
@@ -87,9 +97,10 @@ const PasoCategoria = ({ datos, setDatos, onBack }) => {
       setDatos({ ...datos, subcategoria_id: res.data.id });
       setNuevaSubcategoria('');
       setShowCrearSubcategoria(false);
-      mostrarNotificacion("success", "Subcategoría creada correctamente.");
     } catch (error) {
       console.error('Error al crear subcategoría:', error);
+    }finally{
+      setCargando(false);
     }
   };
 
@@ -112,6 +123,10 @@ const PasoCategoria = ({ datos, setDatos, onBack }) => {
           </option>
         ))}
       </select>
+      {errores?.categoria && (
+        <p className="text-red-600 text-sm">{errores.categoria}</p>
+        )}
+
 
       <button
         type="button"
@@ -154,6 +169,10 @@ const PasoCategoria = ({ datos, setDatos, onBack }) => {
           </option>
         ))}
       </select>
+      {errores?.subcategoria && (
+        <p className="text-red-600 text-sm">{errores.subcategoria}</p>
+        )}
+
 
       <button
         type="button"
@@ -192,6 +211,7 @@ const PasoCategoria = ({ datos, setDatos, onBack }) => {
           Volver
         </button>
       </div>
+      <CargandoModal visible={cargando} mensaje={mensajeCarga} />
     </div>
   );
 };

@@ -10,7 +10,6 @@ import '../../css/Texto.css';
 import '../../css/Botones.css';
 import BuscarProducto from './BuscarProductos'; 
 import ProductoCard from './ProductoCard'; 
-import { mostrarNotificacion } from '../../Animations/NotificacionSwal.js';
 import { API_URL } from '../../ApiConexion.js';
 import CargandoBarra from '../../Animations/CargandoBarra.js';
 import ModalGeneral from './crearProducto/modales/ModalGeneral.js';
@@ -100,7 +99,6 @@ const Productos = () => {
         });
         setProductos(productos.filter((producto) => producto.id !== id));  // Elimina el producto de la lista
       }
-      mostrarNotificacion("success", "Producto eliminado correctamente");
 
     } catch (err) {
       console.error('Error al eliminar el producto:', err);

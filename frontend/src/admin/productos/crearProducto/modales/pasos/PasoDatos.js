@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import ModalColor from './ModalColor';
 import { Palette } from "lucide-react";
+import CargandoModal from '../../../../../Animations/CargandoModal';
 
 const PasoDatosBasicos = ({ datos, setDatos, onNext, onBack }) => {
   const [errores, setErrores] = useState({});
   const [mostrarModalColor, setMostrarModalColor] = useState(false);
+  const[validando, setValidando]  = useState(false);
 
   const validarCampos = () => {
     const nuevosErrores = {};
@@ -18,11 +20,14 @@ const PasoDatosBasicos = ({ datos, setDatos, onNext, onBack }) => {
     return Object.keys(nuevosErrores).length === 0;
   };
 
-  const handleNext = () => {
-    if (validarCampos()) {
-      onNext();
-    }
-  };
+    const handleNext = async () => {
+        setValidando(true); // mostrar modal de carga
+        setTimeout(() => {
+        const valido = validarCampos();
+        setValidando(false); // ocultar modal
+        if (valido) onNext();
+        }, 800); // pequeño retraso para animación
+    };
 
   return (
     <div className="space-y-5">
@@ -135,6 +140,9 @@ const PasoDatosBasicos = ({ datos, setDatos, onNext, onBack }) => {
         onClose={() => setMostrarModalColor(false)}
         onSeleccionarColor={(color) => setDatos({ ...datos, color })}
       />
+
+      {/* Modal de carga */}
+      <CargandoModal visible={validando} mensaje="Validando datos..." />
     </div>
   );
 };
