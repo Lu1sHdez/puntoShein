@@ -7,7 +7,8 @@ import ProductoTalla from "../models/productoTalla.model.js";
 import Venta from "../models/ventas.model.js";
 import TokenDispositivo from "../models/tokenDispositivo.model.js";
 import { enviarNotificacionStock } from "../utils/notificaciones.js";
-
+import cloudinary from '../config/cloudinary.config.js';
+import fs from 'fs';
 
 // Función para buscar productos por nombre
 export const buscarProductos = async (req, res) => {
@@ -65,7 +66,6 @@ export const allProductos = async (req, res) => {
     res.status(500).json({ mensaje: "Error interno del servidor" });
   }
 };
-
 
 //  Obtener un producto por su ID
 export const obtenerProductoPorId = async (req, res) => {
@@ -358,5 +358,35 @@ export const notificaciones = async (req, res) => {
   } catch (error) {
     console.error("Error al notificar productos críticos/agotados:", error);
     res.status(500).json({ mensaje: "Error al enviar notificaciones" });
+  }
+};
+
+
+
+export const subirImagenProducto = async (req, res) => {
+  try {
+    const file = req.file;
+    if (!file) {
+      return res.status(400).json({ mensaje: 'No se envió ninguna imagen' });
+    }
+
+    const result = await cloudinary.uploader.upload(file.path, {
+      folder: 'productos',
+      public_id: `producto_${Date.now()}`,
+      overwrite: true,
+    });
+
+    // Eliminar imagen temporal del servidor
+    fs.unlink(file.path, err => {
+      if (err) console.error('Error al eliminar archivo temporal:', err);
+    });
+
+    res.status(200).json({
+      mensaje: 'Imagen subida correctamente',
+      imagenUrl: result.secure_url,
+    });
+  } catch (error) {
+    console.error('Error al subir imagen:', error);
+    res.status(500).json({ mensaje: 'Error al subir imagen', error: error.message });
   }
 };

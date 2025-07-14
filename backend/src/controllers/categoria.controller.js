@@ -41,4 +41,3 @@ export const crearSubcategoria = async (req, res) => {
     res.status(500).json({ mensaje: 'Error al crear la subcategoría' });
   }
 };
-  

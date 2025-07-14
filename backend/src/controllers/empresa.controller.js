@@ -38,7 +38,6 @@ export const subirLogoEmpresa = async (req, res) => {
   }
 };
 
-
 // Obtener datos de la empresa con sus valores
 export const obtenerEmpresa = async (req, res) => {
   try {

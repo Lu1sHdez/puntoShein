@@ -9,7 +9,7 @@ import { API_URL } from '../../ApiConexion.js';
 
 const DetalleProducto = () => {
   const [producto, setProducto] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { id } = useParams();  // Obtener el ID del producto desde la URL
 
@@ -30,11 +30,6 @@ const DetalleProducto = () => {
 
     fetchProducto();
   }, [id]);
-
-  // Cargando productos o error
-  if (loading) {
-    return <motion.div {...dataLoadingAnimation} className="text-center text-xl text-gray-500 py-6">Cargando...</motion.div>;
-  }
 
   if (error) {
     return <div className="text-center text-red-600 py-6">{error}</div>;

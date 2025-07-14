@@ -13,8 +13,7 @@ import ProductoCard from './ProductoCard';
 import { mostrarNotificacion } from '../../Animations/NotificacionSwal.js';
 import { API_URL } from '../../ApiConexion.js';
 import CargandoBarra from '../../Animations/CargandoBarra.js';
-
-
+import ModalGeneral from './crearProducto/modales/ModalGeneral.js';
 
 const Productos = () => {
   const [productos, setProductos] = useState([]);
@@ -26,6 +25,9 @@ const Productos = () => {
   const [selectedSubcategoria, setSelectedSubcategoria] = useState('');
   const [searchTerm, setSearchTerm] = useState(''); 
   const [visibleProductos, setVisibleProductos] = useState(8);  // Estado para controlar cuántos productos se muestran
+  const [modalGeneralVisible, setModalGeneralVisible] = useState(false);
+  const [imagen, setImagen] = useState('');
+  const [progreso, setProgreso] = useState(1); // si también usarás `setProgreso`
 
   // Obtener todas las categorías
   useEffect(() => {
@@ -144,9 +146,12 @@ const Productos = () => {
       <h1 className="text-3xl mb-6">Todos los productos</h1>
 
       <div className="mb-4 flex items-center justify-between">
-        <Link to="/admin/productos/crear" className="px-4 py-2 bg-pink-600 hover:bg-pink-700 text-white rounded-md transition">
-          Crear Nuevo Producto
-        </Link>
+      <button
+        onClick={() => setModalGeneralVisible(true)}
+        className="px-4 py-2 bg-pink-600 hover:bg-pink-700 text-white rounded-md transition"
+      >
+        Crear Nuevo Producto
+      </button>
 
         {/* Botón para cargar todos los productos */}
         <button
@@ -214,6 +219,20 @@ const Productos = () => {
             </motion.button>
             <RegresarButton />
           </div>
+        )}
+         {/* Modal para crear nuevo producto */}
+        {modalGeneralVisible && (
+          <ModalGeneral
+            visible={modalGeneralVisible}
+            onClose={() => {
+              setModalGeneralVisible(false);
+              setProgreso(1);  // Reiniciar progreso al cerrar
+            }}
+            progreso={progreso}
+            setProgreso={setProgreso}
+            imagen={imagen}
+            setImagen={setImagen}
+          />
         )}
 
       <RegresarButton />
