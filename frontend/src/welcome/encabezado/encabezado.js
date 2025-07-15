@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { FaStore, FaSignOutAlt } from "react-icons/fa";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { FaSignOutAlt } from "react-icons/fa";
 import useAuth from "../../hooks/useAuth";
 import axios from "axios";
 import Swal from "sweetalert2";
@@ -13,6 +13,8 @@ const EncabezadoBienvenida = () => {
   const { logout } = useAuth();
   const { usuarioAutenticado, datos } = useSesionUsuario();
   const [cargando, setCargando] = useState(false);
+  const [empresa, setEmpresa] = useState(null);
+
 
   // Iniciales
   const generarIniciales = (nombre) => {
@@ -47,18 +49,39 @@ const EncabezadoBienvenida = () => {
       });
     }
   };
+  useEffect(() => {
+    const obtenerDatos = async () => {
+      try {
+        const empresaRes = await axios.get(`${API_URL}/api/empresa/empresa`, {
+          withCredentials: true,
+        });
+        setEmpresa(empresaRes.data);
+
+      } catch (error) {
+        console.error("Error al cargar datos:", error);
+      }
+    };
+
+    obtenerDatos();
+  }, []);
 
   return (
     <header className="bg-white shadow-sm fixed top-0 left-0 w-full z-50 border-b border-gray-200">
       <div className="max-w-6xl mx-auto px-4 py-3 flex flex-col sm:flex-row items-center justify-between gap-4">
-        {/* Logo y nombre del sitio */}
-        <div
-          className="flex items-center space-x-2 cursor-pointer"
-          onClick={() => navigate("/inicio")}
-        >
-          <FaStore className="text-pink-600 text-2xl" />
-          <span className="text-xl font-semibold text-gray-800">Punto Shein</span>
-        </div>
+        {/* Empresa */}
+        <Link to = "/inicio"
+          className="flex items-center space-x-4">
+          {empresa && (
+            <>
+              <img
+                src={empresa.logo}
+                alt="Logo de empresa"
+                className="h-14 w-14 rounded-full object-cover shadow-md border border-gray-300"
+              />
+              <h1 className="text-xl font-bold text-pink-600">{empresa.nombre}</h1>
+            </>
+          )}
+        </Link>
 
         {/* Usuario autenticado */}
         {usuarioAutenticado && datos && (

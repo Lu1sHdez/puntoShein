@@ -1,251 +1,193 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import DetallesProducto from '././modales/DetalleProducto';
-import RegresarButton from '../../components/Regresar.js';
-import Swal from 'sweetalert2';
-import { dataLoadingAnimation } from '../../components/Funciones.js';
-import { motion } from 'framer-motion';
-import { LuRefreshCw } from "react-icons/lu";
-import '../../css/Texto.css';
-import '../../css/Botones.css';
-import BuscarProducto from './BuscarProductos'; 
-import ProductoCard from './ProductoCard'; 
-import { API_URL } from '../../ApiConexion.js';
-import CargandoBarra from '../../Animations/CargandoBarra.js';
-import ModalGeneral from './crearProducto/modales/ModalGeneral.js';
+import { API_URL } from '../../ApiConexion.js'; // Ajusta la importación según tu archivo de configuración
+import ModalDetalle from './modales/DetalleProducto'; // Importamos el modal de detalle
+import ModalGeneral from './crear/ModalGeneral'; // Importamos el modal para crear producto
+import { FaPlusCircle, FaTrashAlt } from 'react-icons/fa'; // Icono para el botón de crear producto
+import CargandoBarra from '../../Animations/CargandoBarra';
+import ModalConfirmacionEliminar from './modales/ModalConfirmacionEliminar';  // Importamos el modal de confirmación
+import CargandoModal from '../../Animations/CargandoModal.js';
 
-const Productos = () => {
+const ProductosLista = () => {
   const [productos, setProductos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [categorias, setCategorias] = useState([]);
-  const [subcategorias, setSubcategorias] = useState([]);
-  const [selectedCategoria, setSelectedCategoria] = useState('');
-  const [selectedSubcategoria, setSelectedSubcategoria] = useState('');
-  const [searchTerm, setSearchTerm] = useState(''); 
-  const [visibleProductos, setVisibleProductos] = useState(8);  // Estado para controlar cuántos productos se muestran
-  const [modalGeneralVisible, setModalGeneralVisible] = useState(false);
-  const [imagen, setImagen] = useState('');
-  const [progreso, setProgreso] = useState(1); // si también usarás `setProgreso`
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalCrearVisible, setModalCrearVisible] = useState(false); // Estado para controlar el modal de creación
   const [productoSeleccionado, setProductoSeleccionado] = useState(null);
+  const [modalEliminarVisible, setModalEliminarVisible] = useState(false); // Estado para el modal de eliminación
+  const [cargando, setCargando] = useState(false); // Estado para mostrar el modal de carga
 
-  // Obtener todas las categorías
-  useEffect(() => {
-    const fetchCategorias = async () => {
-      try {
-        const response = await axios.get(`${API_URL}/api/productos/categorias`, {
-          withCredentials: true,
-        });
-        setCategorias(response.data);
-      } catch (err) {
-        console.error('Error al obtener categorías:', err);
-      }
-    };
-    fetchCategorias();
-  }, []);
 
-  // Obtener subcategorías según la categoría seleccionada
+  // Obtener productos desde la API
   useEffect(() => {
-    const fetchSubcategorias = async () => {
-      if (selectedCategoria) {
-        try {
-          const response = await axios.get(`${API_URL}/api/productos/subcategorias?categoria_id=${selectedCategoria}`, {
-            withCredentials: true,
-          });
-          setSubcategorias(response.data);
-        } catch (err) {
-          console.error('Error al obtener subcategorías:', err);
-        }
-      }
-    };
-    fetchSubcategorias();
-  }, [selectedCategoria]);
-
-  // Llamar a fetchProductos cuando cambian los filtros o la búsqueda
-  useEffect(() => {
-    // Función para obtener los productos filtrados
     const fetchProductos = async () => {
       try {
-        const response = await axios.get(`${API_URL}/api/admin/filtrar?categoria_id=${selectedCategoria}&subcategoria_id=${selectedSubcategoria}&nombre=${searchTerm}`, {
-          withCredentials: true,
-        });
-        setProductos(response.data);  // Establece los productos filtrados
+        const response = await axios.get(`${API_URL}/api/productos/obtener`);
+        setProductos(response.data);
       } catch (err) {
         setError('No se pudo obtener los productos');
         console.error('Error al obtener los productos:', err);
       } finally {
-        setLoading(false);  // Desactiva el estado de carga una vez que la respuesta esté lista
+        setLoading(false);
       }
     };
-    setLoading(true);  // Activa el loading antes de obtener los productos
-    fetchProductos();  // Llama a la función que obtiene los productos
-  }, [selectedCategoria, selectedSubcategoria, searchTerm]);
+
+    fetchProductos();
+  }, []); // Solo se ejecuta al montar el componente
+  
 
   // Función para eliminar un producto
-  const handleEliminar = async (id) => {
+  const handleEliminarProducto = async (id) => {
+    setCargando(true); // Iniciar carga
     try {
-      const confirmacion = await Swal.fire({
-        icon: 'warning',
-        title: '¿Estás seguro?',
-        text: 'Este producto será eliminado permanentemente.',
-        showCancelButton: true,
-        confirmButtonText: 'Eliminar',
-        cancelButtonText: 'Cancelar',
-      });
-
-      if (confirmacion.isConfirmed) {
-        await axios.delete(`${API_URL}/api/admin/eliminar/${id}`, {
-          withCredentials: true,
-        });
-        setProductos(productos.filter((producto) => producto.id !== id));  // Elimina el producto de la lista
-      }
-
+      await axios.delete(`${API_URL}/api/productos/eliminar/${id}`);
+      setProductos(productos.filter(producto => producto.id !== id)); // Eliminar de la lista localmente
     } catch (err) {
+      setCargando(false); // Finalizar carga
       console.error('Error al eliminar el producto:', err);
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'Hubo un problema al eliminar el producto.',
-      });
-    }
-  };
-
-  // Función para cargar todos los productos
-  const handleCargarTodos = async () => {
-    setSelectedCategoria('');  // Restablece la categoría seleccionada
-    setSelectedSubcategoria('');  // Restablece la subcategoría seleccionada
-    setLoading(true);
-    try {
-      const response = await axios.get(`${API_URL}/api/admin/productos`, { withCredentials: true });
-      setProductos(response.data);  // Establece los productos
-    } catch (err) {
-      setError('No se pudo obtener los productos');
-      console.error('Error al obtener los productos:', err);
+      alert('No se pudo eliminar el producto');
     } finally {
-      setLoading(false);  // Desactiva el loading
+      setCargando(false); // Finalizar carga
     }
   };
 
-  // Función para mostrar más productos
-  const handleVerMas = () => {
-    setVisibleProductos((prevVisible) => prevVisible + 4);  
+  // Mostrar barra de carga si los productos están cargando
+  if (loading) return <CargandoBarra message="Cargando productos..." />;
+
+  // Si ocurre un error al cargar productos
+  if (error) return <div className="text-center text-red-500">{error}</div>;
+
+  // Función para abrir el modal de detalles
+  const handleVerDetalles = (producto) => {
+    setProductoSeleccionado(producto);
+    setModalVisible(true); // Abrimos el modal al hacer clic en "Ver Detalles"
   };
 
-  // CargandoBarra productos o error
-  if (loading) {
-    return <CargandoBarra message='Cargando productos...'/>;
-  }
+  // Función para cerrar el modal de detalles
+  const handleCerrarModal = () => {
+    setModalVisible(false);
+    setProductoSeleccionado(null); // Limpiamos el producto seleccionado cuando se cierra el modal
+  };
 
-  if (error) {
-    return <div className="text-red-500 text-center p-4 bg-red-100 border border-red-400 rounded">{error}</div>;
-  }
+  // Función para abrir el modal de creación
+  const handleAbrirModalCrear = () => {
+    setModalCrearVisible(true); // Abrimos el modal de creación de producto
+  };
+
+  // Función para cerrar el modal de creación
+  const handleCerrarModalCrear = () => {
+    setModalCrearVisible(false); // Cerramos el modal de creación de producto
+  };
+  // Función para abrir el modal de confirmación de eliminación
+  const handleAbrirModalEliminar = (producto) => {
+    setProductoSeleccionado(producto);
+    setModalEliminarVisible(true); // Abrimos el modal de eliminación
+  };
+  // Función para cerrar el modal de confirmación de eliminación
+  const handleCerrarModalEliminar = () => {
+    setModalEliminarVisible(false); // Cerramos el modal de eliminación
+  };
 
   return (
-    <motion.div {...dataLoadingAnimation} className="p-6">
-      <h1 className="text-3xl mb-6">Todos los productos</h1>
+    <div className="productos-lista p-6 bg-gray-50 rounded-lg shadow-lg">
+      <h2 className="text-3xl font-semibold text-center mb-6 text-pink-600">Lista de Productos</h2>
 
-      <div className="mb-4 flex items-center justify-between">
-      <button
-        onClick={() => setModalGeneralVisible(true)}
-        className="px-4 py-2 bg-pink-600 hover:bg-pink-700 text-white rounded-md transition"
-      >
-        Crear Nuevo Producto
-      </button>
-
-        {/* Botón para cargar todos los productos */}
+      {/* Botón para abrir el modal de creación de producto */}
+      <div className="text-left mb-6">
         <button
-          className="px-4 py-2 bg-blue-600 text-white rounded-md transition hover:bg-blue-700"
-          onClick={handleCargarTodos}
+          aria-label="Crear Producto"
+          className="bg-gradient-to-r from-pink-500 to-pink-600 text-white p-3 rounded-full shadow-lg hover:scale-105 transform transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-opacity-50"
+          onClick={handleAbrirModalCrear}
         >
-          <LuRefreshCw size={24} />
+          <FaPlusCircle size={30} />
         </button>
-
-        {/* Filtro de categorías */}
-        <select
-          className="p-2 border border-gray-300 rounded-md"
-          value={selectedCategoria}
-          onChange={(e) => setSelectedCategoria(e.target.value)}
-        >
-          <option value="">Seleccionar categoría</option>
-          {categorias.map((categoria) => (
-            <option key={categoria.id} value={categoria.id}>
-              {categoria.nombre}
-            </option>
-          ))}
-        </select>
-
-        {/* Filtro de subcategorías */}
-        {selectedCategoria && (
-          <select
-            className="p-2 border border-gray-300 rounded-md"
-            value={selectedSubcategoria}
-            onChange={(e) => setSelectedSubcategoria(e.target.value)}
-          >
-            <option value="">Seleccionar subcategoría</option>
-            {subcategorias.map((subcategoria) => (
-              <option key={subcategoria.id} value={subcategoria.id}>
-                {subcategoria.nombre}
-              </option>
-            ))}
-          </select>
-        )}
-
-        {/* Componente de búsqueda */}
-        <BuscarProducto setProductos={setProductos} setError={setError} setLoading={setLoading} searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
       </div>
 
-      {/* Mostrar productos como tarjetas */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {productos.slice(0, visibleProductos).map((producto) => (
-          <ProductoCard
-            key={producto.id}
-            producto={producto}
-            onEliminar={handleEliminar}
-            onVerDetalles={(producto) => setProductoSeleccionado(producto)}
-          />
+      {/* Tabla de productos */}
+      <div className="productos-table overflow-x-auto bg-white shadow-md rounded-lg">
+        <div className="productos-table-header grid grid-cols-5 gap-4 text-center font-semibold text-gray-700 bg-gray-100 py-3 px-4 rounded-t-lg">
+          <div>Imagen</div>
+          <div>Nombre</div>
+          <div>Precio</div>
+          <div>Stock</div>
+          <div>Acciones</div>
+        </div>
+
+        {productos.map((producto) => (
+          <div key={producto.id} className="producto-row grid grid-cols-5 gap-4 text-center py-4 border-b border-gray-200 hover:bg-gray-50 transition-colors duration-200">
+            {/* Imagen */}
+            <div className="producto-imagen flex justify-center items-center">
+              <img
+                src={producto.imagen}
+                alt={producto.nombre}
+                className="w-20 h-20 object-cover rounded-lg shadow-md"
+              />
+            </div>
+            {/* Nombre */}
+            <div className="producto-nombre">{producto.nombre}</div>
+            {/* Precio */}
+            <div className="producto-precio text-lg font-semibold text-green-600">${producto.precio}</div>
+            {/* Stock */}
+            <div className={`producto-stock ${producto.stock <= 5 ? 'text-red-500 font-semibold' : 'text-gray-700'}`}>
+              {producto.stock}
+            </div>
+            
+            {/* Botones de acciones */}
+            <div className="producto-actions flex justify-center items-center">
+              <button
+                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all duration-200"
+                onClick={() => handleVerDetalles(producto)}
+              >
+                Ver Detalles
+              </button>
+              <button
+                aria-label="Eliminar Producto"
+                className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-all duration-200 ml-2"
+                onClick={() => handleAbrirModalEliminar(producto)}
+              >
+                <FaTrashAlt size={20} />
+              </button>
+            </div>
+            
+          </div>
         ))}
       </div>
 
-      {/* Botón "Ver más" - Solo se muestra si hay más productos */}
-      {visibleProductos < productos.length && (
-          <div className="flex justify-center mt-6">
-            <motion.button
-              onClick={handleVerMas}
-              className= "boton-verMas"
-              whileHover={{ scale: 1.1 }}
-              transition={{ type: "spring", stiffness: 400 }}
-            >
-              Ver más
-            </motion.button>
-            <RegresarButton />
-          </div>
-        )}
-         {/* Modal para crear nuevo producto */}
-        {modalGeneralVisible && (
-          <ModalGeneral
-            visible={modalGeneralVisible}
-            onClose={() => {
-              setModalGeneralVisible(false);
-              setProgreso(1);
-            }}
-            progreso={progreso}
-            setProgreso={setProgreso}
-            imagen={imagen}
-            setImagen={setImagen}
-          />
-        
-        )}
-        {productoSeleccionado && (
-        <DetallesProducto
-          visible={!!productoSeleccionado}
+      {/* Modal de detalles */}
+      {modalVisible && (
+        <ModalDetalle
+          visible={modalVisible}
           producto={productoSeleccionado}
-          onClose={() => setProductoSeleccionado(null)}
+          onClose={handleCerrarModal}
         />
-        )}
+      )}
 
-      <RegresarButton />
-    </motion.div>
+      {/* Modal para crear un nuevo producto */}
+      {modalCrearVisible && (
+        <ModalGeneral
+          visible={modalCrearVisible}
+          onClose={handleCerrarModalCrear}
+        />
+      )}
+      {/* Modal de confirmación de eliminación */}
+      {modalEliminarVisible && (
+        <ModalConfirmacionEliminar
+          visible={modalEliminarVisible}
+          onClose={handleCerrarModalEliminar}
+          onConfirm={() => handleEliminarProducto(productoSeleccionado.id)}
+          producto={productoSeleccionado}
+        />
+      )}
+      {/* Modal de carga */}
+      {cargando && (
+        <CargandoModal
+          mensaje="Eliminando producto..."
+          visible={cargando}
+        />
+      )}
+    </div>
   );
 };
 
-export default Productos;
+export default ProductosLista;

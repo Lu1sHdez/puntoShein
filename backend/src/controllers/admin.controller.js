@@ -1,12 +1,10 @@
 // src/controllers/admin.controller.js
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
 import Sequelize from 'sequelize';
 import Usuario from '../models/usuario.model.js';  // Asegúrate de tener el modelo de usuario correctamente importado
-import Producto from '../models/producto.model.js';  // Modelo de productos
-import Subcategoria from '../models/subcategoria.model.js';
 import nodemailer from 'nodemailer';
 import logger from '../libs/logger.js'; // Si ya usas winston u otro logger
+
 
 export const recuperarPasswordAdmin = async (req, res) => {
   try {
@@ -114,7 +112,6 @@ export const restablecerPasswordAdmin = async (req, res) => {
     res.status(500).json({ mensaje: "Error al restablecer la contraseña." });
   }
 };
-
 
 export const cambiarPasswordAdmin = async (req, res) => {
   try {
@@ -290,77 +287,6 @@ export const obtenerUsuarioPorId = async (req, res) => {
   } catch (error) {
     console.error('Error al obtener los detalles del usuario:', error);
     res.status(500).json({ mensaje: 'Error al obtener los detalles del usuario.' });
-  }
-};
-
-// Obtener todos los productos
-export const obtenerProductos = async (req, res) => {
-  try {
-    const productos = await Producto.findAll();  // Asumiendo que usas Sequelize para el modelo de productos
-    res.json(productos);
-  } catch (error) {
-    console.error('Error al obtener los productos:', error);
-    res.status(500).json({ mensaje: 'Error al obtener los productos.' });
-  }
-};
-
-export const crearProducto = async (req, res) => {
-  const { nombre, descripcion, color, precio, imagen, stock, subcategoria_id } = req.body;
-
-  try {
-    const subcategoria = await Subcategoria.findByPk(subcategoria_id);
-    if (!subcategoria) {
-      return res.status(404).json({ mensaje: 'Subcategoría no encontrada' });
-    }
-
-    const nuevoProducto = await Producto.create({
-      nombre,
-      descripcion,
-      color,
-      precio,
-      imagen,
-      stock,
-      subcategoria_id,
-    });
-
-    res.status(201).json(nuevoProducto);
-  } catch (error) {
-    console.error('Error al crear el producto:', error);
-    res.status(500).json({
-      mensaje: 'Error al crear el producto',
-      detalle: error.message,  // Detalle del error para ayudar a depurar
-    });
-  }
-};
-
-// Función para editar un producto
-export const editarProducto = async (req, res) => {
-  const { id } = req.params; // Obtenemos el ID del producto desde los parámetros de la URL
-  const { nombre, descripcion, precio, color, imagen, stock, subcategoria_id } = req.body; // Obtenemos los datos del producto desde el cuerpo de la solicitud
-
-  try {
-    // Buscamos el producto por ID
-    const producto = await Producto.findByPk(id);
-    if (!producto) {
-      return res.status(404).json({ mensaje: 'Producto no encontrado' });
-    }
-
-    // Actualizamos los campos del producto
-    producto.nombre = nombre || producto.nombre;
-    producto.descripcion = descripcion || producto.descripcion;
-    producto.color = color || producto.color;
-    producto.precio = precio || producto.precio;
-    producto.imagen = imagen || producto.imagen;
-    producto.stock = stock || producto.stock;
-    producto.subcategoria_id = subcategoria_id || producto.subcategoria_id;
-
-    // Guardamos los cambios
-    await producto.save();
-
-    res.status(200).json({ mensaje: 'Producto actualizado correctamente' });
-  } catch (error) {
-    console.error('Error al actualizar el producto:', error);
-    res.status(500).json({ mensaje: 'Error al actualizar el producto' });
   }
 };
 

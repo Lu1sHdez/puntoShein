@@ -1,6 +1,6 @@
 // src/components/home/encabezado/EncabezadoGeneral.js
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState, useEffect  } from "react";
+import { Link, useNavigate} from "react-router-dom";
 import useAuth from "../../../hooks/useAuth";
 import useSesionUsuario from "../../../context/useSesionUsuario";
 import axios from "axios";
@@ -13,6 +13,7 @@ const EncabezadoGeneral = () => {
   const { logout } = useAuth();
   const { usuarioAutenticado, datos } = useSesionUsuario();
   const [cargando, setCargando] = useState(false);
+  const [empresa, setEmpresa] = useState(null);
 
   const nombre = datos?.nombre || "Usuario";
   const fotoPerfil = datos?.foto_perfil || "";
@@ -36,7 +37,7 @@ const EncabezadoGeneral = () => {
       setTimeout(() => {
         setCargando(false);
         navigate("/login");
-        window.location.reload(); // ✅ Recargar página después del logout
+        window.location.reload();
       }, 2000);
     } catch (error) {
       setCargando(false);
@@ -47,16 +48,39 @@ const EncabezadoGeneral = () => {
       });
     }
   };
+  useEffect(() => {
+    const obtenerDatos = async () => {
+      try {
+        const empresaRes = await axios.get(`${API_URL}/api/empresa/empresa`, {
+          withCredentials: true,
+        });
+        setEmpresa(empresaRes.data);
+
+      } catch (error) {
+        console.error("Error al cargar datos:", error);
+      }
+    };
+
+    obtenerDatos();
+  }, []);
 
   return (
     <header className="fixed top-0 left-0 w-full bg-white shadow-md z-50">
       <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-        {/* Logo o nombre del sitio */}
-        <Link
-          to="/inicio"
-          className="text-2xl font-bold text-pink-600 hover:text-pink-700"
-        >
-          Punto Shein
+
+        {/* Empresa */}
+        <Link to = "/inicio"
+          className="flex items-center space-x-4">
+          {empresa && (
+            <>
+              <img
+                src={empresa.logo}
+                alt="Logo de empresa"
+                className="h-14 w-14 rounded-full object-cover shadow-md border border-gray-300"
+              />
+              <h1 className="text-xl font-bold text-pink-600">{empresa.nombre}</h1>
+            </>
+          )}
         </Link>
 
         {/* Autenticado */}

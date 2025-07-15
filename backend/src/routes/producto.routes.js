@@ -1,39 +1,43 @@
 import express from 'express';
 import { verificarToken, validarRol } from '../middleware/auth.js';
 import multer from 'multer';
-import { buscarProductos, allProductos, obtenerProductoPorId, 
-    filtrarProductos,obtenerCategorias,obtenerSubcategorias,obtenerProductosPorSubcategoria, 
-    obtenerDetalleProductoPorTalla, 
-    resumenStock,
-    notificaciones,
-    subirImagenProducto
+import { 
+    buscarProductos, allProductos, obtenerProductoPorId, 
+    filtrarProductos, obtenerProductosPorSubcategoria, obtenerDetalleProductoPorTalla, 
+    resumenStock, notificaciones, subirImagenProducto, 
+    obtenerProductos, eliminarProducto, crearProducto, editarProducto, 
 } from '../controllers/producto.controller.js';
 
-const admin = validarRol(['administrador']);
+import {obtenerCategorias, obtenerSubcategoriasPorCategoria,  crearCategoria,
+    crearSubcategoria,} from '../controllers/categoria.controller.js'
 
+const admin = validarRol(['administrador']);
 const router = express.Router();
 const upload = multer({ dest: 'uploads/' }); // 🖼 Almacenamiento temporal
 
+// Subir imagen para productos
 router.post('/producto/imagen', verificarToken, admin, upload.single('imagen'), subirImagenProducto);
 
-// Ruta para obtener todas las categorías
-router.get('/categorias', obtenerCategorias);
-// Ruta para obtener subcategorías de una categoría
-router.get('/subcategorias', obtenerSubcategorias);
-router.get('/productosPorSubcategoria', obtenerProductosPorSubcategoria)
-router.get("/detallePorTalla", obtenerDetalleProductoPorTalla);
+// Rutas para categorías y subcategorías
+router.get('/categorias', obtenerCategorias);  
+router.get('/subcategorias', obtenerSubcategoriasPorCategoria); // Cambiado para filtrar por categoria_id
+router.post('/categorias', verificarToken, admin, crearCategoria);
+router.post('/subcategorias', verificarToken, admin, crearSubcategoria);
 
-// Ruta para obtener productos por filtro
+router.delete('/eliminar/:id', eliminarProducto);
+router.get('/productosPorSubcategoria', obtenerProductosPorSubcategoria);
+router.get('/detallePorTalla', obtenerDetalleProductoPorTalla);
+
+// Rutas para productos
 router.get('/filtrar', filtrarProductos);
-// Ruta para buscar productos
 router.get('/buscar', buscarProductos);
-// Ruta para obtener todos los productos
 router.get('/allProductos', allProductos);
 router.get('/notificaciones', notificaciones);
 router.get('/resumen-stock', resumenStock);
-
-// Ruta para obtener un producto por su ID
-router.get('/:id', obtenerProductoPorId);
-
+router.get('/obtener', obtenerProductos);  // Obtener todos los productos
+router.get('/productos/:id', obtenerProductoPorId);  // Obtener producto por ID
+router.post('/crear',verificarToken, admin, crearProducto);  // Crear nuevo producto (solo para prueba)
+router.put('/productos/:id', editarProducto); // Editar producto
+router.delete('/eliminar/:id', eliminarProducto); // Eliminar producto
 
 export default router;

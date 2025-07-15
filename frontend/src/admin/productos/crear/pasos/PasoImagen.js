@@ -1,17 +1,17 @@
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
-import { API_URL } from '../../../../../ApiConexion';
-import { mostrarNotificacion } from '../../../../../Animations/NotificacionSwal';
-import CargandoModal from '../../../../../Animations/CargandoModal.js';
+import { API_URL } from '../../../../ApiConexion';
+import { mostrarNotificacion } from '../../../../Animations/NotificacionSwal';
+import CargandoModal from '../../../../Animations/CargandoModal';
 
-
-const PasoImagen = ({ imagen, setImagen, onNext }) => {
+const PasoImagen = ({ producto, setProducto, onAnterior, onSiguiente }) => {
   const [archivo, setArchivo] = useState(null);
-  const [vistaPrevia, setVistaPrevia] = useState(imagen || '');
+  const [vistaPrevia, setVistaPrevia] = useState(producto.imagen || '');
   const [resolucion, setResolucion] = useState(null);
   const [subiendo, setSubiendo] = useState(false);
   const inputRef = useRef(null);
 
+  // Liberar URL previa si era blob
   useEffect(() => {
     return () => {
       if (vistaPrevia?.startsWith('blob:')) {
@@ -48,51 +48,50 @@ const PasoImagen = ({ imagen, setImagen, onNext }) => {
   };
 
   const handleSubirImagen = async () => {
-  
+    if (!archivo) return;
+
     try {
       setSubiendo(true);
       const formData = new FormData();
       formData.append('imagen', archivo);
-    
+
       const response = await axios.post(`${API_URL}/api/productos/producto/imagen`, formData, {
-        withCredentials: true, // 👈 necesario si backend usa cookie
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
+        withCredentials: true,
+        headers: { 'Content-Type': 'multipart/form-data' },
       });
-      
-  
+
       const { imagenUrl } = response.data;
-      setImagen(imagenUrl);
-      onNext(); // continuar al siguiente paso
+      setProducto(prev => ({ ...prev, imagen: imagenUrl }));
+      onSiguiente(); // Avanzar al siguiente paso
     } catch (error) {
       console.error('Error al subir imagen:', error);
+      mostrarNotificacion('error', 'Hubo un error al subir la imagen.');
     } finally {
       setSubiendo(false);
     }
   };
-  
-  return (
-    <div className="space-y-4">
-      <h3 className="text-xl font-semibold text-gray-800 text-center">Paso 1: Seleccionar Imagen</h3>
 
-      {/* Selector manual */}
+  return (
+    <div className="space-y-4 bg-white p-6 rounded-2xl shadow-lg max-w-3xl mx-auto">
+      <h3 className="text-xl font-semibold text-gray-800 text-center">Paso 1: Subir Imagen del Producto</h3>
+
+      {/* Input oculto */}
       <input
         type="file"
         accept="image/*"
         onChange={handleInputChange}
         className="hidden"
         ref={inputRef}
-        id="producto-upload"
+        id="input-imagen"
       />
       <label
-        htmlFor="producto-upload"
-        className="cursor-pointer text-blue-600 hover:underline block text-center"
+        htmlFor="input-imagen"
+        className="cursor-pointer text-pink-600 hover:underline block text-center"
       >
         Haz clic aquí para seleccionar una imagen
       </label>
 
-      {/* Zona de arrastrar y soltar */}
+      {/* Drag & Drop */}
       <div
         onDrop={(e) => {
           e.preventDefault();
@@ -100,7 +99,7 @@ const PasoImagen = ({ imagen, setImagen, onNext }) => {
           if (file) procesarArchivo(file);
         }}
         onDragOver={(e) => e.preventDefault()}
-        className="border-2 border-dashed border-gray-400 p-6 rounded-md text-center text-gray-600 hover:bg-gray-100 transition"
+        className="border-2 border-dashed border-gray-300 p-6 rounded-md text-center text-gray-600 hover:bg-gray-100 transition cursor-pointer"
       >
         Arrastra una imagen aquí
       </div>
@@ -122,16 +121,23 @@ const PasoImagen = ({ imagen, setImagen, onNext }) => {
       )}
 
       {/* Botones */}
-      <div className="flex justify-end gap-3">
+      <div className="flex justify-between mt-6">
+        <button
+          onClick={onAnterior}
+          className="px-4 py-2 bg-gray-400 text-white rounded hover:bg-gray-500"
+        >
+          Anterior
+        </button>
         <button
           onClick={handleSubirImagen}
           disabled={subiendo || !archivo}
-          className="bg-pink-600 text-white px-4 py-2 rounded hover:bg-pink-700 disabled:opacity-50"
+          className="px-4 py-2 bg-pink-600 text-white rounded hover:bg-pink-700 disabled:opacity-50"
         >
-          {subiendo ? 'Subiendo...' : 'Continuar'}
+          {subiendo ? 'Subiendo...' : 'Siguiente'}
         </button>
       </div>
-      {/* Modal de carga */}
+
+      {/* Modal */}
       <CargandoModal mensaje="Subiendo imagen..." visible={subiendo} />
     </div>
   );

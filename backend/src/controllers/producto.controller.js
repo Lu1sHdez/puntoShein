@@ -2,8 +2,8 @@ import Producto from "../models/producto.model.js";
 import Categoria from "../models/categoria.model.js"; //  Importar Categoria
 import Subcategoria from "../models/subcategoria.model.js"; // 
 import {Sequelize } from "sequelize";
+import ProductoTalla from '../models/productoTalla.model.js';
 import Talla from "../models/tallas.model.js";
-import ProductoTalla from "../models/productoTalla.model.js";
 import Venta from "../models/ventas.model.js";
 import TokenDispositivo from "../models/tokenDispositivo.model.js";
 import { enviarNotificacionStock } from "../utils/notificaciones.js";
@@ -36,7 +36,6 @@ export const buscarProductos = async (req, res) => {
   }
 };
 
-//  Obtener todos los productos (para AllProductos.js)
 export const allProductos = async (req, res) => {
   try {
     const productos = await Producto.findAll({
@@ -54,20 +53,36 @@ export const allProductos = async (req, res) => {
           model: Talla,
           as: "tallas",
           through: {
-            attributes: ['stock'], // stock por talla
+            attributes: ['stock'],
           },
         },
       ],
     });
 
-    res.json(productos);
+    const productosConStock = productos.filter(producto => {
+      let tieneStock = false;
+
+      // Recorremos las tallas de cada producto para verificar si alguna tiene stock
+      producto.tallas.forEach(talla => {
+        if (talla.stock > 0) {
+          talla.stockStatus = 'Disponible';  // Si tiene stock, la marcamos como disponible
+          tieneStock = true;
+        } else {
+          talla.stockStatus = 'Sin stock';  // Si no tiene stock, la marcamos como sin stock
+        }
+      });
+
+      // Solo devolver el producto si tiene al menos una talla con stock
+      return tieneStock;
+    });
+
+    res.json(productosConStock);
   } catch (error) {
     console.error("Error al obtener productos:", error);
     res.status(500).json({ mensaje: "Error interno del servidor" });
   }
 };
 
-//  Obtener un producto por su ID
 export const obtenerProductoPorId = async (req, res) => {
   try {
     const { id } = req.params;
@@ -96,13 +111,29 @@ export const obtenerProductoPorId = async (req, res) => {
       return res.status(404).json({ mensaje: "Producto no encontrado" });
     }
 
+    let tieneStock = false;
+
+    // Verificamos las tallas del producto
+    producto.tallas.forEach(talla => {
+      if (talla.stock > 0) {
+        talla.stockStatus = 'Disponible';  // Marcamos como disponible si tiene stock
+        tieneStock = true;
+      } else {
+        talla.stockStatus = 'Sin stock';  // Marcamos como sin stock si no tiene stock
+      }
+    });
+
+    // Si no tiene stock en ninguna talla, no devolveremos el producto
+    if (!tieneStock) {
+      return res.status(404).json({ mensaje: "Este producto no está disponible en ninguna talla." });
+    }
+
     res.json(producto);
   } catch (error) {
     console.error("Error al obtener detalles del producto:", error);
     res.status(500).json({ mensaje: "Error interno del servidor" });
   }
 };
-
 
 export const filtrarProductos = async (req, res) => {
   try {
@@ -143,37 +174,8 @@ export const filtrarProductos = async (req, res) => {
     res.status(500).json({ mensaje: "Error al filtrar productos." });
   }
 };
-
   
-//  Obtener todas las categorías
-export const obtenerCategorias = async (req, res) => {
-  try {
-    const categorias = await Categoria.findAll();
-    res.json(categorias);
-  } catch (error) {
-    console.error("Error al obtener categorías:", error);
-    res.status(500).json({ mensaje: "Error interno del servidor" });
-  }
-};
 
-//  Obtener subcategorías según la categoría seleccionada
-export const obtenerSubcategorias = async (req, res) => {
-  try {
-    const { categoria_id } = req.query;
-    if (!categoria_id) {
-      return res.status(400).json({ mensaje: "Se requiere el ID de la categoría." });
-    }
-
-    const subcategorias = await Subcategoria.findAll({
-      where: { categoria_id },
-    });
-
-    res.json(subcategorias);
-  } catch (error) {
-    console.error("Error al obtener subcategorías:", error);
-    res.status(500).json({ mensaje: "Error interno del servidor" });
-  }
-};
 
 export const obtenerProductosPorSubcategoria = async (req, res) => {
   try {
@@ -213,22 +215,23 @@ export const obtenerProductosPorSubcategoria = async (req, res) => {
 
 export const eliminarProducto = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id } = req.params; // Obtener el ID del producto a eliminar
 
+    // Buscar el producto en la base de datos
     const producto = await Producto.findByPk(id);
     if (!producto) {
       return res.status(404).json({ mensaje: 'Producto no encontrado' });
     }
 
-    // Verifica si está relacionado con alguna venta
+    // Verificar si el producto está relacionado con alguna venta
     const ventasRelacionadas = await Venta.findOne({ where: { producto_id: id } });
-
     if (ventasRelacionadas) {
       return res.status(400).json({
         mensaje: 'No se puede eliminar este producto porque está relacionado con una o más ventas.',
       });
     }
 
+    // Eliminar el producto de la base de datos
     await producto.destroy();
     res.json({ mensaje: 'Producto eliminado correctamente' });
   } catch (error) {
@@ -236,6 +239,7 @@ export const eliminarProducto = async (req, res) => {
     res.status(500).json({ mensaje: 'Error al eliminar el producto' });
   }
 };
+
 
 export const obtenerDetalleProductoPorTalla = async (req, res) => {
   try {
@@ -277,11 +281,15 @@ export const obtenerDetalleProductoPorTalla = async (req, res) => {
       return res.status(404).json({ mensaje: "Talla no encontrada" });
     }
 
-    // 4. Devolver toda la  info del producto + talla y stock específico
+    // 4. Agregar el estado de stock a la talla
+    const stockStatus = relacion.stock > 0 ? 'Disponible' : 'Sin stock para esta talla';
+
+    // 5. Devolver toda la info del producto + talla y stock específico
     res.json({
       ...producto.toJSON(),
       stock: relacion.stock, // sobrescribimos el stock total con el de la talla seleccionada
       talla: talla.nombre,
+      stockStatus,  // Estado de la talla
     });
 
   } catch (error) {
@@ -361,8 +369,124 @@ export const notificaciones = async (req, res) => {
   }
 };
 
+export const obtenerProductos = async (req, res) => {
+  try {
+    const productos = await Producto.findAll({
+      include: [
+        {
+          model: Subcategoria,
+          as: "subcategoria",
+          include: {
+            model: Categoria,
+            as: "categoria",  // Incluir la categoría asociada a la subcategoría
+          },
+        },
+        {
+          model: Talla,
+          as: "tallas",
+          through: {
+            attributes: ['stock'],  // Incluir solo el stock asociado a la talla
+          },
+        },
+      ],
+    });
+
+    // Modificamos la estructura de la respuesta para incluir la categoría y subcategoría correctamente
+    const productosConDetalles = productos.map(producto => {
+      const productoJSON = producto.toJSON();
+      productoJSON.tallas = productoJSON.tallas.map(talla => ({
+        id: talla.id,
+        nombre: talla.nombre,
+        stock: talla.ProductoTalla.stock,  // Aquí accedemos directamente al stock
+      }));
+
+      // Agregar los datos de la categoría y subcategoría
+      productoJSON.subcategoria = productoJSON.subcategoria || {};
+      productoJSON.subcategoria.categoria = productoJSON.subcategoria.categoria || {};
+
+      return productoJSON;
+    });
+
+    res.json(productosConDetalles); // Devolver los productos con subcategoría y categoría
+  } catch (error) {
+    console.error('Error al obtener los productos:', error);
+    res.status(500).json({ mensaje: 'Error al obtener los productos.' });
+  }
+};
 
 
+export const crearProducto = async (req, res) => {
+  const { nombre, descripcion, color, precio, imagen, subcategoria_id, tallas = [] } = req.body;
+
+  try {
+    // Buscar subcategoría
+    const subcategoria = await Subcategoria.findByPk(subcategoria_id);
+    if (!subcategoria) {
+      return res.status(404).json({ mensaje: 'Subcategoría no encontrada' });
+    }
+
+    // Crear producto con stock inicial en 0
+    const nuevoProducto = await Producto.create({
+      nombre,
+      descripcion,
+      color,
+      precio,
+      imagen,
+      stock: 0,  // Inicialmente no asignamos un stock global
+      subcategoria_id,
+    });
+
+    let stockTotal = 0;
+
+    // Asignar las tallas y su stock
+    for (const talla of tallas) {
+      const { talla_id, stock } = talla;
+      if (talla_id && stock > 0) {  // Solo tallas con stock positivo
+        await ProductoTalla.create({
+          producto_id: nuevoProducto.id,
+          talla_id,
+          stock
+        });
+        stockTotal += stock;  // Sumar el stock total de todas las tallas
+      } else if (stock === 0) {
+        // Si alguna talla tiene stock 0, mostrar un mensaje de advertencia
+        console.warn(`La talla ${talla_id} fue ignorada ya que tiene un stock de 0.`);
+      }
+    }
+
+    // Actualizar el stock total del producto
+    await nuevoProducto.update({ stock: stockTotal });
+
+    // Incluir las tallas en la respuesta
+    const productoConTallas = await Producto.findByPk(nuevoProducto.id, {
+      include: [
+        {
+          model: Talla,
+          as: "tallas",
+          through: {
+            attributes: ['stock'],
+          },
+        },
+      ],
+    });
+
+    // Modificamos la estructura de la respuesta para eliminar el objeto ProductoTalla
+    const productoFinal = productoConTallas.toJSON();
+    productoFinal.tallas = productoFinal.tallas.map(talla => ({
+      id: talla.id,
+      nombre: talla.nombre,
+      stock: talla.ProductoTalla.stock,  // stock directo en la talla
+    }));
+
+    res.status(201).json({ mensaje: 'Producto creado con tallas', producto: productoFinal });
+  } catch (error) {
+    console.error('Error al crear el producto:', error);
+    res.status(500).json({
+      mensaje: 'Error al crear el producto',
+      detalle: error.message,
+    });
+  }
+};
 export const subirImagenProducto = async (req, res) => {
   try {
     const file = req.file;
@@ -390,3 +514,58 @@ export const subirImagenProducto = async (req, res) => {
     res.status(500).json({ mensaje: 'Error al subir imagen', error: error.message });
   }
 };
+
+export const editarProducto = async (req, res) => {
+  const { id } = req.params; // Obtenemos el ID del producto desde los parámetros de la URL
+  const { nombre, descripcion, precio, color, imagen, stock, subcategoria_id, tallas = [] } = req.body; // Obtenemos los datos del producto desde el cuerpo de la solicitud
+
+  try {
+    // Buscamos el producto por ID
+    const producto = await Producto.findByPk(id);
+    if (!producto) {
+      return res.status(404).json({ mensaje: 'Producto no encontrado' });
+    }
+
+    // Actualizamos los campos del producto
+    producto.nombre = nombre || producto.nombre;
+    producto.descripcion = descripcion || producto.descripcion;
+    producto.color = color || producto.color;
+    producto.precio = precio || producto.precio;
+    producto.imagen = imagen || producto.imagen;
+    producto.stock = stock || producto.stock;
+    producto.subcategoria_id = subcategoria_id || producto.subcategoria_id;
+
+    // Guardamos los cambios del producto
+    await producto.save();
+
+    // Actualizamos las tallas y su stock
+    let stockTotal = 0;
+
+    // Eliminar las relaciones de tallas antiguas y añadir las nuevas
+    await ProductoTalla.destroy({ where: { producto_id: producto.id } });
+
+    for (const talla of tallas) {
+      const { talla_id, stock } = talla;
+      if (talla_id && stock > 0) {  // Solo tallas con stock positivo
+        await ProductoTalla.create({
+          producto_id: producto.id,
+          talla_id,
+          stock
+        });
+        stockTotal += stock;  // Sumar el stock total de todas las tallas
+      } else if (stock === 0) {
+        // Si alguna talla tiene stock 0, mostrar un mensaje de advertencia
+        console.warn(`La talla ${talla_id} fue ignorada ya que tiene un stock de 0.`);
+      }
+    }
+
+    // Actualizar el stock total del producto
+    await producto.update({ stock: stockTotal });
+
+    res.status(200).json({ mensaje: 'Producto actualizado correctamente' });
+  } catch (error) {
+    console.error('Error al actualizar el producto:', error);
+    res.status(500).json({ mensaje: 'Error al actualizar el producto' });
+  }
+};
+

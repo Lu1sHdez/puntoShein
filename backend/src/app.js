@@ -8,6 +8,7 @@ import productoRutas from './routes/producto.routes.js';
 import usuarioRutas from './routes/usuario.routes.js';
 import carritoRutas from "./routes/carrito.routes.js";
 import compraRutas from "./routes/compra.routes.js";
+import tallaRutas from "./routes/talla.routes.js";
 import adminRutas from './routes/admin.routes.js'; 
 import empresaRutas from './routes/empresa.routes.js'; 
 import empleadoRutas from './routes/empleado.routes.js'; 
@@ -58,6 +59,7 @@ app.use(helmet.frameguard({ action: 'deny' }));
 // Rutas de la aplicación
 app.use('/api/autenticacion', autenticacionRutas);
 app.use('/api/productos', productoRutas);
+app.use('/api/tallas', tallaRutas);
 app.use('/api/ventas', ventaRutas);
 app.use('/api/usuario', usuarioRutas);
 app.use('/api/carrito', carritoRutas);

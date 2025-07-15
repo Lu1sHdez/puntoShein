@@ -205,6 +205,7 @@ export const login = async (req, res) => {
 
     // Generar token JWT
     const token = crearTokenAcceso(usuario);
+    console.log("Token generado:", token); 
     const fecha =obtenerFechaHora();
 
     // Después de generar el token
@@ -223,6 +224,7 @@ export const login = async (req, res) => {
       sameSite: 'None',
       maxAge: 24 * 60 * 60 * 1000,
     });
+
 
     // Respuesta exitosa
     return res.status(200).json({
