@@ -6,6 +6,7 @@ import { formAnimation } from '../../components/Funciones';
 import { API_URL } from '../../ApiConexion';
 import { mostrarNotificacion } from '../../Animations/NotificacionSwal';
 import CargandoBarra from '../../Animations/CargandoBarra';
+import CargandoModal from '../../Animations/CargandoModal';
 
 import RecuperarPassword from '../perfil/modales/RecuperarPassword';
 import VerificarCodigo from '../perfil/modales/VerificarCodigo';
@@ -20,6 +21,8 @@ const Perfil = () => {
   const [mostrarRecuperacion, setMostrarRecuperacion] = useState(false);
   const [mostrarVerificarCodigo, setMostrarVerificarCodigo] = useState(false);
   const [mostrarRestablecer, setMostrarRestablecer] = useState(false);
+  const [Guardando, setGuardando] = useState(false); // Para mostrar el modal de carga
+
 
   const navigate = useNavigate();
 
@@ -55,6 +58,7 @@ const Perfil = () => {
   };
 
   const guardarCambios = async () => {
+    setGuardando(true);
     try {
       await axios.put(`${API_URL}/api/usuario/perfil`, datosEditables, { withCredentials: true });
       mostrarNotificacion("success", "¡Perfil actualizado!");
@@ -62,6 +66,8 @@ const Perfil = () => {
       setDatosOriginales(datosEditables);
     } catch (error) {
       mostrarNotificacion("error", "Error al guardar cambios.");
+    }finally{
+      setGuardando(false);
     }
   };
 
@@ -145,6 +151,8 @@ const Perfil = () => {
           }}
         />
       )}
+      <CargandoModal mensaje="Guardando cambios..." visible={Guardando} />
+
       {mostrarRestablecer && (
         <RestablecerPassword onClose={() => setMostrarRestablecer(false)} />
       )}

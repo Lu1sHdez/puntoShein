@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { API_URL } from '../../../ApiConexion';
+import CargandoModal from '../../../Animations/CargandoModal';
+
 
 const VerificarCodigo = ({ correo, onCodigoCorrecto, onClose }) => {
   const [codigo, setCodigo] = useState('');
   const [cargando, setCargando] = useState(false);
-  const [mensaje, setMensaje] = useState(null); // 🆕 Estado para mensajes
+  const [mensaje, setMensaje] = useState(null); 
 
   const handleVerificar = async () => {
     setMensaje(null); // Limpia el mensaje anterior
@@ -69,12 +71,11 @@ const VerificarCodigo = ({ correo, onCodigoCorrecto, onClose }) => {
           <button
             onClick={handleVerificar}
             disabled={cargando}
-            className={`px-4 py-1 rounded text-white ${
-              cargando ? 'bg-gray-400' : 'bg-pink-600 hover:bg-pink-700'
-            }`}
+            className={`px-4 py-1 rounded text-white ${cargando ? 'bg-gray-400 cursor-not-allowed' : 'bg-pink-600 hover:bg-pink-700'}`}
           >
-            {cargando ? 'Verificando...' : 'Verificar Código'}
+            Verificar Código
           </button>
+          <CargandoModal mensaje="Verificando código..." visible={cargando} />
         </div>
       </div>
     </div>
