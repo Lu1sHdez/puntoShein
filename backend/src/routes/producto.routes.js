@@ -9,7 +9,7 @@ import {
 } from '../controllers/producto.controller.js';
 
 import {obtenerCategorias, obtenerSubcategoriasPorCategoria,  crearCategoria,
-    crearSubcategoria,} from '../controllers/categoria.controller.js'
+    crearSubcategoria,eliminarCategoria, eliminarSubcategoria, editarCategoria, editarSubcategoria} from '../controllers/categoria.controller.js'
 
 const admin = validarRol(['administrador']);
 const router = express.Router();
@@ -18,11 +18,18 @@ const upload = multer({ dest: 'uploads/' }); // 🖼 Almacenamiento temporal
 // Subir imagen para productos
 router.post('/producto/imagen', verificarToken, admin, upload.single('imagen'), subirImagenProducto);
 
-// Rutas para categorías y subcategorías
-router.get('/categorias', obtenerCategorias);  
-router.get('/subcategorias', obtenerSubcategoriasPorCategoria); // Cambiado para filtrar por categoria_id
+// Rutas CRUD para categorías
+router.get('/categorias', obtenerCategorias);
 router.post('/categorias', verificarToken, admin, crearCategoria);
+router.put('/categorias/:id', verificarToken, admin, editarCategoria);
+router.delete('/categorias/:id', verificarToken, admin, eliminarCategoria);
+
+// Rutas CRUD para subcategorías
+router.get('/subcategorias', obtenerSubcategoriasPorCategoria);
 router.post('/subcategorias', verificarToken, admin, crearSubcategoria);
+router.put('/subcategorias/:id', verificarToken, admin, editarSubcategoria);
+router.delete('/subcategorias/:id', verificarToken, admin, eliminarSubcategoria);
+
 
 router.delete('/eliminar/:id', eliminarProducto);
 router.get('/productosPorSubcategoria', obtenerProductosPorSubcategoria);
