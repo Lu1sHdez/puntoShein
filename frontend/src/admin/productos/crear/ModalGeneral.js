@@ -7,7 +7,7 @@ import PasoTallas from './pasos/PasoTallas.js';
 import PasoCategoriaSubcategoria from './pasos/PasoCategoriaSubcategoria.js'; // Paso para Categoría/Subcategoría
 import { API_URL } from '../../../ApiConexion.js';
 
-const ModalCrearProducto = ({ visible, onClose }) => {
+const ModalCrearProducto = ({ visible, onClose,onProductoCreado  }) => {
   const [progreso, setProgreso] = useState(1);
   const [producto, setProducto] = useState({
     nombre: '',
@@ -58,10 +58,18 @@ const ModalCrearProducto = ({ visible, onClose }) => {
   // Cuando cambia la categoria, actualizar el estado de `selectedCategoria`
   const handleCategoriaChange = (e) => {
     const categoriaId = e.target.value;
-    setProducto({ ...producto, categoria_id: categoriaId, subcategoria_id: '' }); // Reseteamos la subcategoría
-    setSelectedCategoria(categoriaId); // Actualizamos la categoría seleccionada
+    const categoriaSeleccionada = categorias.find(c => c.id == categoriaId);
+  
+    setProducto(prev => ({
+      ...prev,
+      categoria_id: categoriaId,
+      categoria: categoriaSeleccionada, // ← aquí guardas el objeto completo
+      subcategoria_id: '',
+      subcategoria: null
+    }));
+    setSelectedCategoria(categoriaId);
   };
-
+  
   // Función para avanzar al siguiente paso
   const handleSiguientePaso = () => {
     setProgreso(prev => prev + 1);
@@ -88,7 +96,6 @@ const ModalCrearProducto = ({ visible, onClose }) => {
     }
   };
 
-  // Función para guardar el producto al final
   const handleGuardarProducto = async () => {
     try {
       const response = await axios.post(
@@ -97,11 +104,19 @@ const ModalCrearProducto = ({ visible, onClose }) => {
         { withCredentials: true }
       );
       console.log(response.data); // Producto creado correctamente
-      onClose(); // Cerramos el modal después de crear el producto
+  
+      // ✅ Llamar a la función que recarga los productos en ProductosLista
+      if (typeof onProductoCreado === 'function') {
+        await onProductoCreado();
+      }
+  
+      // ✅ Cerrar el modal
+      onClose();
     } catch (error) {
       console.error('Error al crear producto:', error);
     }
   };
+  
 
   // Si el modal no está visible, no se renderiza nada
   if (!visible) return null;

@@ -1,103 +1,137 @@
 import React, { useState } from 'react';
-import CargandoModal from '../../../../Animations/CargandoModal'; // Asumo que tienes este componente
+import CargandoModal from '../../../../Animations/CargandoModal';
 
 const PasoConfirmacion = ({ producto, onAnterior, onGuardar }) => {
-  const [isLoading, setIsLoading] = useState(false); // Estado de carga
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Función para manejar la confirmación de guardar
   const handleGuardarProducto = async () => {
-    setIsLoading(true); // Activar el modal de carga
-    
+    setIsLoading(true);
     try {
-      // Aquí se llama la función onGuardar que debe hacer el guardado del producto
       await onGuardar();
     } catch (error) {
       console.error("Error al guardar el producto:", error);
     } finally {
-      setIsLoading(false); // Desactivar el modal de carga
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="step-container p-6 bg-white rounded-2xl shadow-lg">
-      <h3 className="text-2xl font-semibold mb-4">Confirmar producto</h3>
+    <div className="step-container p-6 bg-white rounded-2xl shadow-lg max-w-6xl mx-auto">
+      <h3 className="text-2xl font-semibold mb-6 text-center">Confirmar detalles del producto</h3>
 
-      {/* Detalles del producto */}
-      <div className="mb-6">
-        {/* Nombre del producto */}
-        <p><strong>Nombre:</strong> {producto.nombre}</p>
-
-        {/* Descripción del producto */}
-        <p><strong>Descripción:</strong> {producto.descripcion}</p>
-
-        {/* Precio del producto */}
-        <p><strong>Precio:</strong> ${producto.precio}</p>
-
-        {/* Color del producto */}
-        <p><strong>Color:</strong> {producto.color || 'No se ha agregado color'}</p>
-
-        {/* Imagen del producto */}
-        <div>
-          <strong>Imagen:</strong>
+      <div className="flex flex-col lg:flex-row gap-8">
+        {/* Sección de imagen */}
+        <div className="lg:w-1/3 flex justify-center">
           {producto.imagen ? (
-            <img
-              src={producto.imagen}
-              alt="Producto"
-              className="w-32 h-auto mt-2 border border-gray-300 rounded"
-            />
+            <div className="relative w-full h-64 lg:h-80 rounded-lg overflow-hidden shadow-md">
+              <img
+                src={producto.imagen}
+                alt="Producto"
+                className="w-full h-full object-cover"
+              />
+              {producto.color && (
+                <div 
+                  className="absolute bottom-2 right-2 w-8 h-8 rounded-full border-2 border-white shadow-md"
+                  style={{ backgroundColor: producto.color }}
+                  title={`Color: ${producto.color}`}
+                />
+              )}
+            </div>
           ) : (
-            <p>No se ha agregado imagen.</p>
+            <div className="w-full h-64 lg:h-80 bg-gray-100 rounded-lg flex items-center justify-center">
+              <p className="text-gray-500">No hay imagen</p>
+            </div>
           )}
         </div>
 
-        {/* Categoría y Subcategoría */}
-        <div className="mt-4">
-          <strong>Categoría:</strong> {producto.categoria_id ? producto.categoria_id : 'No seleccionada'}
-        </div>
-        <div className="mt-2">
-          <strong>Subcategoría:</strong> {producto.subcategoria_id ? producto.subcategoria_id : 'No seleccionada'}
-        </div>
+        {/* Sección de detalles */}
+        <div className="lg:w-2/3">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Columna izquierda */}
+            <div>
+              <div className="mb-4">
+                <h4 className="text-lg font-medium text-gray-700 mb-1">Nombre</h4>
+                <p className="text-gray-900">{producto.nombre || 'No especificado'}</p>
+              </div>
 
-        {/* Tallas y stock */}
-        <div className="mt-4">
-          <strong>Tallas:</strong>
-          {producto.tallas.length > 0 ? (
-            <ul className="list-disc pl-6 mt-2">
-              {producto.tallas.map((talla, index) => (
-                <li key={index}>
-                  <strong>{talla.talla_id}</strong> - Stock: {talla.stock}
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p>No se han agregado tallas.</p>
-          )}
+              <div className="mb-4">
+                <h4 className="text-lg font-medium text-gray-700 mb-1">Descripción</h4>
+                <p className="text-gray-900 whitespace-pre-line">
+                  {producto.descripcion || 'No hay descripción'}
+                </p>
+              </div>
+
+              <div className="mb-4">
+                <h4 className="text-lg font-medium text-gray-700 mb-1">Precio</h4>
+                <p className="text-gray-900">${producto.precio || '0.00'}</p>
+              </div>
+            </div>
+
+            {/* Columna derecha */}
+            <div>
+              <div className="mb-4">
+                <h4 className="text-lg font-medium text-gray-700 mb-1">Categoría</h4>
+                <p className="text-gray-900">
+                  {producto.categoria?.nombre || 'No seleccionada'}
+                </p>
+              </div>
+
+              <div className="mb-4">
+                <h4 className="text-lg font-medium text-gray-700 mb-1">Subcategoría</h4>
+                <p className="text-gray-900">
+                  {producto.subcategoria?.nombre || 'No seleccionada'}
+                </p>
+              </div>
+
+              <div className="mb-4">
+                <h4 className="text-lg font-medium text-gray-700 mb-1">Tallas y Stock</h4>
+                {producto.tallas?.length > 0 ? (
+                  <div className="flex flex-wrap gap-2">
+                    {producto.tallas.map((talla, index) => (
+                      <div 
+                        key={index}
+                        className="px-3 py-1 bg-gray-100 rounded-full text-sm flex items-center gap-1"
+                      >
+                        <span className="font-medium">{talla.nombre}</span>
+                        <span className="text-gray-600">({talla.stock})</span>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-gray-500">No se han agregado tallas</p>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Botones */}
+          <div className="flex justify-between mt-8 pt-4 border-t border-gray-200">
+            <button
+              onClick={onAnterior}
+              className="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors flex items-center gap-2"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
+              </svg>
+              Anterior
+            </button>
+
+            <button
+              onClick={handleGuardarProducto}
+              className="px-6 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition-colors flex items-center gap-2"
+            >
+              Guardar Producto
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Botones de navegación */}
-      <div className="flex justify-between mt-6">
-        {/* Botón para regresar al paso anterior */}
-        <button
-          onClick={onAnterior}
-          className="px-4 py-2 bg-gray-400 text-white rounded hover:bg-gray-500"
-        >
-          Anterior
-        </button>
-
-        {/* Botón para guardar el producto */}
-        <button
-          onClick={handleGuardarProducto}
-          className="px-4 py-2 bg-pink-500 text-white rounded hover:bg-pink-600"
-        >
-          Guardar Producto
-        </button>
-      </div>
-
-      {/* Modal de carga */}
       <CargandoModal mensaje="Guardando producto..." visible={isLoading} />
     </div>
   );
 };
 
-export default PasoConfirmacion;
+export default PasoConfirmacion;  

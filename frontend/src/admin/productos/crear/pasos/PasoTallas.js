@@ -30,7 +30,7 @@ const PasoTallas = ({ producto, setProducto, onAnterior, onSiguiente }) => {
     const { name, value } = e.target;
     const newTallas = producto.tallas.map((t) => {
       if (t.talla_id === talla.id) {
-        return { ...t, [name]: Number(value) }; // Convertir a número
+        return { ...t, nombre: talla.nombre, [name]: value === '' ? '' : Number(value) };
       }
       return t;
     });
@@ -44,10 +44,10 @@ const PasoTallas = ({ producto, setProducto, onAnterior, onSiguiente }) => {
   const handleCheckboxChange = (e, talla) => {
     const { checked } = e.target;
     const newTallas = checked
-      ? [...producto.tallas, { talla_id: talla.id, stock: 0 }]
+      ? [...producto.tallas, { talla_id: talla.id,nombre: talla.nombre }] // sin stock inicial
       : producto.tallas.filter((t) => t.talla_id !== talla.id);
     setProducto((prev) => ({ ...prev, tallas: newTallas }));
-  };
+  };  
 
   const validarTallas = () => {
     const nuevosErrores = {};
@@ -110,7 +110,7 @@ const PasoTallas = ({ producto, setProducto, onAnterior, onSiguiente }) => {
       />
 
       {loading ? (
-        <p>Cargando tallas disponibles...</p>
+        <p className='mb-4 p-3 bg-green-100 text-green-600 rounded'>Cargando tallas disponibles...</p>
       ) : (
         <>
           {/* Mensaje de error general */}
@@ -135,7 +135,7 @@ const PasoTallas = ({ producto, setProducto, onAnterior, onSiguiente }) => {
                   <label htmlFor={`talla-${talla.id}`} className="ml-2 text-lg font-medium">
                     {talla.nombre}
                   </label>
-                </div>
+                </div>  
 
                 {producto.tallas.some((t) => t.talla_id === talla.id) && (
                   <div className="flex-1">
@@ -145,7 +145,7 @@ const PasoTallas = ({ producto, setProducto, onAnterior, onSiguiente }) => {
                         type="number"
                         name="stock"
                         min="0"
-                        value={producto.tallas.find((t) => t.talla_id === talla.id)?.stock || 0}
+                        value={producto.tallas.find((t) => t.talla_id === talla.id)?.stock ?? ''}
                         onChange={(e) => handleTallaChange(e, talla)}
                         className={`w-32 p-2 border ${errores[talla.id] ? 'border-red-500' : 'border-gray-300'} rounded`}
                       />

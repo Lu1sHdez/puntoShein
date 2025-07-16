@@ -55,8 +55,17 @@ const PasoCategoriaSubcategoria = ({
             id="subcategoria_id"
             name="subcategoria_id"
             value={producto.subcategoria_id}
-            onChange={(e) => setProducto({ ...producto, subcategoria_id: e.target.value })}
-            className="mt-1 p-3 w-full border border-gray-300 rounded-md shadow-sm focus:ring-pink-500 focus:border-pink-500"
+            
+            onChange={(e) => {
+              const subcatId = e.target.value;
+              const subcategoriaSeleccionada = subcategorias.find(s => s.id == subcatId);
+              setProducto(prev => ({
+                ...prev,
+                subcategoria_id: subcatId,
+                subcategoria: subcategoriaSeleccionada, // ← guarda nombre y más
+              }));
+            }}
+                        className="mt-1 p-3 w-full border border-gray-300 rounded-md shadow-sm focus:ring-pink-500 focus:border-pink-500"
           >
             <option value="">Seleccione una subcategoría</option>
             {subcategorias.map((subcategoria) => (

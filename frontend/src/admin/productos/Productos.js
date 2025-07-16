@@ -19,8 +19,21 @@ const ProductosLista = () => {
   const [cargando, setCargando] = useState(false); // Estado para mostrar el modal de carga
 
 
+  const cargarProductos = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`${API_URL}/api/productos/obtener`);
+      setProductos(response.data);
+    } catch (err) {
+      setError('No se pudo obtener los productos');
+      console.error('Error al obtener los productos:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
   // Obtener productos desde la API
   useEffect(() => {
+    cargarProductos();
     const fetchProductos = async () => {
       try {
         const response = await axios.get(`${API_URL}/api/productos/obtener`);
@@ -125,7 +138,7 @@ const ProductosLista = () => {
               />
             </div>
             {/* Nombre */}
-            <div className="producto-nombre">{producto.nombre}</div>
+            <div className="producto-nombre text-left">{producto.nombre}</div>
             {/* Precio */}
             <div className="producto-precio text-lg font-semibold text-green-600">${producto.precio}</div>
             {/* Stock */}
@@ -168,7 +181,8 @@ const ProductosLista = () => {
         <ModalGeneral
           visible={modalCrearVisible}
           onClose={handleCerrarModalCrear}
-        />
+          onProductoCreado={cargarProductos} 
+          />
       )}
       {/* Modal de confirmación de eliminación */}
       {modalEliminarVisible && (
