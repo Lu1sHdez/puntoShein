@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { API_URL } from '../../../../ApiConexion';
 import CargandoModal from '../../../../Animations/CargandoModal';
+import ModalGestionTallas from './ModalGestionTallas'; // ajusta la ruta si es necesario
 
 const PasoTallas = ({ producto, setProducto, onAnterior, onSiguiente }) => {
   const [tallasDisponibles, setTallasDisponibles] = useState([]);
@@ -9,6 +10,8 @@ const PasoTallas = ({ producto, setProducto, onAnterior, onSiguiente }) => {
   const [validando, setValidando] = useState(false);
   const [errores, setErrores] = useState({});
   const [mostrarModal, setMostrarModal] = useState(false);
+  const [mostrarModalGestionTallas, setMostrarModalGestionTallas] = useState(false);
+
 
   useEffect(() => {
     const fetchTallas = async () => {
@@ -110,7 +113,7 @@ const PasoTallas = ({ producto, setProducto, onAnterior, onSiguiente }) => {
       />
 
       {loading ? (
-        <p className='mb-4 p-3 bg-green-100 text-green-600 rounded'>Cargando tallas disponibles...</p>
+        <p className='mb-4 p-3 bg-blue-100 text-blue-600 rounded'>Cargando tallas disponibles...</p>
       ) : (
         <>
           {/* Mensaje de error general */}
@@ -158,8 +161,19 @@ const PasoTallas = ({ producto, setProducto, onAnterior, onSiguiente }) => {
               </div>
             ))}
           </div>
+          <div className="flex justify-end mb-4">
+            <button
+              onClick={() => setMostrarModalGestionTallas(true)}
+              className="px-4 py-2 bg-blue-700 text-white rounded hover:bg-blue-800 text-sm"
+            >
+              + Nueva Talla
+            </button>
+          </div>
         </>
+        
       )}
+      
+
 
       {/* Botones de navegación */}
       <div className="flex justify-between mt-6">
@@ -177,6 +191,19 @@ const PasoTallas = ({ producto, setProducto, onAnterior, onSiguiente }) => {
           {validando ? 'Validando...' : 'Siguiente'}
         </button>
       </div>
+      <ModalGestionTallas
+        visible={mostrarModalGestionTallas}
+        onClose={() => setMostrarModalGestionTallas(false)}
+        refreshTallas={async () => {
+          try {
+            const response = await axios.get(`${API_URL}/api/tallas/obtener`, { withCredentials: true });
+            setTallasDisponibles(response.data);
+          } catch (error) {
+            console.error("Error al refrescar tallas:", error);
+          }
+        }}
+      />
+
     </div>
   );
 };

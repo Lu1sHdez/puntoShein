@@ -1,46 +1,73 @@
 import React, { useState } from "react";
 import { createPortal } from "react-dom";
 import axios from "axios";
-import { API_URL } from "../../../ApiConexion.js";
-import { mostrarNotificacion } from "../../../Animations/NotificacionSwal.js";
+import { API_URL } from "../../../ApiConexion";
+import { mostrarNotificacion } from "../../../Animations/NotificacionSwal";
+import { mostrarConfirmacion } from "../../../Animations/ConfirmacionSwal";
+import CargandoModal from "../../../Animations/CargandoModal";
+import ModalAgregarValor from "./ModalAgregarValor"; // ← nuevo modal
+import ModalEditarValor from "./ModalEditarValor";
+import { FaPlusCircle } from "react-icons/fa";
+
 
 const ModalEditarValores = ({ empresa, onClose, onActualizar }) => {
   const [valores, setValores] = useState(empresa?.valores || []);
   const [guardando, setGuardando] = useState(false);
+  const [eliminando, setEliminando] = useState(false);
+  const [expandido, setExpandido] = useState(null); // índice expandido
+  const [modalAgregarVisible, setModalAgregarVisible] = useState(false);
+  const [modalEditarVisible, setModalEditarVisible] = useState(false);
+  const [valorEditandoIndex, setValorEditandoIndex] = useState(null);
 
-  const handleValorChange = (index, e) => {
-    const { name, value } = e.target;
-    const nuevosValores = [...valores];
-    nuevosValores[index][name] = value;
-    setValores(nuevosValores);
+  const handleEliminar = async (index) => {
+    const confirmado = await mostrarConfirmacion({
+      titulo: "¿Eliminar este valor?",
+      texto: "Esta acción no se puede deshacer.",
+      confirmText: "Sí, eliminar",
+    });
+
+    if (!confirmado) return;
+
+    setEliminando(true);
+    setTimeout(() => {
+      setValores(valores.filter((_, i) => i !== index));
+      setEliminando(false);
+    }, 800);
   };
 
-  const addValor = () => {
-    setValores([...valores, { nombre: "", descripcion: "" }]);
+
+  const guardarValorEditado = (valorActualizado) => {
+    const nuevos = [...valores];
+    nuevos[valorEditandoIndex] = valorActualizado;
+    setValores(nuevos);
   };
 
-  const removeValor = (index) => {
-    const nuevosValores = valores.filter((_, i) => i !== index);
-    setValores(nuevosValores);
-  };
+  
 
   const handleGuardar = async () => {
     setGuardando(true);
     try {
       await axios.put(`${API_URL}/api/empresa/empresa`, {
         ...empresa,
-        valores
+        valores,
       }, { withCredentials: true });
-
-      mostrarNotificacion("success", "Valores actualizados correctamente");
       onActualizar();
       onClose();
     } catch (error) {
-      console.error("Error al actualizar valores:", error);
       mostrarNotificacion("error", "Error al actualizar valores");
     } finally {
       setGuardando(false);
     }
+  };
+
+  const actualizarValor = (index, campo, valor) => {
+    const nuevos = [...valores];
+    nuevos[index][campo] = valor;
+    setValores(nuevos);
+  };
+
+  const agregarNuevoValor = (nuevo) => {
+    setValores([...valores, nuevo]);
   };
 
   return createPortal(
@@ -48,39 +75,41 @@ const ModalEditarValores = ({ empresa, onClose, onActualizar }) => {
       <div className="bg-white p-6 rounded-xl shadow-lg w-[95%] max-w-3xl h-[90vh] overflow-y-auto relative">
         <h2 className="text-2xl font-bold mb-4 text-center">Editar Valores Institucionales</h2>
 
-        {valores.map((valor, index) => (
-          <div key={index} className="mb-4 border p-3 rounded-md bg-gray-50">
-            <input
-              name="nombre"
-              value={valor.nombre}
-              onChange={(e) => handleValorChange(index, e)}
-              placeholder="Nombre del valor"
-              className="w-full mb-2 p-2 border rounded-md"
-            />
-            <textarea
-              name="descripcion"
-              value={valor.descripcion}
-              onChange={(e) => handleValorChange(index, e)}
-              placeholder="Descripción del valor"
-              className="w-full p-2 border rounded-md"
-            />
+       {valores.map((valor, index) => (
+        <div key={index} className="mb-4 border p-3 rounded-md bg-gray-50">
+          <p className="font-semibold text-pink-700">{valor.nombre}</p>
+          <p className="text-gray-600 text-sm mt-1">{valor.descripcion}</p>
+
+          <div className="flex gap-3 mt-2">
             <button
-              type="button"
-              onClick={() => removeValor(index)}
-              className="text-red-500 mt-2"
+              onClick={() => {
+                setValorEditandoIndex(index);
+                setModalEditarVisible(true);
+              }}
+              className="text-blue-600 text-sm"
             >
-              Eliminar valor
+              Editar
+            </button>
+            <button
+              onClick={() => handleEliminar(index)}
+              className="text-red-500 text-sm"
+            >
+              Eliminar
             </button>
           </div>
-        ))}
+        </div>
+      ))}
 
-        <button
-          type="button"
-          onClick={addValor}
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition mb-6"
-        >
-          Agregar valor
-        </button>
+      <button
+        title="Agregar nuevo valor"
+        aria-label="Agregar Valor"
+        className="flex items-center gap-2 bg-gray-200 text-pink-600 px-4 py-2 rounded-full shadow-sm hover:bg-gray-300 transition-colors duration-200 z-10 text-sm font-medium border border-pink-300"
+        onClick={() => setModalAgregarVisible(true)}
+      >
+        <FaPlusCircle size={16} />
+        <span>Agregar otro valor</span>
+      </button>
+
 
         <div className="flex justify-end gap-3">
           <button
@@ -97,6 +126,25 @@ const ModalEditarValores = ({ empresa, onClose, onActualizar }) => {
             {guardando ? "Guardando..." : "Guardar"}
           </button>
         </div>
+
+        {guardando && <CargandoModal visible={guardando} mensaje="Guardando valores..." />}
+        {eliminando && <CargandoModal visible={eliminando} mensaje="Eliminando valor..." />}
+        {modalAgregarVisible && (
+          <ModalAgregarValor
+            visible={modalAgregarVisible}
+            onClose={() => setModalAgregarVisible(false)}
+            onAgregar={agregarNuevoValor}
+          />
+        )}
+        {modalEditarVisible && (
+        <ModalEditarValor
+          visible={modalEditarVisible}
+          valorInicial={valores[valorEditandoIndex]}
+          onClose={() => setModalEditarVisible(false)}
+          onGuardar={guardarValorEditado}
+        />
+      )}
+
       </div>
     </div>,
     document.body

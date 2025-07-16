@@ -34,7 +34,7 @@ const LogoArrastra = ({ onArchivoSeleccionado }) => {
       onDragEnter={handleDragOver}
       onDragLeave={handleDragLeave}
       className={`border-2 border-dashed rounded-lg p-4 text-center cursor-pointer transition mb-4 ${
-        isDragging ? "border-blue-600 bg-blue-100" : "border-blue-400 hover:bg-blue-50"
+        isDragging ? "border-pink-600 bg-pink-100" : "border-pink-400 hover:bg-pink-50"
       }`}
     >
       <p className="text-gray-600 text-sm">

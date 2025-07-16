@@ -57,7 +57,7 @@ const Empresa = () => {
             <p><strong>Equipo:</strong> {empresa.equipo}</p>
             <button
               onClick={() => setMostrarModalGenerales(true)}
-              className="mt-3 px-4 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 flex items-center"
+              className="mt-3 px-4 py-1 bg-pink-600 text-white rounded hover:bg-pink-700 flex items-center"
             >
               <FaEdit className="mr-2" />
             </button>
@@ -68,7 +68,7 @@ const Empresa = () => {
             <h2 className="text-xl font-bold mb-2">Contacto</h2>
             <p><strong>Correo:</strong> {empresa.correo}</p>
             <p><strong>Teléfono:</strong> {empresa.telefono}</p>
-            <button onClick={() => setMostrarModalContacto(true)} className="mt-3 px-4 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 flex items-center"
+            <button onClick={() => setMostrarModalContacto(true)} className="mt-3 px-4 py-1 bg-pink-600 text-white rounded hover:bg-pink-700 flex items-center"
             >
               <FaEdit className="mr-2" />
             </button>
@@ -84,7 +84,7 @@ const Empresa = () => {
                 ))}
               </ul>
             ) : <p className="text-gray-500">No hay valores definidos.</p>}
-            <button onClick={() => setMostrarModalValores(true)} className="mt-3 px-4 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 flex items-center"
+            <button onClick={() => setMostrarModalValores(true)} className="mt-3 px-4 py-1 bg-pink-600 text-white rounded hover:bg-pink-700 flex items-center"
             >
               <FaEdit className="mr-2" />
             </button>
@@ -98,7 +98,7 @@ const Empresa = () => {
                 <img src={empresa.logo} alt="Logo" className="w-32 h-auto mb-2 rounded-md shadow" />
                 <button
                   onClick={() => setMostrarModalLogo(true)}
-                  className="absolute top-1 right-1 bg-blue-600 text-white p-1 rounded-full hover:bg-blue-700 transition"
+                  className="absolute top-1 right-1 bg-pink-600 text-white p-1 rounded-full hover:bg-pink-700 transition"
                   title="Editar logo"
                 >
                   <FaEdit size={16} />

@@ -7,6 +7,8 @@ import { motion } from 'framer-motion';
 import { mostrarNotificacion } from '../../Animations/NotificacionSwal.js';
 import { API_URL } from '../../ApiConexion.js';
 import CargandoBarra from '../../Animations/CargandoBarra.js';
+import ModalDetalleUsuario from './modales/UsuarioDetalles.js';
+
 
 const Usuarios = () => {
   const [usuarios, setUsuarios] = useState([]);
@@ -15,6 +17,8 @@ const Usuarios = () => {
   const [rol, setRol] = useState('');
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
+  const [modalDetalleVisible, setModalDetalleVisible] = useState(false);
+  const [usuarioSeleccionadoId, setUsuarioSeleccionadoId] = useState(null);
 
   // Función para manejar el cambio en el filtro de roles
   const handleRoleChange = (event) => {
@@ -232,12 +236,16 @@ const Usuarios = () => {
                 >
                   Eliminar
                 </button>
-                <Link
-                  to={`/admin/usuarios/${usuario.id}`}
+                <button
+                  onClick={() => {
+                    setUsuarioSeleccionadoId(usuario.id);
+                    setModalDetalleVisible(true);
+                  }}
                   className="text-green-500 hover:text-green-700 focus:outline-none ml-4 transition duration-200"
                 >
                   Ver más
-                </Link>
+                </button>
+
               </td>
 
               </motion.tr>
@@ -245,6 +253,11 @@ const Usuarios = () => {
           </tbody>
         </table>
       </div>
+      <ModalDetalleUsuario
+        visible={modalDetalleVisible}
+        userId={usuarioSeleccionadoId}
+        onClose={() => setModalDetalleVisible(false)}
+      />
     </motion.div>
   );
 };

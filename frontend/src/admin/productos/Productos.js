@@ -103,19 +103,24 @@ const ProductosLista = () => {
   };
 
   return (
-    <div className="productos-lista p-6 bg-gray-50 rounded-lg shadow-lg">
+    <div className="productos-lista relative p-6 bg-gray-50 rounded-lg shadow-lg">
       <h2 className="text-3xl font-semibold text-center mb-6 text-pink-600">Lista de Productos</h2>
-
-      {/* Botón para abrir el modal de creación de producto */}
-      <div className="text-left mb-6">
-        <button
-          aria-label="Crear Producto"
-          className="bg-gradient-to-r from-pink-500 to-pink-600 text-white p-3 rounded-full shadow-lg hover:scale-105 transform transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-opacity-50"
-          onClick={handleAbrirModalCrear}
-        >
-          <FaPlusCircle size={30} />
-        </button>
+      <div className="absolute top-6 left-6 text-sm text-gray-700 font-medium">
+        Total de productos: <span className="text-pink-600 font-bold">{productos.length}</span>
       </div>
+
+
+      {/* Botón Agregar producto */}
+      <button
+        title="Crear nuevo producto"
+        aria-label="Crear Producto"
+        className="absolute top-6 right-6 flex items-center gap-2 bg-gray-200 text-pink-600 px-4 py-2 rounded-full shadow-sm hover:bg-gray-300 transition-colors duration-200 z-10 text-sm font-medium border border-pink-300"
+        onClick={handleAbrirModalCrear}
+      >
+        <FaPlusCircle size={16} />
+        <span>Agregar otro producto</span>
+      </button>
+
 
       {/* Tabla de productos */}
       <div className="productos-table overflow-x-auto bg-white shadow-md rounded-lg">

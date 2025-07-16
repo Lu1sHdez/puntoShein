@@ -69,19 +69,29 @@ const ModalGestionCategorias = ({ visible, onClose, categorias, refreshCategoria
         </h2>
 
         <div className="flex mb-4">
-          <button
-            onClick={() => setTipo('categoria')}
-            className={`px-4 py-2 mr-2 rounded ${tipo === 'categoria' ? 'bg-pink-500 text-white' : 'bg-gray-200 text-gray-800'}`}
-          >
-            Categoría
-          </button>
-          <button
-            onClick={() => setTipo('subcategoria')}
-            className={`px-4 py-2 rounded ${tipo === 'subcategoria' ? 'bg-pink-500 text-white' : 'bg-gray-200 text-gray-800'}`}
-          >
-            Subcategoría
-          </button>
-        </div>
+        <button
+          onClick={() => {
+            setTipo('categoria');
+            setCategoriaSeleccionada('');
+          }}
+          className={`px-4 py-2 mr-2 rounded ${tipo === 'categoria' ? 'bg-pink-500 text-white' : 'bg-gray-200 text-gray-800'}`}
+        >
+          Categoría
+        </button>
+        <button
+          onClick={() => {
+            setTipo('subcategoria');
+            // Asignar la primera categoría automáticamente si existe
+            if (categorias.length > 0) {
+              setCategoriaSeleccionada(categorias[0].id);
+            }
+          }}
+          className={`px-4 py-2 rounded ${tipo === 'subcategoria' ? 'bg-pink-500 text-white' : 'bg-gray-200 text-gray-800'}`}
+        >
+          Subcategoría
+        </button>
+      </div>
+
 
         <form onSubmit={handleSubmit}>
           {tipo === 'subcategoria' && (
@@ -134,6 +144,7 @@ const ModalGestionCategorias = ({ visible, onClose, categorias, refreshCategoria
             >
               Crear
             </button>
+            
           </div>
         </form>
       </div>

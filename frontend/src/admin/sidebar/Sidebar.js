@@ -23,6 +23,7 @@ const Sidebar = ({ admin }) => {
     { label: "Configuración", icon: <FaCog />, path: "/admin/configuracion" },
     { label: "Usuarios", icon: <FaUsers />, path: "/admin/usuarios" },
     { label: "Productos", icon: <FaBox />, path: "/admin/productos" },
+    { label: "Empresa", icon: <FaBox />, path: "/admin/empresa" },
     { label: "Empleados", icon: <FaUserTie />, path: "/admin/empleados" },
     { label: "Preguntas", icon: <FaQuestionCircle />, path: "/admin/preguntasFrecuentes" },
     { label: "Análisis", icon: <FaChartLine />, path: "/admin/gestionProductos" },

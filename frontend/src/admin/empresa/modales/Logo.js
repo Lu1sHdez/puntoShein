@@ -1,9 +1,9 @@
-// src/admin/empresa/modales/ModalEditarLogo.js
 import React, { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import axios from "axios";
 import { API_URL } from "../../../ApiConexion";
 import { mostrarNotificacion } from "../../../Animations/NotificacionSwal";
+import CargandoModal from "../../../Animations/CargandoModal"; // ← Importado
 import LogoDetalle from "./LogoDetalle";
 import LogoArrastra from "./LogoArrastra";
 
@@ -85,7 +85,6 @@ const ModalEditarLogo = ({ empresa, onClose, onActualizar }) => {
       <div className="bg-white p-6 rounded-xl shadow-lg w-[90%] max-w-md relative">
         <h2 className="text-xl font-bold mb-4 text-center">Editar Logotipo</h2>
 
-        {/* Botón oculto para seleccionar archivo manualmente */}
         <input
           type="file"
           accept="image/*"
@@ -96,15 +95,13 @@ const ModalEditarLogo = ({ empresa, onClose, onActualizar }) => {
         />
         <label
           htmlFor="logo-upload"
-          className="cursor-pointer block text-sm text-blue-600 hover:underline mb-2 text-center"
+          className="cursor-pointer block text-sm text-pink-600 hover:underline mb-2 text-center"
         >
           O haz clic aquí para seleccionar una imagen
         </label>
 
-        {/* Área de arrastrar y soltar */}
         <LogoArrastra onArchivoSeleccionado={procesarArchivo} />
 
-        {/* Vista previa y detalles */}
         <LogoDetalle
           vistaPrevia={vistaPrevia}
           archivo={archivo}
@@ -116,7 +113,6 @@ const ModalEditarLogo = ({ empresa, onClose, onActualizar }) => {
           }}
         />
 
-        {/* Botones */}
         <div className="flex justify-end gap-3 mt-4">
           <button
             onClick={onClose}
@@ -127,11 +123,15 @@ const ModalEditarLogo = ({ empresa, onClose, onActualizar }) => {
           <button
             onClick={handleSubirLogo}
             disabled={guardando}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+            className="px-4 py-2 bg-pink-600 text-white rounded hover:bg-pink-700 transition"
           >
             {guardando ? "Subiendo..." : "Guardar"}
           </button>
         </div>
+
+        {guardando && (
+          <CargandoModal visible={guardando} mensaje="Subiendo logo..." />
+        )}
       </div>
     </div>,
     document.body
