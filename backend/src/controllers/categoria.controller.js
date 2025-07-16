@@ -1,5 +1,6 @@
 import Categoria from '../models/categoria.model.js';
-import Subcategoria from '../models/subcategoria.model.js';
+import Subcategoria from '../models/subcategoria.model.js'
+import Producto from '../models/producto.model.js';
 
 // Obtener todas las categorías
 export const obtenerCategorias = async (req, res) => {
@@ -85,5 +86,95 @@ export const crearSubcategoria = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ mensaje: 'Error al crear la subcategoría' });
+  }
+};
+// Eliminar categoría solo si no tiene relaciones
+export const eliminarCategoria = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const subcategorias = await Subcategoria.findAll({ where: { categoria_id: id } });
+    if (subcategorias.length > 0) {
+      return res.status(400).json({ mensaje: 'No se puede eliminar: tiene subcategorías asociadas' });
+    }
+
+    const productos = await Producto.findAll({
+      include: { model: Subcategoria, where: { categoria_id: id } }
+    });
+    if (productos.length > 0) {
+      return res.status(400).json({ mensaje: 'No se puede eliminar: hay productos en esta categoría' });
+    }
+
+    await Categoria.destroy({ where: { id } });
+    res.json({ mensaje: 'Categoría eliminada correctamente' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ mensaje: 'Error al eliminar categoría' });
+  }
+};
+
+// Eliminar subcategoría solo si no tiene productos
+export const eliminarSubcategoria = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const productos = await Producto.findAll({ where: { subcategoria_id: id } });
+    if (productos.length > 0) {
+      return res.status(400).json({ mensaje: 'No se puede eliminar: hay productos en esta subcategoría' });
+    }
+
+    await Subcategoria.destroy({ where: { id } });
+    res.json({ mensaje: 'Subcategoría eliminada correctamente' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ mensaje: 'Error al eliminar subcategoría' });
+  }
+};
+
+// Editar categoría
+export const editarCategoria = async (req, res) => {
+  const { id } = req.params;
+  const { nombre } = req.body;
+
+  try {
+    const existe = await Categoria.findOne({ where: { nombre } });
+    if (existe && existe.id != id) {
+      return res.status(400).json({ mensaje: 'Ya existe otra categoría con ese nombre' });
+    }
+
+    const categoria = await Categoria.findByPk(id);
+    if (!categoria) return res.status(404).json({ mensaje: 'Categoría no encontrada' });
+
+    categoria.nombre = nombre;
+    await categoria.save();
+
+    res.json({ mensaje: 'Categoría actualizada correctamente' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ mensaje: 'Error al editar la categoría' });
+  }
+};
+
+// Editar subcategoría
+export const editarSubcategoria = async (req, res) => {
+  const { id } = req.params;
+  const { nombre } = req.body;
+
+  try {
+    const existe = await Subcategoria.findOne({ where: { nombre } });
+    if (existe && existe.id != id) {
+      return res.status(400).json({ mensaje: 'Ya existe otra subcategoría con ese nombre' });
+    }
+
+    const subcategoria = await Subcategoria.findByPk(id);
+    if (!subcategoria) return res.status(404).json({ mensaje: 'Subcategoría no encontrada' });
+
+    subcategoria.nombre = nombre;
+    await subcategoria.save();
+
+    res.json({ mensaje: 'Subcategoría actualizada correctamente' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ mensaje: 'Error al editar la subcategoría' });
   }
 };
