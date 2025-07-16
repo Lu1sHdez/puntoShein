@@ -10,6 +10,7 @@ import CargandoBarra from '../../Animations/CargandoBarra';
 import RecuperarPasswordAdmin from '../perfil/modales/RecuperarPasswordAdmin'
 import RestablecerPasswordAdmin from '../perfil/modales/RestablecerPasswordAdmin'
 import VerificarCodigoAdmin from '../perfil/modales/VerificarCodigoAdmin'
+import CargandoModal from '../../Animations/CargandoModal';
 
 const Perfil = () => {
   const [usuario, setUsuario] = useState(null);
@@ -19,6 +20,8 @@ const Perfil = () => {
   const [mostrarRecuperacion, setMostrarRecuperacion] = useState(false);
   const [mostrarRestablecer, setMostrarRestablecer] = useState(false);
   const [mostrarVerificarCodigo, setMostrarVerificarCodigo] = useState(false);
+  const [Guardando, setGuardando] = useState(false); // Para mostrar el modal de carga
+
 
 
   const navigate = useNavigate();
@@ -55,13 +58,15 @@ const Perfil = () => {
   };
 
   const guardarCambios = async () => {
+    setGuardando(true);
     try {
       await axios.put(`${API_URL}/api/admin/perfil`, datosEditables, { withCredentials: true });
-      mostrarNotificacion("success", "¡Perfil actualizado!");
       setModoEdicion(false);
       setDatosOriginales(datosEditables); // Actualizar los originales
     } catch (error) {
       mostrarNotificacion("error", "Error al guardar cambios.");
+    }finally{
+      setGuardando(false)
     }
   };
 
@@ -151,6 +156,8 @@ const Perfil = () => {
       {mostrarRestablecer && (
         <RestablecerPasswordAdmin onClose={() => setMostrarRestablecer(false)} />
       )}
+      <CargandoModal mensaje="Guardando cambios..." visible={Guardando} />
+
     </motion.div>
 
   );

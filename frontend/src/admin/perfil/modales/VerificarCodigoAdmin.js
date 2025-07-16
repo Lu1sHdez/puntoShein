@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { API_URL } from '../../../ApiConexion';
+import CargandoModal from '../../../Animations/CargandoModal';
 
 const VerificarCodigoAdmin = ({ correo, onCodigoCorrecto, onClose }) => {
   const [codigo, setCodigo] = useState('');
   const [mensaje, setMensaje] = useState(null);
   const [cargando, setCargando] = useState(false);
+
 
   const handleVerificar = async () => {
     if (!codigo.trim()) {
@@ -50,10 +52,12 @@ const VerificarCodigoAdmin = ({ correo, onCodigoCorrecto, onClose }) => {
           <button
             onClick={handleVerificar}
             disabled={cargando}
-            className="bg-pink-600 text-white px-4 py-1 rounded hover:bg-pink-700"
+            className={`px-4 py-1 rounded text-white ${cargando ? 'bg-gray-400 cursor-not-allowed' : 'bg-pink-600 hover:bg-pink-700'}`}
           >
-            {cargando ? 'Verificando...' : 'Verificar Código'}
+            Verificar Código
           </button>
+          <CargandoModal mensaje="Verificando código..." visible={cargando} />
+
         </div>
       </div>
     </div>

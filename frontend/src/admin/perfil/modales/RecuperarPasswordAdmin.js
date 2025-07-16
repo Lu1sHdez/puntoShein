@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import CargandoModal from '../../../Animations/CargandoModal';
 import { API_URL } from '../../../ApiConexion';
 
 const RecuperarPasswordAdmin = ({ correo, onCodigoEnviado, onClose }) => {
@@ -39,10 +40,12 @@ const RecuperarPasswordAdmin = ({ correo, onCodigoEnviado, onClose }) => {
           <button
             onClick={handleEnviarCodigo}
             disabled={cargando}
-            className={`px-4 py-1 rounded text-white ${cargando ? 'bg-gray-400' : 'bg-pink-600 hover:bg-pink-700'}`}
+            className={`px-4 py-1 rounded text-white ${cargando ? 'bg-gray-400 cursor-not-allowed' : 'bg-pink-600 hover:bg-pink-700'}`}
           >
-            {cargando ? 'Enviando...' : 'Enviar Código'}
+            Enviar Código
           </button>
+
+          <CargandoModal mensaje = "Enviando código..." visible={cargando}/>
         </div>
       </div>
     </div>

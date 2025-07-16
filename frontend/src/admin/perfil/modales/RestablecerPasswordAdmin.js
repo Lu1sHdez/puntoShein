@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { API_URL } from '../../../ApiConexion';
 import FormularioInput from '../../../components/form/FormularioInput';
+import CargandoModal from '../../../Animations/CargandoModal';
 
 const RestablecerPasswordAdmin = ({ onClose }) => {
   const [form, setForm] = useState({ nueva: '', confirmar: '' });
@@ -10,6 +11,7 @@ const RestablecerPasswordAdmin = ({ onClose }) => {
   const [showConfirmar, setShowConfirmar] = useState(false);
   const [mensaje, setMensaje] = useState(null);
   const [exito, setExito] = useState(false);
+  const [cargando, setCargando] = useState(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -34,6 +36,8 @@ const RestablecerPasswordAdmin = ({ onClose }) => {
       setMensaje({ tipo: 'error', texto: 'Las contraseñas no coinciden.' });
       return;
     }
+    setCargando(true); // Mostrar modal de carga
+    setMensaje(null);
 
     try {
       await axios.put(`${API_URL}/api/admin/restablecer-password`, {
@@ -48,6 +52,8 @@ const RestablecerPasswordAdmin = ({ onClose }) => {
       setTimeout(() => onClose(), 1500);
     } catch (err) {
       setMensaje({ tipo: 'error', texto: err.response?.data?.mensaje || 'Error al cambiar la contraseña.' });
+    }finally{
+      setCargando(false)
     }
   };
 
@@ -97,6 +103,8 @@ const RestablecerPasswordAdmin = ({ onClose }) => {
             >
               Cambiar Contraseña
             </button>
+            <CargandoModal mensaje="Cambiando contraseña..." visible={cargando} />
+
           </div>
         </form>
       </div>
