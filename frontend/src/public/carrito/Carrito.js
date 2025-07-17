@@ -12,7 +12,7 @@ import {
 import { FaPlus, FaMinus, FaTrashAlt, FaShoppingCart } from "react-icons/fa";
 import { API_URL } from "../../ApiConexion";
 import axios from "axios";
-import { Cargando } from "../../Animations/Cargando";
+import CargandoBarra from "../../Animations/CargandoBarra";
 import CargandoModal from "../../Animations/CargandoModal";
 import { dataLoadingAnimation } from "../../components/Funciones";
 import { mostrarNotificacion } from "../../Animations/NotificacionSwal";
@@ -131,7 +131,7 @@ const Carrito = () => {
     }
   };
 
-  if (!usuario) return <CargandoModal message="Cargando perfil..." />;
+  if (!usuario) return <CargandoBarra message="Cargando perfil..." />;
 
   return (
     <motion.section
@@ -143,7 +143,7 @@ const Carrito = () => {
       </h1>
 
       {loading ? (
-        <Cargando message="Cargando productos..." />
+        <loading message="Cargando productos..." />
       ) : carrito.length === 0 ? (
         <div className="flex flex-col items-center text-center bg-white p-10 rounded-lg shadow">
           <FaShoppingCart className="text-5xl text-gray-400 mb-4" />

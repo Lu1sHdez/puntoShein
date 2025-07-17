@@ -124,3 +124,22 @@
 | `.btn-login`       | Botón blanco con texto rosa para **iniciar sesión** (acción secundaria) |
 | `.btn-atras`       | Botón gris claro para **volver o regresar a una pantalla anterior**     |
  */
+
+ .link-subrayado {
+  @apply text-pink-600 font-medium relative transition duration-200 ease-in-out;
+}
+
+.link-subrayado::after {
+  content: "";
+  position: absolute;
+  width: 0%;
+  height: 2px;
+  left: 0;
+  bottom: -2px;
+  background-color: #db2777; /* Rosa intenso */
+  transition: width 0.3s ease-in-out;
+}
+
+.link-subrayado:hover::after {
+  width: 100%;
+}

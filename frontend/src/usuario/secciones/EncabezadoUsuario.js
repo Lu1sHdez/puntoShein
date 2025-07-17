@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FaSignOutAlt } from "react-icons/fa";
+import { FaSignOutAlt,FaShoppingCart   } from "react-icons/fa";
 import { jwtDecode } from "jwt-decode";
 import Swal from "sweetalert2";
 import axios from "axios";
@@ -85,7 +85,20 @@ const EncabezadoUsuario = () => {
             </>
           )}
         </Link>
+        <Link
+          to = "/cuerpo"
+          className="link-subrayado"
+          >
+          Productos
+        </Link>
+        <Link
+          to = "/productos/carrito"
 
+          className="link-subrayado flex items-center gap-2 text-pink-600 hover:text-pink-700 transition font-medium"
+        >
+          <FaShoppingCart className="text-2xl" />
+          <span className="text-sm">Carrito</span>
+        </Link>
 
         {/* Perfil + Logout */}
         <div className="flex items-center space-x-5">

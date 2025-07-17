@@ -6,7 +6,9 @@ import { API_URL } from "../../ApiConexion";
 import useSesionUsuario from "../../context/useSesionUsuario";
 import useAuth from "../../hooks/useAuth";
 import CargandoModal from "../../Animations/CargandoModal";
-import { FaShoppingCart,FaSignOutAlt, FaSearch } from "react-icons/fa";
+import { FaShoppingCart,FaSignOutAlt, FaSearch,FaCog  } from "react-icons/fa";
+import ModalAutenticacion from "../autenticacion/Autenticacion";
+
 
 const EncabezadoPublico = () => {
   const [empresa, setEmpresa] = useState(null);
@@ -29,6 +31,8 @@ const EncabezadoPublico = () => {
   const iniciales = generarIniciales(datos?.nombre);
   const fotoPerfil = datos?.foto_perfil;
   const nombreUsuario = datos?.nombre;
+  const [mostrarModal, setMostrarModal] = useState(false);
+
 
   const cerrarSesion = async () => {
     setCargando(true);
@@ -108,14 +112,27 @@ const EncabezadoPublico = () => {
             </button>
           </form>
         )}
+        <Link
+          to = "/cuerpo"
+          className="link-subrayado"
+          >
+          Productos
+        </Link>
+        <button
+          onClick={() => {
+            if (usuarioAutenticado) {
+              navigate("/usuario/carrito");
+            } else {
+              setMostrarModal(true);
+            }
+          }}
+          className="link-subrayado flex items-center gap-2 text-pink-600 hover:text-pink-700 transition font-medium"
+        >
+          <FaShoppingCart className="text-2xl" />
+          <span className="text-sm">Carrito</span>
+        </button>
 
         <div className="flex items-center gap-4">
-          {usuarioAutenticado && (
-            <Link to="/usuario/carrito" className="flex items-center gap-2">
-              <FaShoppingCart className="text-pink-600 text-2xl" />
-              <span className="text-sm font-medium">Carrito</span>
-            </Link>
-          )}
 
           {/* Usuario autenticado */}
           {usuarioAutenticado && datos ? (
@@ -147,6 +164,13 @@ const EncabezadoPublico = () => {
                 <FaSignOutAlt />
                 Cerrar sesión
               </button>
+              <Link
+                to="/usuario/dashboard"
+                className="text-gray-600 hover:text-pink-600 transition text-xl"
+                title="Configuración"
+              >
+                <FaCog />
+              </Link>
             </div>
           ) : (
             <div className="flex gap-3">
@@ -165,7 +189,12 @@ const EncabezadoPublico = () => {
             </div>
           )}
         </div>
+        
+
       </div>
+      {mostrarModal && (
+        <ModalAutenticacion onClose={() => setMostrarModal(false)} />
+      )}
 
       {/* Modal de carga al cerrar sesión */}
       <CargandoModal mensaje="Cerrando sesión..." visible={cargando} />

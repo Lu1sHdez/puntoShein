@@ -82,6 +82,12 @@ const EncabezadoBienvenida = () => {
             </>
           )}
         </Link>
+        <Link
+          to = "/cuerpo"
+          className="link-subrayado"
+          >
+          Productos
+        </Link>
 
         {/* Usuario autenticado */}
         {usuarioAutenticado && datos && (
@@ -110,7 +116,7 @@ const EncabezadoBienvenida = () => {
             {/* Cerrar sesión */}
             <button
               onClick={cerrarSesion}
-              className="btn-cerrar"
+              className="link-subrayado"
             >
               <FaSignOutAlt />
               Cerrar sesión

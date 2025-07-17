@@ -20,6 +20,7 @@ import { motion } from "framer-motion";
 import { mostrarNotificacion } from "../../Animations/NotificacionSwal.js";
 import { Cargando } from "../../Animations/Cargando.js";
 import useSesionUsuario from "../../context/useSesionUsuario";
+import CargandoBarra from "../../Animations/CargandoBarra.js";
 
 mostrarNotificacion();
 
@@ -130,7 +131,7 @@ const Carrito = () => {
   const calcularTotal = () =>
     carrito.reduce((acc, item) => acc + item.producto.precio * item.cantidad, 0);
 
-  if (!usuarioAutenticado || rol !== "usuario") return <Cargando message="Cargando..." />;
+  if (!usuarioAutenticado || rol !== "usuario") return <CargandoBarra message="Cargando..." />;
 
   return (
     <motion.div {...dataLoadingAnimation} className="container mx-auto -py-3">
