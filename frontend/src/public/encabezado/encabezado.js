@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { API_URL } from "../../ApiConexion";
@@ -7,6 +7,7 @@ import useSesionUsuario from "../../context/useSesionUsuario";
 import useAuth from "../../hooks/useAuth";
 import CargandoModal from "../../Animations/CargandoModal";
 import { FaSignOutAlt } from "react-icons/fa";
+import { FaSearch } from "react-icons/fa";
 
 const EncabezadoPublico = () => {
   const [empresa, setEmpresa] = useState(null);
@@ -14,6 +15,9 @@ const EncabezadoPublico = () => {
   const { logout } = useAuth();
   const [cargando, setCargando] = useState(false);
   const navigate = useNavigate();
+  const [termino, setTermino] = useState("");
+  const location = useLocation();
+
 
   const generarIniciales = (nombre) => {
     if (!nombre) return "";
@@ -77,6 +81,35 @@ const EncabezadoPublico = () => {
             </>
           )}
         </Link>
+        {/* Campo de búsqueda solo visible en la ruta /cuerpo */}
+        {location.pathname === "/cuerpo" && (
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (termino.trim()) {
+                navigate(`/cuerpo?buscar=${encodeURIComponent(termino.trim())}`);
+                setTermino(""); 
+              }
+            }}
+            className="hidden md:flex items-center bg-white border border-gray-300 rounded-xl shadow-sm max-w-md w-full px-2 py-1 mx-6"
+          >
+            <FaSearch className="text-gray-400 ml-2 mr-3" />
+            <input
+              type="text"
+              placeholder="Buscar productos..."
+              value={termino}
+              onChange={(e) => setTermino(e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 rounded-l focus:outline-none focus:ring-2 focus:ring-pink-600"
+            />
+            <button
+              type="submit"
+              className="bg-pink-600 text-white px-4 py-2 rounded-r hover:bg-pink-700"
+            >
+              Buscar
+            </button>
+          </form>
+        )}
+
 
         {/* Usuario autenticado */}
         {usuarioAutenticado && datos ? (
