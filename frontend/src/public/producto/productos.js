@@ -73,11 +73,6 @@ const Productos = () => {
       else setCargandoFiltro(false);
     }
   };
-  const resetearFiltros = () => {
-    setCategoriaSeleccionada("");
-    setSubcategoriaSeleccionada("");
-    fetchProductos("filtro"); // usa solo cargador secundario
-  };
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -87,8 +82,6 @@ const Productos = () => {
     return () => clearTimeout(timeout);
   }, []);
   
-
-  // Cuando cambian los filtros
   useEffect(() => {
     if (categoriaSeleccionada || subcategoriaSeleccionada) {
       fetchProductos("filtro");

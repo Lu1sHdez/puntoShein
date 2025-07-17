@@ -88,9 +88,13 @@
     .btn-small {
       @apply px-2 py-1 text-sm bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition;
     }
+    
 
     .btn-cerrar {
       @apply flex items-center gap-2 bg-pink-600 text-white px-4 py-2 rounded-md hover:bg-pink-700 transition text-sm font-medium;
+    }
+    .btn-vaciar{
+      @apply bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700 transition font-semibold;
     }
     
     .btn-registro {
@@ -103,8 +107,6 @@
     .btn-atras {
       @apply bg-gray-200 text-gray-800 px-4 py-2 rounded-md hover:bg-gray-300 transition duration-200 ease-in-out text-sm font-medium;
     }
-    
-    
 }
 
 /* | Clase CSS          | Propósito                                                               |
