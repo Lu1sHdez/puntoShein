@@ -113,7 +113,6 @@ export const eliminarCategoria = async (req, res) => {
   }
 };
 
-// Eliminar subcategoría solo si no tiene productos
 export const eliminarSubcategoria = async (req, res) => {
   const { id } = req.params;
 

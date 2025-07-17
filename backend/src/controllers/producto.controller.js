@@ -134,6 +134,59 @@ export const obtenerProductoPorId = async (req, res) => {
     res.status(500).json({ mensaje: "Error interno del servidor" });
   }
 };
+export const obtenerProducto_Id = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const producto = await Producto.findByPk(id, {
+      include: [
+        {
+          model: Subcategoria,
+          as: "subcategoria",
+          include: {
+            model: Categoria,
+            as: "categoria",
+          },
+        },
+        {
+          model: Talla,
+          as: "tallas",
+          through: {
+            attributes: ['stock'],
+          },
+        },
+      ],
+    });
+
+    if (!producto) {
+      return res.status(404).json({ mensaje: "Producto no encontrado" });
+    }
+
+    let tieneStock = false;
+
+    producto.tallas.forEach(talla => {
+      const stock = talla.ProductoTalla?.stock || 0;
+      if (stock > 0) {
+        talla.setDataValue('stockStatus', 'Disponible');
+        talla.setDataValue('stock', stock); // Para que lo tengas plano
+        tieneStock = true;
+      } else {
+        talla.setDataValue('stockStatus', 'Sin stock');
+        talla.setDataValue('stock', stock);
+      }
+    });
+
+    if (!tieneStock) {
+      return res.status(404).json({ mensaje: "Este producto no está disponible en ninguna talla." });
+    }
+
+    res.json(producto);
+  } catch (error) {
+    console.error("Error al obtener detalles del producto:", error);
+    res.status(500).json({ mensaje: "Error interno del servidor" });
+  }
+};
+
 
 export const filtrarProductos = async (req, res) => {
   try {
@@ -174,8 +227,6 @@ export const filtrarProductos = async (req, res) => {
     res.status(500).json({ mensaje: "Error al filtrar productos." });
   }
 };
-  
-
 
 export const obtenerProductosPorSubcategoria = async (req, res) => {
   try {
@@ -413,7 +464,6 @@ export const obtenerProductos = async (req, res) => {
     res.status(500).json({ mensaje: 'Error al obtener los productos.' });
   }
 };
-
 
 export const crearProducto = async (req, res) => {
   const { nombre, descripcion, color, precio, imagen, subcategoria_id, tallas = [] } = req.body;

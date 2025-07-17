@@ -5,7 +5,7 @@ import {
     buscarProductos, allProductos, obtenerProductoPorId, 
     filtrarProductos, obtenerProductosPorSubcategoria, obtenerDetalleProductoPorTalla, 
     resumenStock, notificaciones, subirImagenProducto, 
-    obtenerProductos, eliminarProducto, crearProducto, editarProducto, 
+    obtenerProductos, eliminarProducto, crearProducto, editarProducto, obtenerProducto_Id
 } from '../controllers/producto.controller.js';
 
 import {obtenerCategorias, obtenerSubcategoriasPorCategoria,  crearCategoria,
@@ -42,6 +42,8 @@ router.get('/allProductos', allProductos);
 router.get('/notificaciones', notificaciones);
 router.get('/resumen-stock', resumenStock);
 router.get('/obtener', obtenerProductos);  // Obtener todos los productos
+router.get('/obtener/:id', obtenerProducto_Id);  // Obtener todos los productos
+
 router.get('/productos/:id', obtenerProductoPorId);  // Obtener producto por ID
 router.post('/crear',verificarToken, admin, crearProducto);  // Crear nuevo producto (solo para prueba)
 router.put('/productos/:id', editarProducto); // Editar producto
