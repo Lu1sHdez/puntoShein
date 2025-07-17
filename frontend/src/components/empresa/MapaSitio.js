@@ -78,7 +78,7 @@ const MapaSitio = () => {
 
         {/* Botón para volver */}
         <div className="mt-6 text-center">
-          <Link to="/" className="bg-pink-600 text-white px-6 py-3 rounded-lg hover:bg-pink-700 transition">
+          <Link to="/" className="btn-atras">
             Volver a Inicio
           </Link>
         </div>

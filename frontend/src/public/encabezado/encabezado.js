@@ -1,22 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FaSignOutAlt } from "react-icons/fa";
-import useAuth from "../../hooks/useAuth";
 import axios from "axios";
 import Swal from "sweetalert2";
-import useSesionUsuario from "../../context/useSesionUsuario";
 import { API_URL } from "../../ApiConexion";
+import useSesionUsuario from "../../context/useSesionUsuario";
+import useAuth from "../../hooks/useAuth";
 import CargandoModal from "../../Animations/CargandoModal";
+import { FaSignOutAlt } from "react-icons/fa";
 
-const EncabezadoBienvenida = () => {
-  const navigate = useNavigate();
-  const { logout } = useAuth();
-  const { usuarioAutenticado, datos } = useSesionUsuario();
-  const [cargando, setCargando] = useState(false);
+const EncabezadoPublico = () => {
   const [empresa, setEmpresa] = useState(null);
+  const { usuarioAutenticado, datos } = useSesionUsuario();
+  const { logout } = useAuth();
+  const [cargando, setCargando] = useState(false);
+  const navigate = useNavigate();
 
-
-  // Iniciales
   const generarIniciales = (nombre) => {
     if (!nombre) return "";
     const palabras = nombre.trim().split(" ");
@@ -34,11 +32,10 @@ const EncabezadoBienvenida = () => {
     try {
       await axios.post(`${API_URL}/api/autenticacion/logout`, {}, { withCredentials: true });
       logout();
-
       setTimeout(() => {
         setCargando(false);
-        navigate("/inicio");
-        window.location.reload(); 
+        navigate("/cuerpo");
+        window.location.reload();
       }, 2000);
     } catch (error) {
       setCargando(false);
@@ -49,34 +46,32 @@ const EncabezadoBienvenida = () => {
       });
     }
   };
+
   useEffect(() => {
-    const obtenerDatos = async () => {
+    const obtenerEmpresa = async () => {
       try {
-        const empresaRes = await axios.get(`${API_URL}/api/empresa/empresa`, {
+        const res = await axios.get(`${API_URL}/api/empresa/empresa`, {
           withCredentials: true,
         });
-        setEmpresa(empresaRes.data);
-
+        setEmpresa(res.data);
       } catch (error) {
-        console.error("Error al cargar datos:", error);
+        console.error("Error al obtener datos de empresa:", error);
       }
     };
-
-    obtenerDatos();
+    obtenerEmpresa();
   }, []);
 
   return (
-    <header className="bg-white shadow-sm fixed top-0 left-0 w-full z-50 border-b border-gray-200">
-      <div className="max-w-6xl mx-auto px-4 py-3 flex flex-col sm:flex-row items-center justify-between gap-4">
-        {/* Empresa */}
-        <Link to = "/inicio"
-          className="flex items-center space-x-4">
+    <header className="fixed top-0 left-0 w-full bg-white shadow-md z-50">
+      <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+        {/* Logo y nombre de la empresa */}
+        <Link to="/inicio" className="flex items-center space-x-4">
           {empresa && (
             <>
               <img
                 src={empresa.logo}
-                alt="Logo de empresa"
-                className="h-14 w-14 rounded-full object-cover shadow-md border border-gray-300"
+                alt="Logo"
+                className="h-14 w-14 rounded-full object-cover border border-gray-300 shadow"
               />
               <h1 className="text-xl font-bold text-pink-600">{empresa.nombre}</h1>
             </>
@@ -84,11 +79,10 @@ const EncabezadoBienvenida = () => {
         </Link>
 
         {/* Usuario autenticado */}
-        {usuarioAutenticado && datos && (
-          <div className="flex items-center space-x-4">
-            {/* Perfil */}
+        {usuarioAutenticado && datos ? (
+          <div className="flex items-center gap-4">
             <div
-              className="flex items-center space-x-2 group cursor-pointer"
+              className="flex items-center gap-2 cursor-pointer"
               onClick={() => navigate("/usuario/perfil")}
             >
               {fotoPerfil ? (
@@ -102,12 +96,11 @@ const EncabezadoBienvenida = () => {
                   {iniciales}
                 </div>
               )}
-              <span className="text-sm text-gray-700 group-hover:text-pink-600 font-medium">
+              <span className="text-sm font-medium text-gray-700 hover:text-pink-600">
                 {nombreUsuario}
               </span>
             </div>
 
-            {/* Cerrar sesión */}
             <button
               onClick={cerrarSesion}
               className="btn-cerrar"
@@ -116,10 +109,7 @@ const EncabezadoBienvenida = () => {
               Cerrar sesión
             </button>
           </div>
-        )}
-
-        {/* No autenticado */}
-        {!usuarioAutenticado && (
+        ) : (
           <div className="flex gap-3">
             <button
               onClick={() => navigate("/login")}
@@ -136,10 +126,11 @@ const EncabezadoBienvenida = () => {
           </div>
         )}
       </div>
-       {/* Modal de carga */}
-       <CargandoModal mensaje="Cerrando sesión..." visible={cargando} />
+
+      {/* Modal de carga al cerrar sesión */}
+      <CargandoModal mensaje="Cerrando sesión..." visible={cargando} />
     </header>
   );
 };
 
-export default EncabezadoBienvenida;
+export default EncabezadoPublico;

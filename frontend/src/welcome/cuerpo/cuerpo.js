@@ -43,8 +43,8 @@ const CuerpoBienvenida = () => {
             </p>
             <div className="flex justify-center lg:justify-start gap-4">
               <button
-                onClick={() => navigate("/productos")}
-                className="px-6 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition"
+                onClick={() => navigate("/cuerpo")}
+                className="btn-detalles"
               >
                 Ver productos
               </button>
@@ -52,7 +52,7 @@ const CuerpoBienvenida = () => {
               {!usuarioAutenticado ? (
                 <button
                   onClick={() => navigate("/login")}
-                  className="px-6 py-2 border border-white text-white rounded-lg hover:bg-white hover:text-pink-600 transition"
+                  className="btn-login"
                 >
                   Iniciar sesión
                 </button>

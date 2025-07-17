@@ -2,7 +2,7 @@
 import React from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import EncabezadoGeneral from "../home/encabezado/EncabezadoGeneral";
-import PieDePagina from "../../welcome/pie/pie";
+import PiePublico from "../../public/pie/pie";
 
 
 const LayoutGeneral = () => {
@@ -17,7 +17,7 @@ const LayoutGeneral = () => {
     <div className="min-h-screen pt-20">
       {mostrarEncabezado && <EncabezadoGeneral />}
       <Outlet />
-      <PieDePagina />
+      <PiePublico />
     </div>
     
   );

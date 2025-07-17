@@ -110,7 +110,7 @@ const EncabezadoGeneral = () => {
             {/* Cerrar sesión */}
             <button
               onClick={cerrarSesion}
-              className="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-pink-700 hover:text-white transition"
+              className="btn-cerrar"
             >
               Cerrar sesión
             </button>
@@ -119,7 +119,7 @@ const EncabezadoGeneral = () => {
           // No autenticado
           <Link
             to="/login"
-            className="bg-pink-600 text-white px-4 py-2 rounded-md hover:bg-pink-700 transition"
+            className="btn-login"
           >
             Iniciar sesión
           </Link>

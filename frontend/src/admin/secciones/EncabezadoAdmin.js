@@ -7,7 +7,6 @@ import { API_URL } from "../../ApiConexion";
 import useAuth from "../../hooks/useAuth"; // Asegúrate de ajustar la ruta si es necesario
 import CargandoModal from "../../Animations/CargandoModal";
 
-
 const EncabezadoAdmin = () => {
   const [empresa, setEmpresa] = useState(null);
   const [admin, setAdmin] = useState(null);

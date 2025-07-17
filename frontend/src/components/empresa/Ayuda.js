@@ -70,7 +70,7 @@ const Ayuda = () => {
 
       {/* Botón de regreso */}
       <div className="mt-6">
-        <Link to="/" className="bg-pink-600 text-white px-4 py-2 rounded-lg hover:bg-pink-700 transition">
+        <Link to="/" className="btn-atras">
           Volver a Inicio
         </Link>
       </div>

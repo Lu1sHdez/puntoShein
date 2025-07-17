@@ -1,4 +1,5 @@
 // src/App.js
+import './index.css'  // <--- importante
 import React, { Suspense, lazy } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Skeleton from "./components/Skeleton";
@@ -10,10 +11,15 @@ import LayoutVacio from "./components/home/LayoutVacio";
 import LayoutGeneral from "./components/home/LayoutGeneral";
 import LayoutAdmin from "./admin/secciones/LayoutAdmin.js";
 import LayoutUsuario from "./usuario/secciones/LayoutUsuario.js";
+import LayoutPublico from "./public/layout/layout.js";
 
 // Rutas protegidas
 import ProteccionRutas from "./utils/ProteccionRutas";
 import ErrorRoutes from "./routes/ErrorRoutes";
+
+//publico
+const CuerpoPrincipal = lazy(() => import("./public/cuerpo/cuerpo"));
+
 
 // Lazy imports
 const DashboardAdmin = lazy(() => import("./admin/dashboard/Dashboard"));
@@ -77,6 +83,11 @@ const App = () => {
     <Router>
       <Suspense fallback={<Skeleton />}>
         <Routes>
+          {/* Layout especial para productos públicos (catálogo sin autenticación) */}
+          <Route element={<LayoutPublico />}>
+            <Route path="/cuerpo" element={<CuerpoPrincipal />} />
+          </Route>
+
 
           {/* Layout vacío para página de bienvenida con animacion*/}
           <Route element={<LayoutVacio />}>

@@ -1,26 +1,124 @@
+/* Tailwind base layers */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-/* En tu archivo CSS (index.css) */
+
+
+@layer utilities {
+  .sidebar-enter {
+    @apply translate-x-full;
+  }
+
+  .sidebar-enter-active {
+    @apply translate-x-0 transition-transform duration-300 ease-in-out;
+  }
+}
+
+/* ----------------------------------------
+   🎞️ Animaciones personalizadas
+-----------------------------------------*/
+@keyframes fade-in-up {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @keyframes slideIn {
-    0% {
-      transform: translateX(-100%);
-    }
-    100% {
-      transform: translateX(0);
-    }
+  0% {
+    transform: translateX(-100%);
   }
-  
-  .slide-in {
-    animation: slideIn 0.5s ease-out forwards;
+  100% {
+    transform: translateX(0);
   }
-  
-  /* En index.css */
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.6s ease-out both;
+}
+
+.slide-in {
+  animation: slideIn 0.5s ease-out forwards;
+}
+
+/* ----------------------------------------
+   🧩 Importación de slick-carousel (si usas un carrusel con slick)
+-----------------------------------------*/
 @import "~slick-carousel/slick/slick.css";
 @import "~slick-carousel/slick/slick-theme.css";
 
+/* ----------------------------------------
+   🧱 Componentes reutilizables con @apply
+-----------------------------------------*/
 @layer components {
   .boton-nav {
     @apply px-2 py-1 rounded-md transition-all duration-200 ease-in-out hover:bg-gray-600 hover:shadow-md hover:scale-[1.03] focus:outline-none;
   }
+
+  .boton-principal {
+    @apply bg-pink-600 text-white px-4 py-2 rounded hover:bg-pink-700 transition;
+  }  
+    .btn-secundario {
+      @apply border border-gray-500 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-100 transition duration-200 ease-in-out;
+    }
+  
+    .btn-icono {
+      @apply flex items-center gap-2 text-sm bg-pink-600 text-white px-3 py-2 rounded hover:bg-pink-700 transition;
+    }
+  
+    .btn-agregar {
+      @apply bg-pink-600 text-white px-2 py-2 rounded hover:bg-pink-700 transition font-semibold;
+    }
+  
+    .btn-eliminar {
+      @apply bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition font-semibold;
+    }
+  
+    .btn-ver {
+      @apply bg-blue-600 text-white px-2 py-2 rounded hover:bg-blue-700 transition font-semibold;
+    }
+    .btn-detalles {
+      @apply bg-pink-600 text-white px-2 py-2 rounded hover:bg-pink-700 transition font-semibold;
+    }
+  
+    .btn-small {
+      @apply px-2 py-1 text-sm bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition;
+    }
+
+    .btn-cerrar {
+      @apply flex items-center gap-2 bg-pink-600 text-white px-4 py-2 rounded-md hover:bg-pink-700 transition text-sm font-medium;
+    }
+    
+    .btn-registro {
+      @apply bg-pink-600 text-white px-4 py-2 rounded-md hover:bg-pink-700 transition duration-200 ease-in-out text-sm font-medium;
+    }
+    
+    .btn-login {
+      @apply bg-white text-pink-600 border border-pink-600 px-4 py-2 rounded-md hover:bg-pink-50 transition duration-200 ease-in-out text-sm font-medium;
+    }
+    .btn-atras {
+      @apply bg-gray-200 text-gray-800 px-4 py-2 rounded-md hover:bg-gray-300 transition duration-200 ease-in-out text-sm font-medium;
+    }
+    
+    
 }
+
+/* | Clase CSS          | Propósito                                                               |
+| ------------------ | ----------------------------------------------------------------------- |
+| `.boton-nav`       | Botones del **navegador o sidebar**, discretos pero animados            |
+| `.boton-principal` | Botón de **acción primaria**, por ejemplo "Guardar" o "Enviar"          |
+| `.btn-secundario`  | Botón de acción **secundaria**, como "Cancelar" o "Cerrar modal"        |
+| `.btn-icono`       | Botones con **íconos y texto** (por ejemplo, cerrar sesión)             |
+| `.btn-agregar`     | Botón verde para **añadir productos al carrito o al catálogo**          |
+| `.btn-eliminar`    | Botón rojo para **eliminar productos, registros o ítems**               |
+| `.btn-detalles`    | Usado para ver **más detalles** de un producto o elemento               |
+| `.btn-small`       | Botón **compacto**, ideal para usar en tablas o tarjetas pequeñas       |
+| `.btn-cerrar`      | Botón rosa con ícono para **cerrar sesión**                             |
+| `.btn-registro`    | Botón rosa sólido para **registrarse** (acción principal pública)       |
+| `.btn-login`       | Botón blanco con texto rosa para **iniciar sesión** (acción secundaria) |
+| `.btn-atras`       | Botón gris claro para **volver o regresar a una pantalla anterior**     |
+ */

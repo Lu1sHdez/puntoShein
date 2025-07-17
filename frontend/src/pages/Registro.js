@@ -239,7 +239,7 @@ const Registro = () => {
             <Boton
               texto="Registrarse"
               onClick={handleSubmit}
-              estiloPersonalizado="w-full bg-pink-600 text-white px-6 py-2 rounded-md hover:bg-pink-700 transition"
+              estiloPersonalizado="btn-registro w-full"
             />
           </div>
 

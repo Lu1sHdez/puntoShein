@@ -69,7 +69,7 @@ const Login = () => {
       if (usuario.rol === "administrador") {
         navigate("/admin/dashboard");
       } else if (usuario.rol === "usuario") {
-        navigate("/productos");
+        navigate("/cuerpo");
       } else {
         navigate("/");
       }
@@ -142,12 +142,13 @@ const Login = () => {
           </div>
 
           <Boton
-              texto="Iniciar sesión"
-              onClick={validarYEnviar}
-              estiloPersonalizado={`w-full bg-pink-600 text-white py-2 rounded-lg hover:bg-pink-700 transition ${
-                loading ? "opacity-50 cursor-not-allowed" : ""
-              }`}
-            />
+            texto="Iniciar sesión"
+            onClick={validarYEnviar}
+            estiloPersonalizado={`btn-login w-full ${
+              loading ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+          />
+
 
           <button
             type="button"
