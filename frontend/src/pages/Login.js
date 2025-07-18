@@ -29,7 +29,7 @@ const Login = () => {
 
   useEffect(() => {
     if (localStorage.getItem("token")) {
-      navigate("/inicio");
+      navigate("/");
     }
   }, [navigate]);
 
@@ -135,7 +135,7 @@ const Login = () => {
             <button
               type="button"
               onClick={() => navigate("/opcionRestablecimiento")}
-              className="text-sm text-pink-600 hover:underline"
+              className="text-sm text-blue-600 hover:underline"
             >
               ¿Olvidaste tu contraseña?
             </button>
@@ -153,7 +153,7 @@ const Login = () => {
           <button
             type="button"
             onClick={() => navigate("/registro")}
-            className="mt-3 w-full text-pink-600 hover:underline"
+            className="mt-3 w-full text-blue-600 hover:underline"
           >
             ¿No tienes cuenta? Regístrate aquí
           </button>

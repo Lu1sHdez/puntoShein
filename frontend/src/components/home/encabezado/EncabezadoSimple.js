@@ -29,7 +29,7 @@ const EncabezadoSimple = () => {
     <header className="bg-white shadow px-6 py-4 fixed top-0 w-full z-50">
       <div className="flex justify-center sm:justify-start">
        {/* Empresa */}
-        <Link to = "/inicio"
+        <Link to = "/"
           className="flex items-center space-x-4">
           {empresa && (
             <>
@@ -38,7 +38,7 @@ const EncabezadoSimple = () => {
                 alt="Logo de empresa"
                 className="h-14 w-14 rounded-full object-cover shadow-md border border-gray-300"
               />
-              <h1 className="text-xl font-bold text-pink-600">{empresa.nombre}</h1>
+              <h1 className="text-3xl font-bold text-black uppercase">{empresa.nombre}</h1>
             </>
           )}
         </Link>

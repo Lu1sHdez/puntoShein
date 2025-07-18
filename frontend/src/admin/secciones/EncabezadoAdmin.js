@@ -75,7 +75,7 @@ const EncabezadoAdmin = () => {
                 alt="Logo de empresa"
                 className="h-14 w-14 rounded-full object-cover shadow-md border border-gray-300"
               />
-              <h1 className="text-xl font-bold text-pink-600">{empresa.nombre}</h1>
+              <h1 className="text-3xl font-bold text-black uppercase">{empresa.nombre}</h1>
             </>
           )}
         </div>
@@ -90,23 +90,16 @@ const EncabezadoAdmin = () => {
                 className="h-10 w-10 rounded-full object-cover border border-gray-400 shadow"
               />
             ) : (
-              <div className="h-10 w-10 bg-pink-600 text-white rounded-full flex items-center justify-center font-semibold shadow">
+              <div className="h-10 w-10 bg-black text-white rounded-full flex items-center justify-center font-semibold shadow">
                 {obtenerIniciales(admin?.nombre)}
               </div>
             )}
-            <span className="text-sm text-gray-700 group-hover:text-pink-600 font-medium">
+            <span className="text-sm text-gray-700 group-hover:text-gray-600 font-medium">
               {admin?.nombre}
             </span>
           </Link>
 
-          {/* Botón cerrar sesión unificado */}
-          <button
-            onClick={handleLogout}
-            className="bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-md flex items-center gap-2 text-sm font-medium transition"
-          >
-            <FaSignOutAlt />
-            Cerrar sesión
-          </button>
+          
         </div>
       </div>
       {/* Modal de carga */}

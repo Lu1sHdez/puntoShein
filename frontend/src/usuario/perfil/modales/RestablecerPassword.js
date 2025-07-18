@@ -5,7 +5,6 @@ import { API_URL } from '../../../ApiConexion';
 import FormularioInput from '../../../components/form/FormularioInput';
 import CargandoModal from '../../../Animations/CargandoModal';
 
-
 const RestablecerPassword = ({ onClose }) => {
   const [form, setForm] = useState({
     nuevaContrasena: '',
@@ -119,7 +118,7 @@ const RestablecerPassword = ({ onClose }) => {
             <button
               type="submit"
               disabled={exito}
-              className="bg-pink-600 text-white px-4 py-1 rounded hover:bg-pink-700"
+              className="bg-black text-white px-4 py-1 rounded hover:bg-gray-600"
             >
               Cambiar Contraseña
             </button>

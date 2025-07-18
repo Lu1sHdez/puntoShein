@@ -99,7 +99,7 @@ const RestablecerPasswordAdmin = ({ onClose }) => {
             </button>
             <button
               type="submit"
-              className="bg-pink-600 text-white px-4 py-1 rounded hover:bg-pink-700"
+              className="bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700"
             >
               Cambiar Contraseña
             </button>

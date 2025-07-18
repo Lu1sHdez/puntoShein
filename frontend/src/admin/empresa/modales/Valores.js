@@ -77,7 +77,7 @@ const ModalEditarValores = ({ empresa, onClose, onActualizar }) => {
 
        {valores.map((valor, index) => (
         <div key={index} className="mb-4 border p-3 rounded-md bg-gray-50">
-          <p className="font-semibold text-pink-700">{valor.nombre}</p>
+          <p className="font-semibold text-black">{valor.nombre}</p>
           <p className="text-gray-600 text-sm mt-1">{valor.descripcion}</p>
 
           <div className="flex gap-3 mt-2">
@@ -103,7 +103,7 @@ const ModalEditarValores = ({ empresa, onClose, onActualizar }) => {
       <button
         title="Agregar nuevo valor"
         aria-label="Agregar Valor"
-        className="flex items-center gap-2 bg-gray-200 text-pink-600 px-4 py-2 rounded-full shadow-sm hover:bg-gray-300 transition-colors duration-200 z-10 text-sm font-medium border border-pink-300"
+        className="flex items-center gap-2 bg-gray-200 text-black px-4 py-2 rounded-full shadow-sm hover:bg-gray-300 transition-colors duration-200 z-10 text-sm font-medium border border-gray-300"
         onClick={() => setModalAgregarVisible(true)}
       >
         <FaPlusCircle size={16} />
@@ -121,7 +121,7 @@ const ModalEditarValores = ({ empresa, onClose, onActualizar }) => {
           <button
             onClick={handleGuardar}
             disabled={guardando}
-            className="px-4 py-2 bg-pink-600 text-white rounded hover:bg-pink-700"
+            className="px-4 py-2 bg-black text-white rounded hover:bg-gray-700"
           >
             {guardando ? "Guardando..." : "Guardar"}
           </button>

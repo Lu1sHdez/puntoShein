@@ -122,7 +122,7 @@
 <div className="w-full py-1 flex items-center justify-between px-4 lg:px-8">
           {/* Logo + Nombre */}
           <div className="flex items-center space-x-4 lg:space-x-6">
-            <Link to="/inicio" className="flex items-center space-x-3">
+            <Link to="/" className="flex items-center space-x-3">
               {empresa ? (
                 <>
                   <img

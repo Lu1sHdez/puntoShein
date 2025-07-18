@@ -97,7 +97,7 @@ const ActualizarPerfil = () => {
                 name={name}
                 value={datos[name]}
                 onChange={handleChange}
-                className="w-full mt-1 px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-pink-400"
+                className="w-full mt-1 px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-400"
               />
             </div>
           ))}
@@ -105,7 +105,7 @@ const ActualizarPerfil = () => {
           <div className="flex space-x-4">
             <button
               type="submit"
-              className="w-full bg-pink-600 text-white py-2 rounded-lg hover:bg-pink-700 transition"
+              className="w-full bg-bluw-600 text-white py-2 rounded-lg hover:bg-bluw-700 transition"
             >
               Guardar cambios
             </button>

@@ -87,10 +87,10 @@ const Perfil = () => {
         <Campo label="Rol:" valor={usuario.rol} disabled />
       </div>
 
-      <div className="flex justify-center mt-6">
+      <div className="flex justify-end mt-6">
         <button
           onClick={() => setMostrarRecuperacion(true)}
-          className="text-pink-600 underline hover:text-pink-800 transition text-sm"
+          className="text-black underline hover:text-gray-600 transition text-sm"
         >
           Cambiar contraseña
         </button>
@@ -100,7 +100,7 @@ const Perfil = () => {
         {!modoEdicion ? (
           <button
             onClick={() => setModoEdicion(true)}
-            className="bg-pink-600 text-white px-4 py-2 rounded-lg hover:bg-pink-700 transition"
+            className="bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition"
           >
             Editar perfil
           </button>
@@ -111,7 +111,7 @@ const Perfil = () => {
               disabled={!seHizoCambio()}
               className={`px-4 py-2 rounded-lg text-white transition ${
                 seHizoCambio()
-                  ? 'bg-pink-600 hover:bg-pink-700'
+                  ? 'bg-black hover:bg-gray-600'
                   : 'bg-gray-400 cursor-not-allowed'
               }`}
             >
@@ -170,7 +170,7 @@ const Campo = ({ label, name, valor, onChange, editable, disabled = false }) => 
       disabled={disabled || !editable}
       onChange={onChange}
       className={`w-full px-4 py-2 border rounded-md focus:outline-none ${
-        disabled || !editable ? 'bg-gray-100 text-gray-600' : 'focus:ring-2 focus:ring-pink-400'
+        disabled || !editable ? 'bg-gray-100 text-gray-600' : 'focus:ring-2 focus:ring-black'
       }`}
     />
   </div>

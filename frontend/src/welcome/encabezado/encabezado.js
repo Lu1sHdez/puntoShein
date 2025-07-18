@@ -69,7 +69,7 @@ const EncabezadoBienvenida = () => {
     <header className="bg-white shadow-sm fixed top-0 left-0 w-full z-50 border-b border-gray-200">
       <div className="max-w-6xl mx-auto px-4 py-3 flex flex-col sm:flex-row items-center justify-between gap-4">
         {/* Empresa */}
-        <Link to = "/inicio"
+        <Link to = "/"
           className="flex items-center space-x-4">
           {empresa && (
             <>
@@ -78,7 +78,7 @@ const EncabezadoBienvenida = () => {
                 alt="Logo de empresa"
                 className="h-14 w-14 rounded-full object-cover shadow-md border border-gray-300"
               />
-              <h1 className="text-xl font-bold text-pink-600">{empresa.nombre}</h1>
+              <h1 className="text-3xl font-bold text-black-600 uppercase">{empresa.nombre}</h1>
             </>
           )}
         </Link>
@@ -104,11 +104,11 @@ const EncabezadoBienvenida = () => {
                   className="h-10 w-10 rounded-full object-cover border border-gray-300 shadow"
                 />
               ) : (
-                <div className="h-10 w-10 bg-pink-600 text-white rounded-full flex items-center justify-center font-semibold shadow">
+                <div className="h-10 w-10 bg-black text-white rounded-full flex items-center justify-center font-semibold shadow">
                   {iniciales}
                 </div>
               )}
-              <span className="text-sm text-gray-700 group-hover:text-pink-600 font-medium">
+              <span className="text-sm text-gray-700 group-hover:text-black font-medium">
                 {nombreUsuario}
               </span>
             </div>
@@ -116,7 +116,7 @@ const EncabezadoBienvenida = () => {
             {/* Cerrar sesión */}
             <button
               onClick={cerrarSesion}
-              className="link-subrayado"
+              className="bg-black hover:bg-black text-white px-4 py-2 rounded-md flex items-center gap-2 text-sm font-medium transition"
             >
               <FaSignOutAlt />
               Cerrar sesión

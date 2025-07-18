@@ -104,9 +104,9 @@ const ProductosLista = () => {
 
   return (
     <div className="productos-lista relative p-6 bg-gray-50 rounded-lg shadow-lg">
-      <h2 className="text-3xl font-semibold text-center mb-6 text-pink-600">Lista de Productos</h2>
+      <h2 className="text-3xl font-semibold text-center mb-6 text-black">Lista de Productos</h2>
       <div className="absolute top-6 left-6 text-sm text-gray-700 font-medium">
-        Total de productos: <span className="text-pink-600 font-bold">{productos.length}</span>
+        Total de productos: <span className="text-black font-bold">{productos.length}</span>
       </div>
 
 
@@ -114,7 +114,7 @@ const ProductosLista = () => {
       <button
         title="Crear nuevo producto"
         aria-label="Crear Producto"
-        className="absolute top-6 right-6 flex items-center gap-2 bg-gray-200 text-pink-600 px-4 py-2 rounded-full shadow-sm hover:bg-gray-300 transition-colors duration-200 z-10 text-sm font-medium border border-pink-300"
+        className="absolute top-6 right-6 flex items-center gap-2 bg-green-200 text-green-600 px-4 py-2 rounded-full shadow-sm hover:bg-green-300 transition-colors duration-200 z-10 text-sm font-medium border border-gray-300"
         onClick={handleAbrirModalCrear}
       >
         <FaPlusCircle size={16} />

@@ -56,7 +56,7 @@ const Pedidos = () => {
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold mb-4 text-pink-600">Mis Pedidos</h2>
+      <h2 className="text-2xl font-bold mb-4 text-black">Mis Pedidos</h2>
       {pedidos.length === 0 ? (
         <p className="text-gray-500">No tienes pedidos aún.</p>
       ) : (

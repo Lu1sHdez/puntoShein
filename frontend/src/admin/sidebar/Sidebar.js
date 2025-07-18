@@ -1,10 +1,16 @@
-import React, { useState } from "react";
+import React from "react";
+import Swal from "sweetalert2";
+import useAuth from "../../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { API_URL } from "../../ApiConexion";
 import { NavLink } from "react-router-dom";
 import { useSidebar } from "../../context/SidebarContext"; 
 
 import {
   FaCog,
   FaUsers,
+  FaUser,
   FaBox,
   FaUserTie,
   FaQuestionCircle,
@@ -13,13 +19,17 @@ import {
   FaKey,
   FaAngleLeft,
   FaAngleRight,
+  FaSignOutAlt
 } from "react-icons/fa";
 
 const Sidebar = ({ admin }) => {
+  const navigate = useNavigate();
+  const { logout } = useAuth();
   const { colapsado, setColapsado } = useSidebar(); 
 
   const menuItems = [
     { label: "Dashboard", icon: <FaTachometerAlt />, path: "/admin/dashboard" },
+    { label: "Perfil", icon: <FaUser/>, path: "/admin/perfil" },
     { label: "Configuración", icon: <FaCog />, path: "/admin/configuracion" },
     { label: "Usuarios", icon: <FaUsers />, path: "/admin/usuarios" },
     { label: "Productos", icon: <FaBox />, path: "/admin/productos" },
@@ -27,8 +37,35 @@ const Sidebar = ({ admin }) => {
     { label: "Empleados", icon: <FaUserTie />, path: "/admin/empleados" },
     { label: "Preguntas", icon: <FaQuestionCircle />, path: "/admin/preguntasFrecuentes" },
     { label: "Análisis", icon: <FaChartLine />, path: "/admin/gestionProductos" },
-    { label: "Inicio rápido", icon: <FaKey />, path: "/admin/inicio-rapido" },
   ];
+  const menuItems2 = [
+    { label: "Cerrar sesión", icon: <FaKey />, path: "/cerrar-sesion" },
+  ];
+
+  const handleLogout = async () => {
+    const confirmar = await Swal.fire({
+      title: "¿Cerrar sesión?",
+      text: "¿Estás seguro de que deseas cerrar sesión?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sí, salir",
+      cancelButtonText: "Cancelar",
+    });
+  
+    if (confirmar.isConfirmed) {
+      try {
+        await axios.post(`${API_URL}/api/autenticacion/logout`, {}, { withCredentials: true });
+        logout();
+        navigate("/");
+      } catch (error) {
+        Swal.fire({
+          icon: "error",
+          title: "Error al cerrar sesión",
+          text: "Ocurrió un problema al cerrar sesión.",
+        });
+      }
+    }
+  };
 
   return (
     <aside
@@ -61,7 +98,7 @@ const Sidebar = ({ admin }) => {
             className={({ isActive }) =>
               `flex items-center gap-3 p-2 rounded-md text-sm font-medium transition-all ${
                 isActive
-                  ? "bg-pink-600 text-white"
+                  ? "bg-black text-white"
                   : "text-gray-700 hover:bg-gray-100"
               } ${colapsado ? "justify-center" : ""}`
             }
@@ -72,6 +109,19 @@ const Sidebar = ({ admin }) => {
           </NavLink>
         ))}
       </nav>
+      <div className="mt-10 pt-4 border-t">
+      <button
+        onClick={handleLogout}
+        className={`flex items-center gap-3 p-2 rounded-md text-sm font-medium text-red-600 hover:bg-red-100 transition-all w-full ${
+          colapsado ? "justify-center" : ""
+        }`}
+        title={colapsado ? "Cerrar sesión" : ""}
+      >
+        <FaSignOutAlt />
+        {!colapsado && "Cerrar sesión"}
+      </button>
+    </div>
+
     </aside>
   );
 };

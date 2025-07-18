@@ -98,11 +98,10 @@
     }
     
     .btn-registro {
-      @apply bg-pink-600 text-white px-4 py-2 rounded-md hover:bg-pink-700 transition duration-200 ease-in-out text-sm font-medium;
+      @apply bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition duration-200 ease-in-out text-sm font-medium;
     }
-    
     .btn-login {
-      @apply bg-white text-pink-600 border border-pink-600 px-4 py-2 rounded-md hover:bg-pink-50 transition duration-200 ease-in-out text-sm font-medium;
+      @apply bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition duration-200 ease-in-out text-sm font-medium;
     }
     .btn-atras {
       @apply bg-gray-200 text-gray-800 px-4 py-2 rounded-md hover:bg-gray-300 transition duration-200 ease-in-out text-sm font-medium;
@@ -126,7 +125,7 @@
  */
 
  .link-subrayado {
-  @apply text-pink-600 font-medium relative transition duration-200 ease-in-out;
+  @apply text-black font-medium relative transition duration-200 ease-in-out;
 }
 
 .link-subrayado::after {
@@ -136,10 +135,10 @@
   height: 2px;
   left: 0;
   bottom: -2px;
-  background-color: #db2777; /* Rosa intenso */
+  background-color: #000000; /* Rosa intenso */
   transition: width 0.3s ease-in-out;
 }
 
 .link-subrayado:hover::after {
   width: 100%;
-}
+} 

@@ -133,7 +133,7 @@ const PreguntasFrecuentes = () => {
       </div>
 
       <button
-        className="w-full bg-pink-500 text-white py-3 rounded-lg hover:bg-pink-600 transition duration-200 flex items-center justify-center"
+        className="w-full bg-blue-500 text-white py-3 rounded-lg hover:bg-blue-600 transition duration-200 flex items-center justify-center"
         onClick={() => setShowModalCrear(true)}
       >
         <FaPlus className="inline-block mr-2" /> Crear Nueva Pregunta

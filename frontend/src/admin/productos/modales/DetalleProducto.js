@@ -22,7 +22,7 @@ const ModalDetalle = ({ visible, producto, onClose }) => {
         <div className="max-h-[90vh] overflow-y-auto p-8">
           {/* Header */}
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-3xl font-semibold text-pink-600">
+            <h2 className="text-3xl font-semibold text-black">
               Detalles del Producto
             </h2>
             <button
@@ -147,7 +147,7 @@ const ModalDetalle = ({ visible, producto, onClose }) => {
           <div className="mt-10 flex justify-end">
             <button
               onClick={onClose}
-              className="px-6 py-3 bg-pink-600 text-white rounded-lg hover:bg-pink-700 focus:outline-none transition-all duration-200 transform hover:scale-105"
+              className="px-6 py-3 bg-black text-white rounded-lg hover:bg-pink-700 focus:outline-none transition-all duration-200 transform hover:scale-105"
             >
               Cerrar
             </button>

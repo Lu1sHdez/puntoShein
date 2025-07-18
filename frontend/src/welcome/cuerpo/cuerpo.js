@@ -36,7 +36,7 @@ const CuerpoBienvenida = () => {
           <div className="flex-1 text-center lg:text-left text-white">
             <h1 className="text-4xl lg:text-5xl font-extrabold mb-6 leading-tight">
               Bienvenido{usuarioAutenticado && datos?.nombre ? `, ${datos.nombre}` : ""} a{" "}
-              <span className="text-pink-400">Punto Shein</span>
+              <span className="text-white uppercase">Punto Shein</span>
             </h1>
             <p className="text-lg mb-6">
               Explora nuestras últimas colecciones, descubre las mejores ofertas y mantén tu inventario bajo control desde cualquier lugar.
@@ -117,17 +117,17 @@ const CuerpoBienvenida = () => {
           <h2 className="text-3xl font-bold text-gray-800 mb-6">¿Por qué elegirnos?</h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 mt-8">
             <div className="flex flex-col items-center">
-              <FaTags className="text-pink-500 text-4xl mb-3" />
+              <FaTags className="text-gray-500 text-4xl mb-3" />
               <h3 className="font-semibold text-lg text-gray-700 mb-2">Ofertas increíbles</h3>
               <p className="text-sm text-gray-500">Precios irresistibles en todas nuestras colecciones.</p>
             </div>
             <div className="flex flex-col items-center">
-              <FaTruck className="text-pink-500 text-4xl mb-3" />
+              <FaTruck className="text-gray-500 text-4xl mb-3" />
               <h3 className="font-semibold text-lg text-gray-700 mb-2">Envíos rápidos</h3>
               <p className="text-sm text-gray-500">Entrega garantizada en tiempo récord.</p>
             </div>
             <div className="flex flex-col items-center">
-              <FaShieldAlt className="text-pink-500 text-4xl mb-3" />
+              <FaShieldAlt className="text-gray-500 text-4xl mb-3" />
               <h3 className="font-semibold text-lg text-gray-700 mb-2">Compra segura</h3>
               <p className="text-sm text-gray-500">Transacciones protegidas y confiables.</p>
             </div>

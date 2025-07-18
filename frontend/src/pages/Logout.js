@@ -20,10 +20,10 @@ const Logout = () => {
         logout(); // Elimina token, datos del usuario, etc.
 
         // Redirige al inicio sin mostrar el mensaje
-        navigate("/inicio");
+        navigate("/");
       } catch (error) {
         console.error("Error al cerrar sesión automáticamente:", error);
-        navigate("/inicio"); // Redirige en caso de error
+        navigate("/"); // Redirige en caso de error
       }
     };
 

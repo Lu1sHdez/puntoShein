@@ -89,7 +89,7 @@ const Perfil = () => {
       <div className="flex justify-end mt-6">
       <button
         onClick={() => setMostrarRecuperacion(true)}
-        className="text-pink-600 underline hover:text-pink-800 transition text-sm"
+        className="text-blue-600 underline hover:text-blue-800 transition text-sm"
       >
         Cambiar contraseña
       </button>
@@ -100,7 +100,7 @@ const Perfil = () => {
         {!modoEdicion ? (
           <button
             onClick={() => setModoEdicion(true)}
-            className="bg-pink-600 text-white px-4 py-2 rounded-lg hover:bg-pink-700 transition"
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
           >
             Editar perfil
           </button>
@@ -111,7 +111,7 @@ const Perfil = () => {
               disabled={!seHizoCambio()}
               className={`px-4 py-2 rounded-lg text-white transition ${
                 seHizoCambio()
-                  ? 'bg-pink-600 hover:bg-pink-700'
+                  ? 'bg-black hover:bg-gray-600'
                   : 'bg-gray-400 cursor-not-allowed'
               }`}
             >

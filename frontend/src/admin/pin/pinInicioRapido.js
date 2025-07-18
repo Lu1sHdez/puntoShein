@@ -108,7 +108,7 @@ const PinInicioRapido = () => {
           <p className="text-gray-700 mb-2">Este PIN te permitirá iniciar sesión desde tu smartwatch.</p>
           <button
             onClick={generarPin}
-            className="bg-pink-600 hover:bg-pink-700 text-white py-2 px-4 rounded-lg transition"
+            className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition"
           >
             Generar PIN Temporal
           </button>

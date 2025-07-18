@@ -6,7 +6,7 @@ import Skeleton from "./components/Skeleton";
 import {verificarExpToken} from "./context/verificarExpToken";
 
 // Layouts
-import Layout from "./components/home/Layout";         // Layout general
+import Layout from "./components/home/Layout";    
 import LayoutVacio from "./components/home/LayoutVacio";
 import LayoutGeneral from "./components/home/LayoutGeneral";
 import LayoutAdmin from "./admin/secciones/LayoutAdmin.js";
@@ -19,7 +19,6 @@ import ErrorRoutes from "./routes/ErrorRoutes";
 
 //publico
 const CuerpoPrincipal = lazy(() => import("./public/cuerpo/cuerpo"));
-
 
 // Lazy imports
 const DashboardAdmin = lazy(() => import("./admin/dashboard/Dashboard"));
@@ -39,7 +38,6 @@ const GestionProductos = lazy(() => import("./admin/productos/analisis/AnalisisV
 const DashboardUsuario = lazy(() => import("./usuario/dashboard/Dashboard.js"));
 const Pedidos = lazy(() => import("./usuario/pedidos/pedidos.js"));
 const PerfilUsuario = lazy(() => import("./usuario/perfil/Perfil.js"));
-const MiCarrito = lazy(() => import("./components/cart/Carrito.js"));
 const ActualizarPerfilUsuario = lazy(() => import("./usuario/perfil/ActualizarPerfil.js"));
 const Pago = lazy(() => import("./components/store/compra/pago.js"));
 const ProductosA = lazy(() => import("./components/cart/Agregar.js"));
@@ -47,8 +45,6 @@ const ProductosA = lazy(() => import("./components/cart/Agregar.js"));
 
 // Lazy loaded pages
 const WelcomePage = lazy(() => import("./welcome/WelcomePage"));
-const WelcomeAnimacion = lazy(() => import("./welcome/WelcomeAnimacion"));
-
 const Login = lazy(() => import("./pages/Login"));
 const Registro = lazy(() => import("./pages/Registro"));
 const CerrarSesion = lazy(() => import("./pages/CerrarSesion"));
@@ -91,14 +87,9 @@ const App = () => {
 
           </Route>
 
-          {/* Layout vacío para página de bienvenida con animacion*/}
-          <Route element={<LayoutVacio />}>
-            <Route path="/" element={<WelcomeAnimacion />} />
-          </Route>
-
           {/* Layout vacío para página de bienvenida */}
           <Route element={<LayoutVacio />}>
-            <Route path="/inicio" element={<WelcomePage />} />
+            <Route path="/" element={<WelcomePage />} />
           </Route>
 
             {/* Layout vacío para autenticación (sin encabezado/pie general) */}

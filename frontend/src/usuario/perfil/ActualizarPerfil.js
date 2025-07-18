@@ -101,7 +101,7 @@ const ActualizarPerfil = () => {
           <div className="flex space-x-4">
             <button
               type="submit"
-              className="w-full bg-pink-600 text-white py-2 rounded-lg hover:bg-pink-700 transition"
+              className="w-full bg-black text-white py-2 rounded-lg hover:bg-gray-600 transition"
             >
               Guardar cambios
             </button>

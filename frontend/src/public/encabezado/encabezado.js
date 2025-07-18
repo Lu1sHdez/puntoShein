@@ -72,7 +72,7 @@ const EncabezadoPublico = () => {
     <header className="fixed top-0 left-0 w-full bg-white shadow-md z-50">
       <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
         {/* Logo y nombre de la empresa */}
-        <Link to="/inicio" className="flex items-center space-x-4">
+        <Link to="/" className="flex items-center space-x-4">
           {empresa && (
             <>
               <img
@@ -80,7 +80,7 @@ const EncabezadoPublico = () => {
                 alt="Logo"
                 className="h-14 w-14 rounded-full object-cover border border-gray-300 shadow"
               />
-              <h1 className="text-xl font-bold text-pink-600">{empresa.nombre}</h1>
+              <h1 className="text-3xl font-bold text-black uppercase">{empresa.nombre}</h1>
             </>
           )}
         </Link>

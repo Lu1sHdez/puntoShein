@@ -52,7 +52,7 @@ const VerificarCodigoAdmin = ({ correo, onCodigoCorrecto, onClose }) => {
           <button
             onClick={handleVerificar}
             disabled={cargando}
-            className={`px-4 py-1 rounded text-white ${cargando ? 'bg-gray-400 cursor-not-allowed' : 'bg-pink-600 hover:bg-pink-700'}`}
+            className={`px-4 py-1 rounded text-white ${cargando ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'}`}
           >
             Verificar Código
           </button>
