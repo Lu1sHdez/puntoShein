@@ -164,7 +164,7 @@ const PasoTallas = ({ producto, setProducto, onAnterior, onSiguiente }) => {
           <div className="flex justify-end mb-4">
             <button
               onClick={() => setMostrarModalGestionTallas(true)}
-              className="px-4 py-2 bg-blue-700 text-white rounded hover:bg-blue-800 text-sm"
+              className="px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-800 text-sm"
             >
               + Nueva Talla
             </button>
@@ -186,7 +186,7 @@ const PasoTallas = ({ producto, setProducto, onAnterior, onSiguiente }) => {
         <button
           onClick={handleSiguiente}
           disabled={validando}
-          className="px-6 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 disabled:bg-pink-300 transition"
+          className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:bg-blue-300 transition"
         >
           {validando ? 'Validando...' : 'Siguiente'}
         </button>

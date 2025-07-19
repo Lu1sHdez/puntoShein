@@ -4,6 +4,7 @@ import { dataLoadingAnimation } from "../Funciones";
 import axios from "axios";
 import { API_URL } from "../../ApiConexion";
 import CargandoBarra from "../../Animations/CargandoBarra";
+import { Link } from "react-router-dom";
 
 const Terminos = () => {
   const [contenido, setContenido] = useState("");
@@ -61,6 +62,13 @@ const Terminos = () => {
           dangerouslySetInnerHTML={{ __html: contenido }}
         />
       )}
+      
+      {/* Botón de regreso */}
+      <div className="mt-6">
+        <Link to="/" className="btn-atras">
+          Volver a Inicio
+        </Link>
+      </div>
     </motion.section>
   );
 };

@@ -6,7 +6,7 @@ import { API_URL } from "../../ApiConexion";
 import useSesionUsuario from "../../context/useSesionUsuario";
 import useAuth from "../../hooks/useAuth";
 import CargandoModal from "../../Animations/CargandoModal";
-import { FaShoppingCart,FaSignOutAlt, FaSearch,FaCog  } from "react-icons/fa";
+import { FaShoppingCart, FaSearch,FaCog  } from "react-icons/fa";
 import ModalAutenticacion from "../autenticacion/Autenticacion";
 
 
@@ -84,34 +84,34 @@ const EncabezadoPublico = () => {
             </>
           )}
         </Link>
-        {/* Campo de búsqueda solo visible en la ruta /cuerpo */}
         {location.pathname === "/cuerpo" && (
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              if (termino.trim()) {
-                navigate(`/cuerpo?buscar=${encodeURIComponent(termino.trim())}`);
-                setTermino(""); 
-              }
-            }}
-            className="hidden md:flex items-center bg-white border border-gray-300 rounded-xl shadow-sm max-w-md w-full px-2 py-1 mx-6"
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (termino.trim()) {
+              navigate(`/cuerpo?buscar=${encodeURIComponent(termino.trim())}`);
+              setTermino(""); 
+            }
+          }}
+          className="hidden md:flex items-center bg-white border border-gray-300 rounded-xl shadow-sm max-w-md w-full px-2 py-1 mx-6"
+        >
+          <FaSearch className="text-gray-400 ml-2 mr-3" />
+          <input
+            type="text"
+            placeholder="Buscar productos..."
+            value={termino}
+            onChange={(e) => setTermino(e.target.value)}
+            className="flex-grow outline-none border-none bg-transparent rounded-l-xl px-1"
+          />
+          <button
+            type="submit"
+            className="bg-gray-600 text-white px-3 py-2 rounded-lg hover:bg-gray-700 border-none"
           >
-            <FaSearch className="text-gray-400 ml-2 mr-3" />
-            <input
-              type="text"
-              placeholder="Buscar productos..."
-              value={termino}
-              onChange={(e) => setTermino(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-l focus:outline-none focus:ring-2 focus:ring-pink-600"
-            />
-            <button
-              type="submit"
-              className="bg-pink-600 text-white px-4 py-2 rounded-r hover:bg-pink-700"
-            >
-              Buscar
-            </button>
-          </form>
-        )}
+            Buscar
+          </button>
+        </form>
+      )}
+
         <Link
           to = "/cuerpo"
           className="link-subrayado"
@@ -121,12 +121,12 @@ const EncabezadoPublico = () => {
         <button
           onClick={() => {
             if (usuarioAutenticado) {
-              navigate("/usuario/carrito");
+              navigate("/productos/carrito");
             } else {
               setMostrarModal(true);
             }
           }}
-          className="link-subrayado flex items-center gap-2 text-pink-600 hover:text-pink-700 transition font-medium"
+          className="link-subrayado flex items-center gap-2 text-black hover:text-black-700 transition font-medium"
         >
           <FaShoppingCart className="text-2xl" />
           <span className="text-sm">Carrito</span>
@@ -148,25 +148,17 @@ const EncabezadoPublico = () => {
                     className="h-10 w-10 rounded-full object-cover border border-gray-300 shadow"
                   />
                 ) : (
-                  <div className="h-10 w-10 bg-pink-600 text-white rounded-full flex items-center justify-center font-semibold shadow">
+                  <div className="h-10 w-10 bg-black text-white rounded-full flex items-center justify-center font-semibold shadow">
                     {iniciales}
                   </div>
                 )}
-                <span className="text-sm font-medium text-gray-700 hover:text-pink-600">
+                <span className="text-sm font-medium text-gray-700 hover:text-black">
                   {nombreUsuario}
                 </span>
               </div>
-
-              <button
-                onClick={cerrarSesion}
-                className="btn-cerrar"
-              >
-                <FaSignOutAlt />
-                Cerrar sesión
-              </button>
               <Link
                 to="/usuario/dashboard"
-                className="text-gray-600 hover:text-pink-600 transition text-xl"
+                className="text-gray-600 hover:text-gray-600 transition text-xl"
                 title="Configuración"
               >
                 <FaCog />

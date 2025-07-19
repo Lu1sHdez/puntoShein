@@ -61,7 +61,7 @@ const Filtros = ({
                     categoriaSeleccionada === String(cat.id) ? "" : String(cat.id)
                 )
                 }
-                className="accent-pink-600"
+                className="accent-blue-600"
             />
             <span className="text-sm text-gray-600">{cat.nombre}</span>
             </label>
@@ -87,7 +87,7 @@ const Filtros = ({
                     subcategoriaSeleccionada === String(sub.id) ? "" : String(sub.id)
                 )
                 }
-                className="accent-pink-600"
+                className="accent-blue-600"
             />
             <span className="text-sm text-gray-600">{sub.nombre}</span>
             </label>

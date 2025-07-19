@@ -14,7 +14,7 @@ const PiePublico = () => {
           <div>
             <h3 className="font-semibold text-gray-800 mb-2">Información Legal</h3>
             <ul className="space-y-1">
-              <li><Link to="/acercaDe" className="hover:underline">Acerca de</Link></li>
+              <li><Link to="/acercaDe" className="hover:underline">Acerca de nosotros</Link></li>
               <li><Link to="/privacidad" className="hover:underline">Política de Privacidad</Link></li>
               <li><Link to="/terminos" className="hover:underline">Términos y Condiciones</Link></li>
               <li><Link to="/deslindeLegal" className="hover:underline">Deslinde Legal</Link></li>
@@ -23,9 +23,8 @@ const PiePublico = () => {
 
           {/* Ayuda y soporte */}
           <div>
-            <h3 className="font-semibold text-gray-800 mb-2">Soporte</h3>
+            <h3 className="font-semibold text-gray-800 mb-2">Centro de ayuda</h3>
             <ul className="space-y-1">
-              <li><Link to="/ayuda" className="hover:underline">Centro de ayuda</Link></li>
               <li><Link to="/preguntasFrecuentes" className="hover:underline">Preguntas frecuentes</Link></li>
               <li><Link to="/contacto" className="hover:underline">Contáctanos</Link></li>
               <li><Link to="/mapa-del-sitio" className="hover:underline">Mapa del sitio</Link></li>

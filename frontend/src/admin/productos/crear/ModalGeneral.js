@@ -129,15 +129,15 @@ const ModalCrearProducto = ({ visible, onClose,onProductoCreado  }) => {
         {/* Barra de Progreso */}
         <div className="mb-4">
           <div className="flex justify-between">
-            <span className={`text-sm ${progreso === 1 ? 'font-semibold text-pink-500' : 'text-gray-500'}`}>Paso 1</span>
-            <span className={`text-sm ${progreso === 2 ? 'font-semibold text-pink-500' : 'text-gray-500'}`}>Paso 2</span>
-            <span className={`text-sm ${progreso === 3 ? 'font-semibold text-pink-500' : 'text-gray-500'}`}>Paso 3</span>
-            <span className={`text-sm ${progreso === 4 ? 'font-semibold text-pink-500' : 'text-gray-500'}`}>Paso 4</span>
-            <span className={`text-sm ${progreso === 5 ? 'font-semibold text-pink-500' : 'text-gray-500'}`}>Paso 5</span>
+            <span className={`text-sm ${progreso === 1 ? 'font-semibold text-blue-500' : 'text-gray-500'}`}>Paso 1</span>
+            <span className={`text-sm ${progreso === 2 ? 'font-semibold text-blue-500' : 'text-gray-500'}`}>Paso 2</span>
+            <span className={`text-sm ${progreso === 3 ? 'font-semibold text-blue-500' : 'text-gray-500'}`}>Paso 3</span>
+            <span className={`text-sm ${progreso === 4 ? 'font-semibold text-blue-500' : 'text-gray-500'}`}>Paso 4</span>
+            <span className={`text-sm ${progreso === 5 ? 'font-semibold text-blue-500' : 'text-gray-500'}`}>Paso 5</span>
           </div>
           <div className="h-1 bg-gray-200 rounded-full mt-2">
             <div
-              className={`h-full bg-pink-500 rounded-full`}
+              className={`h-full bg-blue-500 rounded-full`}
               style={{ width: `${(progreso / 5) * 100}%` }}
             ></div>
           </div>

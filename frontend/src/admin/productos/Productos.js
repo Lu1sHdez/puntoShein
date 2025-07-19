@@ -34,19 +34,6 @@ const ProductosLista = () => {
   // Obtener productos desde la API
   useEffect(() => {
     cargarProductos();
-    const fetchProductos = async () => {
-      try {
-        const response = await axios.get(`${API_URL}/api/productos/obtener`);
-        setProductos(response.data);
-      } catch (err) {
-        setError('No se pudo obtener los productos');
-        console.error('Error al obtener los productos:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProductos();
   }, []); // Solo se ejecuta al montar el componente
   
 
@@ -147,7 +134,7 @@ const ProductosLista = () => {
             {/* Precio */}
             <div className="producto-precio text-lg font-semibold text-green-600">${producto.precio}</div>
             {/* Stock */}
-            <div className={`producto-stock ${producto.stock <= 5 ? 'text-red-500 font-semibold' : 'text-gray-700'}`}>
+            <div className={`producto-stock text-xl ${producto.stock <= 5 ? 'text-red-500 font-semibold' : 'text-gray-700'}`}>
               {producto.stock}
             </div>
             

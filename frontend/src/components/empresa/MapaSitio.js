@@ -82,6 +82,7 @@ const MapaSitio = () => {
             Volver a Inicio
           </Link>
         </div>
+        
       </div>
     </motion.div>
   );

@@ -140,7 +140,6 @@ export const login = async (req, res) => {
   try {
     const { correo, password, tokenRecaptcha } = req.body;
 
-
     // Validar campos básicos
     if (!correo || !password || !tokenRecaptcha) {
       logger.warn({
@@ -172,7 +171,6 @@ export const login = async (req, res) => {
       return res.status(400).json({ mensaje: "Verificación de reCAPTCHA fallida." });
     }
 
-
     // Buscar al usuario en la base de datos
     const usuario = await Usuario.findOne({ where: { correo } });
     if (!usuario) {
@@ -182,7 +180,6 @@ export const login = async (req, res) => {
         codigo_error: "400",
         ip_cliente: req.ip,
         usuario: correo,
-        
       };
       logger.error(errorMessage);
       return res.status(400).json({ mensaje: "Credenciales invalidas" });
@@ -197,7 +194,6 @@ export const login = async (req, res) => {
         codigo_error: "400",
         ip_cliente: req.ip,
         usuario: correo,
-        
       };
       logger.error(errorMessage);
       return res.status(400).json({ mensaje: "Credenciales invalidas" });
@@ -205,7 +201,6 @@ export const login = async (req, res) => {
 
     // Generar token JWT
     const token = crearTokenAcceso(usuario);
-    console.log("Token generado:", token); 
     const fecha =obtenerFechaHora();
 
     // Después de generar el token
@@ -225,7 +220,6 @@ export const login = async (req, res) => {
       maxAge: 24 * 60 * 60 * 1000,
     });
 
-
     // Respuesta exitosa
     return res.status(200).json({
       mensaje: "Inicio de sesión exitoso.",
@@ -234,7 +228,6 @@ export const login = async (req, res) => {
         nombre_usuario: usuario.nombre_usuario,
         correo: usuario.correo,
         rol: usuario.rol,
-
       },
       token,
     });

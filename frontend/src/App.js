@@ -19,6 +19,7 @@ import ErrorRoutes from "./routes/ErrorRoutes";
 
 //publico
 const CuerpoPrincipal = lazy(() => import("./public/cuerpo/cuerpo"));
+const ProductoDetalle = lazy(() => import("./public/producto/detalles/detalle.js"));
 
 // Lazy imports
 const DashboardAdmin = lazy(() => import("./admin/dashboard/Dashboard"));
@@ -33,6 +34,7 @@ const Configuracion = lazy(() => import("./admin/setting/Configuracion"));
 const PinInicioRapido = lazy(() => import("./admin/pin/pinInicioRapido"));
 const PreguntasFrecuentes = lazy(() => import("./admin/empresa/preguntasFrecuentes/PreguntasFrecuentes"));
 const GestionProductos = lazy(() => import("./admin/productos/analisis/AnalisisVentas"));
+const OpinionesPublico = lazy(() => import("./admin/opiniones/opiniones"));
 
 // Componentes con Lazy Loading
 const DashboardUsuario = lazy(() => import("./usuario/dashboard/Dashboard.js"));
@@ -55,7 +57,6 @@ const VerificarTelefono = lazy(() => import("./pages/VerificarCodigoTelefono"));
 const RestablecerTelefono = lazy(() => import("./pages/RestablecerPasswordTelefono"));
 const OpcionRecuperarPassword = lazy(() => import("./pages/OpcionRecuperarPassword"));
 const RestablecerPassword = lazy(() => import("./pages/RestablecerPassword"));
-
 const AllProductos = lazy(() => import("./components/productos/AllProductos"));
 const DetalleProducto = lazy(() => import("./components/productos/DetalleProducto"));
 const BuscarProductos = lazy(() => import("./components/productos/BuscarProductos"));
@@ -69,7 +70,6 @@ const PoliticaPrivacidad = lazy(() => import("./components/empresa/PoliticaPriva
 const Terminos = lazy(() => import("./components/empresa/Terminos"));
 const DeslindeLegal = lazy(() => import("./components/empresa/DeslindeLegal"));
 const Contacto = lazy(() => import("./components/empresa/Contacto"));
-const Ayuda = lazy(() => import("./components/empresa/Ayuda"));
 const MapaSitio = lazy(() => import("./components/empresa/MapaSitio"));
 const PreguntasFrecuentesAll = lazy(() => import("./components/empresa/PreguntasFrecuentes"));
 
@@ -84,7 +84,7 @@ const App = () => {
             <Route path="/cuerpo" element={<CuerpoPrincipal />} />
             <Route path="/usuario/carrito" element={<ProteccionRutas element={Carrito} allowedRoles={["usuario"]} />} />
             <Route path="/productos/carrito"element={<ProteccionRutas element={Carrito} allowedRoles={["usuario"]} />}/>
-
+            <Route path="/producto/:id" element={<ProductoDetalle />} />
           </Route>
 
           {/* Layout vacío para página de bienvenida */}
@@ -113,7 +113,6 @@ const App = () => {
             <Route path="/terminos" element={<Terminos />} />
             <Route path="/deslindeLegal" element={<DeslindeLegal />} />
             <Route path="/contacto" element={<Contacto />} />
-            <Route path="/ayuda" element={<Ayuda />} />
             <Route path="/mapa-del-sitio" element={<MapaSitio />} />
             <Route path="/preguntasFrecuentes" element={<PreguntasFrecuentesAll />} />
           </Route>
@@ -135,7 +134,7 @@ const App = () => {
 
           </Route>
           <Route element = {<LayoutAdmin/>}>
-
+            <Route path="/admin/opiniones" element={<ProteccionRutas element={OpinionesPublico} allowedRoles={["administrador"]} />} />
             <Route path="/admin/dashboard" element={<ProteccionRutas element={DashboardAdmin} allowedRoles={["administrador"]} />} />
             <Route path="/admin/sidebar" element={<ProteccionRutas element={SidebarAdmin} allowedRoles={["administrador"]} />} />
             <Route path="/admin/empresa" element={<ProteccionRutas element={Empresa} allowedRoles={["administrador"]} />} />

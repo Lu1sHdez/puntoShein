@@ -86,7 +86,7 @@ const PasoImagen = ({ producto, setProducto, onAnterior, onSiguiente }) => {
       />
       <label
         htmlFor="input-imagen"
-        className="cursor-pointer text-pink-600 hover:underline block text-center"
+        className="cursor-pointer text-blue-600 hover:underline block text-center"
       >
         Haz clic aquí para seleccionar una imagen
       </label>
@@ -99,7 +99,7 @@ const PasoImagen = ({ producto, setProducto, onAnterior, onSiguiente }) => {
           if (file) procesarArchivo(file);
         }}
         onDragOver={(e) => e.preventDefault()}
-        className="border-2 border-dashed border-gray-300 p-6 rounded-md text-center text-gray-600 hover:bg-gray-100 transition cursor-pointer"
+        className="border-2 border-dashed border-blue-300 p-6 rounded-md text-center text-blue-600 hover:bg-blue-100 transition cursor-pointer"
       >
         Arrastra una imagen aquí
       </div>
@@ -131,7 +131,7 @@ const PasoImagen = ({ producto, setProducto, onAnterior, onSiguiente }) => {
         <button
           onClick={handleSubirImagen}
           disabled={subiendo || !archivo}
-          className="px-4 py-2 bg-pink-600 text-white rounded hover:bg-pink-700 disabled:opacity-50"
+          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
         >
           {subiendo ? 'Subiendo...' : 'Siguiente'}
         </button>

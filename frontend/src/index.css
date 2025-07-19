@@ -60,7 +60,7 @@
   }
 
   .boton-principal {
-    @apply bg-pink-600 text-white px-4 py-2 rounded hover:bg-pink-700 transition;
+    @apply bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition;
   }  
     .btn-secundario {
       @apply border border-gray-500 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-100 transition duration-200 ease-in-out;
@@ -71,7 +71,7 @@
     }
   
     .btn-agregar {
-      @apply bg-pink-600 text-white px-2 py-2 rounded hover:bg-pink-700 transition font-semibold;
+      @apply bg-gray-600 text-white px-2 py-2 rounded hover:bg-gray-700 transition font-semibold;
     }
   
     .btn-eliminar {
@@ -91,7 +91,7 @@
     
 
     .btn-cerrar {
-      @apply flex items-center gap-2 bg-pink-600 text-white px-4 py-2 rounded-md hover:bg-pink-700 transition text-sm font-medium;
+      @apply flex items-center gap-2 bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition text-sm font-medium;
     }
     .btn-vaciar{
       @apply bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700 transition font-semibold;

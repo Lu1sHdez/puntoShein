@@ -16,7 +16,7 @@ import {
   FaQuestionCircle,
   FaChartLine,
   FaTachometerAlt,
-  FaKey,
+  FaCommentDots,
   FaAngleLeft,
   FaAngleRight,
   FaSignOutAlt
@@ -37,9 +37,8 @@ const Sidebar = ({ admin }) => {
     { label: "Empleados", icon: <FaUserTie />, path: "/admin/empleados" },
     { label: "Preguntas", icon: <FaQuestionCircle />, path: "/admin/preguntasFrecuentes" },
     { label: "Análisis", icon: <FaChartLine />, path: "/admin/gestionProductos" },
-  ];
-  const menuItems2 = [
-    { label: "Cerrar sesión", icon: <FaKey />, path: "/cerrar-sesion" },
+    { label: "Opiniones", icon: <FaCommentDots />, path: "/admin/opiniones" }
+
   ];
 
   const handleLogout = async () => {
@@ -69,12 +68,13 @@ const Sidebar = ({ admin }) => {
 
   return (
     <aside
-      className={`min-h-screen bg-white border-r shadow-md p-4 fixed top-16 left-0 z-40 pt-4 transition-all duration-300 ${
+      className={`bg-white border-r shadow-md p-4 fixed top-16 left-0 z-40 pt-4 transition-all duration-300 overflow-y-auto ${
         colapsado ? "w-20" : "w-64"
-      }`}
+      } h-[calc(100vh-4rem)]`}  // ← Altura ajustada para no cortar la parte superior
     >
+
       {/* Botón para colapsar/expandir */}
-      <div className="absolute top-4 right-[-12px] bg-white border rounded-full shadow p-1 z-50 cursor-pointer"
+      <div className="absolute top-4 right-[-1px] bg-white border rounded-full shadow p-1 z-50 cursor-pointer"
            onClick={() => setColapsado(!colapsado)}
       >
         {colapsado ? <FaAngleRight /> : <FaAngleLeft />}

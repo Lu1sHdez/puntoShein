@@ -23,14 +23,14 @@ const PasoConfirmacion = ({ producto, onAnterior, onGuardar }) => {
         {/* Sección de imagen */}
         <div className="lg:w-1/3 flex justify-center">
           {producto.imagen ? (
-            <div className="relative w-full h-64 lg:h-80 rounded-lg overflow-hidden shadow-md">
+            <div className="relative w-full aspect-[4/5] max-w-md rounded-lg overflow-hidden shadow-md">
               <img
                 src={producto.imagen}
                 alt="Producto"
-                className="w-full h-full object-cover"
+                className="w-full h-full object-contain"
               />
               {producto.color && (
-                <div 
+                <div
                   className="absolute bottom-2 right-2 w-8 h-8 rounded-full border-2 border-white shadow-md"
                   style={{ backgroundColor: producto.color }}
                   title={`Color: ${producto.color}`}
@@ -38,7 +38,7 @@ const PasoConfirmacion = ({ producto, onAnterior, onGuardar }) => {
               )}
             </div>
           ) : (
-            <div className="w-full h-64 lg:h-80 bg-gray-100 rounded-lg flex items-center justify-center">
+            <div className="w-full aspect-[4/5] max-w-md bg-gray-100 rounded-lg flex items-center justify-center">
               <p className="text-gray-500">No hay imagen</p>
             </div>
           )}
@@ -118,7 +118,7 @@ const PasoConfirmacion = ({ producto, onAnterior, onGuardar }) => {
 
             <button
               onClick={handleGuardarProducto}
-              className="px-6 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition-colors flex items-center gap-2"
+              className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center gap-2"
             >
               Guardar Producto
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">

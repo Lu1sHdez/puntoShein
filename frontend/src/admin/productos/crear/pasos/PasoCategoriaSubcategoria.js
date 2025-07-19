@@ -34,7 +34,7 @@ const PasoCategoriaSubcategoria = ({
           name="categoria_id"
           value={producto.categoria_id}
           onChange={onCategoriaChange}
-          className="mt-1 p-3 w-full border border-gray-300 rounded-md shadow-sm focus:ring-pink-500 focus:border-pink-500"
+          className="mt-1 p-3 w-full border border-blue-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
         >
           <option value="">Seleccione una categoría</option>
           {categorias.map((categoria) => (
@@ -65,7 +65,7 @@ const PasoCategoriaSubcategoria = ({
                 subcategoria: subcategoriaSeleccionada, // ← guarda nombre y más
               }));
             }}
-                        className="mt-1 p-3 w-full border border-gray-300 rounded-md shadow-sm focus:ring-pink-500 focus:border-pink-500"
+            className="mt-1 p-3 w-full border border-blue-300 rounded-md shadow-sm focus:ring-gray-500 focus:border-gray-500"
           >
             <option value="">Seleccione una subcategoría</option>
             {subcategorias.map((subcategoria) => (
@@ -88,7 +88,7 @@ const PasoCategoriaSubcategoria = ({
         <button
           onClick={onSiguiente}
           disabled={!producto.categoria_id || !producto.subcategoria_id}
-          className={`px-4 py-2 text-white rounded ${(!producto.categoria_id || !producto.subcategoria_id) ? 'bg-gray-300 cursor-not-allowed' : 'bg-pink-500 hover:bg-pink-600'}`}
+          className={`px-4 py-2 text-white rounded ${(!producto.categoria_id || !producto.subcategoria_id) ? 'bg-gray-300 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600'}`}
         >
           Siguiente
         </button>

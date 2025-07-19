@@ -4,6 +4,7 @@ import { dataLoadingAnimation } from '../Funciones';
 import { motion } from 'framer-motion';
 import { API_URL } from "../../ApiConexion";
 import CargandoBarra from "../../Animations/CargandoBarra";
+import { Link } from "react-router-dom";
 
 const PreguntasFrecuentes = () => {
   const [preguntas, setPreguntas] = useState([]);
@@ -73,6 +74,12 @@ const PreguntasFrecuentes = () => {
         ) : (
           <div className="text-center py-4 text-gray-600">No hay preguntas frecuentes disponibles.</div>
         )}
+      </div>
+      {/* Botón de regreso */}
+      <div className="mt-6">
+        <Link to="/" className="btn-atras">
+          Volver a Inicio
+        </Link>
       </div>
     </motion.div>
   );

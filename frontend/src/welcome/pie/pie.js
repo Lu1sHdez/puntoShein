@@ -8,12 +8,11 @@ const PieBienvenida = () => {
       <div className="max-w-5xl mx-auto px-4">
         {/* Enlaces legales */}
         <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm mb-4">
-          <Link to="/acercaDe" className="hover:underline">Acerca de</Link>
+          <Link to="/acercaDe" className="hover:underline">Acerca de nosotros</Link>
           <Link to="/preguntasFrecuentes" className="hover:underline">Preguntas Frecuentes</Link>
           <Link to="/privacidad" className="hover:underline">Privacidad</Link>
           <Link to="/terminos" className="hover:underline">Términos</Link>
           <Link to="/deslindeLegal" className="hover:underline">Deslinde Legal</Link>
-          <Link to="/ayuda" className="hover:underline">Ayuda</Link>
           <Link to="/mapa-del-sitio" className="hover:underline">Mapa del sitio</Link>
         </div>
 

@@ -98,7 +98,7 @@ const ModalGestionTallas = ({ visible, onClose, refreshTallas }) => {
         <button
           onClick={crearTalla}
           disabled={cargando}
-          className="bg-pink-500 text-white px-4 py-2 rounded w-full mb-4 hover:bg-pink-600"
+          className="bg-blue-500 text-white px-4 py-2 rounded w-full mb-4 hover:bg-blue-600"
         >
           Crear Talla
         </button>

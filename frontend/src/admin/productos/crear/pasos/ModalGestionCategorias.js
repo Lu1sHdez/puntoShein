@@ -74,7 +74,7 @@ const ModalGestionCategorias = ({ visible, onClose, categorias, refreshCategoria
             setTipo('categoria');
             setCategoriaSeleccionada('');
           }}
-          className={`px-4 py-2 mr-2 rounded ${tipo === 'categoria' ? 'bg-pink-500 text-white' : 'bg-gray-200 text-gray-800'}`}
+          className={`px-4 py-2 mr-2 rounded ${tipo === 'categoria' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'}`}
         >
           Categoría
         </button>
@@ -86,7 +86,7 @@ const ModalGestionCategorias = ({ visible, onClose, categorias, refreshCategoria
               setCategoriaSeleccionada(categorias[0].id);
             }
           }}
-          className={`px-4 py-2 rounded ${tipo === 'subcategoria' ? 'bg-pink-500 text-white' : 'bg-gray-200 text-gray-800'}`}
+          className={`px-4 py-2 rounded ${tipo === 'subcategoria' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'}`}
         >
           Subcategoría
         </button>
@@ -139,12 +139,11 @@ const ModalGestionCategorias = ({ visible, onClose, categorias, refreshCategoria
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-pink-500 text-white rounded hover:bg-pink-600"
+              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
               disabled={isLoading}
             >
               Crear
             </button>
-            
           </div>
         </form>
       </div>

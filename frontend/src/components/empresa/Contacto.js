@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { dataLoadingAnimation} from '../Funciones';
 import { motion } from 'framer-motion';
 import CargandoBarra from "../../Animations/CargandoBarra";
+import { Link } from "react-router-dom";
 
 
 const Contacto = () => {
@@ -86,6 +87,12 @@ const Contacto = () => {
         <p>Teléfono: 01-800-PUNTO (78686)</p>
         <p>Correo: soporte@puntoshein.com</p>
         <p>Dirección: Av. Ejemplo 123, Col. Centro, Ciudad, País</p>
+      </div>
+      {/* Botón de regreso */}
+      <div className="mt-6">
+        <Link to="/" className="btn-atras">
+          Volver a Inicio
+        </Link>
       </div>
     </motion.div>
   );

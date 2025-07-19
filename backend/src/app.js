@@ -3,6 +3,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 
+import opinionRoutes from './routes/opinion.routes.js';
 import autenticacionRutas from './routes/autenticacion.routes.js';
 import productoRutas from './routes/producto.routes.js';
 import usuarioRutas from './routes/usuario.routes.js';
@@ -68,6 +69,7 @@ app.use('/api/carrito', carritoRutas);
 app.use('/api/compra', compraRutas);
 app.use('/api/empresa', empresaRutas);
 app.use('/api/admin', adminRutas);
+app.use('/api/opinion', opinionRoutes);
 app.use('/api/empleado', empleadoRutas);
 app.use('/api/preguntas', preguntaFrecuenteRutas)
 app.use('/api/pin', loginPin)

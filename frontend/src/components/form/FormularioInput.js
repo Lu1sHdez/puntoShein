@@ -8,7 +8,6 @@ const FormularioInput = ({
   name,
   value,
   onChange,
-  required,
   showPassword,
   togglePassword,
   placeholder,

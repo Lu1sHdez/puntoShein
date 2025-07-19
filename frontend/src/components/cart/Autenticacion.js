@@ -21,7 +21,7 @@ const ModalAutenticacion = ({ onClose }) => {
         <div className="flex flex-col gap-4">
           <motion.button
             onClick={() => navigate("/login")}
-            className="w-full bg-pink-600 text-white py-2 rounded-lg hover:bg-pink-700 transition"
+            className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
             whileHover={{ scale: 1.05 }}
           >
             Iniciar sesión
@@ -29,7 +29,7 @@ const ModalAutenticacion = ({ onClose }) => {
 
           <motion.button
             onClick={() => navigate("/registro")}
-            className="w-full border border-pink-600 text-pink-600 py-2 rounded-lg hover:bg-pink-50 transition"
+            className="w-full border border-blue-600 text-blue-600 py-2 rounded-lg hover:bg-blue-50 transition"
             whileHover={{ scale: 1.05 }}
           >
             Registrarse

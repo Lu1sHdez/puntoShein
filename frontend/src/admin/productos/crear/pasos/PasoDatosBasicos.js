@@ -105,7 +105,7 @@ const PasoDatosBasicos = ({ producto, setProducto, onSiguiente }) => {
         <div className="flex justify-end mt-6">
           <button
             onClick={handleSiguiente}
-            className="px-6 py-3 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition duration-300"
+            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-300"
             disabled={guardando}
           >
             {guardando ? "Cargando..." : "Siguiente"}

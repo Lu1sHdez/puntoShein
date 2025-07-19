@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { motion } from 'framer-motion';
 import CargandoBarra from "../../Animations/CargandoBarra"; // Componente para mostrar el estado de carga
 import { dataLoadingAnimation } from '../Funciones'; // Animación para framer-motion
+import { Link } from "react-router-dom";
 
 const DeslindeLegal = () => {
   const [cargando, setCargando] = useState(true);
@@ -58,6 +59,12 @@ const DeslindeLegal = () => {
         Para más información o aclaraciones sobre este deslinde legal, 
         contáctanos en: <em>legal@puntoshein.com</em>.
       </p>
+      {/* Botón de regreso */}
+      <div className="mt-6">
+        <Link to="/" className="btn-atras">
+          Volver a Inicio
+        </Link>
+      </div>
     </motion.div>
   );
 };
