@@ -1,20 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FaSignOutAlt } from "react-icons/fa";
 import useAuth from "../hooks/useAuth";
-import axios from "axios";
-import Swal from "sweetalert2";
 import useSesionUsuario from "../context/useSesionUsuario";
 import { API_URL } from "../ApiConexion";
-import CargandoModal from "../Animations/CargandoModal";
+import axios from "axios";
+import CerrarSesionModal from "../modal/CerrarSesion"; // ✅ IMPORTAR MODAL
 
 const EncabezadoBienvenida = () => {
   const navigate = useNavigate();
   const { logout } = useAuth();
   const { usuarioAutenticado, datos } = useSesionUsuario();
-  const [cargando, setCargando] = useState(false);
   const [empresa, setEmpresa] = useState(null);
-
+  const [mostrarModalCerrarSesion, setMostrarModalCerrarSesion] = useState(false); // ✅ Estado del modal
 
   // Iniciales
   const generarIniciales = (nombre) => {
@@ -29,26 +26,6 @@ const EncabezadoBienvenida = () => {
   const fotoPerfil = datos?.foto_perfil;
   const nombreUsuario = datos?.nombre;
 
-  const cerrarSesion = async () => {
-    setCargando(true);
-    try {
-      await axios.post(`${API_URL}/api/autenticacion/logout`, {}, { withCredentials: true });
-      logout();
-
-      setTimeout(() => {
-        setCargando(false);
-        navigate("/");
-        window.location.reload(); 
-      }, 2000);
-    } catch (error) {
-      setCargando(false);
-      Swal.fire({
-        icon: "error",
-        title: "Error al cerrar sesión",
-        text: error.response?.data?.mensaje || "Ocurrió un error inesperado.",
-      });
-    }
-  };
   useEffect(() => {
     const obtenerDatos = async () => {
       try {
@@ -56,7 +33,6 @@ const EncabezadoBienvenida = () => {
           withCredentials: true,
         });
         setEmpresa(empresaRes.data);
-
       } catch (error) {
         console.error("Error al cargar datos:", error);
       }
@@ -69,8 +45,7 @@ const EncabezadoBienvenida = () => {
     <header className="bg-gray-50 shadow-sm fixed top-0 left-0 w-full z-50 border-b border-gray-200">
       <div className="max-w-6xl mx-auto px-4 py-3 flex flex-col sm:flex-row items-center justify-between gap-4">
         {/* Empresa */}
-        <Link to = "/"
-          className="flex items-center space-x-4">
+        <Link to="/" className="flex items-center space-x-4">
           {empresa && (
             <>
               <img
@@ -78,14 +53,14 @@ const EncabezadoBienvenida = () => {
                 alt="Logo de empresa"
                 className="h-14 w-14 rounded-full object-cover shadow-md border border-gray-300"
               />
-              <h1 className="text-3xl font-bold text-black-600 uppercase">{empresa.nombre}</h1>
+              <h1 className="text-3xl font-bold text-black-600 uppercase">
+                {empresa.nombre}
+              </h1>
             </>
           )}
         </Link>
-        <Link
-          to = "/cuerpo"
-          className="link-subrayado"
-          >
+
+        <Link to="/cuerpo" className="link-subrayado">
           Productos
         </Link>
 
@@ -113,12 +88,11 @@ const EncabezadoBienvenida = () => {
               </span>
             </div>
 
-            {/* Cerrar sesión */}
+            {/* Botón Cerrar sesión */}
             <button
-              onClick={cerrarSesion}
+              onClick={() => setMostrarModalCerrarSesion(true)}
               className="link-subrayado"
             >
-              <FaSignOutAlt />
               Cerrar sesión
             </button>
           </div>
@@ -142,8 +116,12 @@ const EncabezadoBienvenida = () => {
           </div>
         )}
       </div>
-       {/* Modal de carga */}
-       <CargandoModal mensaje="Cerrando sesión..." visible={cargando} />
+
+      {/* Modal Cerrar Sesión */}
+      <CerrarSesionModal
+        visible={mostrarModalCerrarSesion}
+        onClose={() => setMostrarModalCerrarSesion(false)}
+      />
     </header>
   );
 };

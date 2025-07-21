@@ -16,6 +16,8 @@ const DetalleProducto = () => {
   const [cargandoCarrito, setCargandoCarrito] = useState(false);
   const [mostrarModal, setMostrarModal] = useState(false);
   const { usuarioAutenticado, id: usuarioId } = useSesionUsuario();
+  const [tallaSeleccionada, setTallaSeleccionada] = useState("");
+
 
   useEffect(() => {
     const fetchProducto = async () => {
@@ -37,15 +39,30 @@ const DetalleProducto = () => {
       setMostrarModal(true);
       return;
     }
+  
+    if (!tallaSeleccionada) {
+      alert("Por favor selecciona una talla antes de agregar al carrito.");
+      return;
+    }
+  
     setCargandoCarrito(true);
+  
     try {
-      await agregarAlCarrito({ producto_id: id, usuario_id: usuarioId });
+      await agregarAlCarrito({
+        producto_id: id,
+        usuario_id: usuarioId,
+        cantidad: 1, // o puedes permitir seleccionar cantidad más adelante
+        talla_id: tallaSeleccionada,
+      });
+  
+      alert("Producto agregado al carrito");
     } catch (error) {
       alert("Error al agregar al carrito.");
     } finally {
       setCargandoCarrito(false);
     }
   };
+  
 
   const handleComprarAhora = async () => {
     if (!usuarioAutenticado) {
@@ -125,19 +142,27 @@ const DetalleProducto = () => {
 
             {/* Tallas */}
             <div className="mb-3">
-              <p className="text-sm font-semibold text-gray-700">Tallas disponibles:</p>
-              {tallas && tallas.length > 0 ? (
-                <ul className="list-disc ml-6 mt-1 text-sm text-gray-600">
-                  {tallas.map((t) => (
-                    <li key={t.id}>
-                      Talla <strong>{t.nombre}</strong> — Stock: {t.stock}
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p className="text-sm text-gray-500 italic">No hay tallas registradas.</p>
-              )}
-            </div>
+            <label className="text-sm font-semibold text-gray-700 block mb-1">
+              Selecciona una talla:
+            </label>
+            {tallas && tallas.length > 0 ? (
+              <select
+                value={tallaSeleccionada}
+                onChange={(e) => setTallaSeleccionada(e.target.value)}
+                className="border border-gray-300 rounded px-3 py-2 w-full text-sm"
+              >
+                <option value="">-- Seleccionar --</option>
+                {tallas.map((t) => (
+                  <option key={t.id} value={t.id}>
+                    Talla <strong>{t.nombre}</strong> — Stock: {t.stock}
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <p className="text-sm text-gray-500 italic">No hay tallas registradas.</p>
+            )}
+          </div>
+
 
           </div>
 
@@ -145,13 +170,13 @@ const DetalleProducto = () => {
           <div className="mt-6 flex flex-col gap-3">
             <button
               onClick={handleAgregarCarrito}
-              className="bg-gray-800 text-white px-4 py-2 rounded hover:bg-gray-900 transition"
+              className="btn-principal"
             >
               Agregar al carrito
             </button>
             <button
               onClick={handleComprarAhora}
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+              className="btn-secundario"
             >
               Continuar con la compra
             </button>

@@ -58,7 +58,7 @@ const VerificarTelefono = lazy(() => import("./pages/VerificarCodigoTelefono"));
 const RestablecerTelefono = lazy(() => import("./pages/RestablecerPasswordTelefono"));
 const OpcionRecuperarPassword = lazy(() => import("./pages/OpcionRecuperarPassword"));
 const RestablecerPassword = lazy(() => import("./pages/RestablecerPassword"));
-const Carrito = lazy(() => import("./public/carrito/Carrito"));
+const Carrito = lazy(() => import("./public/carrito/PrincipalCarrito.js"));
 
 const AcercaDe = lazy(() => import("./components/empresa/AcercaDe"));
 const PoliticaPrivacidad = lazy(() => import("./components/empresa/PoliticaPrivacidad"));
