@@ -51,6 +51,15 @@ const Usuario = sequelize.define('Usuario', {
     type: DataTypes.ENUM('usuario', 'administrador', 'empleado'),
     defaultValue: 'usuario',
   },
+  genero: {
+    type: DataTypes.ENUM('H', 'M'),
+    allowNull: true,
+  },  
+  ubicacion: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  
   tokenRecuperacion:{
     type: DataTypes.STRING,
     allowNull: true,

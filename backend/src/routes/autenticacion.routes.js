@@ -1,7 +1,9 @@
 import express from 'express';
-import { registro, login, cerrarSesion,actualizarPasswordTelefono, recuperarPassword,restablecerPassword, verificarSoloCodigoTelefono, solicitarRecuperacionTelefono} from '../controllers/autenticacion.controller.js';
+import { registro,validarDatosPrevios, login, cerrarSesion,actualizarPasswordTelefono, recuperarPassword,restablecerPassword, verificarSoloCodigoTelefono, solicitarRecuperacionTelefono} from '../controllers/autenticacion.controller.js';
 
 const router = express.Router();
+
+router.post('/validar-datos-previos', validarDatosPrevios);
 
 // Ruta para registrar usuarios
 router.post('/registro', express.json(), registro);

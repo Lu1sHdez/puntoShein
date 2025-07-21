@@ -108,7 +108,7 @@ const RestablecerPassword = () => {
               texto="Restablecer Contraseña"
               type="submit"
               disabled={loading}
-              estiloPersonalizado={`w-full bg-pink-600 text-white py-2 rounded-lg hover:bg-pink-700 transition ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+              className={`w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
             />
 
             <Boton

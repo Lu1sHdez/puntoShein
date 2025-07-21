@@ -144,7 +144,7 @@ const Login = () => {
           <Boton
             texto="Iniciar sesión"
             onClick={validarYEnviar}
-            estiloPersonalizado={`btn-login w-full ${
+            estiloPersonalizado={`btn-principal w-full ${
               loading ? "opacity-50 cursor-not-allowed" : ""
             }`}
           />

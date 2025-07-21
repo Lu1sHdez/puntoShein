@@ -3,9 +3,84 @@ import bcrypt from 'bcryptjs';
 import Sequelize from 'sequelize';
 import Usuario from '../models/usuario.model.js';  // Asegúrate de tener el modelo de usuario correctamente importado
 import nodemailer from 'nodemailer';
+import InvitacionEmpleado from '../models/invitacionEmpleado.model.js';
 import logger from '../libs/logger.js'; // Si ya usas winston u otro logger
+import jwt from 'jsonwebtoken';
 
+export const enviarInvitacionEmpleado = async (req, res) => {
+  try {
+    const { correo } = req.body;
 
+    // Validaciones
+    const errores = {};
+
+    if (!correo || !correo.trim()) {
+      errores.correo = "El correo es obligatorio.";
+    } else {
+      const formatoValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!formatoValido.test(correo)) {
+        errores.correo = "El formato del correo no es válido.";
+      }
+    }
+
+    // Verificar existencia de usuario con el correo
+    const existente = await Usuario.findOne({ where: { correo } });
+    if (existente) {
+      errores.correo = "Ya existe un usuario registrado con ese correo.";
+    }
+
+    // Si hay errores, devolverlos
+    if (Object.keys(errores).length > 0) {
+      return res.status(400).json({ errores });
+    }
+
+    // Crear token temporal
+    const token = jwt.sign({ correo }, process.env.TOKEN_SECRET, { expiresIn: "15min" });
+    const expiracion = new Date(Date.now() + 15 * 60 * 1000);
+
+    // Guardar invitación en base de datos
+    await InvitacionEmpleado.create({
+      correo,
+      token,
+      expiracion,
+      estado: 'pendiente',
+    });
+
+    const enlace = `${process.env.FRONTEND_URL}/registro/e?token=${token}`;
+
+    // Envío de correo
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+      tls: {
+        rejectUnauthorized: false,
+      },
+    });
+
+    const mailOptions = {
+      from: `"Punto Shein" <${process.env.EMAIL_USER}>`,
+      to: correo,
+      subject: "Invitación para registrarte como empleado",
+      html: `
+        <p>Has sido invitado a registrarte como empleado en Punto Shein.</p>
+        <p>Haz clic en el siguiente enlace para completar tu registro:</p>
+        <a href="${enlace}">Haz clic aquí para registrarte</a>
+        <p>Este enlace expirará en 15 minutos.</p>
+      `,  
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    return res.status(200).json({ mensaje: "Invitación enviada correctamente." });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ mensaje: "Error al enviar la invitación." });
+  }
+};
+/* SOLO ACCIONES PARA EL PERFIL DEL ADMINISTRADOR */
 export const recuperarPasswordAdmin = async (req, res) => {
   try {
     const { correo } = req.body;
@@ -195,7 +270,7 @@ export const validarCodigoAdmin = async (req, res) => {
   }
 };
 
-// Funcion para btener los usuarios
+/* FUNCIONES QUE SOLO EL ADMIN GESTIONA */
 export const obtenerUsuarios = async (req, res) => {
   try {
     const { rol, search } = req.query;  // Obtener el rol y la búsqueda desde la query string

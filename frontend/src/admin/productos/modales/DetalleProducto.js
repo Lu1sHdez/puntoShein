@@ -78,7 +78,7 @@ const ModalDetalle = ({ visible, producto, onClose }) => {
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-base">
                   <div className="flex items-center">
-                    <FaTag className="text-pink-500 mr-2" />
+                    <FaTag className="text-blue-500 mr-2" />
                     <strong className="text-gray-800 mr-1">Nombre:</strong>
                     <span className="text-gray-700">{producto.nombre}</span>
                   </div>
@@ -114,14 +114,14 @@ const ModalDetalle = ({ visible, producto, onClose }) => {
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-base">
                   <div className="flex items-center">
-                    <FaTag className="text-pink-500 mr-2" />
+                    <FaTag className="text-blue-500 mr-2" />
                     <strong className="text-gray-800 mr-1">Categoría:</strong>
                     <span className="text-gray-700">
                       {producto.subcategoria?.categoria?.nombre || 'N/A'}
                     </span>
                   </div>
                   <div className="flex items-center">
-                    <FaTag className="text-pink-500 mr-2" />
+                    <FaTag className="text-blue-500 mr-2" />
                     <strong className="text-gray-800 mr-1">Subcategoría:</strong>
                     <span className="text-gray-700">
                       {producto.subcategoria?.nombre || 'N/A'}
@@ -147,7 +147,7 @@ const ModalDetalle = ({ visible, producto, onClose }) => {
           <div className="mt-10 flex justify-end">
             <button
               onClick={onClose}
-              className="px-6 py-3 bg-black text-white rounded-lg hover:bg-pink-700 focus:outline-none transition-all duration-200 transform hover:scale-105"
+              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none transition-all duration-200 transform hover:scale-105"
             >
               Cerrar
             </button>

@@ -23,7 +23,7 @@ const EncabezadoGeneral = () => {
   }, []);
 
   return (
-    <header className="fixed top-0 left-0 w-full bg-white shadow-md z-50">
+    <header className="bg-gray-50 shadow px-6 py-4 fixed top-0 w-full z-50">
       <div className="max-w-7xl mx-auto px-4 py-3 flex items-center space-x-4">
         <Link to="/" className="flex items-center space-x-4">
           {empresa && (

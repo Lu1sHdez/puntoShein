@@ -13,7 +13,8 @@ import {
   recuperarPasswordAdmin,
   restablecerPasswordAdmin,
   cambiarPasswordAdmin,
-  validarCodigoAdmin
+  validarCodigoAdmin,
+  enviarInvitacionEmpleado
 } from '../controllers/admin.controller.js';
 import { actualizarPerfil } from '../controllers/usuario.controller.js';
 import { obtenerPerfil } from '../controllers/autenticacion.controller.js';
@@ -57,5 +58,8 @@ router.post('/recuperar-password', express.json(), recuperarPasswordAdmin);  // 
 router.put('/restablecer-password', express.json(), restablecerPasswordAdmin);  // no requiere sesión
 router.post('/validar-codigo', express.json(), validarCodigoAdmin);  // no requiere sesión
 
+router.post('/enviarInvitacionEmpleado', verificarToken, admin, enviarInvitacionEmpleado);  // no requiere sesión
 
+
+/* GESTION DE EMPLEADOS */
 export default router;

@@ -7,7 +7,7 @@ import { BsPersonLinesFill } from 'react-icons/bs';  // Icono para el perfil
 import Configuracion from '../setting/Configuracion';  // Componente para la configuración
 import Empresa from '../empresa/Empresa';  // Componente para la empresa
 import Usuarios from '../usuarios/Usuarios';  // Componente para los usuarios
-import Empleados from '../empleados/Empleados';  // Componente para los empleados
+import Empleados from '../empleados/principal';  // Componente para los empleados
 import Productos from '../productos/Productos';  
 import { dashboardAnimation } from '../../components/Funciones.js';
 import { motion } from 'framer-motion';

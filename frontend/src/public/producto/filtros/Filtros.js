@@ -100,7 +100,7 @@ const Filtros = ({
     <div className="mt-auto pt-4 border-t">
         <button
         onClick={cerrarSidebar}
-        className="boton-principal w-full py-2 text-base"
+        className="btn-principal w-full py-2 text-base"
         >
         Aplicar filtros
         </button>

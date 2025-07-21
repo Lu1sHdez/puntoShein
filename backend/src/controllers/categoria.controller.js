@@ -2,7 +2,7 @@ import Categoria from '../models/categoria.model.js';
 import Subcategoria from '../models/subcategoria.model.js'
 import Producto from '../models/producto.model.js';
 
-// Obtener todas las categorías
+// USADA PARA EL PANEL PRINCIPAL DE PRODUCTOS EN LA PARTE DE FILTROS
 export const obtenerCategorias = async (req, res) => {
   try {
     const categorias = await Categoria.findAll({
@@ -15,7 +15,7 @@ export const obtenerCategorias = async (req, res) => {
   }
 };
 
-// Obtener subcategorías por categoría
+//USADA PARA EL PANEL PRINCIPAL DE PRODUCTOS EN LA PARTE DE FILTROS
 export const obtenerSubcategoriasPorCategoria = async (req, res) => {
   const { categoria_id } = req.query;
   

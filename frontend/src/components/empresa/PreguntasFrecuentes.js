@@ -54,6 +54,12 @@ const PreguntasFrecuentes = () => {
 
   return (
     <motion.div {...dataLoadingAnimation} className="p-4 max-w-3xl mx-auto">
+      {/* Botón de regreso */}
+      <div className="mt-6">
+        <Link to="/" className="btn-secundario">
+          Volver a Inicio
+        </Link>
+      </div>
       <h2 className="text-2xl font-bold text-center mb-6">Preguntas Frecuentes (FAQ)</h2>
 
       <div className="overflow-y-auto max-h-96"> {/* Contenedor con scroll */}
@@ -75,12 +81,7 @@ const PreguntasFrecuentes = () => {
           <div className="text-center py-4 text-gray-600">No hay preguntas frecuentes disponibles.</div>
         )}
       </div>
-      {/* Botón de regreso */}
-      <div className="mt-6">
-        <Link to="/" className="btn-atras">
-          Volver a Inicio
-        </Link>
-      </div>
+      
     </motion.div>
   );
 };

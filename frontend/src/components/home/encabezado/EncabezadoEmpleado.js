@@ -29,12 +29,12 @@ const EncabezadoEmpleado = () => {
   };
 
   return (
-    <header className="fixed top-0 left-0 w-full bg-white shadow-md z-50">
+    <header className="bg-gray-50 shadow px-6 py-4 fixed top-0 w-full z-50">
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
         {/* Logo o nombre del sitio */}
         <Link
           to="/empleado/dashboard"
-          className="text-2xl font-bold text-pink-600 hover:text-pink-700"
+          className="text-2xl font-bold text-blue-600 hover:text-blue-700"
         >
           Panel de Empleado - Punto Shein
         </Link>

@@ -27,7 +27,6 @@ export const crearTokenAcceso = (usuario) => {
   );
 };
 
-
 export const crearTokenRecuperacion = (usuario) => {
   return jwt.sign(
     { id: usuario.id, rol: usuario.rol }, 

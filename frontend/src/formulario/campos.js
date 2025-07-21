@@ -20,76 +20,109 @@ export const camposOpiniones = [
   
 ];
 
-export const campos = [
+export const camposEmpleadoRegistro = [
   {
     name: "nombre",
-    label: "Nombre completo",
+    label: "Nombre",
     type: "text",
-    placeholder: "Escribe tu nombre",
+    placeholder: "Tu nombre",
   },
   {
-    name: "correo",
-    label: "Correo electrónico",
-    type: "email",
-    placeholder: "ejemplo@correo.com",
+    name: "apellido_paterno",
+    label: "Apellido paterno",
+    type: "text",
+    placeholder: "Tu apellido paterno",
+  },
+  {
+    name: "apellido_materno",
+    label: "Apellido materno",
+    type: "text",
+    placeholder: "Tu apellido materno",
   },
   {
     name: "password",
     label: "Contraseña",
-    type: "password",
-    placeholder: "Tu contraseña",
+    type: "text",
+    placeholder: "Crea una contraseña segura",
   },
   {
     name: "telefono",
     label: "Teléfono",
     type: "text",
-    placeholder: "10 dígitos",
+    placeholder: "10 dígitos numéricos",
   },
   {
-    name: "fecha_nacimiento",
-    label: "Fecha de nacimiento",
-    type: "date",
-  },
-  {
-    name: "hora_contacto",
-    label: "Hora preferida de contacto",
-    type: "time",
-  },
-  {
-    name: "edad",
-    label: "Edad",
-    type: "number",
-    placeholder: "Tu edad",
+    name: "ubicacion",
+    label: "Ubicación",
+    type: "text",
+    placeholder: "Ciudad o estado",
   },
   {
     name: "genero",
     label: "Género",
-    type: "select",
+    type: "radio", // lo trataremos como especial en el componente
     opciones: [
-      { value: "", label: "Selecciona una opción" },
-      { value: "masculino", label: "Masculino" },
-      { value: "femenino", label: "Femenino" },
-      { value: "otro", label: "Otro" },
+      { label: "Hombre", value: "H" },
+      { label: "Mujer", value: "M" },
     ],
+  }
+  
+];
+
+// campos.js
+export const camposInvitacionEmpleado = [
+  {
+    name: "correo",
+    label: "Correo electrónico",
+    type: "text",
+    placeholder: "ejemplo@correo.com",
+  },
+];
+
+export const camposDatosPersonales = [
+  {
+    name: "nombre",
+    label: "Nombre",
+    type: "text",
+    placeholder: "Tu nombre",
   },
   {
-    name: "terminos",
-    label: "Acepto los términos y condiciones",
-    type: "checkbox",
+    name: "apellido_paterno",
+    label: "Apellido paterno",
+    type: "text",
+    placeholder: "Tu apellido paterno",
   },
   {
-    name: "metodo_pago",
-    label: "Método de pago",
-    type: "radio",
-    opciones: [
-      { value: "efectivo", label: "Efectivo" },
-      { value: "tarjeta", label: "Tarjeta" },
-      { value: "paypal", label: "PayPal" },
-    ],
+    name: "apellido_materno",
+    label: "Apellido materno",
+    type: "text",
+    placeholder: "Tu apellido materno",
   },
   {
-    name: "archivo",
-    label: "Adjuntar archivo",
-    type: "file",
+    name: "correo",
+    label: "Correo electrónico",
+    type: "text",
+    placeholder: "ejemplo@correo.com",
+  },
+  {
+    name: "telefono",
+    label: "Teléfono",
+    type: "text",
+    placeholder: "10 dígitos numéricos",
+  },
+];
+
+export const camposPassword = [
+  {
+    name: "password",
+    label: "Contraseña",
+    type: "password",
+    placeholder: "Crea una contraseña segura",
+  },
+  {
+    name: "confirmPassword",
+    label: "Confirmar contraseña",
+    type: "password",
+    placeholder: "Repite la contraseña",
   },
 ];

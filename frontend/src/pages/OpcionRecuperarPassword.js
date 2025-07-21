@@ -32,7 +32,7 @@ const OpcionRecuperarPassword = () => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => navigate("/recuperarPassword")}
-            className="w-full flex items-center justify-center gap-3 bg-gradient-to-r from-pink-500 to-pink-600 text-white py-3 rounded-xl shadow-md hover:shadow-lg transition-all"
+            className="w-full flex items-center justify-center gap-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 rounded-xl shadow-md hover:shadow-lg transition-all"
           >
             <FaEnvelope className="text-xl" />
             <span className="font-semibold">Recuperar por Correo</span>
@@ -55,7 +55,7 @@ const OpcionRecuperarPassword = () => {
           <Boton
             texto="Volver al inicio de sesión"
             onClick={() => navigate("/login")}
-            estiloPersonalizado="text-pink-600 hover:text-pink-700 font-semibold underline"
+            estiloPersonalizado="text-blue-600 hover:text-blue-700 font-semibold underline"
           />
         </div>
       </motion.div>

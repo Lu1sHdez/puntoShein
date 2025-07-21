@@ -78,7 +78,7 @@ const MapaSitio = () => {
 
         {/* Botón para volver */}
         <div className="mt-6 text-center">
-          <Link to="/" className="btn-atras">
+          <Link to="/" className="btn-secundario">
             Volver a Inicio
           </Link>
         </div>

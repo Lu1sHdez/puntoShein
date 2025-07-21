@@ -5,17 +5,19 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Skeleton from "./components/Skeleton";
 import {verificarExpToken} from "./context/verificarExpToken";
 
-// Layouts
-import Layout from "./components/home/Layout";    
-import LayoutVacio from "./components/home/LayoutVacio";
-import LayoutGeneral from "./components/home/LayoutGeneral";
-import LayoutAdmin from "./admin/secciones/LayoutAdmin.js";
-import LayoutUsuario from "./usuario/secciones/LayoutUsuario.js";
+import LayoutVacio from "./layout/LayoutVacio";
+import LayoutGeneral from "./layout/LayoutGeneral";
+import LayoutSimple from "./layout/LayoutSimple";
+import LayoutAdmin from "./layout/LayoutAdmin.js";
+import LayoutUsuario from "./layout/LayoutUsuario.js";
 import LayoutPublico from "./public/layout/layout.js";
 
 // Rutas protegidas
 import ProteccionRutas from "./utils/ProteccionRutas";
 import ErrorRoutes from "./routes/ErrorRoutes";
+
+const WelcomePage = lazy(() => import("./welcome/WelcomePage"));
+
 
 //publico
 const CuerpoPrincipal = lazy(() => import("./public/cuerpo/cuerpo"));
@@ -26,7 +28,7 @@ const DashboardAdmin = lazy(() => import("./admin/dashboard/Dashboard"));
 const SidebarAdmin = lazy(() => import("./admin/sidebar/Sidebar"));
 const Empresa = lazy(() => import("./admin/empresa/Empresa"));
 const Usuarios = lazy(() => import("./admin/usuarios/Usuarios"));
-const Empleados = lazy(() => import("./admin/empleados/Empleados"));
+const Empleados = lazy(() => import("./admin/empleados/principal"));
 const Productos = lazy(() => import("./admin/productos/Productos"));
 const PerfilAdmin = lazy(() => import("./admin/perfil/Perfil"));
 const ActualizarPerfilAdmin = lazy(() => import("./admin/perfil/ActualizarPerfil"));
@@ -41,14 +43,13 @@ const DashboardUsuario = lazy(() => import("./usuario/dashboard/Dashboard.js"));
 const Pedidos = lazy(() => import("./usuario/pedidos/pedidos.js"));
 const PerfilUsuario = lazy(() => import("./usuario/perfil/Perfil.js"));
 const ActualizarPerfilUsuario = lazy(() => import("./usuario/perfil/ActualizarPerfil.js"));
-const Pago = lazy(() => import("./components/store/compra/pago.js"));
 const ProductosA = lazy(() => import("./components/cart/Agregar.js"));
 
-
 // Lazy loaded pages
-const WelcomePage = lazy(() => import("./welcome/WelcomePage"));
 const Login = lazy(() => import("./pages/Login"));
-const Registro = lazy(() => import("./pages/Registro"));
+const Registro = lazy(() => import("./pages/registro/Registro"));
+const RegistroEmpleado = lazy(() => import("./pages/registro/registroEmpleado.js"));
+
 const CerrarSesion = lazy(() => import("./pages/CerrarSesion"));
 const Logout = lazy(() => import("./pages/Logout"));
 const RecuperarPassword = lazy(() => import("./pages/RecuperarPassword"));
@@ -57,13 +58,7 @@ const VerificarTelefono = lazy(() => import("./pages/VerificarCodigoTelefono"));
 const RestablecerTelefono = lazy(() => import("./pages/RestablecerPasswordTelefono"));
 const OpcionRecuperarPassword = lazy(() => import("./pages/OpcionRecuperarPassword"));
 const RestablecerPassword = lazy(() => import("./pages/RestablecerPassword"));
-const AllProductos = lazy(() => import("./components/productos/AllProductos"));
-const DetalleProducto = lazy(() => import("./components/productos/DetalleProducto"));
-const BuscarProductos = lazy(() => import("./components/productos/BuscarProductos"));
-const ProductosFiltrados = lazy(() => import("./components/productos/ProductosFiltrados"));
-const AgregarProducto = lazy(() => import("./components/cart/Agregar"));
 const Carrito = lazy(() => import("./public/carrito/Carrito"));
-const AutenticacionRequerida = lazy(() => import("./components/cart/Autenticacion"));
 
 const AcercaDe = lazy(() => import("./components/empresa/AcercaDe"));
 const PoliticaPrivacidad = lazy(() => import("./components/empresa/PoliticaPrivacidad"));
@@ -79,6 +74,10 @@ const App = () => {
     <Router>
       <Suspense fallback={<Skeleton />}>
         <Routes>
+
+          <Route element={<LayoutSimple/>}>
+            <Route path="/" element={<WelcomePage />} />
+          </Route>
           {/* Layout especial para productos públicos (catálogo sin autenticación) */}
           <Route element={<LayoutPublico />}>
             <Route path="/cuerpo" element={<CuerpoPrincipal />} />
@@ -87,15 +86,11 @@ const App = () => {
             <Route path="/producto/:id" element={<ProductoDetalle />} />
           </Route>
 
-          {/* Layout vacío para página de bienvenida */}
-          <Route element={<LayoutVacio />}>
-            <Route path="/" element={<WelcomePage />} />
-          </Route>
-
             {/* Layout vacío para autenticación (sin encabezado/pie general) */}
           <Route element={<LayoutVacio />}>
             <Route path="/login" element={<Login />} />
             <Route path="/registro" element={<Registro />} />
+            <Route path="/registro/e" element={<RegistroEmpleado />} />
             <Route path="/cerrar-sesion" element={<CerrarSesion />} />
             <Route path="/logout" element={<Logout />} />
             <Route path="/recuperarPassword" element={<RecuperarPassword />} />
@@ -117,22 +112,6 @@ const App = () => {
             <Route path="/preguntasFrecuentes" element={<PreguntasFrecuentesAll />} />
           </Route>
 
-
-          {/* Layout general para el resto del sitio */}
-          <Route element={<Layout />}>
-
-            {/* Productos */}
-            <Route path="/productos" element={<AllProductos />} />
-            <Route path="/producto/:id" element={<DetalleProducto />} />
-            <Route path="/buscar" element={<BuscarProductos />} />
-            <Route path="/productos/filtrados" element={<ProductosFiltrados />} />
-            <Route path="/productos/agregar" element={<ProteccionRutas element={AgregarProducto} allowedRoles={["usuario"]} />} />
-            <Route path="/productos/Carrito" element={<ProteccionRutas element={Carrito} allowedRoles={["usuario"]} />} />
-            <Route path="/autenticacion-requerida" element={<AutenticacionRequerida />} />
-            <Route path="/checkout/pago" element={<ProteccionRutas element={Pago} allowedRoles={["usuario"]} />}/>
-            <Route path="/productos/agregar"element={<ProteccionRutas element={ProductosA} allowedRoles={["usuario"]} />}/>
-
-          </Route>
           <Route element = {<LayoutAdmin/>}>
             <Route path="/admin/opiniones" element={<ProteccionRutas element={OpinionesPublico} allowedRoles={["administrador"]} />} />
             <Route path="/admin/dashboard" element={<ProteccionRutas element={DashboardAdmin} allowedRoles={["administrador"]} />} />
@@ -154,9 +133,7 @@ const App = () => {
             <Route path="/usuario/perfil" element={<ProteccionRutas element={PerfilUsuario} allowedRoles={["usuario"]} />}/>
             <Route path="/usuario/pedidos" element={<ProteccionRutas element={Pedidos} allowedRoles={["usuario"]} />}/>            
             <Route path="/usuario/actualizarPerfil" element={<ProteccionRutas element={ActualizarPerfilUsuario} allowedRoles={["usuario"]} />}/>
-            <Route path="/checkout/pago"element={<ProteccionRutas element={Pago} allowedRoles={["usuario"]} />}/>
             <Route path="/productos/agregar" element={<ProteccionRutas element={ProductosA} allowedRoles={["usuario"]} />} />
-
           </Route>  
           {ErrorRoutes}
 

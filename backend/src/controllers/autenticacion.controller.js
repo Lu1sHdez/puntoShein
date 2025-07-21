@@ -4,106 +4,153 @@ import { crearTokenAcceso, crearTokenRecuperacion } from '../libs/crearTokenAcce
 import nodemailer from 'nodemailer';
 import jwt from 'jsonwebtoken';
 import logger from '../libs/logger.js'; 
-import { body, validationResult } from 'express-validator';
 import twilio from 'twilio';
 import axios from 'axios';
 import obtenerFechaHora from '../utils/funciones.js';
 
-export const registro = async (req, res) => {
+export const validarDatosPrevios = async (req, res) => {
   try {
-    // Validación de campos usando express-validator
-    await body('correo')
-      .isEmail().withMessage('El correo no tiene un formato válido.')
-      .normalizeEmail()
-      .run(req);
+    const { correo, nombre, apellido_paterno, apellido_materno, telefono } = req.body;
 
-    await body('telefono')
-      .isLength({ min: 10, max: 10 }).withMessage('El teléfono debe tener exactamente 10 dígitos.')
-      .isNumeric().withMessage('El teléfono debe ser numérico.')
-      .run(req);
+    const errores = {};
 
-    await body('nombre_usuario')
-      .matches(/^[A-Za-z\d]{5,20}$/).withMessage('El nombre de usuario debe tener entre 5 y 20 caracteres alfanuméricos.')
-      .run(req);
-
-    await body('nombre')
-      .isAlpha().withMessage('El nombre debe contener solo letras.')
-      .isLength({ min: 3 }).withMessage('El nombre debe tener al menos 3 caracteres.')
-      .run(req);
-
-    await body('apellido_paterno')
-      .isAlpha().withMessage('El apellido paterno debe contener solo letras.')
-      .isLength({ min: 3 }).withMessage('El apellido paterno debe tener al menos 3 caracteres.')
-      .run(req);
-
-    // Verifica si hay errores de validación
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errores: errors.array() });
+    if (!correo || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) {
+      errores.correo = "El correo no tiene un formato válido.";
     }
 
-    const { correo, password, nombre_usuario, nombre, apellido_materno, apellido_paterno, telefono, rol } = req.body;
+    if (!nombre || !nombre.trim()) {
+      errores.nombre = "El nombre es obligatorio.";
+    } else if (nombre.trim().length < 3) {
+      errores.nombre = "El nombre debe tener al menos 3 letras.";
+    }
 
-    // Verificar si el correo ya está registrado
+    if (!apellido_paterno || !apellido_paterno.trim()) {
+      errores.apellido_paterno = "El apellido paterno es obligatorio.";
+    } else if (apellido_paterno.trim().length < 3) {
+      errores.apellido_paterno = "El apellido paterno debe tener al menos 3 letras.";
+    }
+
+    if (!apellido_materno || !apellido_materno.trim()) {
+      errores.apellido_materno = "El apellido materno es obligatorio.";
+    } else if (apellido_materno.trim().length < 3) {
+      errores.apellido_materno = "El apellido materno debe tener al menos 3 letras.";
+    }
+
+    if (!telefono || telefono.length !== 10 || !/^\d+$/.test(telefono)) {
+      errores.telefono = "El teléfono debe tener 10 dígitos numéricos.";
+    }
+
+    // Verificar existencia
     const correoExistente = await Usuario.findOne({ where: { correo } });
     if (correoExistente) {
-      logger.warn({
-        message: "Correo ya registrado",
-        codigo_error: "400",
-        ip_cliente: req.ip,
-        usuario: correo,
-      });
-      return res.status(400).json({ mensaje: "Intenta con otro correo" });
+      errores.correo = "Intenta con otro correo.";
     }
 
-    // Verificar si el teléfono ya está registrado
     const telefonoExistente = await Usuario.findOne({ where: { telefono } });
     if (telefonoExistente) {
-      logger.warn({
-        message: "Teléfono ya registrado",
-        codigo_error: "400",
-        ip_cliente: req.ip,
-        telefono,
-      });
-      return res.status(400).json({ mensaje: "Intenta con otro telefono" });
+      errores.telefono = "Intenta con otro teléfono.";
     }
 
-    // Verificar si el nombre de usuario ya está registrado
-    const usuarioExistente = await Usuario.findOne({ where: { nombre_usuario } });
-    if (usuarioExistente) {
-      logger.warn({
-        message: "Nombre de usuario ya existe",
-        codigo_error: "400",
-        ip_cliente: req.ip,
-        usuario: nombre_usuario,
-      });
-      return res.status(400).json({ mensaje: "Intenta con otro nombre de usuario" });
+    if (Object.keys(errores).length > 0) {
+      return res.status(400).json({ errores });
     }
 
-    // Hashear la contraseña con bcrypt
-    const contraseñaHasheada = await bcrypt.hash(password, 10);
+    return res.status(200).json({ success: true, mensaje: "Validación exitosa" });
 
-    // Crear usuario
+  } catch (error) {
+    logger.error({
+      message: error.message,
+      level: 'error',
+      codigo_error: error.code || '500',
+      stack: error.stack,
+      ip_cliente: req.ip,
+    });
+    return res.status(500).json({
+      success: false,
+      mensaje: "Error interno del servidor.",
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+};
+
+export const registro = async (req, res) => {
+  try {
+    const { correo, password, nombre, apellido_paterno, apellido_materno, telefono, rol } = req.body;
+
+    const errores = {};
+
+    // Validaciones manuales (igual que en registroEmpleado)
+
+    if (!correo || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) {
+      errores.correo = "El correo no tiene un formato válido.";
+    }
+
+    if (!password) {
+      errores.password = "La contraseña es obligatoria.";
+    } else {
+      const esSegura = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/.test(password);
+      if (!esSegura) {
+        errores.password =
+          "La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial.";
+      }
+    }
+
+    if (!nombre || !nombre.trim()) {
+      errores.nombre = "El nombre es obligatorio.";
+    } else if (nombre.trim().length < 3) {
+      errores.nombre = "El nombre debe tener al menos 3 letras.";
+    }
+
+    if (!apellido_paterno || !apellido_paterno.trim()) {
+      errores.apellido_paterno = "El apellido paterno es obligatorio.";
+    } else if (apellido_paterno.trim().length < 3) {
+      errores.apellido_paterno = "El apellido paterno debe tener al menos 3 letras.";
+    }
+
+    if (!apellido_materno || !apellido_materno.trim()) {
+      errores.apellido_materno = "El apellido materno es obligatorio.";
+    } else if (apellido_materno.trim().length < 3) {
+      errores.apellido_materno = "El apellido materno debe tener al menos 3 letras.";
+    }
+
+    if (!telefono || telefono.length !== 10 || !/^\d+$/.test(telefono)) {
+      errores.telefono = "El teléfono debe tener 10 dígitos numéricos.";
+    }
+
+    if (Object.keys(errores).length > 0) {
+      return res.status(400).json({ errores });
+    }
+
+    // Verificar si ya existe usuario con ese correo o teléfono
+    const correoExistente = await Usuario.findOne({ where: { correo } });
+    if (correoExistente) {
+      return res.status(400).json({ errores: { correo: "Intenta con otro correo." } });
+    }
+
+    const telefonoExistente = await Usuario.findOne({ where: { telefono } });
+    if (telefonoExistente) {
+      return res.status(400).json({ errores: { telefono: "Intenta con otro teléfono." } });
+    }
+
+    // Generar nombre de usuario automático
+    let nombre_usuario = correo.split("@")[0] + Math.floor(Math.random() * 10000);
+    while (await Usuario.findOne({ where: { nombre_usuario } })) {
+      nombre_usuario = correo.split("@")[0] + Math.floor(Math.random() * 10000);
+    }
+
+    const hash = await bcrypt.hash(password, 10);
+
     const nuevoUsuario = await Usuario.create({
       nombre_usuario,
       nombre,
       apellido_paterno,
       apellido_materno,
       correo,
+      password: hash,
       telefono,
-      password: contraseñaHasheada,
       rol: rol || 'usuario',
     });
 
-    // Log del registro exitoso
-    logger.info({
-      message: "Usuario registrado exitosamente",
-      usuario_id: nuevoUsuario.id,
-      correo: nuevoUsuario.correo,
-      ip_cliente: req.ip,
-    });
-
-    // Respuesta única con toda la información
     return res.status(201).json({
       success: true,
       mensaje: "Usuario registrado exitosamente.",
@@ -116,7 +163,7 @@ export const registro = async (req, res) => {
         correo: nuevoUsuario.correo,
         telefono: nuevoUsuario.telefono,
         rol: nuevoUsuario.rol,
-        createdAt: nuevoUsuario.createdAt
+        createdAt: nuevoUsuario.createdAt,
       }
     });
 
@@ -128,7 +175,7 @@ export const registro = async (req, res) => {
       stack: error.stack,
       ip_cliente: req.ip,
     });
-    return res.status(500).json({ 
+    return res.status(500).json({
       success: false,
       mensaje: "Error interno del servidor.",
       error: process.env.NODE_ENV === 'development' ? error.message : undefined
@@ -309,7 +356,11 @@ export const recuperarPassword = async (req, res) => {
         <p>Hola ${usuario.nombre},</p>
         <p>Hemos recibido una solicitud para restablecer tu contraseña.</p>
         <p>Haz clic en el siguiente enlace para continuar:</p>
-        <p><a href="${process.env.FRONTEND_URL}/restablecerPassword?token=${tokenRecuperacion}">Restablecer Contraseña</a></p>
+        <p>
+          <a href="${process.env.FRONTEND_URL}/restablecerPassword?token=${tokenRecuperacion}" style="background-color:#007BFF;color:white;padding:10px 20px;text-decoration:none;border-radius:5px;display:inline-block;">
+            Restablecer Contraseña
+          </a>
+        </p>
         <p>Si no solicitaste este cambio, ignora este mensaje.</p>
       `,
     };

@@ -4,8 +4,6 @@ import { API_URL } from "../../ApiConexion.js";
 import CargandoBarra from "../../Animations/CargandoBarra";
 import { useLocation, useNavigate} from "react-router-dom";
 import Filtros from "./filtros/Filtros";
-import { agregarAlCarrito } from "./carrito/agregar.js";
-import useSesionUsuario from "../../context/useSesionUsuario";
 import ModalAutenticacion from "../autenticacion/Autenticacion";
 import CargandoModal from "../../Animations/CargandoModal.js";
 import useBuscarProductos from "./buscar/buscar";
@@ -20,7 +18,6 @@ const Productos = () => {
   const [mostrarSidebar, setMostrarSidebar] = useState(false);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [cargandoCarrito, setCargandoCarrito] = useState(false);
-  const { usuarioAutenticado, id } = useSesionUsuario();
   const [sinResultados, setSinResultados] = useState(false);
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
@@ -35,21 +32,6 @@ const Productos = () => {
       .map(value => ({ value, sort: Math.random() }))
       .sort((a, b) => a.sort - b.sort)
       .map(({ value }) => value);
-  };
-
-  const handleAgregarCarrito = async (producto_id) => {
-    if (!usuarioAutenticado) {
-      setMostrarModal(true);
-      return;
-    }
-    setCargandoCarrito(true);
-    try {
-      await agregarAlCarrito({ producto_id, usuario_id: id });
-    } catch (error) {
-      alert("Error al agregar al carrito.");
-    }finally{
-      setCargandoCarrito(false);
-    }
   };
   
   const fetchProductos = async (tipo = "inicial") => {
@@ -144,7 +126,7 @@ const Productos = () => {
       >
         <div className="p-4 border-b flex justify-between items-center">
           <h3 className="text-lg font-semibold">Filtrar Productos</h3>
-          <button onClick={() => setMostrarSidebar(false)} className="btn-principal">✖</button>
+          <button onClick={() => setMostrarSidebar(false)} >✖</button>
         </div>
 
         <Filtros

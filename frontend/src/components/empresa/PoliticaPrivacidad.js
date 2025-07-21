@@ -35,7 +35,7 @@ const PoliticaPrivacidad = () => {
       <div className="mb-6">
         <Link
           to="/"
-          className="btn-atras"
+          className="btn-secundario"
         >
           ← Volver al inicio
         </Link>

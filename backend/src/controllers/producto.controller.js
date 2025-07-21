@@ -187,7 +187,7 @@ export const obtenerProducto_Id = async (req, res) => {
   }
 };
 
-
+//USADA PARA EL PANEL PRINCIPAL DE PRODUCTOS EN LA PARTE DE FILTROS
 export const filtrarProductos = async (req, res) => {
   try {
     const { categoria_id, subcategoria_id } = req.query;
@@ -228,6 +228,51 @@ export const filtrarProductos = async (req, res) => {
   }
 };
 
+export const obtenerProductos = async (req, res) => {
+  try {
+    const productos = await Producto.findAll({
+      include: [
+        {
+          model: Subcategoria,
+          as: "subcategoria",
+          include: {
+            model: Categoria,
+            as: "categoria",  // Incluir la categoría asociada a la subcategoría
+          },
+        },
+        {
+          model: Talla,
+          as: "tallas",
+          through: {
+            attributes: ['stock'],  // Incluir solo el stock asociado a la talla
+          },
+        },
+      ],
+    });
+
+    // Modificamos la estructura de la respuesta para incluir la categoría y subcategoría correctamente
+    const productosConDetalles = productos.map(producto => {
+      const productoJSON = producto.toJSON();
+      productoJSON.tallas = productoJSON.tallas.map(talla => ({
+        id: talla.id,
+        nombre: talla.nombre,
+        stock: talla.ProductoTalla.stock,  // Aquí accedemos directamente al stock
+      }));
+
+      // Agregar los datos de la categoría y subcategoría
+      productoJSON.subcategoria = productoJSON.subcategoria || {};
+      productoJSON.subcategoria.categoria = productoJSON.subcategoria.categoria || {};
+
+      return productoJSON;
+    });
+
+    res.json(productosConDetalles); // Devolver los productos con subcategoría y categoría
+  } catch (error) {
+    console.error('Error al obtener los productos:', error);
+    res.status(500).json({ mensaje: 'Error al obtener los productos.' });
+  }
+};
+
 export const obtenerProductosPorSubcategoria = async (req, res) => {
   try {
     const { subcategoria_id } = req.query;
@@ -264,6 +309,11 @@ export const obtenerProductosPorSubcategoria = async (req, res) => {
   }
 };
 
+
+
+
+
+
 export const eliminarProducto = async (req, res) => {
   try {
     const { id } = req.params; // Obtener el ID del producto a eliminar
@@ -290,7 +340,6 @@ export const eliminarProducto = async (req, res) => {
     res.status(500).json({ mensaje: 'Error al eliminar el producto' });
   }
 };
-
 
 export const obtenerDetalleProductoPorTalla = async (req, res) => {
   try {
@@ -420,50 +469,6 @@ export const notificaciones = async (req, res) => {
   }
 };
 
-export const obtenerProductos = async (req, res) => {
-  try {
-    const productos = await Producto.findAll({
-      include: [
-        {
-          model: Subcategoria,
-          as: "subcategoria",
-          include: {
-            model: Categoria,
-            as: "categoria",  // Incluir la categoría asociada a la subcategoría
-          },
-        },
-        {
-          model: Talla,
-          as: "tallas",
-          through: {
-            attributes: ['stock'],  // Incluir solo el stock asociado a la talla
-          },
-        },
-      ],
-    });
-
-    // Modificamos la estructura de la respuesta para incluir la categoría y subcategoría correctamente
-    const productosConDetalles = productos.map(producto => {
-      const productoJSON = producto.toJSON();
-      productoJSON.tallas = productoJSON.tallas.map(talla => ({
-        id: talla.id,
-        nombre: talla.nombre,
-        stock: talla.ProductoTalla.stock,  // Aquí accedemos directamente al stock
-      }));
-
-      // Agregar los datos de la categoría y subcategoría
-      productoJSON.subcategoria = productoJSON.subcategoria || {};
-      productoJSON.subcategoria.categoria = productoJSON.subcategoria.categoria || {};
-
-      return productoJSON;
-    });
-
-    res.json(productosConDetalles); // Devolver los productos con subcategoría y categoría
-  } catch (error) {
-    console.error('Error al obtener los productos:', error);
-    res.status(500).json({ mensaje: 'Error al obtener los productos.' });
-  }
-};
 
 export const crearProducto = async (req, res) => {
   const { nombre, descripcion, color, precio, imagen, subcategoria_id, tallas = [] } = req.body;

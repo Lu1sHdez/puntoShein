@@ -1,11 +1,9 @@
-// src/components/encabezado/EncabezadoSimple.js
-import React,{useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { API_URL } from "../../../ApiConexion";
-  
-const EncabezadoSimple = () => {
 
+const EncabezadoSimple = () => {
   const [empresa, setEmpresa] = useState(null);
 
   useEffect(() => {
@@ -15,7 +13,6 @@ const EncabezadoSimple = () => {
           withCredentials: true,
         });
         setEmpresa(empresaRes.data);
-
       } catch (error) {
         console.error("Error al cargar datos:", error);
       }
@@ -24,22 +21,23 @@ const EncabezadoSimple = () => {
     obtenerDatos();
   }, []);
 
-
   return (
-    <header className="bg-white shadow px-6 py-4 fixed top-0 w-full z-50">
-      <div className="flex justify-center sm:justify-start">
-       {/* Empresa */}
-        <Link to = "/"
-          className="flex items-center space-x-4">
-          {empresa && (
+    <header className="bg-gray-50 shadow px-6 py-4 fixed top-0 w-full z-50">
+      <div className="max-w-7xl mx-auto flex justify-center sm:justify-start items-center">
+        <Link to="/" className="flex items-center gap-4">
+          {empresa ? (
             <>
               <img
                 src={empresa.logo}
                 alt="Logo de empresa"
-                className="h-14 w-14 rounded-full object-cover shadow-md border border-gray-300"
+                className="h-12 w-12 sm:h-14 sm:w-14 rounded-full object-cover border border-gray-300 shadow"
               />
-              <h1 className="text-3xl font-bold text-black uppercase">{empresa.nombre}</h1>
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 uppercase">
+                {empresa.nombre}
+              </h1>
             </>
+          ) : (
+            <h1 className="text-xl font-semibold text-gray-500">Cargando...</h1>
           )}
         </Link>
       </div>

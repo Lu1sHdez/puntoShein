@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { API_URL } from "../../ApiConexion";
-import { FaCheck, FaTimes } from "react-icons/fa";
+import { FaCheckCircle, FaTimesCircle } from "react-icons/fa";
 
 const OpinionesAdmin = () => {
   const [opiniones, setOpiniones] = useState([]);
@@ -12,7 +12,9 @@ const OpinionesAdmin = () => {
   const obtenerOpiniones = async () => {
     try {
       setCargando(true);
-      const res = await axios.get(`${API_URL}/api/opinion/todas`, { withCredentials: true });
+      const res = await axios.get(`${API_URL}/api/opinion/todas`, {
+        withCredentials: true,
+      });
       setOpiniones(res.data);
     } catch (error) {
       console.error(error);
@@ -35,7 +37,11 @@ const OpinionesAdmin = () => {
     if (!confirmar.isConfirmed) return;
 
     try {
-      await axios.put(`${API_URL}/api/opinion/actualizar/${id}`, { estado }, { withCredentials: true });
+      await axios.put(
+        `${API_URL}/api/opinion/actualizar/${id}`,
+        { estado },
+        { withCredentials: true }
+      );
       Swal.fire("Éxito", `Opinión ${estado} correctamente.`, "success");
       obtenerOpiniones();
     } catch (error) {
@@ -49,7 +55,9 @@ const OpinionesAdmin = () => {
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
-      <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">Gestión de Opiniones</h2>
+      <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">
+        Gestión de Opiniones
+      </h2>
 
       {cargando ? (
         <p className="text-center text-gray-600">Cargando opiniones...</p>
@@ -58,45 +66,56 @@ const OpinionesAdmin = () => {
       ) : opiniones.length === 0 ? (
         <p className="text-center text-gray-500">No hay opiniones registradas.</p>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="min-w-full bg-white border border-gray-200 shadow rounded-lg overflow-hidden">
-            <thead className="bg-gray-100 text-gray-700 text-sm">
+        <div className="overflow-x-auto rounded-lg shadow">
+          <table className="min-w-full bg-white text-sm text-gray-800">
+            <thead className="bg-gray-100 text-left">
               <tr>
-                <th className="px-4 py-3 text-left border">Correo</th>
-                <th className="px-4 py-3 text-left border">Nombre</th>
-                <th className="px-4 py-3 text-left border">Mensaje</th>
-                <th className="px-4 py-3 text-center border">Estado</th>
-                <th className="px-4 py-3 text-center border">Acciones</th>
+                <th className="px-4 py-3 border">Correo</th>
+                <th className="px-4 py-3 border">Nombre</th>
+                <th className="px-4 py-3 border">Mensaje</th>
+                <th className="px-4 py-3 border text-center">Estado</th>
+                <th className="px-4 py-3 border text-center">Acciones</th>
               </tr>
             </thead>
-            <tbody className="text-gray-800 text-sm">
+            <tbody>
               {opiniones.map((op, index) => (
-                <tr key={op.id} className={`border-t ${index % 2 === 0 ? "bg-white" : "bg-gray-50"}`}>
-                  <td className="px-4 py-2 border break-words">{op.correo}</td>
-                  <td className="px-4 py-2 border break-words">{op.nombre}</td>
-                  <td className="px-4 py-2 border break-words">{op.mensaje}</td>
-                  <td className="px-4 py-2 border text-center capitalize font-medium">
-                    <span className={`px-2 py-1 rounded text-white text-xs ${op.estado === "aprobada" ? "bg-green-500" : op.estado === "rechazada" ? "bg-red-500" : "bg-gray-400"}`}>
+                <tr
+                  key={op.id}
+                  className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
+                >
+                  <td className="px-4 py-3 border break-words">{op.correo}</td>
+                  <td className="px-4 py-3 border break-words">{op.nombre}</td>
+                  <td className="px-4 py-3 border break-words">{op.mensaje}</td>
+                  <td className="px-4 py-3 border text-center">
+                    <span
+                      className={`inline-block px-3 py-1 text-xs font-semibold rounded-full text-white ${
+                        op.estado === "aprobada"
+                          ? "bg-green-500"
+                          : op.estado === "rechazada"
+                          ? "bg-red-500"
+                          : "bg-gray-400"
+                      }`}
+                    >
                       {op.estado}
                     </span>
                   </td>
-                  <td className="px-4 py-2 border text-center space-x-2">
+                  <td className="px-4 py-3 border text-center space-x-2">
                     {op.estado !== "aprobada" && (
                       <button
                         onClick={() => actualizarEstado(op.id, "aprobada")}
-                        className="p-2 bg-green-500 hover:bg-green-600 text-white rounded-full transition"
-                        title="Aprobar opinión"
+                        className="inline-flex items-center gap-1 px-3 py-1 text-white bg-green-500 hover:bg-green-600 rounded-full text-xs font-medium transition"
                       >
-                        <FaCheck />
+                        <FaCheckCircle />
+                        Aprobar
                       </button>
                     )}
                     {op.estado !== "rechazada" && (
                       <button
                         onClick={() => actualizarEstado(op.id, "rechazada")}
-                        className="p-2 bg-red-500 hover:bg-red-600 text-white rounded-full transition"
-                        title="Rechazar opinión"
+                        className="inline-flex items-center gap-1 px-3 py-1 text-white bg-red-500 hover:bg-red-600 rounded-full text-xs font-medium transition"
                       >
-                        <FaTimes />
+                        <FaTimesCircle />
+                        Rechazar
                       </button>
                     )}
                   </td>

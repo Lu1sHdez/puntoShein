@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 // Importar todos los modelos antes de sincronizar
-import '../models/opinion.model.js';
+import '../models/usuario.model.js';
 /* import '../models/usuario.model.js';
 import '../models/producto.model.js';
 import '../models/subcategoria.model.js'; */

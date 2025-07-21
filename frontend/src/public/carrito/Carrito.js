@@ -249,7 +249,7 @@ const Carrito = () => {
             </div>
             <button
               onClick={() => navigate("/checkout/pago")}
-              className="boton-principal mt-6 w-full"
+              className="btn-principal mt-6 w-full"
             >
               Continuar compra
             </button>

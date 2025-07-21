@@ -19,7 +19,6 @@ const EncabezadoPublico = () => {
   const [termino, setTermino] = useState("");
   const location = useLocation();
 
-
   const generarIniciales = (nombre) => {
     if (!nombre) return "";
     const palabras = nombre.trim().split(" ");
@@ -128,7 +127,7 @@ const EncabezadoPublico = () => {
           }}
           className="link-subrayado flex items-center gap-2 text-black hover:text-black-700 transition font-medium"
         >
-          <FaShoppingCart className="text-2xl" />
+          <FaShoppingCart className="text-2xl link-subrayado" />
           <span className="text-sm">Carrito</span>
         </button>
 
@@ -168,13 +167,13 @@ const EncabezadoPublico = () => {
             <div className="flex gap-3">
               <button
                 onClick={() => navigate("/login")}
-                className="btn-login"
+                className="link-subrayado"
               >
                 Iniciar sesión
               </button>
               <button
                 onClick={() => navigate("/registro")}
-                className="btn-registro"
+                className="link-subrayado"
               >
                 Regístrate
               </button>

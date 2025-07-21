@@ -65,7 +65,7 @@ const Terminos = () => {
       
       {/* Botón de regreso */}
       <div className="mt-6">
-        <Link to="/" className="btn-atras">
+        <Link to="/" className="btn-secundario">
           Volver a Inicio
         </Link>
       </div>

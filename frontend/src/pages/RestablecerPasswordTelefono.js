@@ -112,14 +112,14 @@ const RestablecerPasswordTelefono = () => {
             <Boton
               texto="Actualizar Contraseña"
               type="submit"
-              estiloPersonalizado="w-full bg-pink-600 text-white py-2 rounded-lg hover:bg-pink-700 transition"
+              estiloPersonalizado="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
               disabled={loading}
             />
 
             <Boton
               texto="Volver al inicio de sesión"
               onClick={() => navigate("/login")}
-              estiloPersonalizado="w-full text-pink-600 mt-2 hover:underline"
+              estiloPersonalizado="w-full text-blue-600 mt-2 hover:underline"
             />
           </form>
         </motion.div>
