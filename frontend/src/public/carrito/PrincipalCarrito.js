@@ -1,6 +1,4 @@
-// src/public/carrito/PrincipalCarrito.js
-
-import React from "react";
+import React, { useState } from "react";
 import Carrito from "./components/Carrito";
 
 const PrincipalCarrito = () => {

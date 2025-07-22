@@ -1,28 +1,49 @@
-// src/public/carrito/agregar.js
 import axios from "axios";
 import { API_URL } from "../../../ApiConexion";
-export const agregarAlCarrito = async ({ producto_id, usuario_id, cantidad = 1,talla_id }) => {
+
+/**
+ * Lógica completa para validar y agregar producto al carrito.
+ * Devuelve { ok, error, requiresLogin }
+ */
+export const procesarAgregarAlCarrito = async ({
+  usuario_id,
+  producto_id,
+  talla_id,
+  cantidad = 1,
+  token,
+}) => {
+  // Validación de sesión
+  if (!usuario_id || !token) {
+    return { ok: false, requiresLogin: true };
+  }
+
+  // Validación de talla seleccionada
+  if (!talla_id) {
+    return { ok: false, error: "Debes seleccionar una talla antes de continuar." };
+  }
+
   try {
-    const response = await axios.post(
+    const res = await axios.post(
       `${API_URL}/api/carrito/agregar`,
       {
-        producto_id,
         usuario_id,
-        cantidad,
+        producto_id,
         talla_id,
+        cantidad,
       },
       {
         withCredentials: true,
         headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${token}`,
         },
       }
     );
 
-    return response.data;
+    return { ok: true, data: res.data };
   } catch (error) {
-    console.error("Error al agregar al carrito:", error);
-    throw error;
+    return {
+      ok: false,
+      error: error.response?.data?.message || "Error al agregar al carrito",
+    };
   }
 };

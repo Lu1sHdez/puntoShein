@@ -1,18 +1,24 @@
-// src/public/carrito/carritoService.js
 import axios from "axios";
 import { API_URL } from "../../../ApiConexion";
-export const obtenerCarritoUsuario = async (usuario_id) => {
-  try {
-    const response = await axios.get(`${API_URL}/api/carrito/${usuario_id}`, {
+
+export const obtenerCarritoUsuario = async (usuarioId) => {
+  const res = await axios.get(`${API_URL}/api/carrito/${usuarioId}`, {
+    withCredentials: true,
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
+  return res.data;
+};
+
+export const vaciarCarritoUsuario = async (usuarioId) => {
+    const res = await axios.delete(`${API_URL}/api/carrito/vaciar`, {
+      data: { usuario_id: usuarioId },
       withCredentials: true,
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     });
-
-    return response.data;
-  } catch (error) {
-    console.error("Error al obtener el carrito:", error);
-    throw error;
-  }
-};
+  
+    return res.data;
+  };

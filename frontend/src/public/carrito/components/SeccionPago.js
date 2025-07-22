@@ -1,41 +1,33 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
-const SeccionPago = ({ total = 0, totalProductos = 0 }) => {
-  const navigate = useNavigate();
-
-  const handleContinuarPago = () => navigate("/checkout");
-
+const SeccionPago = ({ totalCantidad, totalPrecio }) => {
   return (
-    <div className="bg-white shadow-xl rounded-2xl p-6 w-full max-w-md mx-auto lg:mx-0">
-      <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">Resumen de compra</h2>
+    <div className="bg-white p-6 shadow rounded-lg">
+      <h2 className="text-lg font-bold text-gray-800 mb-4">Resumen de compra</h2>
 
-      <div className="space-y-4 mb-6">
-        <div className="flex justify-between text-gray-700">
-          <span className="font-medium">Productos</span>
-          <span className="font-semibold">{totalProductos}</span>
-        </div>
-
-        <div className="flex justify-between text-gray-700">
-          <span className="font-medium">Total</span>
-          <span className="text-xl font-bold text-green-500">${total.toFixed(2)}</span>
-        </div>
+      <div className="space-y-3 text-sm text-gray-700">
+        <p><strong>Total productos:</strong> {totalCantidad}</p>
+        <p><strong>Total a pagar:</strong> ${totalPrecio.toFixed(2)}</p>
+        <p><strong>Envío:</strong> Gratis</p>
+        <p><strong>Pago:</strong> Al finalizar compra</p>
+        <p><strong>Garantía:</strong> 30 días</p>
       </div>
 
-      <div className="flex flex-col gap-3">
-        <button
-          onClick={handleContinuarPago}
-          className="w-full py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg transition-colors shadow-md"
+      <div className="mt-6 flex flex-col gap-3">
+        <Link
+          to="/checkout"
+          className="bg-blue-600 text-white text-center py-2 rounded hover:bg-blue-700 transition"
         >
-          Continuar con el pago
-        </button>
+          Proceder al pago
+        </Link>
 
-        <button
-          onClick={() => navigate("/cuerpo")}
-          className="w-full py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-lg transition-colors shadow-md"
+        <Link
+          to="/cuerpo"
+          className="text-center text-blue-600 text-sm hover:underline"
         >
-          Seguir comprando
-        </button>
+          ← Seguir comprando
+        </Link>
       </div>
     </div>
   );
