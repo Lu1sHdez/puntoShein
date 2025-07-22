@@ -59,6 +59,7 @@ const RestablecerTelefono = lazy(() => import("./pages/RestablecerPasswordTelefo
 const OpcionRecuperarPassword = lazy(() => import("./pages/OpcionRecuperarPassword"));
 const RestablecerPassword = lazy(() => import("./pages/RestablecerPassword"));
 const Carrito = lazy(() => import("./public/carrito/PrincipalCarrito.js"));
+const Pago = lazy(() => import("./public/pagos/pago.js"));
 
 const AcercaDe = lazy(() => import("./components/empresa/AcercaDe"));
 const PoliticaPrivacidad = lazy(() => import("./components/empresa/PoliticaPrivacidad"));
@@ -99,6 +100,10 @@ const App = () => {
             <Route path="/restablecerPasswordTelefono" element={<RestablecerTelefono />} />
             <Route path="/opcionRestablecimiento" element={<OpcionRecuperarPassword />} />
             <Route path="/restablecerPassword" element={<RestablecerPassword />} />
+          </Route>
+
+          <Route element={<LayoutVacio />}>
+            <Route path="/usuario/pagos" element={<ProteccionRutas element={Pago} allowedRoles={["usuario"]} />}/>
           </Route>
 
           <Route element={<LayoutGeneral />}>

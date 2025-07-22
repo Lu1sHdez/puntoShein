@@ -103,11 +103,12 @@ const Carrito = () => {
 
           <div className="mt-6 flex flex-col gap-3">
             <Link
-              to="/checkout"
-              className="bg-blue-600 text-white text-center py-2 rounded hover:bg-blue-700 transition"
-            >
-              Proceder al pago
+                to="/usuario/pagos"
+                className="bg-blue-600 text-white text-center py-2 rounded hover:bg-blue-700 transition"
+                >
+                Proceder al pago
             </Link>
+
 
             <Link
               to="/cuerpo"
