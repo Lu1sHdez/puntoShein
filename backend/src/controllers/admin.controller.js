@@ -299,6 +299,19 @@ export const obtenerUsuarios = async (req, res) => {
     res.status(500).json({ mensaje: 'Error al obtener los usuarios.' });
   }
 };
+export const obtenerIdsUsuarios = async (req, res) => {
+  try {
+    const usuarios = await Usuario.findAll({
+      attributes: ['id'] // Solo selecciona la columna 'id'
+    });
+
+    res.json(usuarios);
+  } catch (error) {
+    console.error('Error al obtener los IDs de usuarios:', error);
+    res.status(500).json({ mensaje: 'Error al obtener los IDs de usuarios.' });
+  }
+};
+
 // Funcion para obtener solo empleados
 export const obtenerEmpleados = async (req, res) => {
   try {

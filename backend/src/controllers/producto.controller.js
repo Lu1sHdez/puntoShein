@@ -1,7 +1,7 @@
 import Producto from "../models/producto.model.js";
 import Categoria from "../models/categoria.model.js"; //  Importar Categoria
 import Subcategoria from "../models/subcategoria.model.js"; // 
-import {Sequelize } from "sequelize";
+import {Sequelize, Op } from "sequelize";
 import ProductoTalla from '../models/productoTalla.model.js';
 import Talla from "../models/tallas.model.js";
 import Venta from "../models/ventas.model.js";
@@ -272,6 +272,63 @@ export const obtenerProductos = async (req, res) => {
     res.status(500).json({ mensaje: 'Error al obtener los productos.' });
   }
 };
+export const buscarProductoPorNombre = async (req, res) => {
+  try {
+    const { nombre } = req.params;
+
+    const producto = await Producto.findOne({
+      where: {
+        nombre: {
+          [Op.iLike]: `%${nombre}%`, // Búsqueda parcial, insensible a mayúsculas
+        }
+      },
+      include: [
+        {
+          model: Subcategoria,
+          as: "subcategoria",
+          include: {
+            model: Categoria,
+            as: "categoria",
+          },
+        },
+        {
+          model: Talla,
+          as: "tallas",
+          through: {
+            attributes: ['stock'],
+          },
+        },
+      ],
+    });
+
+    if (!producto) {
+      return res.status(404).json({ mensaje: "Producto no encontrado" });
+    }
+
+    let tieneStock = false;
+
+    producto.tallas.forEach(talla => {
+      const stock = talla.ProductoTalla?.stock || 0;
+      if (stock > 0) {
+        talla.setDataValue('stockStatus', 'Disponible');
+        talla.setDataValue('stock', stock);
+        tieneStock = true;
+      } else {
+        talla.setDataValue('stockStatus', 'Sin stock');
+        talla.setDataValue('stock', stock);
+      }
+    });
+
+    if (!tieneStock) {
+      return res.status(404).json({ mensaje: "Este producto no tiene tallas disponibles." });
+    }
+
+    res.json(producto);
+  } catch (error) {
+    console.error("Error al buscar producto por nombre:", error);
+    res.status(500).json({ mensaje: "Error interno del servidor" });
+  }
+};
 
 export const obtenerProductosPorSubcategoria = async (req, res) => {
   try {
@@ -308,10 +365,6 @@ export const obtenerProductosPorSubcategoria = async (req, res) => {
     res.status(500).json({ mensaje: "Error al obtener productos por subcategoría." });
   }
 };
-
-
-
-
 
 
 export const eliminarProducto = async (req, res) => {
