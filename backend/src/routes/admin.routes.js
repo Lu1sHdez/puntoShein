@@ -14,7 +14,7 @@ import {
   restablecerPasswordAdmin,
   cambiarPasswordAdmin,
   validarCodigoAdmin,
-  enviarInvitacionEmpleado
+  enviarInvitacionEmpleado, obtenerIdsUsuarios
 } from '../controllers/admin.controller.js';
 import { actualizarPerfil } from '../controllers/usuario.controller.js';
 import { obtenerPerfil } from '../controllers/autenticacion.controller.js';
@@ -31,7 +31,10 @@ const router = express.Router();
 const admin = validarRol(['administrador']);
 
 // Rutas para usuarios
-router.get('/usuarios', verificarToken, admin, obtenerUsuarios);
+//router.get('/usuarios', verificarToken, admin, obtenerUsuarios);
+router.get('/usuarios', obtenerUsuarios);
+router.get('/usuariosID', obtenerIdsUsuarios);
+
 router.get('/empleados', verificarToken, admin, obtenerEmpleados);
 router.get('/solo-usuarios', verificarToken, admin, obtenerSoloUsuarios);
 router.get('/admins', verificarToken, admin, obtenerAdmins);

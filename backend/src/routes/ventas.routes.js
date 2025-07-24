@@ -13,7 +13,7 @@ const router = express.Router();
 const admin = validarRol(['administrador']);
 
 // Rutas de ventas reales
-router.get('/ventaSemanal/:producto_id', verificarToken, admin, obtenerVentasSemanales);
+router.get('/ventaSemanal/:producto_id', /* verificarToken, admin, */ obtenerVentasSemanales);
 router.get('/ventasPorDia/:producto_id', verificarToken, admin, obtenerVentasPorDia);
 router.get('/ventasPorMes/:producto_id', verificarToken, admin, obtenerVentasPorMes);
 
