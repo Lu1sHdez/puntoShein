@@ -1,31 +1,34 @@
-import { DataTypes } from "sequelize";
-import { sequelize } from "../database/database.js";
+import { DataTypes } from 'sequelize';
+import { sequelize } from '../database/database.js';
 
-const DocumentoLegal = sequelize.define("DocumentoLegal", {
-  id: {
-    type: DataTypes.INTEGER,
-    autoIncrement: true,
-    primaryKey: true,
-  },
+const DocumentoLegal = sequelize.define('DocumentoLegal', {
   tipo: {
     type: DataTypes.STRING,
-    allowNull: false, // Ejemplo: 'Política de Privacidad', 'Términos y Condiciones'
+    allowNull: false,
+    unique: true,  // Para asegurarse de que no haya documentos duplicados por tipo
   },
-  contenido: {
-    type: DataTypes.TEXT,
+  titulo: {
+    type: DataTypes.STRING,
     allowNull: false,
   },
-  empresa_id: {
-    type: DataTypes.INTEGER,
-    references: {
-      model: 'empresa',
-      key: 'id',
-    },
-    onDelete: 'CASCADE',
+  descripcion: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  contenido: {
+    type: DataTypes.JSONB,  // Usamos JSONB para almacenar contenido estructurado (títulos, subtítulos, viñetas, etc.)
+    allowNull: false,
+  },
+  fecha_creacion: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW,
+  },
+  fecha_actualizacion: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW,
   },
 }, {
-  tableName: "documentos_legales",
-  timestamps: false,
+  timestamps: false,  // Deshabilitar los timestamps automáticos si no los necesitas
 });
 
 export default DocumentoLegal;

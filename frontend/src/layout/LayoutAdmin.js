@@ -35,7 +35,7 @@ const LayoutAdmin = () => {
                              "/admin/productos/editar/:id",
                              "/admin/empresa/actualizar", "/admin/productos/crear", 
                              "/admin/productos/editar/:id", "/admin/inicio-rapido", 
-                             "/admin/preguntasFrecuentes", "/admin/opiniones"].includes(location.pathname);
+                             "/admin/preguntasFrecuentes", "/admin/opiniones", "/admin/documentos"].includes(location.pathname);
     
   return (
     <>

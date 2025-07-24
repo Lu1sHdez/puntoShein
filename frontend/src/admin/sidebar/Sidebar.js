@@ -5,6 +5,7 @@ import CerrarSesionModal from "../../modal/CerrarSesion";
 
 import {
   FaCog,
+  FaFileAlt,
   FaUsers,
   FaUser,
   FaBox,
@@ -29,6 +30,7 @@ const Sidebar = ({ admin }) => {
     { label: "Usuarios", icon: <FaUsers />, path: "/admin/usuarios" },
     { label: "Productos", icon: <FaBox />, path: "/admin/productos" },
     { label: "Empresa", icon: <FaBox />, path: "/admin/empresa" },
+    { label: "Documentos legales", icon: <FaFileAlt/>, path: "/admin/documentos" },
     { label: "Empleados", icon: <FaUserTie />, path: "/admin/empleados" },
     { label: "Preguntas", icon: <FaQuestionCircle />, path: "/admin/preguntasFrecuentes" },
     { label: "Análisis", icon: <FaChartLine />, path: "/admin/gestionProductos" },

@@ -11,6 +11,7 @@ import '../models/tallas.model.js';
 import '../models/carrito.model.js';
 import '../models/detalleOrden.model.js';
 import '../models/reglaAsociacion.model.js';
+import '../models/documentoLegal.model.js'
 
 /* import '../models/subcategoria.model.js'; 
 // Agrega aquí los demás modelos si tienes más */

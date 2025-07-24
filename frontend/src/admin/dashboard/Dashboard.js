@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, Routes, Route } from 'react-router-dom';  // Usamos Link para la navegación, y Routes y Route para las rutas
-import { FaCog, FaUsers, FaBox, FaUserTie, FaQuestionCircle, FaChartLine, FaCommentDots} from 'react-icons/fa';  // Iconos para las tarjetas
+import { FaCog, FaUsers, FaBox, FaUserTie,FaFileAlt, FaQuestionCircle, FaChartLine, FaCommentDots} from 'react-icons/fa';  // Iconos para las tarjetas
 import { BsPersonLinesFill } from 'react-icons/bs';  // Icono para el perfil
 
 // Importar los componentes necesarios para las rutas
@@ -125,6 +125,15 @@ const Dashboard = () => {
                     <h2 className="text-xl font-semibold">Opiniones</h2>
                     <p className="text-gray-500 mt-2">Aprueba o rechaza opiniones del público.</p>
                 </Link>
+                <Link
+                    to="/admin/documentos"
+                    className="bg-white p-4 sm:p-5 md:p-6 rounded-lg shadow-md hover:shadow-xl transition duration-300 transform hover:scale-105 max-w-sm w-full mx-auto"
+                    >
+                    <FaFileAlt className="text-4xl text-gray-700 mb-4" /> {/* Icono de documentos */}
+                    <h2 className="text-xl font-semibold">Documentos Legales</h2>
+                    <p className="text-gray-500 mt-2">Crea, edita o consulta los documentos legales de la empresa.</p>
+                </Link>
+
 
 
                 

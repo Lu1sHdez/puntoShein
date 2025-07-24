@@ -61,6 +61,9 @@ const RestablecerPassword = lazy(() => import("./pages/RestablecerPassword"));
 const Carrito = lazy(() => import("./public/carrito/PrincipalCarrito.js"));
 const Pago = lazy(() => import("./public/pagos/pago.js"));
 
+
+const Documentos = lazy(() => import("./admin/documents/documentos"));
+
 const AcercaDe = lazy(() => import("./components/empresa/AcercaDe"));
 const PoliticaPrivacidad = lazy(() => import("./components/empresa/PoliticaPrivacidad"));
 const Terminos = lazy(() => import("./components/empresa/Terminos"));
@@ -124,6 +127,7 @@ const App = () => {
             <Route path="/admin/empresa" element={<ProteccionRutas element={Empresa} allowedRoles={["administrador"]} />} />
             <Route path="/admin/perfil" element={<ProteccionRutas element={PerfilAdmin} allowedRoles={["administrador"]} />} />
             <Route path="/admin/actualizarPerfil" element={<ProteccionRutas element={ActualizarPerfilAdmin} allowedRoles={["administrador"]} />} />
+            <Route path="/admin/documentos" element={<ProteccionRutas element={Documentos} allowedRoles={["administrador"]} />} />
             <Route path="/admin/configuracion" element={<ProteccionRutas element={Configuracion} allowedRoles={["administrador"]} />} />
             <Route path="/admin/usuarios" element={<ProteccionRutas element={Usuarios} allowedRoles={["administrador"]} />} />
             <Route path="/admin/empleados" element={<ProteccionRutas element={Empleados} allowedRoles={["administrador"]} />} />
