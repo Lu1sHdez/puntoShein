@@ -39,7 +39,7 @@ const ModalCrearDocumento = ({ onClose, onCrearDocumento }) => {
     setLoading(true);
     try {
       const response = await axios.post(`${API_URL}/api/documento/documentos`, {
-        tipo: 'Aviso de Privacidad',  // Este tipo puede ser modificado
+        tipo: 'Aviso de Privacidad',  // Este tipo puede ser modificad
         titulo,
         descripcion,
         contenido,
