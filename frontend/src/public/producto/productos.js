@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { API_URL } from "../../ApiConexion.js";
 import CargandoBarra from "../../Animations/CargandoBarra";
-import { useLocation, useNavigate} from "react-router-dom";
+import { useLocation} from "react-router-dom";
 import Filtros from "./filtros/Filtros";
 import ModalAutenticacion from "../autenticacion/Autenticacion";
 import CargandoModal from "../../Animations/CargandoModal.js";
@@ -17,14 +17,12 @@ const Productos = () => {
   const [cargandoFiltro, setCargandoFiltro] = useState(false);
   const [mostrarSidebar, setMostrarSidebar] = useState(false);
   const [mostrarModal, setMostrarModal] = useState(false);
-  const [cargandoCarrito, setCargandoCarrito] = useState(false);
+  const [cargandoCarrito] = useState(false);
   const [sinResultados, setSinResultados] = useState(false);
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const terminoBusqueda = queryParams.get("buscar");
   const { productosFiltrados, cargando: cargandoBusqueda, sinResultados: sinResultadosBusqueda } = useBuscarProductos(terminoBusqueda);
-
-  const navigate = useNavigate();
 
 
   const shuffleArray = (array) => {
@@ -74,7 +72,7 @@ const Productos = () => {
 
   return (
     <section className="pt-0 pb-16 bg-gray-50 min-h-screen">
-      <div className="max-w-7xl mx-auto px-4">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10">
         <h2 className="text-3xl font-bold text-gray-800 mb-10 text-center">Nuestros Productos</h2>
 
         {/* Botones flotantes en la esquina superior derecha */}

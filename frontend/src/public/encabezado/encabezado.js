@@ -69,7 +69,7 @@ const EncabezadoPublico = () => {
 
   return (
     <header className="fixed top-0 left-0 w-full bg-white shadow-md z-50">
-      <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+  < div className="max-w-7xl mx-auto px-4 py-3 flex flex-wrap md:flex-nowrap items-center justify-between gap-y-4">
         {/* Logo y nombre de la empresa */}
         <Link to="/" className="flex items-center space-x-4">
           {empresa && (

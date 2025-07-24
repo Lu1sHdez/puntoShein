@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
-import useAuth from "../../hooks/useAuth";
 import { useSidebar } from '../../context/SidebarContext';
 import CerrarSesionModal from '../../modal/CerrarSesion';
 import { Cargando } from '../../Animations/Cargando';
@@ -22,7 +21,6 @@ const SidebarUsuario = () => {
   const { colapsado, setColapsado } = useSidebar();
   const location = useLocation();
   const navigate = useNavigate();
-  const { logout } = useAuth();
   const [mostrarModalCerrarSesion, setMostrarModalCerrarSesion] = useState(false);
 
   useEffect(() => {

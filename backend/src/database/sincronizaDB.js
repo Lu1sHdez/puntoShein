@@ -6,8 +6,12 @@ dotenv.config();
 
 // Importar todos los modelos antes de sincronizar
 import '../models/usuario.model.js';
+import '../models/producto.model.js';
 import '../models/tallas.model.js';
 import '../models/carrito.model.js';
+import '../models/detalleOrden.model.js';
+import '../models/reglaAsociacion.model.js';
+
 /* import '../models/subcategoria.model.js'; 
 // Agrega aquí los demás modelos si tienes más */
 

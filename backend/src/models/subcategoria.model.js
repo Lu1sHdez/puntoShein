@@ -16,7 +16,7 @@ const Subcategoria = sequelize.define("Subcategoria", {
     type: DataTypes.INTEGER,
     references: {
       model: "categorias",
-      key: "id",
+      key: "id",  
     },
     onDelete: "CASCADE",
   },

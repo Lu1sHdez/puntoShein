@@ -4,6 +4,7 @@ import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 
 import opinionRoutes from './routes/opinion.routes.js';
+import recomendacionRutas from './routes/recomendacion.routes.js';
 import autenticacionRutas from './routes/autenticacion.routes.js';
 import productoRutas from './routes/producto.routes.js';
 import usuarioRutas from './routes/usuario.routes.js';
@@ -61,6 +62,7 @@ app.use(helmet.frameguard({ action: 'deny' }));
 // Rutas de la aplicación
 app.use('/api/autenticacion', autenticacionRutas);
 app.use('/api/productos', productoRutas);
+app.use('/api/recomendacion', recomendacionRutas);
 app.use('/api/tallas', tallaRutas);
 app.use('/api/ventas', ventaRutas);
 app.use('/api/filtro', filtroRutas);
