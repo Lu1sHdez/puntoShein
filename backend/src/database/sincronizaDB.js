@@ -5,13 +5,10 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 // Importar todos los modelos antes de sincronizar
-import '../models/usuario.model.js';
-import '../models/producto.model.js';
-import '../models/tallas.model.js';
-import '../models/carrito.model.js';
-import '../models/detalleOrden.model.js';
-import '../models/reglaAsociacion.model.js';
-import '../models/documentoLegal.model.js'
+import '../models/app/pedido.model.js';
+import '../models/app/cliente.model.js';
+import '../models/app/detallePedido.model.js';
+import '../models/app/estado.model.js';
 
 /* import '../models/subcategoria.model.js'; 
 // Agrega aquí los demás modelos si tienes más */

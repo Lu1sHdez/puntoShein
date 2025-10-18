@@ -5,6 +5,7 @@ import helmet from 'helmet';
 
 import opinionRoutes from './routes/opinion.routes.js';
 import recomendacionRutas from './routes/recomendacion.routes.js';
+import prediccionRutas from './routes/prediccion.routes.js';
 import autenticacionRutas from './routes/autenticacion.routes.js';
 import productoRutas from './routes/producto.routes.js';
 import usuarioRutas from './routes/usuario.routes.js';
@@ -21,6 +22,11 @@ import loginPin from './routes/pin.routes.js';
 import tokenRoutes from "./routes/token.routes.js";
 import documentoLegalRoutes from "./routes/documentoLegal.routes.js";
 
+//APP
+import authRoutes from "./routes/app/authApp.routes.js";
+import clienteRoutes from "./routes/app/cliente.routes.js";
+import pedidosRoutes from "./routes/app/pedidos.routes.js";
+import perfilRoutes from "./routes/app/perfil.routes.js";
 
 const app = express();
 
@@ -63,6 +69,7 @@ app.use(helmet.frameguard({ action: 'deny' }));
 app.use('/api/autenticacion', autenticacionRutas);
 app.use('/api/productos', productoRutas);
 app.use('/api/recomendacion', recomendacionRutas);
+app.use('/api/prediccion', prediccionRutas);
 app.use('/api/tallas', tallaRutas);
 app.use('/api/ventas', ventaRutas);
 app.use('/api/filtro', filtroRutas);
@@ -78,10 +85,14 @@ app.use('/api/pin', loginPin)
 app.use("/api/token-dispositivo", tokenRoutes);
 app.use("/api/documento", documentoLegalRoutes);
 
-
+//APP
+app.use("/api/app/autenticacion", authRoutes);
+app.use("/api/app/clientes", clienteRoutes);
+app.use("/api/app/pedidos", pedidosRoutes);
+app.use("/api/app/perfil", perfilRoutes);
 
 // Ruta raíz para verificar que la API está en línea
-app.get('/', (req, res) => {
+app.get('/', (res) => {
   res.send('API Punto Shein funcionando correctamente');
 });
 
