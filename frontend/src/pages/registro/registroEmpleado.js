@@ -101,8 +101,9 @@ const RegistroEmpleado = () => {
     <>
       <CargandoModal visible={enviando} mensaje="Procesando registro..." />
 
-      <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-lg mx-auto mt-8">
-        <h2 className="text-2xl font-bold mb-4 text-center">Registro de empleado</h2>
+      <section className="min-h-screen flex flex-col justify-start sm:justify-center bg-gradient-to-b from-blue-50 to-white px-4 py-6">
+      <div className="bg-white p-6 rounded-2xl shadow-xl w-full max-w-lg mx-auto mt-4 sm:mt-0">        
+      <h2 className="text-2xl font-bold mb-4 text-center">Registro de empleado</h2>
 
         {correo && (
           <div className="mb-4">
@@ -143,6 +144,7 @@ const RegistroEmpleado = () => {
           <p className="text-center text-red-600 mt-4 font-medium">{errorServidor}</p>
         )}
       </div>
+      </section>
       <ModalExitoEmpleado visible={exito} onClose={() => navigate('/')} />
 
     </>

@@ -90,13 +90,14 @@ const Registro = () => {
     <>
       <CargandoModal visible={cargando} mensaje="Procesando registro..." />
 
-      <section className="min-h-screen flex items-center justify-center bg-gradient-to-b from-blue-50 to-white px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-3xl mx-auto"
-        >
+      <section className="min-h-screen flex flex-col justify-start sm:justify-center bg-gradient-to-b from-blue-50 to-white px-4 py-6">
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-3xl mx-auto mt-4 sm:mt-0"
+      >
+
           <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">
             Registro de Usuario
           </h2>

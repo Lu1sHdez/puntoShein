@@ -9,7 +9,7 @@ const OpcionRecuperarPassword = () => {
   const navigate = useNavigate();
 
   return (
-    <section className="min-h-screen flex items-center justify-center bg-gradient-to-b from-blue-50 to-white px-4">
+    <section className="min-h-screen flex justify-center bg-gradient-to-b from-blue-50 to-white px-4">
       <motion.div
         className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md"
         initial={{ opacity: 0, y: 30 }}

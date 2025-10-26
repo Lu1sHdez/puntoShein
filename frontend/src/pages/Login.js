@@ -76,12 +76,12 @@ const Login = () => {
   };
 
   return (
-    <section className="min-h-screen flex justify-center bg-gradient-to-b from-blue-50 to-white px-4">
+    <section className="min-h-screen flex flex-col justify-start sm:justify-center bg-gradient-to-b from-blue-50 to-white px-4 py-6">
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8"
+        className="w-full max-w-md mx-auto bg-white rounded-2xl shadow-xl p-8 mt-4 sm:mt-0"
       >
         {loading && <CargandoModal mensaje="Iniciando sesión..." visible />}
 
@@ -98,11 +98,7 @@ const Login = () => {
           </div>
         )}
 
-        <motion.form
-          onSubmit={validarYEnviar}
-          {...formAnimation}
-          className="space-y-4"
-        >
+        <motion.form onSubmit={validarYEnviar} {...formAnimation} className="space-y-4">
           <FormularioInput
             label="Correo Electrónico"
             type="email"
@@ -162,6 +158,7 @@ const Login = () => {
         </motion.form>
       </motion.div>
     </section>
+
   );
 };
 
