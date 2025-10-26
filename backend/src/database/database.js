@@ -1,18 +1,26 @@
-//src\database\database.js
+// src/database/database.js
 import { Sequelize } from 'sequelize';
 import dotenv from 'dotenv';
+dotenv.config();
 
-dotenv.config(); // Cargar variables de entorno
+const {
+  DB_HOST,
+  DB_USER,
+  DB_PASS,
+  DB_NAME,
+  DB_PORT,
+  DB_DIALECT
+} = process.env;
 
-const sequelize = new Sequelize(process.env.DATABASE_URL, {
-  dialect: 'postgres',
+// Crear instancia Sequelize
+const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASS, {
+  host: DB_HOST,
+  port: DB_PORT,
+  dialect: DB_DIALECT || 'mysql',
   logging: false,
-  dialectOptions: process.env.NODE_ENV === 'production' ? {
-    ssl: {
-      require: true,
-      rejectUnauthorized: false,
-    },
-  } : {}
+  dialectOptions: {
+    ssl: false
+  }
 });
 
 export { sequelize };

@@ -1,6 +1,6 @@
 import Producto from "../models/producto.model.js";
-import Categoria from "../models/categoria.model.js"; //  Importar Categoria
-import Subcategoria from "../models/subcategoria.model.js"; // 
+import Categoria from "../models/categoria.model.js";
+import Subcategoria from "../models/subcategoria.model.js";
 import {Sequelize, Op } from "sequelize";
 import ProductoTalla from '../models/productoTalla.model.js';
 import Talla from "../models/tallas.model.js";
@@ -10,26 +10,66 @@ import { enviarNotificacionStock } from "../utils/notificaciones.js";
 import cloudinary from '../config/cloudinary.config.js';
 import fs from 'fs';
 
-// Función para buscar productos por nombre
+// Buscar productos por nombre o descripción (versión completa)
 export const buscarProductos = async (req, res) => {
   try {
-    const { nombre } = req.query;  // Obtener el término de búsqueda desde la query string
+    const { nombre } = req.query; // /api/productos/buscar?nombre=vestido
 
-    if (!nombre) {
-      return res.status(400).json({ mensaje: 'Debe proporcionar un término de búsqueda.' });
+    if (!nombre || nombre.trim() === "") {
+      return res.status(400).json({ mensaje: "Debe proporcionar un término de búsqueda." });
     }
 
-    // Filtrar productos por nombre utilizando el término de búsqueda
     const productos = await Producto.findAll({
       where: {
-        nombre: {
-          [Sequelize.Op.iLike]: `%${nombre}%`,  // Usar iLike para insensibilidad a mayúsculas/minúsculas
-        },
+        [Op.or]: [
+          { nombre: { [Op.like]: `%${nombre}%` } },
+          { descripcion: { [Op.like]: `%${nombre}%` } },
+        ],
       },
+      include: [
+        {
+          model: Subcategoria,
+          as: "subcategoria",
+          include: {
+            model: Categoria,
+            as: "categoria",
+          },
+        },
+        {
+          model: Talla,
+          as: "tallas",
+          through: {
+            attributes: ["stock"],
+          },
+        },
+      ],
     });
 
-    // Devolver los productos que coinciden con el término de búsqueda
-    res.json(productos);
+    if (!productos || productos.length === 0) {
+      return res.json([]); // no error, solo lista vacía
+    }
+
+    // Normalizar la respuesta con stock total
+    const productosConStock = productos.map((producto) => {
+      const productoJSON = producto.toJSON();
+      let stockTotal = 0;
+
+      productoJSON.tallas = productoJSON.tallas.map((talla) => {
+        const stock = talla.ProductoTalla?.stock || 0;
+        stockTotal += stock;
+        return {
+          id: talla.id,
+          nombre: talla.nombre,
+          stock,
+          stockStatus: stock > 0 ? "Disponible" : "Sin stock",
+        };
+      });
+
+      productoJSON.stock = stockTotal;
+      return productoJSON;
+    });
+
+    res.json(productosConStock);
   } catch (error) {
     console.error("Error al buscar productos:", error);
     res.status(500).json({ mensaje: "Error al buscar productos." });
@@ -39,7 +79,7 @@ export const buscarProductos = async (req, res) => {
 export const allProductos = async (req, res) => {
   try {
     const productos = await Producto.findAll({
-      order: Sequelize.literal("RANDOM()"),
+      order: Sequelize.literal("RAND()"),
       include: [
         {
           model: Subcategoria,
@@ -279,7 +319,7 @@ export const buscarProductoPorNombre = async (req, res) => {
     const producto = await Producto.findOne({
       where: {
         nombre: {
-          [Op.iLike]: `%${nombre}%`, // Búsqueda parcial, insensible a mayúsculas
+          [Op.like]: `%${nombre}%`, // Búsqueda parcial, insensible a mayúsculas
         }
       },
       include: [

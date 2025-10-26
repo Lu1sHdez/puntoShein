@@ -14,7 +14,7 @@ import {obtenerCategorias, obtenerSubcategoriasPorCategoria,  crearCategoria,
 
 const admin = validarRol(['administrador']);
 const router = express.Router();
-const upload = multer({ dest: 'uploads/' }); // 🖼 Almacenamiento temporal
+const upload = multer({ dest: 'uploads/' });
 
 // Subir imagen para productos
 router.post('/producto/imagen', verificarToken, admin, upload.single('imagen'), subirImagenProducto);
@@ -42,12 +42,12 @@ router.get('/buscar', buscarProductos);
 router.get('/allProductos', allProductos);
 router.get('/notificaciones', notificaciones);
 router.get('/resumen-stock', resumenStock);
-router.get('/obtener', obtenerProductos);  // Obtener todos los productos
-router.get('/obtener/:id', obtenerProducto_Id);  // Obtener todos los productos
+router.get('/obtener', obtenerProductos);  
+router.get('/obtener/:id', obtenerProducto_Id);  
 router.get('/buscar/:nombre', buscarProductoPorNombre)
-router.get('/productos/:id', obtenerProductoPorId);  // Obtener producto por ID
-router.post('/crear',verificarToken, admin, crearProducto);  // Crear nuevo producto (solo para prueba)
-router.put('/productos/:id', editarProducto); // Editar producto
-router.delete('/eliminar/:id', eliminarProducto); // Eliminar producto
+router.get('/productos/:id', obtenerProductoPorId); 
+router.post('/crear',verificarToken, admin, crearProducto); 
+router.put('/productos/:id', editarProducto);
+router.delete('/eliminar/:id', eliminarProducto);
 
 export default router;

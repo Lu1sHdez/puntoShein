@@ -1,6 +1,6 @@
 import Carrito from "../models/carrito.model.js";
 import Producto from "../models/producto.model.js";
-import Talla from "../models/tallas.model.js"; // ✅ obligatorio
+import Talla from "../models/tallas.model.js";
 import ProductoTalla from "../models/productoTalla.model.js";
 
 // Función auxiliar para limitar cantidad
@@ -107,6 +107,7 @@ export const obtenerCarrito = async (req, res) => {
   }
   
 };
+
 export const vaciarCarrito = async (req, res) => {
   try {
     const { usuario_id } = req.body;
@@ -189,17 +190,16 @@ export const obtenerCantidad = async (req, res) => {
   try {
     const { usuario_id } = req.params;
 
-    // Buscar el total de productos en el carrito del usuario sin incluir detalles de los productos
-    const totalCantidad = await Carrito.sum('cantidad', {
-      where: { usuario_id }
-    });
-
-    if (totalCantidad === 0 || totalCantidad === null) {
-      return res.status(200).json({ message: "El carrito está vacío." });
+    if (!usuario_id) {
+      return res.status(400).json({ message: "ID de usuario no proporcionado." });
     }
 
-    res.json({ totalCantidad }); // Devolver la cantidad total de productos en el carrito
+    const totalCantidad = await Carrito.sum("cantidad", { where: { usuario_id } });
+
+    // Si el carrito está vacío o el usuario no tiene productos
+    res.status(200).json({ cantidad: totalCantidad || 0 });
   } catch (error) {
+    console.error("Error al obtener la cantidad total del carrito:", error);
     res.status(500).json({ message: "Error al obtener la cantidad total de productos", error });
   }
 };

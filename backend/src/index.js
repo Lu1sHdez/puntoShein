@@ -14,7 +14,7 @@ async function main() {
     
     // Sincronizar modelos con la base de datos
     if (process.env.NODE_ENV !== 'production') {
-      await sequelize.sync({ alter: true });
+      await sequelize.sync({ alter: false });
       console.log('Modelos sincronizados (modo desarrollo)');
     } else {
       await sequelize.sync();
@@ -38,7 +38,7 @@ async function main() {
         ip_servidor: process.env.HOST || 'localhost',
       },
     });
-    process.exit(1); // Salir con código de error
+    process.exit(1);
   }
 }
 

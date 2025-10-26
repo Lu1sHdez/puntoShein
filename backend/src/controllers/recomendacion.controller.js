@@ -9,7 +9,7 @@ export const obtenerRecomendacion = async (req, res) => {
 
     const reglas = await ReglaAsociacion.findAll({
       where: {
-        antecedente: { [Op.iLike]: `%${producto}%` }
+        antecedente: { [Op.like]: `%${producto}%` }
       },
       include: [{
         model: Producto,
@@ -45,7 +45,7 @@ export const obtenerRecomendacionPorId = async (req, res) => {
 
     const reglas = await ReglaAsociacion.findAll({
       where: {
-        antecedente: { [Op.iLike]: `%${nombre}%` }
+        antecedente: { [Op.like]: `%${nombre}%` }
       },
       include: [{
         model: Producto,

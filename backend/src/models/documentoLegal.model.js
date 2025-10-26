@@ -5,7 +5,7 @@ const DocumentoLegal = sequelize.define('DocumentoLegal', {
   tipo: {
     type: DataTypes.STRING,
     allowNull: false,
-    unique: true,  // Para asegurarse de que no haya documentos duplicados por tipo
+    unique: true,  
   },
   titulo: {
     type: DataTypes.STRING,
@@ -16,7 +16,7 @@ const DocumentoLegal = sequelize.define('DocumentoLegal', {
     allowNull: false,
   },
   contenido: {
-    type: DataTypes.JSONB,  // Usamos JSONB para almacenar contenido estructurado (títulos, subtítulos, viñetas, etc.)
+    type: DataTypes.JSON,  
     allowNull: false,
   },
   fecha_creacion: {
@@ -28,7 +28,7 @@ const DocumentoLegal = sequelize.define('DocumentoLegal', {
     defaultValue: DataTypes.NOW,
   },
 }, {
-  timestamps: false,  // Deshabilitar los timestamps automáticos si no los necesitas
+  timestamps: false, 
 });
 
 export default DocumentoLegal;

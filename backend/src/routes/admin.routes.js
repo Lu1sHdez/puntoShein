@@ -1,6 +1,6 @@
 import express from 'express';
 import { verificarToken, validarRol } from '../middleware/auth.js';
-
+import multer from 'multer';
 import {
   obtenerUsuarios,
   obtenerEmpleados,
@@ -16,7 +16,7 @@ import {
   validarCodigoAdmin,
   enviarInvitacionEmpleado, obtenerIdsUsuarios
 } from '../controllers/admin.controller.js';
-import { actualizarPerfil } from '../controllers/usuario.controller.js';
+import { actualizarPerfil, subirFotoPerfil} from '../controllers/usuario.controller.js';
 import { obtenerPerfil } from '../controllers/autenticacion.controller.js';
 import {
   crearCategoria,
@@ -27,42 +27,35 @@ import {
 
 const router = express.Router();
 
-// Middleware de autenticación y autorización por rol
+const upload = multer({ dest: 'uploads/' });
 const admin = validarRol(['administrador']);
 
-// Rutas para usuarios
 //router.get('/usuarios', verificarToken, admin, obtenerUsuarios);
 router.get('/usuarios', obtenerUsuarios);
 router.get('/usuariosID', obtenerIdsUsuarios);
-
 router.get('/empleados', verificarToken, admin, obtenerEmpleados);
 router.get('/solo-usuarios', verificarToken, admin, obtenerSoloUsuarios);
 router.get('/admins', verificarToken, admin, obtenerAdmins);
 router.get('/usuarios/:id', verificarToken, admin, obtenerUsuarioPorId);
 router.delete('/usuarios/:id', verificarToken, admin, eliminarUsuario);
-
-// Rutas para el perfil del usuario
 router.put('/perfil', verificarToken, admin, actualizarPerfil);
-router.get('/perfil', verificarToken, admin, obtenerPerfil);
+router.get('/perfil', obtenerPerfil);
+router.post('/perfil/foto', verificarToken, admin, upload.single('foto'), subirFotoPerfil);
 
-// Rutas para categorías y subcategorías
-router.get('/categorias', obtenerCategorias);  // Obtener todas las categorías
-router.post('/categorias', verificarToken, admin, crearCategoria);  // Crear nueva categoría
-router.get('/subcategorias', obtenerSubcategoriasPorCategoria);  // Obtener todas las subcategorías
-router.post('/subcategorias', verificarToken, admin, crearSubcategoria);  // Crear nueva subcategoría
+router.get('/categorias', obtenerCategorias);  
+router.post('/categorias', verificarToken, admin, crearCategoria); 
+router.get('/subcategorias', obtenerSubcategoriasPorCategoria); 
+router.post('/subcategorias', verificarToken, admin, crearSubcategoria);
 
 // Rutas para roles
-router.put('/usuarios/:id/rol', verificarToken, admin, actualizarRol);  // Actualizar rol de usuario
-router.get('/roles', verificarToken, admin, obtenerRoles);  // Obtener roles disponibles
+router.put('/usuarios/:id/rol', verificarToken, admin, actualizarRol);
+router.get('/roles', verificarToken, admin, obtenerRoles);
 
-// Rutas de recuperación de contraseña para el administrador
-router.put('/cambiar-contrasena', express.json(), verificarToken, admin, cambiarPasswordAdmin);  // requiere sesión
-router.post('/recuperar-password', express.json(), recuperarPasswordAdmin);  // no requiere sesión
-router.put('/restablecer-password', express.json(), restablecerPasswordAdmin);  // no requiere sesión
-router.post('/validar-codigo', express.json(), validarCodigoAdmin);  // no requiere sesión
+router.put('/cambiar-contrasena', express.json(), verificarToken, admin, cambiarPasswordAdmin);  
+router.post('/recuperar-password', express.json(), recuperarPasswordAdmin);
+router.put('/restablecer-password', express.json(), restablecerPasswordAdmin); 
+router.post('/validar-codigo', express.json(), validarCodigoAdmin);
 
-router.post('/enviarInvitacionEmpleado', verificarToken, admin, enviarInvitacionEmpleado);  // no requiere sesión
+router.post('/enviarInvitacionEmpleado', verificarToken, admin, enviarInvitacionEmpleado);
 
-
-/* GESTION DE EMPLEADOS */
 export default router;

@@ -38,12 +38,24 @@ app.use(express.json());
 app.set('trust proxy', true);
 app.use(cookieParser());
 
+const allowedOrigins = [
+  'https://puntoshein-kdxn.onrender.com', 
+  'http://localhost:3000', 
+];
+
 const corsOpcion = {
-  origin: process.env.FRONTEND_URL,
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Origen no permitido por CORS'));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 };
+
 
 app.use(cors(corsOpcion));
 
@@ -61,6 +73,7 @@ app.use(helmet.contentSecurityPolicy({
   },
 }));
 
+app.use(cors(corsOpcion));
 
 // Uso de Helmet para proteger contra Clickjacking
 app.use(helmet.frameguard({ action: 'deny' }));
@@ -91,8 +104,7 @@ app.use("/api/app/clientes", clienteRoutes);
 app.use("/api/app/pedidos", pedidosRoutes);
 app.use("/api/app/perfil", perfilRoutes);
 
-// Ruta raíz para verificar que la API está en línea
-app.get('/', (res) => {
+app.get('/', (req, res) => {
   res.send('API Punto Shein funcionando correctamente');
 });
 

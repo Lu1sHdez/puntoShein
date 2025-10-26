@@ -3,9 +3,10 @@ import Usuario from '../models/usuario.model.js';
 import validator from 'validator';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import cloudinary from '../config/cloudinary.config.js';
+import fs from 'fs';
 import nodemailer from 'nodemailer';
 
-// ✅ Enviar código al correo
 export const recuperarPasswordUsuario = async (req, res) => {
   try {
     const { correo } = req.body;
@@ -54,7 +55,6 @@ export const recuperarPasswordUsuario = async (req, res) => {
   }
 };
 
-// ✅ Restablecer con código
 export const restablecerPasswordUsuario = async (req, res) => {
   try {
     const { correo, codigo, nuevaContrasena } = req.body;
@@ -103,7 +103,6 @@ export const restablecerPasswordUsuario = async (req, res) => {
   }
 };
 
-// ✅ Cambio manual desde perfil
 export const cambiarPasswordUsuario = async (req, res) => {
   try {
     const { actual, nueva, confirmar } = req.body;
@@ -139,7 +138,6 @@ export const cambiarPasswordUsuario = async (req, res) => {
   }
 };
 
-// En usuario.controller.js
 export const validarCodigoUsuario = async (req, res) => {
   const { correo, codigo } = req.body;
 
@@ -155,8 +153,6 @@ export const validarCodigoUsuario = async (req, res) => {
   return res.status(200).json({ mensaje: "Código válido." });
 };
 
-
-// ✅ Cambio de datos generales del perfil
 export const actualizarPerfil = async (req, res) => {
   try {
     const { nombre_usuario, nombre, apellido_paterno, apellido_materno, telefono, correo } = req.body;
@@ -200,5 +196,53 @@ export const actualizarPerfil = async (req, res) => {
   } catch (error) {
     console.error(error);
     return res.status(500).json({ mensaje: 'Error interno del servidor.', error: error.message });
+  }
+};
+
+export const subirFotoPerfil = async (req, res) => {
+  try {
+    const file = req.file;
+    if (!file) {
+      return res.status(400).json({ mensaje: 'No se envió ninguna imagen' });
+    }
+
+    // ✅ Tomar el ID del middleware
+    const usuarioId = req.userId; 
+    if (!usuarioId) {
+      return res.status(401).json({ mensaje: 'Usuario no autenticado' });
+    }
+
+    // Buscar usuario
+    const usuario = await Usuario.findByPk(usuarioId);
+    if (!usuario) {
+      return res.status(404).json({ mensaje: 'Usuario no encontrado' });
+    }
+
+    // Subir a Cloudinary
+    const result = await cloudinary.uploader.upload(file.path, {
+      folder: 'usuarios_perfil',
+      public_id: `perfil_${usuarioId}`,
+      overwrite: true,
+    });
+
+    // Eliminar archivo temporal
+    fs.unlink(file.path, (err) => {
+      if (err) console.error('Error al eliminar archivo temporal:', err);
+    });
+
+    // Actualizar registro en BD
+    usuario.foto_perfil = result.secure_url;
+    await usuario.save();
+
+    res.status(200).json({
+      mensaje: 'Foto de perfil actualizada correctamente',
+      foto_perfil: usuario.foto_perfil,
+    });
+  } catch (error) {
+    console.error('Error al subir imagen de perfil:', error);
+    res.status(500).json({
+      mensaje: 'Error al subir imagen de perfil',
+      detalle: error.message,
+    });
   }
 };

@@ -230,7 +230,6 @@ export const actualizarEstadoPedido = async (req, res) => {
     });
   }
 };
-// === NUEVO: obtener actividades recientes ===
 export const obtenerActividadesRecientes = async (req, res) => {
   try {
     const actividades = await EstadoPedido.findAll({
@@ -266,5 +265,34 @@ export const obtenerActividadesRecientes = async (req, res) => {
     res.status(500).json({ mensaje: "Error interno del servidor." });
   }
 };
+export const obtenerResumenPedidos = async (req, res) => {
+  try {
+    const estados = ["Por hacer", "Realizados", "Por entregar", "Entregado"];
+
+    // Recorremos los estados y contamos cada uno
+    const conteos = {};
+
+    for (const estado of estados) {
+      const count = await EstadoPedido.count({ where: { estado } });
+      conteos[estado] = count;
+    }
+
+    return res.status(200).json({
+      resumen: [
+        { title: "Por hacer", value: conteos["Por hacer"] || 0 },
+        { title: "Realizados", value: conteos["Realizados"] || 0 },
+        { title: "Por entregar", value: conteos["Por entregar"] || 0 },
+        { title: "Entregados", value: conteos["Entregado"] || 0 },
+      ],
+    });
+  } catch (error) {
+    console.error("Error al obtener resumen de pedidos:", error);
+    return res.status(500).json({
+      mensaje: "Error interno del servidor.",
+      error: error.message,
+    });
+  }
+};
+
 
 

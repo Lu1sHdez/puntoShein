@@ -1,0 +1,14 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "server": "dpg-d13h7bre5dus73eoma4g-a.oregon-postgres.render.com",
+            "port": 5432,
+            "driver": "PostgreSQL",
+            "name": "Punto shein",
+            "database": "puntoshein_qrpv",
+            "username": "puntoshein_qrpv_user",
+            "password": "YrhFNf5bFVWU5Pwft8ZWU9bDOPGgOgmq"
+        }
+    ]
+}

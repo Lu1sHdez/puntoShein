@@ -259,13 +259,13 @@ export const login = async (req, res) => {
       fecha_hora: fecha
     });
 
-    // Guardar token en cookie
     res.cookie('token', token, {
-      httpOnly: true, //Necesario en produccion
+      httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'None',
+      sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
       maxAge: 24 * 60 * 60 * 1000,
     });
+    
 
     // Respuesta exitosa
     return res.status(200).json({
@@ -446,14 +446,11 @@ export const restablecerPassword = async (req, res) => {
 
 export const obtenerPerfil = async (req, res) => {
   try {
-    // Obtener el token de las cookies
     const token = req.cookies.token || req.query.token;
 
     if (!token) {
       return res.status(401).json({ mensaje: 'No autorizado, token no encontrado.' });
     }
-
-    
 
     // Verificar el token
     const decoded = jwt.verify(token, process.env.TOKEN_SECRET);
@@ -475,6 +472,7 @@ export const obtenerPerfil = async (req, res) => {
       apellido_paterno: usuario.apellido_paterno,
       apellido_materno: usuario.apellido_materno,
       telefono: usuario.telefono,
+      foto_perfil: usuario.foto_perfil || null,
     });
   } catch (error) {
     console.error(error); 

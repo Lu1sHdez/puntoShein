@@ -77,6 +77,9 @@ const Usuario = sequelize.define('Usuario', {
     type: DataTypes.STRING,
     allowNull: true,
   },
+  foto_perfil: {
+    type: DataTypes.STRING,
+  },
   codigoCambioExpira: {
     type: DataTypes.DATE,
     allowNull: true,

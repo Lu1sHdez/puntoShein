@@ -31,7 +31,7 @@ const Pedido = sequelize.define(
     },
     metodoPago: {
       type: DataTypes.STRING,
-      allowNull: true, // “Anticipo 50%” o “Pago completo”
+      allowNull: true,
     },
   },
   {

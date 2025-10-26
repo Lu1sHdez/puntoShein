@@ -80,7 +80,6 @@ export const enviarInvitacionEmpleado = async (req, res) => {
     res.status(500).json({ mensaje: "Error al enviar la invitación." });
   }
 };
-/* SOLO ACCIONES PARA EL PERFIL DEL ADMINISTRADOR */
 export const recuperarPasswordAdmin = async (req, res) => {
   try {
     const { correo } = req.body;
@@ -133,7 +132,6 @@ export const recuperarPasswordAdmin = async (req, res) => {
     res.status(500).json({ mensaje: "Error interno del servidor." });
   }
 };
-
 export const restablecerPasswordAdmin = async (req, res) => {
   try {
     const { correo, codigo, nuevaContrasena } = req.body;
@@ -187,7 +185,6 @@ export const restablecerPasswordAdmin = async (req, res) => {
     res.status(500).json({ mensaje: "Error al restablecer la contraseña." });
   }
 };
-
 export const cambiarPasswordAdmin = async (req, res) => {
   try {
     const { actual, nueva, confirmar } = req.body;
@@ -248,7 +245,6 @@ export const cambiarPasswordAdmin = async (req, res) => {
     res.status(500).json({ mensaje: 'Error al cambiar la contraseña.' });
   }
 };
-
 export const validarCodigoAdmin = async (req, res) => {
   try {
     const { correo, codigo } = req.body;
@@ -269,8 +265,6 @@ export const validarCodigoAdmin = async (req, res) => {
     res.status(500).json({ mensaje: "Error al validar el código." });
   }
 };
-
-/* FUNCIONES QUE SOLO EL ADMIN GESTIONA */
 export const obtenerUsuarios = async (req, res) => {
   try {
     const { rol, search } = req.query;  // Obtener el rol y la búsqueda desde la query string
@@ -311,8 +305,6 @@ export const obtenerIdsUsuarios = async (req, res) => {
     res.status(500).json({ mensaje: 'Error al obtener los IDs de usuarios.' });
   }
 };
-
-// Funcion para obtener solo empleados
 export const obtenerEmpleados = async (req, res) => {
   try {
     const empleados = await Usuario.findAll({
@@ -324,7 +316,6 @@ export const obtenerEmpleados = async (req, res) => {
     res.status(500).json({ mensaje: 'Error al obtener los empleados.' });
   }
 };
-// Obtener solo usuarios (no empleados ni administradores)
 export const obtenerSoloUsuarios = async (req, res) => {
   try {
     const usuarios = await Usuario.findAll({
@@ -336,7 +327,6 @@ export const obtenerSoloUsuarios = async (req, res) => {
     res.status(500).json({ mensaje: 'Error al obtener los usuarios.' });
   }
 };
-// Obtener solo administradores
 export const obtenerAdmins = async (req, res) => {
   try {
     const admins = await Usuario.findAll({
@@ -348,7 +338,6 @@ export const obtenerAdmins = async (req, res) => {
     res.status(500).json({ mensaje: 'Error al obtener los administradores.' });
   }
 };
-// Eliminar un usuario
 export const eliminarUsuario = async (req, res) => {
   try {
     const { id } = req.params;
@@ -361,7 +350,6 @@ export const eliminarUsuario = async (req, res) => {
     res.status(500).json({ mensaje: 'Error al eliminar el usuario.' });
   }
 };
-// Obtener detalles de un usuario por su ID
 export const obtenerUsuarioPorId = async (req, res) => {
   try {
     const { id } = req.params;  // Obtener el ID del usuario desde los parámetros de la URL
@@ -377,8 +365,6 @@ export const obtenerUsuarioPorId = async (req, res) => {
     res.status(500).json({ mensaje: 'Error al obtener los detalles del usuario.' });
   }
 };
-
-// Obtener los roles disponibles
 export const obtenerRoles = async (req, res) => {
   try {
     const roles = ['usuario', 'administrador', 'empleado']; // Lista de roles posibles
@@ -388,8 +374,6 @@ export const obtenerRoles = async (req, res) => {
     res.status(500).json({ mensaje: 'Error al obtener los roles.' });
   }
 };
-
-// Actualizar el rol de un usuario
 export const actualizarRol = async (req, res) => {
   const { id } = req.params;  // Obtener el ID del usuario desde la URL
   const { rol } = req.body;   // Obtener el nuevo rol del cuerpo de la solicitud
@@ -424,6 +408,75 @@ export const actualizarRol = async (req, res) => {
   } catch (error) {
     console.error('Error al actualizar el rol:', error);
     res.status(500).json({ mensaje: 'Error al actualizar el rol' });
+  }
+};
+export const obtenerPerfilAdmin = async (req, res) => {
+  try {
+    // Obtener el ID del token verificado en el middleware
+    const adminId = req.userId;
+
+    // Buscar al administrador en la base de datos
+    const admin = await Usuario.findByPk(adminId, {
+      attributes: [
+        'id',
+        'nombre_usuario',
+        'nombre',
+        'apellido_paterno',
+        'apellido_materno',
+        'correo',
+        'telefono',
+        'rol',
+        'genero',
+        'ubicacion',
+        'createdAt',
+        'updatedAt',
+        'ultimoCambioPassword'
+      ],
+    });
+
+    if (!admin) {
+      return res.status(404).json({ mensaje: 'Administrador no encontrado.' });
+    }
+
+    // Verificación de rol
+    if (admin.rol !== 'administrador') {
+      return res.status(403).json({ mensaje: 'Acceso denegado. No eres administrador.' });
+    }
+
+    // Log opcional
+    logger.info({
+      message: 'Perfil de administrador obtenido correctamente',
+      usuario_id: admin.id,
+      ip_cliente: req.ip,
+    });
+
+    // Estructura del perfil con detalles enriquecidos
+    const perfilAdmin = {
+      id: admin.id,
+      nombre_usuario: admin.nombre_usuario,
+      nombre_completo: `${admin.nombre} ${admin.apellido_paterno} ${admin.apellido_materno}`,
+      correo: admin.correo,
+      telefono: admin.telefono,
+      rol: admin.rol,
+      genero: admin.genero === 'H' ? 'Hombre' : admin.genero === 'M' ? 'Mujer' : 'No especificado',
+      ubicacion: admin.ubicacion || 'Sin ubicación registrada',
+      fecha_creacion: admin.createdAt,
+      ultima_actualizacion: admin.updatedAt,
+      ultimo_cambio_password: admin.ultimoCambioPassword
+        ? new Date(admin.ultimoCambioPassword).toLocaleString()
+        : 'Nunca ha cambiado su contraseña',
+    };
+
+    return res.status(200).json({ success: true, perfil: perfilAdmin });
+
+  } catch (error) {
+    logger.error({
+      message: 'Error al obtener perfil del administrador',
+      error: error.message,
+      stack: error.stack,
+      ip_cliente: req.ip,
+    });
+    return res.status(500).json({ mensaje: 'Error interno del servidor.' });
   }
 };
 

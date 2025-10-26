@@ -98,6 +98,7 @@ export const perfilAdminApp = async (req, res) => {
       apellido_paterno: usuario.apellido_paterno,
       apellido_materno: usuario.apellido_materno,
       telefono: usuario.telefono,
+      foto_perfil: usuario.foto_perfil || null, 
     });
   
     } catch (error) {
