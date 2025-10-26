@@ -7,6 +7,8 @@ import { API_URL } from '../../ApiConexion';
 import { mostrarNotificacion } from '../../Animations/NotificacionSwal';
 import CargandoBarra from '../../Animations/CargandoBarra';
 import CargandoModal from '../../Animations/CargandoModal';
+import ActualizarFotoPerfil from "../perfil/modales/ActualizarFotoPerfil";
+import { Pencil } from "lucide-react";
 
 import RecuperarPassword from '../perfil/modales/RecuperarPassword';
 import VerificarCodigo from '../perfil/modales/VerificarCodigo';
@@ -17,6 +19,9 @@ const Perfil = () => {
   const [datosOriginales, setDatosOriginales] = useState({});
   const [datosEditables, setDatosEditables] = useState({});
   const [modoEdicion, setModoEdicion] = useState(false);
+  const [mostrarModalFoto, setMostrarModalFoto] = useState(false);
+  const [fotoPerfil, setFotoPerfil] = useState(null);
+
 
   const [mostrarRecuperacion, setMostrarRecuperacion] = useState(false);
   const [mostrarVerificarCodigo, setMostrarVerificarCodigo] = useState(false);
@@ -31,6 +36,7 @@ const Perfil = () => {
       try {
         const response = await axios.get(`${API_URL}/api/usuario/perfil`, { withCredentials: true });
         setUsuario(response.data);
+        
         setDatosOriginales(response.data);
         setDatosEditables({
           nombre: response.data.nombre,
@@ -39,10 +45,14 @@ const Perfil = () => {
           telefono: response.data.telefono,
           correo: response.data.correo
         });
+        setFotoPerfil(response.data.foto_perfil);
+        
       } catch (error) {
         if (error.response?.status === 401) navigate('/login');
       }
     };
+
+
     obtenerPerfil();
   }, [navigate]);
 
@@ -63,6 +73,7 @@ const Perfil = () => {
       await axios.put(`${API_URL}/api/usuario/perfil`, datosEditables, { withCredentials: true });
       mostrarNotificacion("success", "¡Perfil actualizado!");
       setModoEdicion(false);
+      
       setDatosOriginales(datosEditables);
     } catch (error) {
       mostrarNotificacion("error", "Error al guardar cambios.");
@@ -76,6 +87,35 @@ const Perfil = () => {
   return (
     <motion.div {...formAnimation} className="p-6 max-w-2xl mx-auto">
       <h2 className="text-2xl font-bold mb-6 text-center">Perfil del Usuario</h2>
+      <div className="flex flex-col items-center mb-6">
+        <div className="relative">
+          {fotoPerfil ? (
+            // ✅ Si hay foto: mostrar la imagen normal
+            <img
+              src={fotoPerfil}
+              alt="Foto de perfil"
+              className="w-32 h-32 rounded-full object-cover border-4 border-blue-300 shadow-md"
+            />
+          ) : (
+            // 🚫 Si no hay foto: mostrar círculo con lápiz
+            <div
+              onClick={() => setMostrarModalFoto(true)}
+              className="w-32 h-32 rounded-full border-4 border-blue-300 bg-gradient-to-br from-blue-50 to-blue-100 flex flex-col items-center justify-center text-gray-500 cursor-pointer hover:scale-105 transition-transform"
+            >
+              <Pencil size={30} className="opacity-70 mb-1" />
+              <span className="text-sm font-medium">Foto de perfil</span>
+            </div>
+          )}
+        </div>
+
+        <button
+          onClick={() => setMostrarModalFoto(true)}
+          className="mt-3 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition"
+        >
+          Cambiar foto
+        </button>
+      </div>
+
 
       <div className="grid grid-cols-1 gap-4">
         <Campo label="Nombre de Usuario:" valor={usuario.nombre_usuario} disabled />
@@ -149,6 +189,13 @@ const Perfil = () => {
             setMostrarVerificarCodigo(false);
             setMostrarRestablecer(true);
           }}
+        />
+      )}
+      {/* Modal para actualizar la foto */}
+      {mostrarModalFoto && (
+        <ActualizarFotoPerfil
+          onClose={() => setMostrarModalFoto(false)}
+          onFotoActualizada={(url) => setFotoPerfil(url)}
         />
       )}
       <CargandoModal mensaje="Guardando cambios..." visible={Guardando} />

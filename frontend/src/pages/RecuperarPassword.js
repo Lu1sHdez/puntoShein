@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import FormularioInput from "../components/form/FormularioInput";
 import useFormulario from "../hooks/useFormulario";
 import { formAnimation } from "./Funciones";
-import { motion } from "framer-motion";
 import Boton from "../elements/Boton";
 import { API_URL } from "../ApiConexion";
+import CargandoModal from "../Animations/CargandoModal";
 
 const RecuperarPassword = () => {
   const navigate = useNavigate();
-  const [errorValidacion, setErrorValidacion] = useState(""); // Estado para el error
-  const [errorCampos, setErrorCampos] = useState({ correo: false }); // Estados para errores en campos específicos
+  const [errorValidacion, setErrorValidacion] = useState("");
+  const [errorCampos, setErrorCampos] = useState({ correo: false });
 
   const { datos, mensaje, handleChange, handleSubmit, loading } = useFormulario(
     { correo: "" },
@@ -21,74 +22,77 @@ const RecuperarPassword = () => {
 
   useEffect(() => {
     if (mensaje.tipo === "error") {
-      setErrorValidacion(mensaje.texto); // Mostrar el mensaje de error
+      setErrorValidacion(mensaje.texto);
     }
   }, [mensaje]);
 
   const validarYEnviar = async (e) => {
     e.preventDefault();
 
-    // Validación de campos vacíos
     if (!datos.correo) {
       setErrorValidacion("Por favor, ingresa tu correo electrónico.");
       setErrorCampos({ correo: true });
       return;
     }
 
-    setErrorValidacion(""); // Limpiar errores anteriores
-    setErrorCampos({ correo: false }); // Resetear el error del correo
+    setErrorValidacion("");
+    setErrorCampos({ correo: false });
 
     const exito = await handleSubmit(e);
-    if (!exito) return; // Si hubo un error, no continuar con la navegación
+    if (!exito) return;
 
-    setTimeout(() => navigate("/login"), 1500); // Redirigir después de un pequeño retraso
+    setTimeout(() => navigate("/login"), 1500);
   };
 
   return (
-    <div className="flex items-center justify-center mt-0">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-        <h2 className="text-2xl font-semibold text-center text-gray-700">Recuperar Contraseña (Correo)</h2>
+    <section className="min-h-screen flex items-center justify-center bg-gradient-to-b from-blue-50 to-white px-4">
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8"
+      >
+        {loading && <CargandoModal mensaje="Enviando enlace de recuperación..." visible />}
 
-        {/* Mensaje de error estático */}
+        <h2 className="text-3xl font-bold text-center text-gray-800 mb-2">
+          Recuperar Contraseña
+        </h2>
+        <p className="text-center text-gray-500 mb-6 text-sm">
+          Ingresa el correo asociado a tu cuenta y te enviaremos un enlace para restablecer tu contraseña.
+        </p>
+
         {errorValidacion && (
           <div className="mb-4 text-red-500 text-sm font-semibold text-center">
             {errorValidacion}
           </div>
         )}
 
-        <motion.div {...formAnimation}>
-          <form onSubmit={validarYEnviar} className="mt-6">
-            <FormularioInput
-              label="Correo Electrónico"
-              type="email"
-              name="correo"
-              placeholder="ejemplo@dominio.com"
-              value={datos.correo}
-              onChange={handleChange}
-              error={errorCampos.correo} // Pasar el estado de error
-            />
+        <motion.form onSubmit={validarYEnviar} {...formAnimation} className="space-y-4">
+          <FormularioInput
+            label="Correo Electrónico"
+            type="email"
+            name="correo"
+            placeholder="ejemplo@dominio.com"
+            value={datos.correo}
+            onChange={handleChange}
+            error={errorCampos.correo}
+          />
 
-            <Boton
-              texto="Enviar enlace de recuperación"
-              type="submit"
-              estiloPersonalizado="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
-              disabled={loading}
-            />
-            {/* <Boton
-              texto="Recuperar por teléfono"
-              onClick={() => navigate("/solicitarPasswordTelefono")}
-              estiloPersonalizado="mt-3 w-full text-blue-600 hover:underline"
-            /> */}
+          <Boton
+            texto="Enviar enlace de recuperación"
+            tipo="submit"
+            estiloPersonalizado="btn-principal w-full py-2.5"
+            disabled={loading}
+          />
 
-            <Boton
-              texto="Volver al inicio de sesión"
-              onClick={() => navigate("/login")}
-              estiloPersonalizado="mt-3 w-full text-blue-600 hover:underline"
-            />
-          </form>
-        </motion.div>
-      </div>
-    </div>
+          <Boton
+            texto="Volver al inicio de sesión"
+            onClick={() => navigate("/login")}
+            estiloPersonalizado="w-full text-blue-600 hover:underline mt-2"
+          />
+        </motion.form>
+      </motion.div>
+    </section>
   );
 };
 

@@ -1,155 +1,149 @@
-import React, { useState, useEffect } from 'react';
-import { Link, Routes, Route } from 'react-router-dom';  // Usamos Link para la navegación, y Routes y Route para las rutas
-import { FaCog, FaUsers, FaBox, FaUserTie,FaFileAlt, FaQuestionCircle, FaChartLine, FaCommentDots} from 'react-icons/fa';  // Iconos para las tarjetas
-import { BsPersonLinesFill } from 'react-icons/bs';  // Icono para el perfil
+import React, { useState, useEffect } from "react";
+import { Link, Routes, Route } from "react-router-dom";
+import {
+  FaCog,
+  FaUsers,
+  FaBox,
+  FaUserTie,
+  FaFileAlt,
+  FaQuestionCircle,
+  FaChartLine,
+  FaCommentDots,
+} from "react-icons/fa";
+import { BsPersonLinesFill } from "react-icons/bs";
+import { motion } from "framer-motion";
+import CargandoBarra from "../../Animations/CargandoBarra.js";
+import { dashboardAnimation } from "../../components/Funciones.js";
 
-// Importar los componentes necesarios para las rutas
-import Configuracion from '../setting/Configuracion';  // Componente para la configuración
-import Empresa from '../empresa/Empresa';  // Componente para la empresa
-import Usuarios from '../usuarios/Usuarios';  // Componente para los usuarios
-import Empleados from '../empleados/principal';  // Componente para los empleados
-import Productos from '../productos/Productos';  
-import { dashboardAnimation } from '../../components/Funciones.js';
-import { motion } from 'framer-motion';
-import CargandoBarra from '../../Animations/CargandoBarra.js';
+// Componentes
+import Configuracion from "../setting/Configuracion";
+import Empresa from "../empresa/Empresa";
+import Usuarios from "../usuarios/Usuarios";
+import Empleados from "../empleados/principal";
+import Productos from "../productos/Productos";
 
 const Dashboard = () => {
-    const[loading, setLoading] = useState(true);
-    useEffect(() =>{
-        const timer= setTimeout(()=>{
-            setLoading(false);
-        },1500);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 1500);
+    return () => clearTimeout(timer);
+  }, []);
 
-        return ()=> clearTimeout(timer);
-    })
+  if (loading) return <CargandoBarra message="Cargando..." />;
 
-    if (loading) {
-        return <CargandoBarra message="Cargando..." />;
-    }
-  
-    return (
-        <motion.div {...dashboardAnimation} className="p-6">
-            <h1 className="text-3xl font-bold mb-6">Dashboard - Administrador</h1>
+  const tarjetas = [
+    {
+      titulo: "Configuración",
+      icono: <FaCog />,
+      descripcion: "Administra las configuraciones del sistema.",
+      ruta: "/admin/configuracion",
+    },
+    {
+      titulo: "Usuarios",
+      icono: <FaUsers />,
+      descripcion: "Gestiona los usuarios del sistema.",
+      ruta: "/admin/usuarios",
+    },
+    {
+      titulo: "Productos",
+      icono: <FaBox />,
+      descripcion: "Administra el inventario de productos.",
+      ruta: "/admin/productos",
+    },
+    {
+      titulo: "Empleados",
+      icono: <FaUserTie />,
+      descripcion: "Gestiona la información de los empleados.",
+      ruta: "/admin/empleados",
+    },
+    {
+      titulo: "Perfil",
+      icono: <BsPersonLinesFill />,
+      descripcion: "Visualiza y edita tu perfil de administrador.",
+      ruta: "/admin/perfil",
+    },
+    {
+      titulo: "Empresa",
+      icono: <FaBox />,
+      descripcion: "Administra la información de la empresa.",
+      ruta: "/admin/empresa",
+    },
+    {
+      titulo: "Preguntas Frecuentes",
+      icono: <FaQuestionCircle />,
+      descripcion: "Administra las preguntas frecuentes de la empresa.",
+      ruta: "/admin/preguntasFrecuentes",
+    },
+    {
+      titulo: "Predicción de ventas",
+      icono: <FaChartLine />,
+      descripcion: "Consulta la demanda estimada y anticipa el stock necesario.",
+      ruta: "/admin/prediccion",
+    },
+    {
+      titulo: "Inicio rápido (PIN)",
+      icono: <FaChartLine />,
+      descripcion: "Genera un PIN temporal para iniciar sesión desde el smartwatch.",
+      ruta: "/admin/inicio-rapido",
+    },
+    {
+      titulo: "Opiniones",
+      icono: <FaCommentDots />,
+      descripcion: "Aprueba o rechaza opiniones del público.",
+      ruta: "/admin/opiniones",
+    },
+    {
+      titulo: "Documentos Legales",
+      icono: <FaFileAlt />,
+      descripcion: "Crea, edita o consulta los documentos legales de la empresa.",
+      ruta: "/admin/documentos",
+    },
+  ];
 
-            {/* Sección de tarjetas con opciones */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 justify-items-center">
-                {/* Tarjeta de Configuración */}
-                <Link
-                    to="/admin/configuracion"
-                    className="bg-white p-4 sm:p-5 md:p-6 rounded-lg shadow-md hover:shadow-xl transition duration-300 transform hover:scale-105 max-w-sm w-full mx-auto"
-                >
-                    <FaCog className="text-4xl text-gray-700 mb-4" />
-                    <h2 className="text-xl font-semibold">Configuración</h2>
-                    <p className="text-gray-500 mt-2">Administra las configuraciones del sistema.</p>
-                </Link>
+  return (
+    <motion.div {...dashboardAnimation} className="p-6 min-h-screen bg-gradient-to-b from-blue-50 to-white">
+      <div className="text-center mb-10">
+        <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-2">
+          Panel de Administración
+        </h1>
+        <p className="text-gray-500">Gestiona todas las secciones de tu sistema desde aquí.</p>
+      </div>
 
-                {/* Tarjeta de Usuarios */}
-                <Link
-                    to="/admin/usuarios"
-                    className="bg-white p-4 sm:p-5 md:p-6 rounded-lg shadow-md hover:shadow-xl transition duration-300 transform hover:scale-105 max-w-sm w-full mx-auto"
-                >
-                    <FaUsers className="text-4xl text-gray-700 mb-4" />
-                    <h2 className="text-xl font-semibold">Usuarios</h2>
-                    <p className="text-gray-500 mt-2">Gestiona los usuarios del sistema.</p>
-                </Link>
-
-                {/* Tarjeta de Productos */}
-                <Link
-                    to="/admin/productos"
-                    className="bg-white p-4 sm:p-5 md:p-6 rounded-lg shadow-md hover:shadow-xl transition duration-300 transform hover:scale-105 max-w-sm w-full mx-auto"
-                >
-                    <FaBox className="text-4xl text-gray-700 mb-4" />
-                    <h2 className="text-xl font-semibold">Productos</h2>
-                    <p className="text-gray-500 mt-2">Administra el inventario de productos.</p>
-                </Link>
-
-                {/* Tarjeta de Empleados */}
-                <Link
-                    to="/admin/empleados"
-                    className="bg-white p-4 sm:p-5 md:p-6 rounded-lg shadow-md hover:shadow-xl transition duration-300 transform hover:scale-105 max-w-sm w-full mx-auto"
-                >
-                    <FaUserTie className="text-4xl text-gray-700 mb-4" />
-                    <h2 className="text-xl font-semibold">Empleados</h2>
-                    <p className="text-gray-500 mt-2">Gestiona la información de los empleados.</p>
-                </Link>
-
-                {/* Tarjeta de Perfil */}
-                <Link
-                    to="/admin/perfil"
-                    className="bg-white p-4 sm:p-5 md:p-6 rounded-lg shadow-md hover:shadow-xl transition duration-300 transform hover:scale-105 max-w-sm w-full mx-auto"
-                >
-                    <BsPersonLinesFill className="text-4xl text-gray-700 mb-4" />
-                    <h2 className="text-xl font-semibold">Perfil</h2>
-                    <p className="text-gray-500 mt-2">Visualiza y edita tu perfil de administrador.</p>
-                </Link>
-
-                {/* Tarjeta de Empresa */}
-                <Link
-                    to="/admin/empresa"
-                    className="bg-white p-4 sm:p-5 md:p-6 rounded-lg shadow-md hover:shadow-xl transition duration-300 transform hover:scale-105 max-w-sm w-full mx-auto"
-                >
-                    <FaBox className="text-4xl text-gray-700 mb-4" />
-                    <h2 className="text-xl font-semibold">Empresa</h2>
-                    <p className="text-gray-500 mt-2">Administra la información de la empresa.</p>
-                </Link>
-                {/* Tarjeta de Preguntas */}
-                <Link
-                    to="/admin/preguntasFrecuentes"
-                    className="bg-white p-4 sm:p-5 md:p-6 rounded-lg shadow-md hover:shadow-xl transition duration-300 transform hover:scale-105 max-w-sm w-full mx-auto"
-                >
-                    <FaQuestionCircle className="text-4xl text-gray-700 mb-4" />
-                    <h2 className="text-xl font-semibold">Preguntas Frecuentes</h2>
-                    <p className="text-gray-500 mt-2">Administra las preguntas frecuentes de la empresa</p>
-                </Link>
-                <Link
-                    to="/admin/gestionProductos"
-                    className="bg-white p-4 sm:p-5 md:p-6 rounded-lg shadow-md hover:shadow-xl transition duration-300 transform hover:scale-105 max-w-sm w-full mx-auto"
-                >
-                    <FaChartLine className="text-4xl text-gray-700 mb-4" />
-                    <h2 className="text-xl font-semibold">Analisis de ventas</h2>
-                    <p className="text-gray-500 mt-2">Modulo de prediccón de ventas para la toma de decisiones de productos</p>
-                </Link>
-                <Link
-                    to="/admin/inicio-rapido"
-                    className="bg-white p-4 sm:p-5 md:p-6 rounded-lg shadow-md hover:shadow-xl transition duration-300 transform hover:scale-105 max-w-sm w-full mx-auto"
-                >
-                    <FaChartLine className="text-4xl text-gray-700 mb-4" />
-                    <h2 className="text-xl font-semibold">Inicio rápido (PIN)</h2>
-                    <p className="text-gray-500 mt-2">Genera un PIN temporal para iniciar sesión desde el smartwatch.</p>
-                </Link>
-                <Link
-                    to="/admin/opiniones"
-                    className="bg-white p-4 sm:p-5 md:p-6 rounded-lg shadow-md hover:shadow-xl transition duration-300 transform hover:scale-105 max-w-sm w-full mx-auto"
-                    >
-                    <FaCommentDots className="text-4xl text-gray-700 mb-4" />
-                    <h2 className="text-xl font-semibold">Opiniones</h2>
-                    <p className="text-gray-500 mt-2">Aprueba o rechaza opiniones del público.</p>
-                </Link>
-                <Link
-                    to="/admin/documentos"
-                    className="bg-white p-4 sm:p-5 md:p-6 rounded-lg shadow-md hover:shadow-xl transition duration-300 transform hover:scale-105 max-w-sm w-full mx-auto"
-                    >
-                    <FaFileAlt className="text-4xl text-gray-700 mb-4" /> {/* Icono de documentos */}
-                    <h2 className="text-xl font-semibold">Documentos Legales</h2>
-                    <p className="text-gray-500 mt-2">Crea, edita o consulta los documentos legales de la empresa.</p>
-                </Link>
-
-
-
-                
+      {/* === Tarjetas principales === */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 justify-items-center">
+        {tarjetas.map((item, idx) => (
+          <Link
+            key={idx}
+            to={item.ruta}
+            className="group relative bg-white p-6 rounded-xl shadow-md hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.03] w-full max-w-sm overflow-hidden border border-gray-100"
+          >
+            <div className="flex flex-col items-center text-center">
+              <div className="p-4 rounded-full bg-blue-100 text-blue-600 text-4xl mb-4 transition-all duration-300 group-hover:bg-blue-600 group-hover:text-white">
+                {item.icono}
+              </div>
+              <h2 className="text-lg font-semibold text-gray-800 mb-1">
+                {item.titulo}
+              </h2>
+              <p className="text-gray-500 text-sm">{item.descripcion}</p>
             </div>
 
-            {/* Rutas para los componentes principales del administrador */}
-            <Routes>
-                <Route path="/admin/configuracion" element={<Configuracion />} />
-                <Route path="/admin/empresa" element={<Empresa />} />
-                <Route path="/admin/usuarios" element={<Usuarios />} />
-                <Route path="/admin/empleados" element={<Empleados />} />
-                <Route path="/admin/productos" element={<Productos />} />
-                <Route path="/admin/perfil" element={<Productos />} />
-            </Routes>
-        </motion.div>
-    );
+            {/* Indicador inferior animado */}
+            <div className="absolute bottom-0 left-0 w-0 h-1 bg-blue-600 transition-all duration-300 group-hover:w-full"></div>
+          </Link>
+        ))}
+      </div>
+
+      {/* === Rutas (para mantener compatibilidad interna) === */}
+      <Routes>
+        <Route path="/admin/configuracion" element={<Configuracion />} />
+        <Route path="/admin/empresa" element={<Empresa />} />
+        <Route path="/admin/usuarios" element={<Usuarios />} />
+        <Route path="/admin/empleados" element={<Empleados />} />
+        <Route path="/admin/productos" element={<Productos />} />
+        <Route path="/admin/perfil" element={<Productos />} />
+      </Routes>
+    </motion.div>
+  );
 };
 
 export default Dashboard;

@@ -3,6 +3,13 @@
 @tailwind components;
 @tailwind utilities;
 
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
 
 @layer utilities {
   .sidebar-enter {
@@ -14,9 +21,32 @@
   }
 }
 
-/* ----------------------------------------
-   🎞️ Animaciones personalizadas
------------------------------------------*/
+@keyframes fade-scale {
+  0% { opacity: 0; transform: scale(0.98); }
+  100% { opacity: 1; transform: scale(1); }
+}
+.animate-fade-scale {
+  animation: fade-scale 0.4s ease-out both;
+}
+
+
+
+@layer components {
+  .btn-principal:hover,
+  .btn-secundario:hover,
+  .btn-eliminar:hover,
+  .btn-confirmar:hover {
+    transform: translateY(-1px);
+  }
+  .btn-principal:active,
+  .btn-secundario:active,
+  .btn-eliminar:active,
+  .btn-confirmar:active {
+    transform: translateY(1px);
+  }
+}
+
+
 @keyframes fade-in-up {
   0% {
     opacity: 0;
@@ -45,34 +75,27 @@
   animation: slideIn 0.5s ease-out forwards;
 }
 
-/* ----------------------------------------
-   🧩 Importación de slick-carousel (si usas un carrusel con slick)
------------------------------------------*/
 @import "~slick-carousel/slick/slick.css";
 @import "~slick-carousel/slick/slick-theme.css";
 
-/* ----------------------------------------
-   🧱 Componentes reutilizables con @apply
------------------------------------------*/
+
 @layer components {
   /* === Botones principales: acciones clave como guardar, login, registro === */
-.btn-principal {
-  @apply bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition font-semibold;
-}
+  .btn-principal {
+    @apply bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 active:bg-blue-800 transition-all font-semibold shadow-sm;
+  }
+  
 
-/* === Botón de confirmación o éxito (opcional) === */
-.btn-confirmar {
-  @apply bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition font-semibold;
-}
+  .btn-confirmar {
+    @apply bg-emerald-600 text-white px-4 py-2 rounded-md hover:bg-emerald-700 active:bg-emerald-800 transition-all font-semibold;
+  }
 
-/* === Botones secundarios: cerrar, cancelar, atrás === */
 .btn-secundario {
-  @apply bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-800 transition text-sm font-medium;
+  @apply bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 active:bg-gray-700 transition-all font-medium;
 }
 
-/* === Botón eliminar / peligro === */
 .btn-eliminar {
-  @apply bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition font-semibold;
+  @apply bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 active:bg-red-800 transition-all font-semibold;
 }
 
 /* === Botón utilitario: agregar otro producto, añadir elemento === */
@@ -97,7 +120,9 @@
           
   
 }
- .link-subrayado {
+
+/* Estilos para enlaces subrayados */
+.link-subrayado {
   @apply text-black font-medium relative transition duration-200 ease-in-out;
 }
 
@@ -107,11 +132,14 @@
   width: 0;
   height: 2px;
   left: 0;
-  bottom: 0; /* más seguro que -2px para visibilidad constante */
-  background-color: currentColor; /* usa el mismo color del texto */
+  bottom: -2px;  
+  background-color: currentColor; /* Usa el mismo color del texto */
   transition: width 0.3s ease-in-out;
 }
 
+.link-subrayado:hover {
+  color: theme('colors.blue.600');
+}
 .link-subrayado:hover::after {
-  width: 100%;
+  background-color: theme('colors.blue.600');
 }

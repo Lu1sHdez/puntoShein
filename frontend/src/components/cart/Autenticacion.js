@@ -6,7 +6,7 @@ const ModalAutenticacion = ({ onClose }) => {
   const navigate = useNavigate();
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 backdrop-blur-sm">
       <motion.div
         className="bg-white rounded-2xl p-6 w-full max-w-md text-center shadow-lg"
         initial={{ opacity: 0, scale: 0.95 }}

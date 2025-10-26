@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { API_URL } from "../../../ApiConexion";
-import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/css';
-import 'swiper/css/navigation';
-import { Navigation, Autoplay } from 'swiper/modules';
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import "swiper/css/navigation";
+import { Navigation, Autoplay } from "swiper/modules";
 import { useNavigate } from "react-router-dom";
 
 const Categorias = () => {
@@ -14,7 +14,7 @@ const Categorias = () => {
   const [cargando, setCargando] = useState(false);
   const navigate = useNavigate();
 
-  // Función para mezclar array aleatoriamente (Fisher-Yates)
+  // Mezcla aleatoria
   const shuffleArray = (array) => {
     const newArray = [...array];
     for (let i = newArray.length - 1; i > 0; i--) {
@@ -24,7 +24,7 @@ const Categorias = () => {
     return newArray;
   };
 
-  // Cargar categorías
+  // Obtener categorías
   useEffect(() => {
     const obtenerCategorias = async () => {
       try {
@@ -37,7 +37,7 @@ const Categorias = () => {
     obtenerCategorias();
   }, []);
 
-  // Obtener productos aleatorios
+  // Obtener productos
   useEffect(() => {
     const obtenerProductos = async () => {
       setCargando(true);
@@ -45,17 +45,13 @@ const Categorias = () => {
         const res = await axios.get(`${API_URL}/api/productos/filtrar`);
         let productosFiltrados = res.data;
 
-        // Filtrar por categoría si hay una seleccionada
         if (categoriaSeleccionada) {
           productosFiltrados = productosFiltrados.filter(
             (p) => p.subcategoria?.categoria?.id === categoriaSeleccionada
           );
         }
 
-        // Mezclar los productos aleatoriamente
         const productosAleatorios = shuffleArray(productosFiltrados);
-        
-        // Limitar a 12 productos para no sobrecargar
         setProductos(productosAleatorios.slice(0, 12));
       } catch (error) {
         console.error("Error al obtener productos:", error);
@@ -68,21 +64,37 @@ const Categorias = () => {
   }, [categoriaSeleccionada]);
 
   return (
-    <section className="bg-blue-50 py-12">
-      <div className="max-w-7xl mx-auto px-6">
-        <h2 className="text-center text-3xl md:text-4xl font-extrabold text-gray-800 mb-10">
+    <section className="relative isolate overflow-hidden bg-white py-24 sm:py-32">
+      {/* Fondo difuminado azul corporativo */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-72"
+      >
+        <div
+          className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36rem] -translate-x-1/2 rotate-[30deg] 
+                     bg-gradient-to-tr from-blue-400 to-blue-700 opacity-25 sm:left-[calc(50%-30rem)] sm:w-[72rem]"
+          style={{
+            clipPath:
+              "polygon(74.1% 44.1%,100% 61.6%,97.5% 26.9%,85.5% 0.1%,80.7% 2%,72.5% 32.5%,60.2% 62.4%,52.4% 68.1%,47.5% 58.3%,45.2% 34.5%,27.5% 76.7%,0.1% 64.9%,17.9% 100%,27.6% 76.8%,76.1% 97.7%,74.1% 44.1%)",
+          }}
+        />
+      </div>
+
+      <div className="mx-auto max-w-7xl px-6 lg:px-8 text-center">
+        <h2 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl mb-10 animate-fade-in-up">
           Explora por categoría
         </h2>
 
-        {/* Filtros */}
-        <div className="flex flex-wrap justify-center gap-3 mb-6">
+        {/* Botones de categoría */}
+        <div className="flex flex-wrap justify-center gap-3 mb-12">
           <button
             onClick={() => setCategoriaSeleccionada(null)}
-            className={`px-4 py-1 rounded-full border text-sm font-medium transition ${
-              categoriaSeleccionada === null
-                ? "bg-blue-600 text-white border-blue-600"
-                : "border-gray-400 text-gray-700 hover:bg-gray-100"
-            }`}
+            className={`px-4 py-2 rounded-full border text-sm sm:text-base font-medium transition-all duration-200 
+              ${
+                categoriaSeleccionada === null
+                  ? "bg-blue-600 text-white border-blue-600 shadow-md"
+                  : "border-gray-300 text-gray-700 hover:bg-gray-100"
+              }`}
           >
             Todos
           </button>
@@ -91,11 +103,12 @@ const Categorias = () => {
             <button
               key={cat.id}
               onClick={() => setCategoriaSeleccionada(cat.id)}
-              className={`px-4 py-1 rounded-full border text-sm font-medium transition ${
-                categoriaSeleccionada === cat.id
-                  ? "bg-blue-600 text-white border-blue-600"
-                  : "border-gray-400 text-gray-700 hover:bg-gray-100"
-              }`}
+              className={`px-4 py-2 rounded-full border text-sm sm:text-base font-medium transition-all duration-200 
+                ${
+                  categoriaSeleccionada === cat.id
+                    ? "bg-blue-600 text-white border-blue-600 shadow-md"
+                    : "border-gray-300 text-gray-700 hover:bg-gray-100"
+                }`}
             >
               {cat.nombre}
             </button>
@@ -104,27 +117,35 @@ const Categorias = () => {
 
         {/* Productos */}
         {cargando ? (
-          <p className="text-center text-gray-500">Cargando productos...</p>
+          <p className="text-gray-500 text-sm sm:text-base">
+            Cargando productos...
+          </p>
         ) : productos.length === 0 ? (
-          <div className="text-center text-gray-600 py-10">
+          <div className="text-center text-gray-700 py-10">
             <div className="text-5xl mb-4">😔</div>
-            <h3 className="text-xl font-semibold mb-2">Lo sentimos...</h3>
-            <p className="text-gray-500">
-              No hay productos disponibles para esta categoría.<br />Prueba seleccionando otra.
+            <h3 className="text-xl font-semibold mb-2">
+              No hay productos disponibles
+            </h3>
+            <p className="text-gray-500 text-sm sm:text-base">
+              Prueba seleccionando otra categoría.
             </p>
           </div>
         ) : (
-          <div className="relative">
+          <div className="relative animate-fade-in-up">
             <Swiper
               modules={[Navigation, Autoplay]}
+              autoplay={{
+                delay: 3500,
+                disableOnInteraction: false,
+              }}
               navigation={{
-                nextEl: '.swiper-button-next',
-                prevEl: '.swiper-button-prev',
+                nextEl: ".swiper-button-next",
+                prevEl: ".swiper-button-prev",
               }}
               spaceBetween={20}
               slidesPerView={1}
               breakpoints={{
-                640: { slidesPerView: 2 },
+                480: { slidesPerView: 2 },
                 768: { slidesPerView: 3 },
                 1024: { slidesPerView: 4 },
               }}
@@ -132,19 +153,25 @@ const Categorias = () => {
             >
               {productos.map((producto) => (
                 <SwiperSlide key={producto.id}>
-                  <div className="bg-white rounded-lg shadow hover:shadow-lg p-4 transition text-left h-full">
-                    <button 
-                      onClick={() => navigate(`/producto/${producto.id}`)} 
+                  <div className="bg-white border border-gray-200 rounded-xl shadow hover:shadow-lg hover:scale-[1.02] transition-all duration-300 p-4 text-left h-full">
+                    <button
+                      onClick={() => navigate(`/producto/${producto.id}`)}
                       className="w-full text-left"
                     >
                       <img
                         src={producto.imagen}
                         alt={producto.nombre}
-                        className="w-full h-40 object-cover rounded mb-3"
+                        className="w-full h-44 sm:h-48 object-cover rounded-md mb-3"
                       />
-                      <h4 className="font-bold text-gray-800 text-sm truncate">{producto.nombre}</h4>
-                      <p className="text-xs text-gray-500 line-clamp-2">{producto.descripcion}</p>
-                      <p className="text-blue-600 font-semibold mt-1">${producto.precio}</p>
+                      <h4 className="font-semibold text-gray-800 text-sm sm:text-base truncate">
+                        {producto.nombre}
+                      </h4>
+                      <p className="text-xs sm:text-sm text-gray-500 line-clamp-2">
+                        {producto.descripcion}
+                      </p>
+                      <p className="text-blue-600 font-semibold mt-1 text-sm sm:text-base">
+                        ${producto.precio}
+                      </p>
                     </button>
                   </div>
                 </SwiperSlide>
@@ -156,9 +183,10 @@ const Categorias = () => {
         )}
 
         {/* CTA */}
-        <div className="mt-8 text-center">
-          <p className="text-gray-600 mb-4 text-sm md:text-base">
-            ¿No encontraste lo que buscabas? Explora nuestra tienda completa para descubrir todos los productos disponibles.
+        <div className="mt-16 text-center">
+          <p className="text-gray-600 mb-4 text-sm sm:text-base max-w-lg mx-auto">
+            ¿No encontraste lo que buscabas? Explora nuestra tienda completa
+            para descubrir todos los productos disponibles.
           </p>
           <button
             onClick={() => navigate("/cuerpo")}
@@ -168,8 +196,24 @@ const Categorias = () => {
           </button>
         </div>
       </div>
+
+      {/* Fondo inferior difuminado */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-25rem)]"
+      >
+        <div
+          className="relative left-[calc(50%+3rem)] aspect-[1155/678] w-[36rem] -translate-x-1/2 
+                     bg-gradient-to-tr from-blue-400 to-blue-700 opacity-25 
+                     sm:left-[calc(50%+36rem)] sm:w-[72rem]"
+          style={{
+            clipPath:
+              "polygon(74.1% 44.1%,100% 61.6%,97.5% 26.9%,85.5% 0.1%,80.7% 2%,72.5% 32.5%,60.2% 62.4%,52.4% 68.1%,47.5% 58.3%,45.2% 34.5%,27.5% 76.7%,0.1% 64.9%,17.9% 100%,27.6% 76.8%,76.1% 97.7%,74.1% 44.1%)",
+          }}
+        />
+      </div>
     </section>
   );
 };
 
-export default Categorias;  
+export default Categorias;

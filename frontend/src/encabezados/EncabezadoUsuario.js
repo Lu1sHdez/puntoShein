@@ -88,7 +88,7 @@ const EncabezadoUsuario = () => {
         </Link>
         <Link
           to = "/cuerpo"
-          className="link-subrayado"
+          className="link-subrayado "
           >
           Productos
         </Link>
@@ -96,7 +96,6 @@ const EncabezadoUsuario = () => {
 
           <Link
             to = "/productos/carrito"
-
             className="link-subrayado flex items-center gap-2 text-black hover:text-black transition font-medium"
           >
             <FaShoppingCart className="text-2xl" />

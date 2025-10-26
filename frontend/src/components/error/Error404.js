@@ -25,8 +25,8 @@ const Error404 = () => {
         {/* Botón de regreso */}
         <Link
           to="/"
-          className="mt-6 inline-block px-6 py-3 bg-pink-500 text-white rounded-lg text-lg font-semibold 
-          shadow-lg hover:bg-pink-700 transition transform hover:scale-105"
+          className="mt-6 inline-block px-6 py-3 bg-blue-500 text-white rounded-lg text-lg font-semibold 
+          shadow-lg hover:bg-blue-700 transition transform hover:scale-105"
         >
           Volver al inicio
         </Link>

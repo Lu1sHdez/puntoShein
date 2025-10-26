@@ -16,7 +16,7 @@ const LayoutEmpleado = () => {
                              "/admin/preguntasFrecuentes"].includes(location.pathname);
     
   return (
-    <div className="min-h-screen pt-20">
+    <div className="min-h-screen pt-2">
       {mostrarEncabezado && <EncabezadoAdmin />}
       <div className="flex">
         <div className="flex-1">

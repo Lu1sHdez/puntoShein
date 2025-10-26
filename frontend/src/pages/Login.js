@@ -1,31 +1,30 @@
-import React, { useEffect, useState,useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import ReCAPTCHA from "react-google-recaptcha";
 import FormularioInput from "../components/form/FormularioInput";
 import useFormulario from "../hooks/useFormulario";
-import { formAnimation } from "./Funciones"; 
-import { motion } from "framer-motion";
+import { formAnimation } from "./Funciones";
 import Boton from "../elements/Boton";
-import { API_URL } from '../ApiConexion';
-import ReCAPTCHA from "react-google-recaptcha";
+import { API_URL } from "../ApiConexion";
 import CargandoModal from "../Animations/CargandoModal";
 
 const siteKey = process.env.REACT_APP_RECAPTCHA_SITE_KEY;
 
 const Login = () => {
+  const navigate = useNavigate();
   const [captchaToken, setCaptchaToken] = useState(null);
   const recaptchaRef = useRef(null);
-  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-  const [errorValidacion, setErrorValidacion] = useState(""); // Estado para error
-  const [errorCampos, setErrorCampos] = useState({ correo: false, password: false }); 
-  
-  //  Se indica que es un formulario de autenticación
+  const [errorValidacion, setErrorValidacion] = useState("");
+  const [errorCampos, setErrorCampos] = useState({ correo: false, password: false });
+
   const { datos, mensaje, handleChange, handleSubmit, loading } = useFormulario(
     { correo: "", password: "" },
     `${API_URL}/api/autenticacion/login`,
     `/`,
     true
-  ); 
+  );
 
   useEffect(() => {
     if (localStorage.getItem("token")) {
@@ -35,13 +34,13 @@ const Login = () => {
 
   useEffect(() => {
     if (mensaje.texto) {
-      setErrorValidacion(mensaje.texto); //  Detecta el cambio y actualiza el estado
+      setErrorValidacion(mensaje.texto);
     }
   }, [mensaje.texto]);
 
   const validarYEnviar = async (e) => {
     e.preventDefault();
-  
+
     if (!datos.correo || !datos.password) {
       setErrorValidacion("El correo y la contraseña son obligatorios.");
       setErrorCampos({
@@ -50,58 +49,60 @@ const Login = () => {
       });
       return;
     }
-  
+
     if (!captchaToken) {
       setErrorValidacion("Por favor verifica que no eres un robot.");
       return;
     }
-  
+
     setErrorValidacion("");
     setErrorCampos({ correo: false, password: false });
-  
-    //Llama al hook pasándole el token
+
     const resultado = await handleSubmit(e, { tokenRecaptcha: captchaToken });
-  
+
     if (resultado && resultado.token && resultado.usuario) {
       const { token, usuario } = resultado;
       localStorage.setItem("token", token);
-  
-      if (usuario.rol === "administrador") {
-        navigate("/admin/dashboard");
-      } else if (usuario.rol === "usuario") {
-        navigate("/cuerpo");
-      } else {
-        navigate("/");
-      }
+
+      if (usuario.rol === "administrador") navigate("/admin/dashboard");
+      else if (usuario.rol === "usuario") navigate("/cuerpo");
+      else navigate("/");
     }
-    
+
     if (!resultado || !resultado.token || !resultado.usuario) {
-      setCaptchaToken(null); // Limpia el token
-      if (recaptchaRef.current) {
-        recaptchaRef.current.reset(); // Reinicia el captcha
-      }
+      setCaptchaToken(null);
+      recaptchaRef.current?.reset();
     }
-    
   };
-  
-  
 
   return (
-    <div className="flex items-center justify-center mt-0">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-      {loading && <CargandoModal mensaje="Iniciando sesión..." visible={true} />}
-        
-        <h2 className="text-2xl font-semibold text-center text-gray-700">Iniciar Sesión</h2>
+    <section className="min-h-screen flex items-center justify-center bg-gradient-to-b from-blue-50 to-white px-4">
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8"
+      >
+        {loading && <CargandoModal mensaje="Iniciando sesión..." visible />}
 
-        {/* Mensaje de error estático en rojo arriba de los inputs */}
+        <h2 className="text-3xl font-bold text-center text-gray-800 mb-2">
+          Iniciar Sesión
+        </h2>
+        <p className="text-center text-gray-500 mb-6 text-sm">
+          Bienvenido de nuevo. Ingresa tus datos para continuar.
+        </p>
+
         {errorValidacion && (
           <div className="mb-4 text-red-500 text-sm font-semibold text-center">
             {errorValidacion}
           </div>
         )}
 
-        <motion.div {...formAnimation}>
-        <form onSubmit={validarYEnviar} className="mt-6">
+        <motion.form
+          onSubmit={validarYEnviar}
+          {...formAnimation}
+          className="space-y-4"
+        >
           <FormularioInput
             label="Correo Electrónico"
             type="email"
@@ -109,27 +110,28 @@ const Login = () => {
             placeholder="ejemplo@dominio.com"
             value={datos.correo}
             onChange={handleChange}
-            error={errorCampos.correo} // Agregar propiedad error
+            error={errorCampos.correo}
           />
 
           <FormularioInput
             label="Contraseña"
             type={showPassword ? "text" : "password"}
             name="password"
-            placeholder="**************"
+            placeholder="********"
             value={datos.password}
             onChange={handleChange}
             showPassword={showPassword}
             togglePassword={() => setShowPassword(!showPassword)}
-            error={errorCampos.password} // Agregar propiedad error
-          />
-          <ReCAPTCHA
-            ref={recaptchaRef}
-            sitekey={siteKey}
-            onChange={(token) => setCaptchaToken(token)}
-            className="mt-4 mx-auto"
+            error={errorCampos.password}
           />
 
+          <div className="flex justify-center mt-4">
+            <ReCAPTCHA
+              ref={recaptchaRef}
+              sitekey={siteKey}
+              onChange={(token) => setCaptchaToken(token)}
+            />
+          </div>
 
           <div className="mt-3 text-right">
             <button
@@ -144,23 +146,22 @@ const Login = () => {
           <Boton
             texto="Iniciar sesión"
             onClick={validarYEnviar}
-            estiloPersonalizado={`btn-principal w-full ${
+            estiloPersonalizado={`btn-principal w-full py-2.5 mt-2 ${
               loading ? "opacity-50 cursor-not-allowed" : ""
             }`}
+            disabled={loading}
           />
-
 
           <button
             type="button"
             onClick={() => navigate("/registro")}
-            className="mt-3 w-full text-blue-600 hover:underline"
+            className="block w-full text-sm text-blue-600 hover:underline text-center mt-3"
           >
             ¿No tienes cuenta? Regístrate aquí
           </button>
-        </form>
-        </motion.div>
-      </div>
-    </div>
+        </motion.form>
+      </motion.div>
+    </section>
   );
 };
 

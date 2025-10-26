@@ -1,19 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { API_URL } from '../../../../ApiConexion';
-import CargandoModal from '../../../../Animations/CargandoModal';
-import { mostrarConfirmacion } from '../../../../Animations/ConfirmacionSwal';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { API_URL } from "../../../../ApiConexion";
+import CargandoModal from "../../../../Animations/CargandoModal";
+import { mostrarConfirmacion } from "../../../../Animations/ConfirmacionSwal";
+import { motion, AnimatePresence } from "framer-motion";
 
 const ModalGestionTallas = ({ visible, onClose, refreshTallas }) => {
   const [tallas, setTallas] = useState([]);
-  const [nuevaTalla, setNuevaTalla] = useState('');
-  const [mensaje, setMensaje] = useState('');
+  const [nuevaTalla, setNuevaTalla] = useState("");
+  const [mensaje, setMensaje] = useState("");
   const [cargando, setCargando] = useState(false);
 
   useEffect(() => {
     if (visible) {
-      axios.get(`${API_URL}/api/tallas/obtener`, { withCredentials: true })
-        .then(res => setTallas(res.data));
+      axios
+        .get(`${API_URL}/api/tallas/obtener`, { withCredentials: true })
+        .then((res) => setTallas(res.data))
+        .catch(() => setMensaje("Error al obtener tallas"));
     }
   }, [visible]);
 
@@ -22,12 +25,16 @@ const ModalGestionTallas = ({ visible, onClose, refreshTallas }) => {
 
     setCargando(true);
     try {
-      await axios.post(`${API_URL}/api/tallas/crear`, { nombre: nuevaTalla }, { withCredentials: true });
-      setNuevaTalla('');
-      setMensaje('Talla creada con éxito');
+      await axios.post(
+        `${API_URL}/api/tallas/crear`,
+        { nombre: nuevaTalla },
+        { withCredentials: true }
+      );
+      setNuevaTalla("");
+      setMensaje("Talla creada con éxito");
       await refreshTallas();
     } catch (error) {
-      setMensaje(error.response?.data?.mensaje || 'Error al crear talla');
+      setMensaje(error.response?.data?.mensaje || "Error al crear talla");
     } finally {
       setCargando(false);
     }
@@ -45,10 +52,12 @@ const ModalGestionTallas = ({ visible, onClose, refreshTallas }) => {
 
     setCargando(true);
     try {
-      await axios.delete(`${API_URL}/api/tallas/${id}`, { withCredentials: true });
+      await axios.delete(`${API_URL}/api/tallas/${id}`, {
+        withCredentials: true,
+      });
       await refreshTallas();
-      setTallas(prev => prev.filter(t => t.id !== id));
-      setMensaje('Talla eliminada correctamente');
+      setTallas((prev) => prev.filter((t) => t.id !== id));
+      setMensaje("Talla eliminada correctamente");
     } catch (error) {
       setMensaje("Error al eliminar talla");
     } finally {
@@ -60,7 +69,7 @@ const ModalGestionTallas = ({ visible, onClose, refreshTallas }) => {
     if (nuevoNombre.trim() === nombreAnterior.trim()) return;
 
     const confirmado = await mostrarConfirmacion({
-      titulo: `¿Actualizar talla?`,
+      titulo: "¿Actualizar talla?",
       texto: `¿Deseas cambiar "${nombreAnterior}" a "${nuevoNombre}"?`,
       icono: "info",
       confirmText: "Sí, actualizar",
@@ -70,7 +79,11 @@ const ModalGestionTallas = ({ visible, onClose, refreshTallas }) => {
 
     setCargando(true);
     try {
-      await axios.put(`${API_URL}/api/tallas/${id}`, { nombre: nuevoNombre }, { withCredentials: true });
+      await axios.put(
+        `${API_URL}/api/tallas/${id}`,
+        { nombre: nuevoNombre },
+        { withCredentials: true }
+      );
       await refreshTallas();
       setMensaje("Talla actualizada correctamente");
     } catch (error) {
@@ -83,55 +96,108 @@ const ModalGestionTallas = ({ visible, onClose, refreshTallas }) => {
   if (!visible) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-40 backdrop-blur-sm z-50 flex justify-center items-center">
-      <CargandoModal visible={cargando} mensaje="Procesando..." />
-      <div className="bg-white p-6 rounded-lg w-full max-w-md shadow-lg">
-        <h2 className="text-xl font-bold mb-4">Gestión de Tallas</h2>
-
-        <input
-          type="text"
-          value={nuevaTalla}
-          onChange={(e) => setNuevaTalla(e.target.value)}
-          placeholder="Nombre de la talla"
-          className="w-full border p-2 rounded mb-2"
-        />
-        <button
-          onClick={crearTalla}
-          disabled={cargando}
-          className="bg-blue-500 text-white px-4 py-2 rounded w-full mb-4 hover:bg-blue-600"
+    <AnimatePresence>
+      {visible && (
+        <motion.div
+          className="fixed inset-0 z-50 bg-black bg-opacity-40 backdrop-blur-sm overflow-y-auto"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
         >
-          Crear Talla
-        </button>
+          <CargandoModal visible={cargando} mensaje="Procesando..." />
 
-        {mensaje && <p className="text-sm text-green-600 mb-3">{mensaje}</p>}
-
-        <ul>
-          {tallas.map((t) => (
-            <li key={t.id} className="flex justify-between items-center border-b py-1">
-              <input
-                type="text"
-                defaultValue={t.nombre}
-                onBlur={(e) => actualizarTalla(t.id, e.target.value, t.nombre)}
-                className="flex-1 p-1 border rounded mr-2"
-              />
+          <motion.div
+            initial={{ y: 30, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 20, opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="relative mx-auto mt-10 sm:mt-14 bg-white rounded-3xl shadow-2xl w-[95%] max-w-lg overflow-hidden border border-gray-100"
+          >
+            {/* === Encabezado === */}
+            <div className="sticky top-0 bg-gradient-to-r from-blue-600 to-blue-500 text-white px-6 py-4 flex justify-between items-center">
+              <h2 className="text-lg sm:text-xl font-bold">Gestión de Tallas</h2>
               <button
-                onClick={() => eliminarTalla(t.id, t.nombre)}
-                className="text-red-600 hover:underline"
+                onClick={onClose}
+                className="text-white bg-blue-700/40 hover:bg-blue-800 px-3 py-1 rounded-md text-sm font-medium transition"
               >
-                Eliminar
+                Cerrar ✕
               </button>
-            </li>
-          ))}
-        </ul>
+            </div>
 
-        <button
-          onClick={onClose}
-          className="mt-4 px-4 py-2 bg-gray-400 text-white rounded hover:bg-gray-500 w-full"
-        >
-          Cerrar
-        </button>
-      </div>
-    </div>
+            {/* === Contenido === */}
+            <div className="p-6 sm:p-8 max-h-[80vh] overflow-y-auto">
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Nueva talla
+                </label>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={nuevaTalla}
+                    onChange={(e) => setNuevaTalla(e.target.value)}
+                    placeholder="Ej: M, L, XL"
+                    className="flex-1 p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 outline-none transition"
+                  />
+                  <button
+                    onClick={crearTalla}
+                    disabled={cargando}
+                    className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 active:bg-blue-800 font-medium transition"
+                  >
+                    Crear
+                  </button>
+                </div>
+              </div>
+
+              {mensaje && (
+                <p
+                  className={`text-sm mb-4 text-center ${
+                    mensaje.toLowerCase().includes("error")
+                      ? "text-red-600"
+                      : "text-green-600"
+                  }`}
+                >
+                  {mensaje}
+                </p>
+              )}
+
+              {/* === Lista de tallas === */}
+              <ul className="divide-y divide-gray-100">
+                {tallas.map((t) => (
+                  <li
+                    key={t.id}
+                    className="flex justify-between items-center py-2"
+                  >
+                    <input
+                      type="text"
+                      defaultValue={t.nombre}
+                      onBlur={(e) =>
+                        actualizarTalla(t.id, e.target.value, t.nombre)
+                      }
+                      className="flex-1 p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 outline-none transition"
+                    />
+                    <button
+                      onClick={() => eliminarTalla(t.id, t.nombre)}
+                      className="text-red-600 hover:text-red-700 text-sm font-semibold ml-3"
+                    >
+                      Eliminar
+                    </button>
+                  </li>
+                ))}
+              </ul>
+
+              <div className="pt-6">
+                <button
+                  onClick={onClose}
+                  className="w-full px-4 py-2 bg-gray-400 text-white rounded-md hover:bg-gray-500 active:bg-gray-600 transition font-semibold"
+                >
+                  Cerrar
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 };
 

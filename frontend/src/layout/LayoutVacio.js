@@ -5,7 +5,7 @@ import EncabezadoSimple from "../encabezados/EncabezadoSimple";
 
 const LayoutVacio = () => {
   return (
-    <div className="min-h-screen pt-20">
+    <div className="min-h-screen pt-2">
       {<EncabezadoSimple />}
       <Outlet />
     </div>

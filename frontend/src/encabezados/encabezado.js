@@ -1,129 +1,275 @@
-import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import useAuth from "../hooks/useAuth";
+import React, { useState, useEffect, useRef } from "react";
+import {
+  Navbar,
+  MobileNav,
+  Typography,
+  IconButton,
+} from "@material-tailwind/react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import useSesionUsuario from "../context/useSesionUsuario";
+import ReactDOM from "react-dom";
 import { API_URL } from "../ApiConexion";
 import axios from "axios";
-import CerrarSesionModal from "../modal/CerrarSesion"; // ✅ IMPORTAR MODAL
+import {
+  BsBoxSeam,
+  BsBoxArrowInRight,
+  BsPersonPlus,
+  BsBoxArrowRight,
+  BsShop,
+} from "react-icons/bs";
+import CerrarSesionModal from "../modal/CerrarSesion";
 
-const EncabezadoBienvenida = () => {
+const EncabezadoResponsive = () => {
   const navigate = useNavigate();
-  const { logout } = useAuth();
-  const { usuarioAutenticado, datos } = useSesionUsuario();
+  const location = useLocation();
+  const { usuarioAutenticado } = useSesionUsuario();
+
   const [empresa, setEmpresa] = useState(null);
-  const [mostrarModalCerrarSesion, setMostrarModalCerrarSesion] = useState(false); // ✅ Estado del modal
+  const [openNav, setOpenNav] = useState(false);
+  const [mostrarModalCerrarSesion, setMostrarModalCerrarSesion] = useState(false);
+  const [mostrarNavbar, setMostrarNavbar] = useState(true);
+  const [scrollProgress, setScrollProgress] = useState(0);
 
-  // Iniciales
-  const generarIniciales = (nombre) => {
-    if (!nombre) return "";
-    const palabras = nombre.trim().split(" ");
-    return palabras.length >= 2
-      ? `${palabras[0][0]}${palabras[1][0]}`.toUpperCase()
-      : palabras[0][0].toUpperCase();
-  };
+  const lastScrollY = useRef(0);
+  const ticking = useRef(false);
 
-  const iniciales = generarIniciales(datos?.nombre);
-  const fotoPerfil = datos?.foto_perfil;
-  const nombreUsuario = datos?.nombre;
-
+  // === Obtener datos de empresa ===
   useEffect(() => {
-    const obtenerDatos = async () => {
+    if (empresa) return;
+    const obtenerEmpresa = async () => {
       try {
-        const empresaRes = await axios.get(`${API_URL}/api/empresa/empresa`, {
+        const res = await axios.get(`${API_URL}/api/empresa/empresa`, {
           withCredentials: true,
         });
-        setEmpresa(empresaRes.data);
+        setEmpresa(res.data);
       } catch (error) {
-        console.error("Error al cargar datos:", error);
+        console.error("Error al cargar datos de empresa:", error);
       }
     };
+    obtenerEmpresa();
+  }, [empresa]);
 
-    obtenerDatos();
+  // === Ocultar navbar al hacer scroll hacia abajo ===
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentY = window.scrollY;
+
+      if (!ticking.current) {
+        window.requestAnimationFrame(() => {
+          setMostrarNavbar(currentY <= lastScrollY.current || currentY < 60);
+          lastScrollY.current = currentY;
+          ticking.current = false;
+        });
+        ticking.current = true;
+      }
+
+      // progreso de scroll
+      const totalHeight = document.body.scrollHeight - window.innerHeight;
+      const progress = (currentY / totalHeight) * 100;
+      setScrollProgress(progress);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  return (
-    <header className="bg-gray-50 shadow-sm fixed top-0 left-0 w-full z-50 border-b border-gray-200">
-      <div className="max-w-6xl mx-auto px-4 py-3 flex flex-col sm:flex-row items-center justify-between gap-4">
-        {/* Empresa */}
-        <Link to="/" className="flex items-center space-x-4">
-          {empresa && (
-            <>
-              <img
-                src={empresa.logo}
-                alt="Logo de empresa"
-                className="h-14 w-14 rounded-full object-cover shadow-md border border-gray-300"
-              />
-              <h1 className="text-3xl font-bold text-black-600 uppercase">
-                {empresa.nombre}
-              </h1>
-            </>
-          )}
-        </Link>
+  // === Cerrar menú móvil al hacer clic fuera ===
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (openNav && !e.target.closest(".menu-container")) {
+        setOpenNav(false);
+      }
+    };
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, [openNav]);
 
-        <Link to="/cuerpo" className="link-subrayado">
+  // === Lista de navegación ===
+  const navList = (
+    <ul className="flex flex-col gap-4 lg:flex-row lg:items-center lg:gap-8 text-gray-800 font-medium">
+      <li>
+        <Link
+          to="/cuerpo"
+          onClick={() => setOpenNav(false)}
+          className={`flex items-center gap-2 relative transition-all duration-200 ${
+            location.pathname === "/cuerpo"
+              ? "text-blue-600 font-semibold after:absolute after:bottom-[-4px] after:left-0 after:w-full after:h-[2px] after:bg-blue-600 after:rounded"
+              : "text-gray-700 hover:text-blue-600"
+          }`}
+        >
+          <BsBoxSeam className="text-blue-600" />
           Productos
         </Link>
+      </li>
 
-        {/* Usuario autenticado */}
-        {usuarioAutenticado && datos && (
-          <div className="flex items-center space-x-4">
-            {/* Perfil */}
-            <div
-              className="flex items-center space-x-2 group cursor-pointer"
-              onClick={() => navigate("/usuario/perfil")}
+      {usuarioAutenticado ? (
+        <li>
+          <button
+            onClick={() => {
+              setMostrarModalCerrarSesion(true);
+              setOpenNav(false);
+            }}
+            className="flex items-center gap-2 hover:text-red-600 transition-colors"
+          >
+            <BsBoxArrowRight className="text-blue-600" />
+            Cerrar sesión
+          </button>
+        </li>
+      ) : (
+        <>
+          <li>
+            <button
+              onClick={() => {
+                navigate("/login");
+                setOpenNav(false);
+              }}
+              className={`flex items-center gap-2 hover:text-blue-600 transition-colors ${
+                location.pathname === "/login" ? "text-blue-600 font-semibold" : ""
+              }`}
             >
-              {fotoPerfil ? (
-                <img
-                  src={fotoPerfil}
-                  alt="Foto de perfil"
-                  className="h-10 w-10 rounded-full object-cover border border-gray-300 shadow"
+              <BsBoxArrowInRight className="text-blue-600" />
+              Ingresar
+            </button>
+          </li>
+          <li>
+            <button
+              onClick={() => {
+                navigate("/registro");
+                setOpenNav(false);
+              }}
+              className={`flex items-center gap-2 hover:text-blue-600 transition-colors ${
+                location.pathname === "/registro" ? "text-blue-600 font-semibold" : ""
+              }`}
+            >
+              <BsPersonPlus className="text-blue-600" />
+              Registrate
+            </button>
+          </li>
+        </>
+      )}
+    </ul>
+  );
+
+  return (
+    <>
+      <Navbar
+        blurred={false}
+        role="navigation"
+        aria-label="Barra de navegación principal"
+        className={`sticky top-0 z-50 mx-auto max-w-full px-3 sm:px-6 lg:px-8 py-3
+        bg-white/80 backdrop-blur-xl border-b border-gray-200 shadow-md/30
+        transition-all duration-500 ease-in-out transform
+        ${mostrarNavbar ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-full"}`}
+      >
+        <div className="menu-container flex items-center justify-between text-gray-900">
+          {/* Logo y nombre de empresa */}
+          <div
+            onClick={() => navigate("/")}
+            className="flex items-center gap-3 cursor-pointer select-none animate-fade-in-up"
+          >
+            {empresa?.logo ? (
+              <img
+                src={empresa.logo}
+                alt="Logo de la empresa"
+                className="h-10 w-10 rounded-full object-cover ring-2 ring-blue-200"
+              />
+            ) : (
+              <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
+                <BsShop className="text-blue-600 text-xl" />
+              </div>
+            )}
+            <Typography
+              as="span"
+              className="font-bold text-base sm:text-lg uppercase tracking-wide"
+            >
+              {empresa?.nombre || "Punto Shein"}
+            </Typography>
+          </div>
+
+          {/* Menú Desktop */}
+          <div className="hidden lg:block">{navList}</div>
+
+          {/* Botón hamburguesa móvil */}
+          <IconButton
+            variant="text"
+            ripple={false}
+            aria-expanded={openNav}
+            aria-controls="mobile-menu"
+            aria-label="Abrir menú de navegación"
+            className="ml-auto text-gray-800 hover:bg-transparent focus:bg-transparent active:bg-transparent lg:hidden"
+            onClick={() => setOpenNav(!openNav)}
+          >
+            {openNav ? (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                className="h-6 w-6"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M6 18L18 6M6 6l12 12"
                 />
-              ) : (
-                <div className="h-10 w-10 bg-black text-white rounded-full flex items-center justify-center font-semibold shadow">
-                  {iniciales}
-                </div>
-              )}
-              <span className="text-sm text-gray-700 group-hover:text-black font-medium">
-                {nombreUsuario}
-              </span>
-            </div>
+              </svg>
+            ) : (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              </svg>
+            )}
+          </IconButton>
+        </div>
 
-            {/* Botón Cerrar sesión */}
-            <button
-              onClick={() => setMostrarModalCerrarSesion(true)}
-              className="link-subrayado"
-            >
-              Cerrar sesión
-            </button>
-          </div>
+        {/* Menú móvil animado */}
+        <MobileNav
+          open={openNav}
+          className={`pb-3 transform transition-all duration-500 ease-in-out origin-top ${
+            openNav
+              ? "max-h-[400px] opacity-100 translate-y-0"
+              : "max-h-0 opacity-0 -translate-y-2"
+          }`}
+        >
+          <div className="pt-2 border-t border-gray-100">{navList}</div>
+        </MobileNav>
+
+        {/* Barra de progreso del scroll */}
+        <div
+          className="absolute bottom-0 left-0 h-[2px] bg-blue-600 transition-all"
+          style={{ width: `${scrollProgress}%` }}
+        />
+      </Navbar>
+
+      {/* Overlay oscuro en móvil */}
+      {openNav && (
+        <div
+          className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40 lg:hidden"
+          onClick={() => setOpenNav(false)}
+        ></div>
+      )}
+
+      {/* Modal de cierre de sesión */}
+      {mostrarModalCerrarSesion &&
+        ReactDOM.createPortal(
+          <CerrarSesionModal
+            visible={mostrarModalCerrarSesion}
+            onClose={() => setMostrarModalCerrarSesion(false)}
+          />,
+          document.body
         )}
-
-        {/* No autenticado */}
-        {!usuarioAutenticado && (
-          <div className="flex gap-3">
-            <button
-              onClick={() => navigate("/login")}
-              className="link-subrayado"
-            >
-              Iniciar sesión
-            </button>
-            <button
-              onClick={() => navigate("/registro")}
-              className="link-subrayado"
-            >
-              Regístrate
-            </button>
-          </div>
-        )}
-      </div>
-
-      {/* Modal Cerrar Sesión */}
-      <CerrarSesionModal
-        visible={mostrarModalCerrarSesion}
-        onClose={() => setMostrarModalCerrarSesion(false)}
-      />
-    </header>
+    </>
   );
 };
 
-export default EncabezadoBienvenida;
+export default EncabezadoResponsive;

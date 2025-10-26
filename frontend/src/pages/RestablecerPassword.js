@@ -1,20 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { motion } from "framer-motion";
 import FormularioInput from "../components/form/FormularioInput";
 import useFormulario from "../hooks/useFormulario";
 import { formAnimation } from "./Funciones";
-import { motion } from "framer-motion";
 import Boton from "../elements/Boton";
 import { API_URL } from "../ApiConexion";
+import CargandoModal from "../Animations/CargandoModal";
 
 const RestablecerPassword = () => {
   const navigate = useNavigate();
   const location = useLocation();
+
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [errorValidacion, setErrorValidacion] = useState(""); // Estado para errores
-  const [tiempoRestante, setTiempoRestante] = useState(""); // Estado para tiempo restante
-  const [isError, setIsError] = useState(false); // Estado para manejar errores desde el backend
+  const [errorValidacion, setErrorValidacion] = useState("");
+  const [tiempoRestante, setTiempoRestante] = useState("");
+  const [isError, setIsError] = useState(false);
 
   // Obtener token de la URL
   const consulta = new URLSearchParams(location.search);
@@ -23,22 +25,21 @@ const RestablecerPassword = () => {
   const { datos, mensaje, handleChange, handleSubmit, loading } = useFormulario(
     { nuevaContrasena: "", confirmarContrasena: "", token },
     `${API_URL}/api/autenticacion/restablecerPassword`,
-    `/login`
+    `/login`,
+    false
   );
 
   useEffect(() => {
     if (mensaje.tipo === "error") {
-      // Si el mensaje de error contiene un tiempo de espera, lo guardamos en el estado correspondiente
       if (mensaje.texto.includes("intentalo en")) {
         setIsError(true);
-        setTiempoRestante(mensaje.texto); // Guardar el mensaje del tiempo restante
+        setTiempoRestante(mensaje.texto);
       } else {
-        setErrorValidacion(mensaje.texto); // Mostrar otros mensajes de error
-        setIsError(false); // Restablecer estado de error
+        setErrorValidacion(mensaje.texto);
+        setIsError(false);
       }
     }
   }, [mensaje]);
-  
 
   const validarYEnviar = async (e) => {
     e.preventDefault();
@@ -48,26 +49,46 @@ const RestablecerPassword = () => {
       return;
     }
 
-    if (!/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(datos.nuevaContrasena)) {
+    const regexContrasena =
+      /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+    if (!regexContrasena.test(datos.nuevaContrasena)) {
       setErrorValidacion(
-        "La contraseña debe tener mínimo 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial."
+        "La contraseña debe tener al menos 8 caracteres, incluyendo una mayúscula, una minúscula, un número y un carácter especial."
       );
       return;
     }
 
-    setErrorValidacion(""); // Limpiar errores anteriores
+    setErrorValidacion("");
     await handleSubmit(e);
   };
 
   return (
-    <div className="flex items-center justify-center mt-0">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-        <h2 className="text-2xl font-semibold text-center text-gray-700">Restablecer Contraseña</h2>
+    <section className="min-h-screen flex items-center justify-center bg-gradient-to-b from-blue-50 to-white px-4">
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8"
+      >
+        {loading && (
+          <CargandoModal
+            mensaje="Restableciendo contraseña..."
+            visible={loading}
+          />
+        )}
 
-        {/* Mensaje de error estático arriba del formulario */}
+        <h2 className="text-3xl font-bold text-center text-gray-800 mb-2">
+          Restablecer Contraseña
+        </h2>
+        <p className="text-center text-gray-500 mb-6 text-sm">
+          Ingresa una nueva contraseña segura para tu cuenta.
+        </p>
+
+        {/* Mensajes de error */}
         {isError && (
           <div className="mb-4 text-red-500 text-sm font-semibold text-center">
-            {tiempoRestante} {/* Mostrar el mensaje de tiempo restante */}
+            {tiempoRestante}
           </div>
         )}
         {errorValidacion && !isError && (
@@ -76,50 +97,48 @@ const RestablecerPassword = () => {
           </div>
         )}
 
-        <motion.div {...formAnimation}>
-          <form onSubmit={validarYEnviar} className="mt-6">
-            {/* Nueva Contraseña */}
-            <FormularioInput
-              label="Nueva Contraseña"
-              type={showPassword ? "text" : "password"}
-              name="nuevaContrasena"
-              placeholder="Ingresa tu nueva contraseña"
-              value={datos.nuevaContrasena}
-              onChange={handleChange}
-              showPassword={showPassword}
-              togglePassword={() => setShowPassword(!showPassword)}
-              required
-            />
+        <motion.form onSubmit={validarYEnviar} {...formAnimation}>
+          <FormularioInput
+            label="Nueva Contraseña"
+            type={showPassword ? "text" : "password"}
+            name="nuevaContrasena"
+            placeholder="Ingresa tu nueva contraseña"
+            value={datos.nuevaContrasena}
+            onChange={handleChange}
+            showPassword={showPassword}
+            togglePassword={() => setShowPassword(!showPassword)}
+            required
+          />
 
-            {/* Confirmar Contraseña */}
-            <FormularioInput
-              label="Confirmar Contraseña"
-              type={showConfirmPassword ? "text" : "password"}
-              name="confirmarContrasena"
-              placeholder="Confirma tu nueva contraseña"
-              value={datos.confirmarContrasena}
-              onChange={handleChange}
-              showPassword={showConfirmPassword}
-              togglePassword={() => setShowConfirmPassword(!showConfirmPassword)}
-              required
-            />
+          <FormularioInput
+            label="Confirmar Contraseña"
+            type={showConfirmPassword ? "text" : "password"}
+            name="confirmarContrasena"
+            placeholder="Confirma tu nueva contraseña"
+            value={datos.confirmarContrasena}
+            onChange={handleChange}
+            showPassword={showConfirmPassword}
+            togglePassword={() =>
+              setShowConfirmPassword(!showConfirmPassword)
+            }
+            required
+          />
 
-            <Boton
-              texto="Restablecer Contraseña"
-              type="submit"
-              disabled={loading}
-              className={`w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
-            />
+          <Boton
+            texto="Restablecer Contraseña"
+            tipo="submit"
+            estiloPersonalizado="btn-principal w-full mt-4"
+            disabled={loading}
+          />
 
-            <Boton
-              texto="Volver al inicio de sesión"
-              onClick={() => navigate("/login")}
-              estiloPersonalizado="mt-3 w-full text-pink-600 hover:underline"
-            />
-          </form>
-        </motion.div>
-      </div>
-    </div>
+          <Boton
+            texto="Volver al inicio de sesión"
+            onClick={() => navigate("/login")}
+            estiloPersonalizado="w-full text-blue-600 hover:underline mt-2"
+          />
+        </motion.form>
+      </motion.div>
+    </section>
   );
 };
 

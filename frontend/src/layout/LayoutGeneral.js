@@ -14,7 +14,7 @@ const LayoutGeneral = () => {
                              "/contacto", "/ayuda", "/mapa-del-sitio", 
                              "/preguntasFrecuentes"].includes(location.pathname);
   return (
-    <div className="min-h-screen pt-20">
+    <div className="min-h-screen pt-2">
       {mostrarEncabezado && <EncabezadoGeneral />}
       <Outlet />
       <PiePublico />

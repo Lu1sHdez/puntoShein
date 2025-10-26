@@ -8,27 +8,36 @@ const Bienvenida = () => {
 
   return (
     <main
-      className="pt-24 pb-16 min-h-screen bg-cover bg-center relative"
+      className="relative min-h-screen bg-cover bg-center flex items-center justify-center text-white overflow-hidden"
       style={{
         backgroundImage:
           'url("https://res.cloudinary.com/dgbs7sg9j/image/upload/v1738378032/pshein_dsluvs.jpg")',
       }}
     >
-      <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+      {/* Capa oscura de fondo */}
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-[1px]" />
 
-      <div className="relative z-10 max-w-7xl mx-auto px-6 flex flex-col lg:flex-row items-center justify-between gap-10">
-        <div className="flex-1 text-center lg:text-left text-white">
-          <h1 className="text-4xl lg:text-5xl font-extrabold mb-6 leading-tight">
-            Bienvenido{usuarioAutenticado && datos?.nombre ? `, ${datos.nombre}` : ""} a{" "}
-            <span className="text-white uppercase">Punto Shein</span>
+      {/* Contenido principal */}
+      <div className="relative z-10 max-w-7xl w-full px-6 py-20 sm:py-28 md:py-36 flex flex-col lg:flex-row items-center justify-between gap-12">
+        {/* Texto */}
+        <div className="flex-1 text-center lg:text-left space-y-6">
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight drop-shadow-lg">
+            Bienvenido
+            {usuarioAutenticado && datos?.nombre ? `, ${datos.nombre}` : ""} a{" "}
+            <span className="text-blue-400 uppercase drop-shadow-md">
+              Punto Shein
+            </span>
           </h1>
-          <p className="text-lg mb-6">
-            Explora nuestras últimas colecciones, descubre las mejores ofertas y mantén tu inventario bajo control desde cualquier lugar.
+
+          <p className="text-base sm:text-lg md:text-xl text-gray-100 max-w-2xl mx-auto lg:mx-0">
+            Explora nuestras últimas colecciones, descubre las mejores ofertas y
+            mantén tu inventario bajo control desde cualquier lugar.
           </p>
-          <div className="flex justify-center lg:justify-start gap-4">
+
+          <div className="flex flex-wrap justify-center lg:justify-start gap-4 mt-6">
             <button
               onClick={() => navigate("/cuerpo")}
-              className="btn-secundario"
+              className="px-6 py-3 bg-white/90 text-gray-900 font-semibold rounded-lg shadow-md hover:bg-white hover:scale-105 transition"
             >
               Ver productos
             </button>
@@ -36,14 +45,14 @@ const Bienvenida = () => {
             {!usuarioAutenticado ? (
               <button
                 onClick={() => navigate("/login")}
-                className="btn-principal"
+                className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-500 hover:scale-105 transition"
               >
                 Iniciar sesión
               </button>
             ) : (
               <button
                 onClick={() => navigate("/usuario/perfil")}
-                className="btn-principal"
+                className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-500 hover:scale-105 transition"
               >
                 Ver perfil
               </button>
@@ -51,11 +60,12 @@ const Bienvenida = () => {
           </div>
         </div>
 
+        {/* Imagen lateral (solo visible en pantallas grandes) */}
         <div className="flex-1 hidden lg:flex justify-center">
           <img
-            src="https://illustrations.popsy.co/gray/shopping-bags.svg"
+            src="https://res.cloudinary.com/dgbs7sg9j/image/upload/v1738384760/pshein1_dssmlw.avif"
             alt="Bienvenido"
-            className="max-w-md w-full h-auto"
+            className="max-w-md w-full h-auto animate-float"
           />
         </div>
       </div>

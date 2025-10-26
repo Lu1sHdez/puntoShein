@@ -11,13 +11,14 @@ import LayoutSimple from "./layout/LayoutSimple";
 import LayoutAdmin from "./layout/LayoutAdmin.js";
 import LayoutUsuario from "./layout/LayoutUsuario.js";
 import LayoutPublico from "./public/layout/layout.js";
+import { CartProvider } from "./context/CartContext";
+
 
 // Rutas protegidas
 import ProteccionRutas from "./utils/ProteccionRutas";
 import ErrorRoutes from "./routes/ErrorRoutes";
 
 const WelcomePage = lazy(() => import("./welcome/WelcomePage"));
-
 
 //publico
 const CuerpoPrincipal = lazy(() => import("./public/cuerpo/cuerpo"));
@@ -30,6 +31,7 @@ const Empresa = lazy(() => import("./admin/empresa/Empresa"));
 const Usuarios = lazy(() => import("./admin/usuarios/Usuarios"));
 const Empleados = lazy(() => import("./admin/empleados/principal"));
 const Productos = lazy(() => import("./admin/productos/Productos"));
+const Demanda = lazy(() => import("./admin/Modelo/Demanda"));
 const PerfilAdmin = lazy(() => import("./admin/perfil/Perfil"));
 const ActualizarPerfilAdmin = lazy(() => import("./admin/perfil/ActualizarPerfil"));
 const Configuracion = lazy(() => import("./admin/setting/Configuracion"));
@@ -75,6 +77,7 @@ const PreguntasFrecuentesAll = lazy(() => import("./components/empresa/Preguntas
 const App = () => {
   verificarExpToken(); 
   return (
+    <CartProvider>
     <Router>
       <Suspense fallback={<Skeleton />}>
         <Routes>
@@ -127,6 +130,7 @@ const App = () => {
             <Route path="/admin/empresa" element={<ProteccionRutas element={Empresa} allowedRoles={["administrador"]} />} />
             <Route path="/admin/perfil" element={<ProteccionRutas element={PerfilAdmin} allowedRoles={["administrador"]} />} />
             <Route path="/admin/actualizarPerfil" element={<ProteccionRutas element={ActualizarPerfilAdmin} allowedRoles={["administrador"]} />} />
+            <Route path="/admin/prediccion" element={<ProteccionRutas element={Demanda} allowedRoles={["administrador"]} />} />
             <Route path="/admin/documentos" element={<ProteccionRutas element={Documentos} allowedRoles={["administrador"]} />} />
             <Route path="/admin/configuracion" element={<ProteccionRutas element={Configuracion} allowedRoles={["administrador"]} />} />
             <Route path="/admin/usuarios" element={<ProteccionRutas element={Usuarios} allowedRoles={["administrador"]} />} />
@@ -149,6 +153,7 @@ const App = () => {
         </Routes>
       </Suspense>
     </Router>
+    </CartProvider>
   );
 };
 

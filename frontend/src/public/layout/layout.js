@@ -5,7 +5,7 @@ import { Outlet } from "react-router-dom";
 
 const LayoutPublico = () => {
   return (
-    <div className="min-h-screen pt-20 flex flex-col justify-between">
+    <div className="min-h-screen flex flex-col justify-between">
       <EncabezadoPublico />
       <main className="flex-grow">
         <Outlet />
