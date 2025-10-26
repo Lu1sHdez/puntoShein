@@ -1,114 +1,144 @@
-import CargandoModal from '../../../../Animations/CargandoModal';
 import React, { useState } from "react";
+import CargandoModal from "../../../../Animations/CargandoModal";
 
 const PasoDatosBasicos = ({ producto, setProducto, onSiguiente }) => {
-  const [guardando, setGuardando] = useState(false); // Para manejar el estado de carga
-  const [errores, setErrores] = useState({}); // Para manejar los errores de validación
+  const [guardando, setGuardando] = useState(false);
+  const [errores, setErrores] = useState({});
 
-  // Función para manejar cambios en los campos
   const handleChange = (e) => {
     const { name, value } = e.target;
     setProducto((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Función para validar los campos
   const validarCampos = () => {
     let errores = {};
     if (!producto.nombre) errores.nombre = "El nombre es obligatorio";
     if (!producto.descripcion) errores.descripcion = "La descripción es obligatoria";
     if (!producto.color) errores.color = "El color es obligatorio";
-    if (!producto.precio || producto.precio <= 0) errores.precio = "El precio debe ser mayor a cero";
-
+    if (!producto.precio || producto.precio <= 0)
+      errores.precio = "El precio debe ser mayor a cero";
     setErrores(errores);
     return Object.keys(errores).length === 0;
   };
 
-  // Función para manejar el paso siguiente
   const handleSiguiente = () => {
-    if (!validarCampos()) return; // Solo continuar si los campos son válidos
+    if (!validarCampos()) return;
 
-    setGuardando(true); // Mostrar el modal de carga
+    setGuardando(true);
     setTimeout(() => {
-      setGuardando(false); // Ocultar el modal después de 2 segundos (simulación)
-      onSiguiente(); // Llamar la función onSiguiente después de la operación
-    }, 2000); // Simulando un proceso de guardado o validación
+      setGuardando(false);
+      onSiguiente();
+    }, 1500);
   };
 
   return (
     <>
-      {/* Modal de carga */}
       <CargandoModal mensaje="Cargando datos..." visible={guardando} />
 
-      <div className="step-container p-6 bg-white rounded-lg shadow-lg max-w-4xl mx-auto">
-        <h3 className="text-2xl font-semibold mb-6 text-gray-800">Datos Básicos del Producto</h3>
+      <div className="p-6 sm:p-8 bg-white rounded-2xl shadow-lg border border-gray-100 max-w-5xl mx-auto animate-fade-in-up">
+        {/* Encabezado */}
+        <div className="mb-8 text-center sm:text-left">
+          <h3 className="text-2xl sm:text-3xl font-bold text-gray-800 tracking-tight">
+            Datos Básicos del Producto
+          </h3>
+          <p className="text-gray-500 text-sm sm:text-base mt-1">
+            Ingresa la información principal del producto antes de continuar.
+          </p>
+        </div>
 
-        {/* Formulario organizado */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Campo Nombre */}
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">Nombre</label>
+        {/* Formulario */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          {/* === Campo Nombre === */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-1">
+              Nombre
+            </label>
             <input
               type="text"
               name="nombre"
               value={producto.nombre}
               onChange={handleChange}
-              placeholder="Nombre del producto"
-              className={`mt-1 p-3 w-full border ${errores.nombre ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-pink-500 focus:border-pink-500`}
+              placeholder="Ej: Blusa floral"
+              className={`w-full p-3 border ${
+                errores.nombre ? "border-red-500" : "border-gray-300"
+              } rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 outline-none transition`}
             />
-            {errores.nombre && <p className="text-sm text-red-500">{errores.nombre}</p>}
+            {errores.nombre && (
+              <p className="text-sm text-red-500 mt-1">{errores.nombre}</p>
+            )}
           </div>
 
-          {/* Campo Descripción */}
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">Descripción</label>
+          {/* === Campo Descripción === */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-1">
+              Descripción
+            </label>
             <input
               type="text"
               name="descripcion"
               value={producto.descripcion}
               onChange={handleChange}
-              placeholder="Descripción"
-              className={`mt-1 p-3 w-full border ${errores.descripcion ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-pink-500 focus:border-pink-500`}
+              placeholder="Ej: Blusa casual de verano"
+              className={`w-full p-3 border ${
+                errores.descripcion ? "border-red-500" : "border-gray-300"
+              } rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 outline-none transition`}
             />
-            {errores.descripcion && <p className="text-sm text-red-500">{errores.descripcion}</p>}
+            {errores.descripcion && (
+              <p className="text-sm text-red-500 mt-1">
+                {errores.descripcion}
+              </p>
+            )}
           </div>
 
-          {/* Campo Color */}
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">Color</label>
+          {/* === Campo Color === */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-1">
+              Color
+            </label>
             <input
               type="text"
               name="color"
               value={producto.color}
               onChange={handleChange}
-              placeholder="Color"
-              className={`mt-1 p-3 w-full border ${errores.color ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-pink-500 focus:border-pink-500`}
+              placeholder="Ej: Rosa pastel"
+              className={`w-full p-3 border ${
+                errores.color ? "border-red-500" : "border-gray-300"
+              } rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 outline-none transition`}
             />
-            {errores.color && <p className="text-sm text-red-500">{errores.color}</p>}
+            {errores.color && (
+              <p className="text-sm text-red-500 mt-1">{errores.color}</p>
+            )}
           </div>
 
-          {/* Campo Precio */}
-          <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700">Precio</label>
+          {/* === Campo Precio === */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-1">
+              Precio
+            </label>
             <input
               type="number"
               name="precio"
               value={producto.precio}
               onChange={handleChange}
-              placeholder="Precio"
-              className={`mt-1 p-3 w-full border ${errores.precio ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:ring-pink-500 focus:border-pink-500`}
+              placeholder="Ej: 299.99"
+              className={`w-full p-3 border ${
+                errores.precio ? "border-red-500" : "border-gray-300"
+              } rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 outline-none transition`}
             />
-            {errores.precio && <p className="text-sm text-red-500">{errores.precio}</p>}
+            {errores.precio && (
+              <p className="text-sm text-red-500 mt-1">{errores.precio}</p>
+            )}
           </div>
         </div>
 
         {/* Botón siguiente */}
-        <div className="flex justify-end mt-6">
+        <div className="flex justify-end mt-8">
           <button
             onClick={handleSiguiente}
-            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-300"
             disabled={guardando}
+            className="px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 active:bg-blue-800 transition-all duration-300 shadow-sm"
           >
-            {guardando ? "Cargando..." : "Siguiente"}
+            {guardando ? "Cargando..." : "Siguiente →"}
           </button>
         </div>
       </div>
