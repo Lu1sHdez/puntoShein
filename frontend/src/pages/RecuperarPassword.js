@@ -45,15 +45,16 @@ const RecuperarPassword = () => {
   };
 
   return (
-    <section className="min-h-screen flex justify-center bg-gradient-to-b from-blue-50 to-white px-4">
+    <section className="min-h-screen flex flex-col justify-start sm:justify-center bg-gradient-to-b from-blue-50 to-white px-4 py-6">
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8"
+        className="w-full max-w-md mx-auto bg-white rounded-2xl shadow-xl p-8 mt-4 sm:mt-0"
       >
         {loading && <CargandoModal mensaje="Enviando enlace de recuperación..." visible />}
 
+        {/* Título y descripción */}
         <h2 className="text-3xl font-bold text-center text-gray-800 mb-2">
           Recuperar Contraseña
         </h2>
@@ -61,12 +62,14 @@ const RecuperarPassword = () => {
           Ingresa el correo asociado a tu cuenta y te enviaremos un enlace para restablecer tu contraseña.
         </p>
 
+        {/* Error */}
         {errorValidacion && (
           <div className="mb-4 text-red-500 text-sm font-semibold text-center">
             {errorValidacion}
           </div>
         )}
 
+        {/* Formulario */}
         <motion.form onSubmit={validarYEnviar} {...formAnimation} className="space-y-4">
           <FormularioInput
             label="Correo Electrónico"
@@ -81,15 +84,19 @@ const RecuperarPassword = () => {
           <Boton
             texto="Enviar enlace de recuperación"
             tipo="submit"
-            estiloPersonalizado="btn-principal w-full py-2.5"
+            estiloPersonalizado={`btn-principal w-full py-2.5 ${
+              loading ? "opacity-50 cursor-not-allowed" : ""
+            }`}
             disabled={loading}
           />
 
-          <Boton
-            texto="Volver al inicio de sesión"
+          <button
+            type="button"
             onClick={() => navigate("/login")}
-            estiloPersonalizado="w-full text-blue-600 hover:underline mt-2"
-          />
+            className="block w-full text-sm text-blue-600 hover:underline text-center mt-3"
+          >
+            Volver al inicio de sesión
+          </button>
         </motion.form>
       </motion.div>
     </section>

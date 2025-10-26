@@ -9,15 +9,15 @@ const OpcionRecuperarPassword = () => {
   const navigate = useNavigate();
 
   return (
-    <section className="min-h-screen flex justify-center bg-gradient-to-b from-blue-50 to-white px-4">
+    <section className="min-h-screen flex flex-col justify-start sm:justify-center bg-gradient-to-b from-blue-50 to-white px-4 py-6">
       <motion.div
-        className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md"
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
+        className="w-full max-w-md mx-auto bg-white rounded-2xl shadow-xl p-8 mt-4 sm:mt-0"
       >
         {/* Título y descripción */}
-        <div className="text-center">
+        <div className="text-center mb-6">
           <h2 className="text-3xl font-bold text-gray-800 mb-2">
             Recuperar Contraseña
           </h2>
@@ -27,7 +27,7 @@ const OpcionRecuperarPassword = () => {
         </div>
 
         {/* Opciones de recuperación */}
-        <div className="mt-8 space-y-6">
+        <motion.div {...formAnimation} className="mt-4 space-y-6">
           {/* Recuperar por correo */}
           <motion.button
             whileHover={{ scale: 1.03 }}
@@ -39,7 +39,7 @@ const OpcionRecuperarPassword = () => {
             <span className="font-semibold">Recuperar por correo</span>
           </motion.button>
 
-          {/* Recuperar por teléfono (opcional, comentado) */}
+          {/* Recuperar por teléfono (opcional, descomentable) */}
           {/*
           <motion.button
             whileHover={{ scale: 1.03 }}
@@ -51,15 +51,17 @@ const OpcionRecuperarPassword = () => {
             <span className="font-semibold">Recuperar por teléfono</span>
           </motion.button>
           */}
-        </div>
+        </motion.div>
 
-        {/* Botón de volver */}
+        {/* Botón volver al login */}
         <div className="mt-8 text-center">
-          <Boton
-            texto="Volver al inicio de sesión"
+          <button
+            type="button"
             onClick={() => navigate("/login")}
-            estiloPersonalizado="text-blue-600 hover:text-blue-700 font-semibold underline"
-          />
+            className="text-blue-600 hover:text-blue-700 font-semibold underline"
+          >
+            Volver al inicio de sesión
+          </button>
         </div>
       </motion.div>
     </section>
