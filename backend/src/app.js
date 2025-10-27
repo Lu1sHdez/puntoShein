@@ -41,7 +41,9 @@ app.use(cookieParser());
 const allowedOrigins = [
   'https://puntoshein-kdxn.onrender.com', 
   'http://localhost:3000', 
-  'https://punto-shein.vercel.app'
+  'https://punto-shein.vercel.app',
+  'https://d4700b4a8b74.ngrok-free.app'
+  
 ];
 
 const corsOpcion = {

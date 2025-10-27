@@ -47,3 +47,4 @@
 [26/10/2025, 4:10:59] INFO: Inicio de sesión exitoso {"usuario_id":"35067a73-07c8-4aef-a781-a63939d84884","correo":"luis2004hdez@gmail.com","ip_cliente":"::ffff:127.0.0.1","fecha_hora":"26/10/2025, 4:10:59"}
 [26/10/2025, 4:24:09] INFO: Sesión cerrada {"ip_cliente":"::1"}
 [26/10/2025, 4:53:33] INFO: Sesión cerrada {"ip_cliente":"::ffff:127.0.0.1"}
+[26/10/2025, 16:53:39] INFO: Sesión cerrada {"ip_cliente":"2806:10a6:10:9e49:5d73:8849:ab1d:6594"}
