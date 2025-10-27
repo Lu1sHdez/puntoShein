@@ -12,7 +12,7 @@ import LayoutAdmin from "./layout/LayoutAdmin.js";
 import LayoutUsuario from "./layout/LayoutUsuario.js";
 import LayoutPublico from "./public/layout/layout.js";
 import { CartProvider } from "./context/CartContext";
-
+import InstalarPWA from './InstalarPWA.js';
 
 // Rutas protegidas
 import ProteccionRutas from "./utils/ProteccionRutas";
@@ -153,6 +153,7 @@ const App = () => {
         </Routes>
       </Suspense>
     </Router>
+    <InstalarPWA />
     </CartProvider>
   );
 };
