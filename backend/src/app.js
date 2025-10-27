@@ -1,8 +1,10 @@
+// src/app.js
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 
+// Importar tus rutas (igual que antes)
 import opinionRoutes from './routes/opinion.routes.js';
 import recomendacionRutas from './routes/recomendacion.routes.js';
 import prediccionRutas from './routes/prediccion.routes.js';
@@ -22,7 +24,7 @@ import loginPin from './routes/pin.routes.js';
 import tokenRoutes from "./routes/token.routes.js";
 import documentoLegalRoutes from "./routes/documentoLegal.routes.js";
 
-//APP
+// Rutas de la app móvil
 import authRoutes from "./routes/app/authApp.routes.js";
 import clienteRoutes from "./routes/app/cliente.routes.js";
 import pedidosRoutes from "./routes/app/pedidos.routes.js";
@@ -30,23 +32,21 @@ import perfilRoutes from "./routes/app/perfil.routes.js";
 
 const app = express();
 
-//Deshabilitar la divulgación de la tecnología (X-Powered-By)
+// Deshabilitar cabecera "X-Powered-By"
 app.disable('x-powered-by');
 
-// Middleware para parsear JSON y cookies
+// Middlewares básicos
 app.use(express.json());
-app.set('trust proxy', true);
 app.use(cookieParser());
+app.set('trust proxy', true);
 
+// SOLO orígenes locales para desarrollo
 const allowedOrigins = [
-  'https://puntoshein-kdxn.onrender.com', 
-  'http://localhost:3000', 
+  'http://localhost:3000',
   'https://punto-shein.vercel.app',
-  'https://d4700b4a8b74.ngrok-free.app'
-  
 ];
 
-const corsOpcion = {
+const corsOptions = {
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
@@ -59,29 +59,31 @@ const corsOpcion = {
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 };
 
+app.use(cors(corsOptions));
 
-app.use(cors(corsOpcion));
-
-// uso de Helmet para configurar csp
+// Helmet (solo básico en desarrollo)
 app.use(helmet());
-
-app.use(helmet.contentSecurityPolicy({
-  directives: {
-    defaultSrc: ["'self'", 'https://puntoshein-kdxn.onrender.com/'],
-    scriptSrc: ["'self'", "'unsafe-inline'", 'https://cdn.jsdelivr.net'],
-    styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
-    imgSrc: ["'self'", 'data:', 'https://res.cloudinary.com'],
-    connectSrc: ["'self'", 'https://puntoshein-kdxn.onrender.com/'],
-    fontSrc: ["'self'", 'https://fonts.gstatic.com'],
-  },
-}));
-
-app.use(cors(corsOpcion));
-
-// Uso de Helmet para proteger contra Clickjacking
 app.use(helmet.frameguard({ action: 'deny' }));
 
-// Rutas de la aplicación
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", 'https://cdn.jsdelivr.net'],
+      styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
+      imgSrc: ["'self'", 'data:', 'https://res.cloudinary.com'],
+      connectSrc: [
+        "'self'",
+        'https://punto-shein.vercel.app',
+        'https://puntoshein.onrender.com'
+      ],
+      fontSrc: ["'self'", 'https://fonts.gstatic.com'],
+    },
+  })
+);
+
+
+// Rutas principales
 app.use('/api/autenticacion', autenticacionRutas);
 app.use('/api/productos', productoRutas);
 app.use('/api/recomendacion', recomendacionRutas);
@@ -96,24 +98,25 @@ app.use('/api/empresa', empresaRutas);
 app.use('/api/admin', adminRutas);
 app.use('/api/opinion', opinionRoutes);
 app.use('/api/empleado', empleadoRutas);
-app.use('/api/preguntas', preguntaFrecuenteRutas)
-app.use('/api/pin', loginPin)
-app.use("/api/token-dispositivo", tokenRoutes);
-app.use("/api/documento", documentoLegalRoutes);
+app.use('/api/preguntas', preguntaFrecuenteRutas);
+app.use('/api/pin', loginPin);
+app.use('/api/token-dispositivo', tokenRoutes);
+app.use('/api/documento', documentoLegalRoutes);
 
-//APP
-app.use("/api/app/autenticacion", authRoutes);
-app.use("/api/app/clientes", clienteRoutes);
-app.use("/api/app/pedidos", pedidosRoutes);
-app.use("/api/app/perfil", perfilRoutes);
+// App móvil
+app.use('/api/app/autenticacion', authRoutes);
+app.use('/api/app/clientes', clienteRoutes);
+app.use('/api/app/pedidos', pedidosRoutes);
+app.use('/api/app/perfil', perfilRoutes);
 
+// Ruta de prueba
 app.get('/', (req, res) => {
-  res.send('API Punto Shein funcionando correctamente');
+  res.send('API Punto Shein funcionando correctamente (modo local)');
 });
 
-// Middleware de manejo de errores para capturar errores no controlados
+// Middleware global de errores
 app.use((err, req, res, next) => {
-  console.error(err.stack);  // Imprimir el error en la consola para depuración
+  console.error('Error:', err.stack);
   res.status(500).json({ mensaje: 'Error interno del servidor.', error: err.message });
 });
 
