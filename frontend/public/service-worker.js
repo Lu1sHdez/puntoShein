@@ -1,6 +1,6 @@
 /* eslint-disable no-restricted-globals */
 
-// src/service-worker.js
+//src/service-worker.js
 
 const CACHE_NAME = "puntoshein-cache-v1";
 const urlsToCache = [
