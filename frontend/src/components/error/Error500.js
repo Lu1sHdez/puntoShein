@@ -3,35 +3,47 @@ import { Link } from "react-router-dom";
 
 const Error500 = () => {
   return (
-    <div className="flex flex-col items-center justify-center -mt-8 px-6 text-center ">
-      {/* Contenedor con fondo semitransparente */}
-      <div className=" bg-opacity-90 p-2  max-w-lg w-full">
-        {/* Imagen de error */}
+    <main className="grid min-h-screen place-items-center bg-gray-900 px-0 py-24 sm:py-32 lg:px-8">
+      <div className="text-center animate-fade-in-up">
+        {/* Código de error */}
+        <p className="text-base font-semibold text-blue-400">500</p>
+
+        {/* Título */}
+        <h1 className="mt-4 text-4xl sm:text-6xl font-bold tracking-tight text-white">
+          ¡Error interno del servidor!
+        </h1>
+
+        {/* Imagen flotante */}
         <img
-          src="https://res.cloudinary.com/dgbs7sg9j/image/upload/v1738396258/e500_igczuw.webp" 
+          src="https://res.cloudinary.com/dgbs7sg9j/image/upload/v1738396258/e500_igczuw.webp"
           alt="Error 500"
-          className="w-full max-w-xs sm:max-w-rem h-auto mb-6 drop-shadow-lg mx-auto" // Agregado mx-auto
+          className="mx-auto w-64 sm:w-80 md:w-96 mt-8 mb-6 animate-float drop-shadow-lg"
         />
 
-        {/* Mensaje de error */}
-        <h2 className="text-3xl md:text-4xl font-bold text-black">
-          ¡Error Interno del Servidor!
-        </h2>
-        <p className="text-black mt-2 max-w-md text-lg">
+        {/* Descripción */}
+        <p className="mt-4 text-lg sm:text-xl text-gray-400 max-w-md mx-auto">
           Ocurrió un error inesperado en el servidor. <br />
           Por favor, intenta de nuevo más tarde.
         </p>
 
-        {/* Botón de regreso */}
-        <Link
-          to="/"
-          className="mt-6 inline-block px-6 py-3 bg-blue-500 text-white rounded-lg text-lg font-semibold 
-          shadow-lg hover:bg-blue-700 transition transform hover:scale-105"
-        >
-          Volver al inicio
-        </Link>
+        {/* Botones */}
+        <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-x-6">
+          <Link
+            to="/"
+            className="btn-principal px-6 py-3 text-lg font-semibold shadow-md transition-transform hover:scale-105"
+          >
+            Volver al inicio
+          </Link>
+
+          <Link
+            to="/contacto"
+            className="btn-secundario px-6 py-3 text-lg font-semibold shadow-md transition-transform hover:scale-105"
+          >
+            Contactar soporte →
+          </Link>
+        </div>
       </div>
-    </div>
+    </main>
   );
 };
 

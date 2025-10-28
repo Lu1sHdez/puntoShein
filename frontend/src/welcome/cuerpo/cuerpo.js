@@ -6,7 +6,6 @@ import PorqueElegirnos from "./secciones/porqueElegirnos";
 import SeccionOpiniones from "./secciones/opiniones";
 import CarruselPromociones from "./secciones/carrusel";
 
-
 const CuerpoBienvenida = () => {
   const [cargando, setCargando] = useState(true);
 
