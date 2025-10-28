@@ -6,7 +6,7 @@ const Error404 = () => {
     <main className="grid min-h-screen place-items-center bg-gray-900 px-6 py-24 sm:py-32 lg:px-8">
       <div className="text-center animate-fade-in-up">
         {/* Código de error */}
-        <p className="text-base font-semibold text-blue-400">404</p>
+        <p className="text-7xl font-extrabold text-blue-500 drop-shadow-md">404</p>
 
         {/* Título */}
         <h1 className="mt-4 text-4xl sm:text-6xl font-bold tracking-tight text-white">
@@ -15,8 +15,8 @@ const Error404 = () => {
 
         {/* Imagen flotante */}
         <img
-          src="https://res.cloudinary.com/dgbs7sg9j/image/upload/v1738395727/ee404_o83ddd.png"
-          alt="Error 404"
+          src="/images/404.png"
+          alt="Error 400"
           className="mx-auto w-64 sm:w-80 md:w-96 mt-8 mb-6 animate-float drop-shadow-lg"
         />
 
@@ -33,13 +33,6 @@ const Error404 = () => {
             className="btn-principal px-6 py-3 text-lg font-semibold shadow-md transition-transform hover:scale-105"
           >
             Volver al inicio
-          </Link>
-
-          <Link
-            to="/contacto"
-            className="btn-secundario px-6 py-3 text-lg font-semibold shadow-md transition-transform hover:scale-105"
-          >
-            Contactar soporte →
           </Link>
         </div>
       </div>
