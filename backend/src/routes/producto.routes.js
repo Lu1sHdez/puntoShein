@@ -6,7 +6,8 @@ import {
     filtrarProductos, obtenerProductosPorSubcategoria, obtenerDetalleProductoPorTalla, 
     resumenStock, notificaciones, subirImagenProducto, 
     obtenerProductos, eliminarProducto, crearProducto, editarProducto, obtenerProducto_Id, 
-    buscarProductoPorNombre
+    buscarProductoPorNombre,
+    buscarProductoPorSlug
 } from '../controllers/producto.controller.js';
 
 import {obtenerCategorias, obtenerSubcategoriasPorCategoria,  crearCategoria,
@@ -39,6 +40,8 @@ router.get('/detallePorTalla', obtenerDetalleProductoPorTalla);
 // Rutas para productos
 router.get('/filtrar', filtrarProductos);
 router.get('/buscar', buscarProductos);
+router.get('/buscar/:slug', buscarProductoPorSlug);
+
 router.get('/allProductos', allProductos);
 router.get('/notificaciones', notificaciones);
 router.get('/resumen-stock', resumenStock);

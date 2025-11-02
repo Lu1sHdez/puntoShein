@@ -39,29 +39,41 @@ app.use(express.json());
 app.use(cookieParser());
 app.set("trust proxy", true);
 
-// ✅ Configuración de CORS
+
 const allowedOrigins = [
   "http://localhost:3000",
   "https://punto-shein.vercel.app",
-  "https://12ee902f0035.ngrok-free.app", // tu túnel actual
 ];
 
 const corsOptions = {
   origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
+    if (
+      !origin ||
+      allowedOrigins.some((allowed) =>
+        allowed instanceof RegExp ? allowed.test(origin) : allowed === origin
+      )
+    ) {
+      console.log("CORS permitido para:", origin);
       callback(null, true);
     } else {
+      console.warn("CORS bloqueado para:", origin);
       callback(new Error("Origen no permitido por CORS"));
     }
   },
-  credentials: true, // permite cookies / tokens
+  credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+  allowedHeaders: [
+    "Origin",
+    "X-Requested-With",
+    "Content-Type",
+    "Accept",
+    "Authorization",
+  ],
 };
+
 
 app.use(cors(corsOptions));
 
-// ✅ Rutas principales
 app.use("/api/autenticacion", autenticacionRutas);
 app.use("/api/productos", productoRutas);
 app.use("/api/recomendacion", recomendacionRutas);
@@ -81,23 +93,23 @@ app.use("/api/pin", loginPin);
 app.use("/api/token-dispositivo", tokenRoutes);
 app.use("/api/documento", documentoLegalRoutes);
 
-// ✅ App móvil
 app.use("/api/app/autenticacion", authRoutes);
 app.use("/api/app/clientes", clienteRoutes);
 app.use("/api/app/pedidos", pedidosRoutes);
 app.use("/api/app/perfil", perfilRoutes);
 
-// ✅ Ruta de prueba
+
 app.get("/", (req, res) => {
-  res.send("API Punto Shein funcionando correctamente (modo local)");
+  res.send("API Punto Shein funcionando correctamente");
 });
 
-// ✅ Middleware de errores
+
 app.use((err, req, res, next) => {
-  console.error("Error:", err.stack);
-  res
-    .status(500)
-    .json({ mensaje: "Error interno del servidor.", error: err.message });
+  console.error("Error:", err.message);
+  res.status(500).json({
+    mensaje: "Error interno del servidor.",
+    error: err.message,
+  });
 });
 
 export default app;

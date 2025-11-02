@@ -75,6 +75,73 @@ export const buscarProductos = async (req, res) => {
     res.status(500).json({ mensaje: "Error al buscar productos." });
   }
 };
+// Buscar producto por nombre normalizado (slug)
+export const buscarProductoPorSlug = async (req, res) => {
+  try {
+    const { slug } = req.params;
+
+    if (!slug || slug.trim() === "") {
+      return res.status(400).json({ mensaje: "Debe proporcionar un slug válido." });
+    }
+
+    // Función para normalizar el nombre (igual que en el frontend)
+    const normalizar = (texto) =>
+      texto
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "");
+
+    // Trae todos los productos con relaciones
+    const productos = await Producto.findAll({
+      include: [
+        {
+          model: Subcategoria,
+          as: "subcategoria",
+          include: {
+            model: Categoria,
+            as: "categoria",
+          },
+        },
+        {
+          model: Talla,
+          as: "tallas",
+          through: { attributes: ["stock"] },
+        },
+      ],
+    });
+
+    // Busca coincidencia exacta por slug
+    const producto = productos.find((p) => normalizar(p.nombre) === slug);
+
+    if (!producto) {
+      return res.status(404).json({ mensaje: "Producto no encontrado." });
+    }
+
+    // Calcula el stock total
+    const productoJSON = producto.toJSON();
+    let stockTotal = 0;
+    productoJSON.tallas = productoJSON.tallas.map((talla) => {
+      const stock = talla.ProductoTalla?.stock || 0;
+      stockTotal += stock;
+      return {
+        id: talla.id,
+        nombre: talla.nombre,
+        stock,
+        stockStatus: stock > 0 ? "Disponible" : "Sin stock",
+      };
+    });
+
+    productoJSON.stock = stockTotal;
+
+    res.json(productoJSON);
+  } catch (error) {
+    console.error("Error al buscar producto por slug:", error);
+    res.status(500).json({ mensaje: "Error interno del servidor." });
+  }
+};
+
 
 export const allProductos = async (req, res) => {
   try {
