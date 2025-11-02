@@ -1,20 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { jwtDecode } from 'jwt-decode';
-import { useSidebar } from '../../context/SidebarContext';
-import CerrarSesionModal from '../../modal/CerrarSesion';
-import { Cargando } from '../../Animations/Cargando';
-
+import React, { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
+import { useSidebar } from "../../context/SidebarContext";
+import CerrarSesionModal from "../../modal/CerrarSesion";
+import { Cargando } from "../../Animations/Cargando";
 import {
-  FaUserCircle,
-  FaBox,
-  FaShoppingCart,
-  FaClipboardList,
-  FaHome,
-  FaAngleLeft,
-  FaAngleRight,
-  FaSignOutAlt
-} from 'react-icons/fa';
+  BsPersonCircle,
+  BsBoxSeam,
+  BsCart3,
+  BsClipboardCheck,
+  BsHouseDoor,
+  BsArrowLeftShort,
+  BsArrowRightShort,
+  BsBoxArrowRight,
+} from "react-icons/bs";
 
 const SidebarUsuario = () => {
   const [usuario, setUsuario] = useState(null);
@@ -24,80 +23,98 @@ const SidebarUsuario = () => {
   const [mostrarModalCerrarSesion, setMostrarModalCerrarSesion] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) return navigate('/login');
+    const token = localStorage.getItem("token");
+    if (!token) return navigate("/login");
 
     try {
       const decoded = jwtDecode(token);
-      if (decoded.rol !== 'usuario') return navigate('/login');
+      if (decoded.rol !== "usuario") return navigate("/login");
       setUsuario(decoded);
     } catch {
-      navigate('/login');
+      navigate("/login");
     }
   }, [navigate]);
 
   if (!usuario) return <Cargando message="Cargando menú..." />;
 
-  const links = [
-    { to: '/usuario/dashboard', label: 'Inicio', icon: <FaHome /> },
-    { to: '/usuario/perfil', label: 'Mi Perfil', icon: <FaUserCircle /> },
-    { to: '/usuario/productos', label: 'Productos', icon: <FaBox /> },
-    { to: '/usuario/carrito', label: 'Carrito', icon: <FaShoppingCart /> },
-    { to: '/usuario/pedidos', label: 'Mis Pedidos', icon: <FaClipboardList /> },
+  const menuItems = [
+    { label: "Dashboard", icon: <BsHouseDoor />, path: "/usuario/dashboard" },
+    { label: "Mi Perfil", icon: <BsPersonCircle />, path: "/usuario/perfil" },
+    { label: "Productos", icon: <BsBoxSeam />, path: "/usuario/productos" },
+    { label: "Carrito", icon: <BsCart3 />, path: "/productos/carrito" },
+    { label: "Mis Pedidos", icon: <BsClipboardCheck />, path: "/usuario/pedidos" },
   ];
 
   return (
-    <>
-      <aside
-        className={`bg-white border-r shadow-md p-4 fixed top-16 left-0 z-40 pt-4 transition-all duration-300 overflow-y-auto ${
-          colapsado ? "w-20" : "w-64"
-        } h-[calc(100vh-4rem)]`}
+    <aside
+      className={`fixed top-16 left-0 z-40 border-r border-gray-100 bg-gradient-to-b from-white to-blue-50 shadow-lg transition-all duration-500 ease-in-out h-[calc(100vh-4rem)]
+      ${colapsado ? "w-20" : "w-64"} flex flex-col`}
+    >
+      {/* === Botón de colapsar === */}
+      <div
+        onClick={() => setColapsado(!colapsado)}
+        className="absolute -right-3 top-4 bg-white border shadow-md p-1 rounded-full cursor-pointer hover:scale-105 transition-transform z-50"
       >
-        <div
-          className="absolute top-4 right-[-8px] bg-white border rounded-full shadow p-1 z-50 cursor-pointer"
-          onClick={() => setColapsado(!colapsado)}
-        >
-          {colapsado ? <FaAngleRight /> : <FaAngleLeft />}
+        {colapsado ? <BsArrowRightShort /> : <BsArrowLeftShort />}
+      </div>
+
+      {/* === Contenedor principal con scroll === */}
+      <div className="flex-1 overflow-y-auto">
+        {/* Encabezado fijo */}
+        <div className="px-3 py-4 border-b border-gray-200 sticky top-0 bg-white/80 backdrop-blur-sm z-10">
+          {!colapsado && (
+            <div>
+              <p className="text-sm font-semibold text-gray-700">Usuario</p>
+              {usuario?.nombre && (
+                <p className="text-sm text-blue-600 truncate">{usuario.nombre}</p>
+              )}
+            </div>
+          )}
         </div>
 
-        <nav className="space-y-2 mt-4">
-          {links.map((link) => (
+        {/* Navegación */}
+        <nav className="flex flex-col gap-1 px-2 py-3">
+          {menuItems.map((item, idx) => (
             <Link
-              key={link.to}
-              to={link.to}
-              title={colapsado ? link.label : ""}
-              className={`flex items-center gap-3 px-4 py-2 rounded-lg text-sm font-medium transition ${
-                location.pathname === link.to
-                  ? 'bg-black text-white shadow'
-                  : 'text-gray-700 hover:bg-gray-100 hover:text-black'
-              } ${colapsado ? 'justify-center' : ''}`}
+              key={idx}
+              to={item.path}
+              className={`flex items-center gap-3 p-2 rounded-lg text-sm font-medium transition-all duration-200
+              ${
+                location.pathname === item.path
+                  ? "bg-blue-600 text-white shadow-md"
+                  : "text-gray-700 hover:bg-blue-100 hover:text-blue-700"
+              }
+              ${colapsado ? "justify-center" : "pl-4"}`}
+              title={colapsado ? item.label : ""}
             >
-              <span className="text-lg">{link.icon}</span>
-              {!colapsado && <span>{link.label}</span>}
+              <span className="text-base">{item.icon}</span>
+              {!colapsado && <span>{item.label}</span>}
             </Link>
           ))}
         </nav>
+      </div>
 
-        <div className="mt-10 pt-4 border-t">
-          <button
-            onClick={() => setMostrarModalCerrarSesion(true)}
-            className={`flex items-center gap-3 px-4 py-2 rounded-lg text-sm font-medium text-red-600 hover:bg-red-100 transition w-full ${
-              colapsado ? "justify-center" : ""
-            }`}
-            title={colapsado ? "Cerrar sesión" : ""}
-          >
-            <span className="text-lg"><FaSignOutAlt /></span>
-            {!colapsado && <span>Cerrar sesión</span>}
-          </button>
-        </div>
-      </aside>
+      {/* === Botón de cerrar sesión === */}
+      <div className="p-3 border-t border-gray-200 bg-white/80 backdrop-blur-sm sticky bottom-0">
+        <button
+          onClick={() => setMostrarModalCerrarSesion(true)}
+          className={`flex items-center gap-3 p-2 rounded-lg text-sm font-medium w-full transition-all duration-200 
+          text-red-600 hover:bg-red-100 hover:text-red-700 ${
+            colapsado ? "justify-center" : "pl-4"
+          }`}
+          title={colapsado ? "Cerrar sesión" : ""}
+        >
+          <BsBoxArrowRight />
+          {!colapsado && "Cerrar sesión"}
+        </button>
+      </div>
 
-      {/* Modal de cerrar sesión */}
+      {/* Modal de confirmación */}
       <CerrarSesionModal
         visible={mostrarModalCerrarSesion}
         onClose={() => setMostrarModalCerrarSesion(false)}
       />
-    </>
+    </aside>
   );
 };
 

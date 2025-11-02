@@ -6,6 +6,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import { Navigation, Autoplay } from "swiper/modules";
 import { useNavigate } from "react-router-dom";
+import { slugify } from "../../../utils/slugify";
 
 const Categorias = () => {
   const [categorias, setCategorias] = useState([]);
@@ -122,7 +123,6 @@ const Categorias = () => {
           </p>
         ) : productos.length === 0 ? (
           <div className="text-center text-gray-700 py-10">
-            <div className="text-5xl mb-4">😔</div>
             <h3 className="text-xl font-semibold mb-2">
               No hay productos disponibles
             </h3>
@@ -155,7 +155,8 @@ const Categorias = () => {
                 <SwiperSlide key={producto.id}>
                   <div className="bg-white border border-gray-200 rounded-xl shadow hover:shadow-lg hover:scale-[1.02] transition-all duration-300 p-4 text-left h-full">
                     <button
-                      onClick={() => navigate(`/producto/${producto.id}`)}
+                      onClick={() => navigate(`/producto/${slugify(producto.nombre)}`)
+                    }
                       className="w-full text-left"
                     >
                       <img

@@ -1,95 +1,111 @@
-import React, { useState, useEffect } from 'react';
-import { jwtDecode } from 'jwt-decode';
-import { useNavigate, Link, Routes, Route } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { FaBox, FaShoppingCart, FaClipboardList, FaUserCircle } from 'react-icons/fa';
-import { dashboardAnimation } from '../../components/Funciones.js';
-import Perfil from '../perfil/Perfil.js';
-import { Cargando } from '../../Animations/Cargando.js';
+import React, { useState, useEffect } from "react";
+import { jwtDecode } from "jwt-decode";
+import { useNavigate, Link, Routes, Route } from "react-router-dom";
+import { motion } from "framer-motion";
+import {
+  BsPersonLinesFill,
+  BsBoxSeam,
+  BsCart3,
+  BsClipboardCheck,
+} from "react-icons/bs";
+import { dashboardAnimation } from "../../components/Funciones.js";
+import Perfil from "../perfil/Perfil.js";
+import { Cargando } from "../../Animations/Cargando.js";
 
 const DashboardUsuario = () => {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    
+    const token = localStorage.getItem("token");
     if (!token) {
-      navigate('/login');
+      navigate("/login");
       return;
     }
 
     try {
       const decoded = jwtDecode(token);
       setUser(decoded);
-
-      if (!decoded.rol || decoded.rol !== 'usuario') {
-        navigate('/login');
-      }
+      if (!decoded.rol || decoded.rol !== "usuario") navigate("/login");
     } catch (error) {
-      navigate('/login');
+      navigate("/login");
     }
   }, [navigate]);
 
-  if (!user) return <Cargando message='Cargando...'/>;
+  if (!user) return <Cargando message="Cargando..." />;
+
+  const tarjetas = [
+    {
+      titulo: "Mi Perfil",
+      icono: <BsPersonLinesFill />,
+      descripcion: "Gestiona tu información personal.",
+      ruta: "/usuario/perfil",
+    },
+    {
+      titulo: "Ver Productos",
+      icono: <BsBoxSeam />,
+      descripcion: "Explora el catálogo completo de productos.",
+      ruta: "/usuario/productos",
+    },
+    {
+      titulo: "Mi Carrito",
+      icono: <BsCart3 />,
+      descripcion: "Consulta los productos que has agregado.",
+      ruta: "/productos/carrito",
+    },
+    {
+      titulo: "Mis Pedidos",
+      icono: <BsClipboardCheck />,
+      descripcion: "Consulta el estado de tus pedidos realizados.",
+      ruta: "/usuario/pedidos",
+    },
+  ];
 
   return (
-    <motion.div {...dashboardAnimation} className="p-6">
-      <h1 className="text-3xl font-bold mb-6">Dashboard - Usuario</h1>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-      <Link
-        to="/usuario/perfil"
-        className="bg-white p-4 sm:p-5 md:p-6 rounded-lg shadow-md hover:shadow-xl transition duration-300 transform hover:scale-105 max-w-sm w-full mx-auto"
-      >
-        <FaUserCircle className="text-4xl text-gray-700 mb-4" />
-        <h2 className="text-lg sm:text-xl font-semibold ">Mi Perfil</h2>
-        <p className="text-gray-500 text-sm sm:text-base mt-2">
-          Gestiona tu información personal.
+    <motion.div
+      {...dashboardAnimation}
+      className="p-6 min-h-screen bg-gradient-to-b from-blue-50 to-white"
+    >
+      {/* Encabezado */}
+      <div className="text-center mb-10">
+        <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-2">
+          Bienvenido, {user.nombre || "Usuario"}
+        </h1>
+        <p className="text-gray-500">
+          Accede a tus secciones personales desde aquí.
         </p>
-      </Link>
-
-
-      <Link
-        to="/usuario/productos"
-        className="bg-white p-4 sm:p-5 md:p-6 rounded-lg shadow-md hover:shadow-xl transition duration-300 transform hover:scale-105 max-w-sm w-full mx-auto"
-      >
-        <FaBox className="text-4xl text-gray-700 mb-4" />
-        <h2 className="text-lg sm:text-xl font-semibold">Ver Productos</h2>
-        <p className="text-gray-500 text-sm sm:text-base mt-2">
-          Explora el catálogo de productos.
-        </p>
-        </Link>
-
-        <Link
-          to="/productos/Carrito"
-          className="bg-white p-4 sm:p-5 md:p-6 rounded-lg shadow-md hover:shadow-xl transition duration-300 transform hover:scale-105 max-w-sm w-full mx-auto"
-        >
-          <FaShoppingCart className="text-4xl text-gray-700 mb-4" />
-          <h2 className="text-lg sm:text-xl font-semibold">Ver Carrito</h2>
-          <p className="text-gray-500 text-sm sm:text-base mt-2">
-            Revisa los productos agregados al carrito.
-          </p>
-        </Link>
-
-        <Link
-          to="/usuario/pedidos"
-          className="bg-white p-4 sm:p-5 md:p-6 rounded-lg shadow-md hover:shadow-xl transition duration-300 transform hover:scale-105 max-w-sm w-full mx-auto"
-        >
-          <FaClipboardList className="text-4xl text-gray-700 mb-4" />
-          <h2 className="text-lg sm:text-xl font-semibold">Mis Pedidos</h2>
-          <p className="text-gray-500 text-sm sm:text-base mt-2">
-            Consulta el estado de tus pedidos.
-          </p>
-        </Link>
-
       </div>
 
+      {/* Tarjetas principales */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 justify-items-center">
+        {tarjetas.map((item, idx) => (
+          <Link
+            key={idx}
+            to={item.ruta}
+            className="group relative bg-white p-6 rounded-xl shadow-md hover:shadow-2xl transition-all duration-300 transform hover:scale-[1.03] w-full max-w-sm overflow-hidden border border-gray-100"
+          >
+            <div className="flex flex-col items-center text-center">
+              <div className="p-4 rounded-full bg-blue-100 text-blue-600 text-4xl mb-4 transition-all duration-300 group-hover:bg-blue-600 group-hover:text-white">
+                {item.icono}
+              </div>
+              <h2 className="text-lg font-semibold text-gray-800 mb-1">
+                {item.titulo}
+              </h2>
+              <p className="text-gray-500 text-sm">{item.descripcion}</p>
+            </div>
+
+            {/* Línea inferior animada */}
+            <div className="absolute bottom-0 left-0 w-0 h-1 bg-blue-600 transition-all duration-300 group-hover:w-full"></div>
+          </Link>
+        ))}
+      </div>
+
+      {/* Rutas internas */}
       <Routes>
         <Route path="/usuario/perfil" element={<Perfil />} />
-        {/* <Route path="/usuario/productos" element={<Productos />} />
-        <Route path="/usuario/carrito" element={<Carrito />} />
-        <Route path="/usuario/pedidos" element={<Pedidos />} /> */}
+        {/* <Route path="/usuario/productos" element={<Productos />} /> */}
+        {/* <Route path="/usuario/carrito" element={<Carrito />} /> */}
+        {/* <Route path="/usuario/pedidos" element={<Pedidos />} /> */}
       </Routes>
     </motion.div>
   );

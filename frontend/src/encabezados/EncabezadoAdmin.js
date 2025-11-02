@@ -17,7 +17,7 @@ const EncabezadoAdmin = () => {
   const { logout } = useAuth();
   const navigate = useNavigate();
 
-  // === Cargar datos de empresa y perfil ===
+  // === Cargar datos de empresa y perfil (con credenciales) ===
   useEffect(() => {
     const obtenerDatos = async () => {
       try {
@@ -36,10 +36,9 @@ const EncabezadoAdmin = () => {
     obtenerDatos();
   }, []);
 
-  // === Animación auto-hide al hacer scroll ===
+  // === Ocultar navbar al hacer scroll ===
   useEffect(() => {
     let lastScrollY = window.scrollY;
-
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
       if (currentScrollY > lastScrollY && currentScrollY > 60) {
@@ -49,7 +48,6 @@ const EncabezadoAdmin = () => {
       }
       lastScrollY = currentScrollY;
     };
-
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -82,7 +80,6 @@ const EncabezadoAdmin = () => {
     try {
       await axios.post(`${API_URL}/api/autenticacion/logout`, {}, { withCredentials: true });
       logout();
-
       setTimeout(() => navigate("/"), 1200);
     } catch (error) {
       setCargando(false);
@@ -119,7 +116,6 @@ const EncabezadoAdmin = () => {
                 <BsBoxSeam className="text-blue-600 text-xl" />
               </div>
             )}
-
             <Typography className="font-bold text-lg uppercase tracking-wide">
               {empresa?.nombre || "Panel Admin"}
             </Typography>
@@ -129,21 +125,22 @@ const EncabezadoAdmin = () => {
           <div className="flex items-center gap-4">
             <Link
               to="/admin/perfil"
-              className="flex items-center gap-2 hover:opacity-80 transition"
+              className="flex items-center gap-2 hover:opacity-90 transition"
             >
               {admin?.foto_perfil ? (
                 <img
                   src={admin.foto_perfil}
                   alt="Perfil"
-                  className="h-9 w-9 rounded-full object-cover ring-1 ring-gray-300"
+                  className="h-9 w-9 rounded-full object-cover ring-2 ring-blue-300 shadow-sm"
                 />
               ) : (
                 <div className="h-9 w-9 bg-blue-600 text-white rounded-full flex items-center justify-center font-semibold">
                   {obtenerIniciales(admin?.nombre)}
                 </div>
               )}
+
               <span className="hidden sm:inline text-sm font-medium text-gray-800">
-                {admin?.nombre}
+                {admin?.nombre || "Administrador"}
               </span>
             </Link>
 

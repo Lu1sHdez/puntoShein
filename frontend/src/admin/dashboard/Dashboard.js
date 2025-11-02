@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { Link, Routes, Route } from "react-router-dom";
 import {
-  FaCog,
-  FaUsers,
-  FaBox,
-  FaUserTie,
-  FaFileAlt,
-  FaQuestionCircle,
-  FaChartLine,
-  FaCommentDots,
-} from "react-icons/fa";
+  BsGear,
+  BsPeople,
+  BsBox,
+  BsPersonBadge,
+  BsFileEarmarkText,
+  BsQuestionCircle,
+  BsGraphUp,
+  BsChatDots,
+} from "react-icons/bs";
 import { BsPersonLinesFill } from "react-icons/bs";
 import { motion } from "framer-motion";
 import CargandoBarra from "../../Animations/CargandoBarra.js";
@@ -34,25 +34,25 @@ const Dashboard = () => {
   const tarjetas = [
     {
       titulo: "Configuración",
-      icono: <FaCog />,
+      icono: <BsGear />,
       descripcion: "Administra las configuraciones del sistema.",
       ruta: "/admin/configuracion",
     },
     {
       titulo: "Usuarios",
-      icono: <FaUsers />,
+      icono: <BsPeople />,
       descripcion: "Gestiona los usuarios del sistema.",
       ruta: "/admin/usuarios",
     },
     {
       titulo: "Productos",
-      icono: <FaBox />,
+      icono: <BsBox />,
       descripcion: "Administra el inventario de productos.",
       ruta: "/admin/productos",
     },
     {
       titulo: "Empleados",
-      icono: <FaUserTie />,
+      icono: <BsPersonBadge />,
       descripcion: "Gestiona la información de los empleados.",
       ruta: "/admin/empleados",
     },
@@ -64,37 +64,37 @@ const Dashboard = () => {
     },
     {
       titulo: "Empresa",
-      icono: <FaBox />,
+      icono: <BsBox />,
       descripcion: "Administra la información de la empresa.",
       ruta: "/admin/empresa",
     },
     {
       titulo: "Preguntas Frecuentes",
-      icono: <FaQuestionCircle />,
+      icono: <BsQuestionCircle />,
       descripcion: "Administra las preguntas frecuentes de la empresa.",
       ruta: "/admin/preguntasFrecuentes",
     },
     {
       titulo: "Predicción de ventas",
-      icono: <FaChartLine />,
+      icono: <BsGraphUp />,
       descripcion: "Consulta la demanda estimada y anticipa el stock necesario.",
       ruta: "/admin/prediccion",
     },
     {
       titulo: "Inicio rápido (PIN)",
-      icono: <FaChartLine />,
+      icono: <BsGraphUp />,
       descripcion: "Genera un PIN temporal para iniciar sesión desde el smartwatch.",
       ruta: "/admin/inicio-rapido",
     },
     {
       titulo: "Opiniones",
-      icono: <FaCommentDots />,
+      icono: <BsChatDots />,
       descripcion: "Aprueba o rechaza opiniones del público.",
       ruta: "/admin/opiniones",
     },
     {
       titulo: "Documentos Legales",
-      icono: <FaFileAlt />,
+      icono: <BsFileEarmarkText />,
       descripcion: "Crea, edita o consulta los documentos legales de la empresa.",
       ruta: "/admin/documentos",
     },

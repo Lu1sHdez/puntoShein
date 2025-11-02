@@ -97,8 +97,7 @@ const EncabezadoResponsive = () => {
               : "text-gray-700 hover:text-blue-600"
           }`}
         >
-          <BsBoxSeam className="text-blue-600" />
-          Productos
+          <BsBoxSeam className="text-blue-600" />Productos
         </Link>
       </li>
 
@@ -111,8 +110,7 @@ const EncabezadoResponsive = () => {
             }}
             className="flex items-center gap-2 hover:text-red-600 transition-colors"
           >
-            <BsBoxArrowRight className="text-blue-600" />
-            Cerrar sesión
+            <BsBoxArrowRight className="text-red-600" />Cerrar sesión
           </button>
         </li>
       ) : (

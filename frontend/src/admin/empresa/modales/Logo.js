@@ -69,7 +69,6 @@ const ModalEditarLogo = ({ empresa, onClose, onActualizar }) => {
         }
       );
 
-      mostrarNotificacion("success", "Logo actualizado correctamente.");
       onActualizar(data.logo);
       onClose();
     } catch (error) {

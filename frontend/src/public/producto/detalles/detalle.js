@@ -18,7 +18,7 @@ import InformacionProducto from "./informacion";
 import AccionesProducto from "./acciones";
 
 const DetalleProducto = () => {
-  const { id } = useParams();
+  const { nombreSlug  } = useParams();
   const [producto, setProducto] = useState(null);
   const [cargando, setCargando] = useState(true);
 
@@ -31,20 +31,27 @@ const DetalleProducto = () => {
   const { id: usuarioId } = useSesionUsuario();
   const { actualizarCantidad } = useCart();
 
-  // === Obtener producto desde API ===
   useEffect(() => {
     const fetchProducto = async () => {
       try {
-        const res = await axios.get(`${API_URL}/api/productos/obtener/${id}`);
+        const res = await axios.get(`${API_URL}/api/productos/buscar/${nombreSlug}`);
         setProducto(res.data);
+        if (res.data?.nombre) {
+          document.title = `${res.data.nombre} | Punto Shein`;
+        }
       } catch (error) {
         console.error("Error al obtener el producto:", error);
       } finally {
         setCargando(false);
       }
     };
+    
     fetchProducto();
-  }, [id]);
+    return () => {
+      document.title = "Punto Shein";
+    };
+  }, [nombreSlug]);
+  
 
   // === Función para agregar al carrito ===
   const handleAgregarCarrito = async () => {
@@ -52,7 +59,7 @@ const DetalleProducto = () => {
 
     const resultado = await procesarAgregarAlCarrito({
       usuario_id: usuarioId,
-      producto_id: id,
+      producto_id: producto.id,
       talla_id: tallaSeleccionada,
       cantidad: 1,
       token: localStorage.getItem("token"),
@@ -93,99 +100,134 @@ const DetalleProducto = () => {
   const { nombre, descripcion, precio, imagen, color, stock, subcategoria, tallas } = producto;
 
   return (
-    <section className="max-w-7xl mx-auto py-10 px-4 sm:px-6 lg:px-10 bg-gray-50 min-h-screen animate-fade-in-up">
-      {/* Migas de pan */}
-      <nav
-        className="text-sm mb-6 text-gray-600 flex flex-wrap gap-1 items-center"
-        aria-label="Ruta de navegación"
-      >
-        <Link to="/" className="hover:underline">
-          Inicio
-        </Link>
-        <span>&gt;</span>
-        <Link to="/cuerpo" className="hover:underline">
-          Productos
-        </Link>
-        {subcategoria?.categoria && (
-          <>
-            <span>&gt;</span>
-            <Link
-              to={`/cuerpo?categoria=${subcategoria.categoria.id}`}
-              className="hover:underline"
-            >
-              {subcategoria.categoria.nombre}
-            </Link>
-          </>
-        )}
-        {subcategoria && (
-          <>
-            <span>&gt;</span>
-            <Link
-              to={`/cuerpo?subcategoria=${subcategoria.id}`}
-              className="hover:underline"
-            >
-              {subcategoria.nombre}
-            </Link>
-          </>
-        )}
-        <span className="text-gray-800 font-semibold truncate">{nombre}</span>
-      </nav>
-
-      {/* Contenedor principal */}
+    <section className="relative isolate overflow-hidden bg-white py-20 sm:py-28">
+      {/* Fondo difuminado superior */}
       <div
-        className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 bg-white p-6 sm:p-8 rounded-2xl shadow-lg
-        hover:shadow-xl transition-all duration-500 ease-in-out backdrop-blur-md"
+        aria-hidden="true"
+        className="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl"
       >
-        {/* Imagen del producto */}
-        <div className="animate-fade-in-up">
-          <ImagenProducto imagen={imagen} nombre={nombre} />
+        <div
+          className="relative left-[calc(50%-12rem)] aspect-[1155/678] w-[40rem] -translate-x-1/2 rotate-[30deg] 
+                     bg-gradient-to-tr from-blue-400 to-blue-700 opacity-20 sm:left-[calc(50%-36rem)] sm:w-[72rem]"
+          style={{
+            clipPath:
+              "polygon(74.1% 44.1%,100% 61.6%,97.5% 26.9%,85.5% 0.1%,80.7% 2%,72.5% 32.5%,60.2% 62.4%,52.4% 68.1%,47.5% 58.3%,45.2% 34.5%,27.5% 76.7%,0.1% 64.9%,17.9% 100%,27.6% 76.8%,76.1% 97.7%,74.1% 44.1%)",
+          }}
+        />
+      </div>
+
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 animate-fade-in-up">
+        {/* Migas de pan */}
+        <nav
+          className="text-sm mb-10 text-gray-600  flex flex-wrap gap-1 items-center justify-center sm:justify-start"
+          aria-label="Ruta de navegación"
+        >
+          <Link to="/" className="hover:underline hover:text-blue-700 transition-colors duration-200">Inicio</Link>
+          <span>&gt;</span>
+          <Link to="/cuerpo" className="hover:underline hover:text-blue-700 transition-colors duration-200">Productos</Link>
+
+          {subcategoria?.categoria && (
+            <>
+              <span>&gt;</span>
+              <Link
+                to={`/cuerpo?categoria=${subcategoria.categoria.id}`}
+                className="hover:underline hover:text-blue-700 transition-colors duration-200"
+              >
+                {subcategoria.categoria.nombre}
+              </Link>
+            </>
+          )}
+
+          {subcategoria && (
+            <>
+              <span>&gt;</span>
+              <Link
+                to={`/cuerpo?subcategoria=${subcategoria.id}`}
+                className="hover:underline hover:text-blue-700 transition-colors duration-200"
+              >
+                {subcategoria.nombre}
+              </Link>
+            </>
+          )}
+
+          <span>&gt;</span>
+          <span className="text-blue-800 font-semibold truncate">{nombre}</span>
+        </nav>
+
+        {/* Contenedor principal */}
+        <div
+          className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-10 bg-blue-50/40 p-6 sm:p-10 rounded-2xl shadow-md 
+                     hover:shadow-lg transition-all duration-500 backdrop-blur-sm"
+        >
+          {/* Imagen del producto */}
+          <div className="animate-fade-in-up">
+            <ImagenProducto imagen={imagen} nombre={nombre} />
+          </div>
+
+          {/* Información del producto */}
+          <div className="flex flex-col justify-between gap-6 animate-fade-in-up [animation-delay:0.1s]">
+            <InformacionProducto
+              nombre={nombre}
+              descripcion={descripcion}
+              precio={precio}
+              color={color}
+              stock={stock}
+              tallas={tallas}
+              tallaSeleccionada={tallaSeleccionada}
+              setTallaSeleccionada={setTallaSeleccionada}
+              tallaErrorVisual={tallaErrorVisual}
+            />
+          </div>
+
+          {/* Acciones */}
+          <div className="animate-fade-in-up [animation-delay:0.2s]">
+            <AccionesProducto handleAgregarCarrito={handleAgregarCarrito} />
+          </div>
         </div>
 
-        {/* Información */}
-        <div className="flex flex-col justify-between gap-6 animate-fade-in-up">
-          <InformacionProducto
-            nombre={nombre}
-            descripcion={descripcion}
-            precio={precio}
-            color={color}
-            stock={stock}
-            tallas={tallas}
-            tallaSeleccionada={tallaSeleccionada}
-            setTallaSeleccionada={setTallaSeleccionada}
-            tallaErrorVisual={tallaErrorVisual}
-          />
-        </div>
+        {/* Modal: advertencia de talla */}
+        <ModalMensaje
+          visible={modalTallaVisible}
+          tipo="advertencia"
+          titulo="Talla no seleccionada"
+          mensaje="Debes seleccionar una talla antes de agregar el producto al carrito."
+          textoConfirmar="Entendido"
+          onConfirmar={() => setModalTallaVisible(false)}
+        />
 
-        {/* Acciones */}
-        <div className="animate-fade-in-up">
-          <AccionesProducto handleAgregarCarrito={handleAgregarCarrito} />
+        {/* Modal: autenticación */}
+        {mostrarModal && (
+          <ModalAutenticacion onClose={() => setMostrarModal(false)} />
+        )}
+
+        {/* Modal: carga */}
+        {cargandoModal && (
+          <CargandoModal mensaje="Agregando al carrito..." visible={cargandoModal} />
+        )}
+
+        {/* Sección de recomendaciones */}
+        <div className="mt-20 animate-fade-in-up [animation-delay:0.3s]">
+          <h3 className="text-3xl font-bold text-gray-800 mb-10 text-center">
+            También te puede interesar
+          </h3>
+          <SeccionRecomendaciones productoId={Number(producto.id)} />
         </div>
       </div>
 
-      {/* Modal: advertencia de talla */}
-      <ModalMensaje
-        visible={modalTallaVisible}
-        tipo="advertencia"
-        titulo="Talla no seleccionada"
-        mensaje="Debes seleccionar una talla antes de agregar el producto al carrito."
-        textoConfirmar="Entendido"
-        onConfirmar={() => setModalTallaVisible(false)}
-      />
-
-      {/* Modal: autenticación */}
-      {mostrarModal && <ModalAutenticacion onClose={() => setMostrarModal(false)} />}
-
-      {/* Modal: carga */}
-      {cargandoModal && (
-        <CargandoModal mensaje="Agregando al carrito..." visible={cargandoModal} />
-      )}
-
-      {/* Sección de productos recomendados */}
-      <div className="mt-14 animate-fade-in-up">
-        <h3 className="text-2xl font-bold text-gray-800 mb-6 text-center">
-          También te puede interesar
-        </h3>
-        <SeccionRecomendaciones productoId={Number(producto.id)} />
+      {/* Fondo difuminado inferior */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-x-0 top-[calc(100%-15rem)] -z-10 transform-gpu overflow-hidden blur-3xl"
+      >
+        <div
+          className="relative left-[calc(50%+4rem)] aspect-[1155/678] w-[40rem] -translate-x-1/2 
+                     bg-gradient-to-tr from-blue-400 to-blue-700 opacity-20 
+                     sm:left-[calc(50%+36rem)] sm:w-[72rem]"
+          style={{
+            clipPath:
+              "polygon(74.1% 44.1%,100% 61.6%,97.5% 26.9%,85.5% 0.1%,80.7% 2%,72.5% 32.5%,60.2% 62.4%,52.4% 68.1%,47.5% 58.3%,45.2% 34.5%,27.5% 76.7%,0.1% 64.9%,17.9% 100%,27.6% 76.8%,76.1% 97.7%,74.1% 44.1%)",
+          }}
+        />
       </div>
     </section>
   );

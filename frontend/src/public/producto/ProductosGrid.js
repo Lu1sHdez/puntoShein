@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import { slugify } from "../../utils/slugify";
 
 export const ProductosGrid = ({ productos }) => {
   const [paginaActual, setPaginaActual] = useState(1);
@@ -19,7 +20,7 @@ export const ProductosGrid = ({ productos }) => {
         {productosPagina.map((producto, index) => (
           <Link
             key={producto.id}
-            to={`/producto/${producto.id}`}
+            to={`/producto/${slugify(producto.nombre)}`}
             aria-label={`Ver detalles del producto ${producto.nombre}`}
             className="group bg-white rounded-2xl shadow-md hover:shadow-2xl 
             transition-all duration-300 transform hover:-translate-y-2 

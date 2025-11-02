@@ -1,5 +1,5 @@
 import React from "react";
-import { FaTags, FaTruck, FaShieldAlt } from "react-icons/fa";
+import { BsTag, BsTruck, BsShieldCheck  } from "react-icons/bs";
 
 const PorqueElegirnos = () => {
   return (
@@ -27,7 +27,7 @@ const PorqueElegirnos = () => {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-10 mt-8">
           {/* Tarjeta 1 */}
           <div className="flex flex-col items-center bg-blue-50 rounded-2xl shadow-sm p-8 transition-all hover:scale-[1.03] hover:shadow-md animate-fade-in-up">
-            <FaTags className="text-blue-600 text-5xl mb-4 animate-float" />
+            <BsTag className="text-blue-600 text-5xl mb-4 animate-float" />
             <h3 className="font-semibold text-lg text-gray-800 mb-2">
               Ofertas increíbles
             </h3>
@@ -38,7 +38,7 @@ const PorqueElegirnos = () => {
 
           {/* Tarjeta 2 */}
           <div className="flex flex-col items-center bg-blue-50 rounded-2xl shadow-sm p-8 transition-all hover:scale-[1.03] hover:shadow-md animate-fade-in-up [animation-delay:0.15s]">
-            <FaTruck className="text-blue-600 text-5xl mb-4 animate-float" />
+            <BsTruck className="text-blue-600 text-5xl mb-4 animate-float" />
             <h3 className="font-semibold text-lg text-gray-800 mb-2">
               Envíos rápidos
             </h3>
@@ -49,7 +49,7 @@ const PorqueElegirnos = () => {
 
           {/* Tarjeta 3 */}
           <div className="flex flex-col items-center bg-blue-50 rounded-2xl shadow-sm p-8 transition-all hover:scale-[1.03] hover:shadow-md animate-fade-in-up [animation-delay:0.3s]">
-            <FaShieldAlt className="text-blue-600 text-5xl mb-4 animate-float" />
+            <BsShieldCheck  className="text-blue-600 text-5xl mb-4 animate-float" />
             <h3 className="font-semibold text-lg text-gray-800 mb-2">
               Compra segura
             </h3>

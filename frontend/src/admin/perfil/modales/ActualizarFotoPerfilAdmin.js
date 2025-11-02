@@ -76,7 +76,6 @@ const ActualizarFotoPerfilAdmin = ({ onClose, onFotoActualizada }) => {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      mostrarNotificacion("success", "Foto actualizada correctamente.");
       if (onFotoActualizada) onFotoActualizada(res.data.foto_perfil);
       onClose();
     } catch (error) {

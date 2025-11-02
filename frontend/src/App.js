@@ -80,6 +80,7 @@ const App = () => {
     <CartProvider>
     <Router>
       <Suspense fallback={<Skeleton />}>
+        
         <Routes>
 
           <Route element={<LayoutSimple/>}>
@@ -90,7 +91,7 @@ const App = () => {
             <Route path="/cuerpo" element={<CuerpoPrincipal />} />
             <Route path="/usuario/carrito" element={<ProteccionRutas element={Carrito} allowedRoles={["usuario"]} />} />
             <Route path="/productos/carrito"element={<ProteccionRutas element={Carrito} allowedRoles={["usuario"]} />}/>
-            <Route path="/producto/:id" element={<ProductoDetalle />} />
+            <Route path="/producto/:nombreSlug" element={<ProductoDetalle />} />
           </Route>
 
             {/* Layout vacío para autenticación (sin encabezado/pie general) */}

@@ -12,8 +12,10 @@ import {
   BsCart3,
   BsSearch,
   BsGear,
+  BsPersonCircle,
   BsBoxArrowInRight,
   BsPersonPlus,
+  BsBoxArrowRight,
   BsList,
   BsX,
 } from "react-icons/bs";
@@ -220,9 +222,6 @@ const EncabezadoPublico = () => {
                 className="flex items-center gap-2 text-gray-800 hover:text-blue-600 transition relative"
               >
                 <BsCart3 className="text-blue-600" size={22} />
-                <span className="hidden sm:inline text-sm font-medium">
-                  Carrito
-                </span>
 
                 {cantidadCarrito > 0 && (
                   <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold rounded-full px-2 py-0.5 shadow-md">
@@ -264,9 +263,9 @@ const EncabezadoPublico = () => {
                         setOpenUserMenu(false);
                         navigate("/usuario/perfil");
                       }}
-                      className="w-full text-left px-4 py-3 text-sm hover:bg-blue-50"
+                      className="w-full text-left px-4 py-3 text-sm hover:bg-blue-50 flex items-center gap-2"
                     >
-                      Mi perfil
+                      <BsPersonCircle className="text-blue-600" /> Mi perfil
                     </button>
                     <button
                       onClick={() => {
@@ -283,9 +282,9 @@ const EncabezadoPublico = () => {
                         setOpenUserMenu(false);
                         cerrarSesion();
                       }}
-                      className="w-full text-left px-4 py-3 text-sm text-red-600 hover:bg-red-50"
+                      className="w-full text-left px-4 py-3 text-sm hover:bg-red-50 flex items-center gap-2"
                     >
-                      Cerrar sesión
+                      <BsBoxArrowRight className="text-red-600" /> Cerrar Sesión
                     </button>
                   </div>
                 )}
@@ -374,9 +373,9 @@ const EncabezadoPublico = () => {
                       setOpenMobile(false);
                       navigate("/usuario/perfil");
                     }}
-                    className="text-gray-800 hover:text-blue-600"
+                    className="flex items-center gap-2 text-gray-800 hover:text-blue-600"
                   >
-                    Mi perfil
+                   <BsPersonCircle className="text-blue-600" /> Mi perfil
                   </button>
                   <button
                     onClick={() => {
@@ -392,9 +391,9 @@ const EncabezadoPublico = () => {
                       setOpenMobile(false);
                       cerrarSesion();
                     }}
-                    className="text-red-600 hover:text-red-700"
+                    className="flex items-center gap-2 text-red-600 hover:text-red-700"
                   >
-                    Cerrar sesión
+                    <BsBoxArrowRight className="text-red-600" /> Cerrar sesión
                   </button>
                 </>
               )}

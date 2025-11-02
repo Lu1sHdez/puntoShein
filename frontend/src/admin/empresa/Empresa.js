@@ -3,8 +3,8 @@ import axios from "axios";
 import { motion } from "framer-motion";
 import { API_URL } from "../../ApiConexion.js";
 import { FaEdit } from "react-icons/fa";
-import CargandoBarra from "../../Animations/CargandoBarra.js";
 import { dataLoadingAnimation } from "../../components/Funciones.js";
+import CargandoBarra from "../../Animations/CargandoBarra.js";
 import ModalEditarLogo from "./modales/Logo.js";
 import ModalDatosGenerales from "./modales/DatosGenerales.js";
 import ModalContacto from "./modales/Contacto.js";
@@ -13,8 +13,6 @@ import ModalValores from "./modales/Valores.js";
 const Empresa = () => {
   const [empresa, setEmpresa] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
   const [mostrarModalLogo, setMostrarModalLogo] = useState(false);
   const [mostrarModalGenerales, setMostrarModalGenerales] = useState(false);
   const [mostrarModalContacto, setMostrarModalContacto] = useState(false);
@@ -25,10 +23,36 @@ const Empresa = () => {
       const response = await axios.get(`${API_URL}/api/empresa/empresa`, {
         withCredentials: true,
       });
-      setEmpresa(response.data);
+
+      // Si no hay datos, crear estructura vacía
+      if (!response.data || Object.keys(response.data).length === 0) {
+        setEmpresa({
+          nombre: "",
+          mision: "",
+          vision: "",
+          historia: "",
+          equipo: "",
+          correo: "",
+          telefono: "",
+          valores: [],
+          logo: "",
+        });
+      } else {
+        setEmpresa(response.data);
+      }
     } catch (error) {
-      setError("Error al obtener los datos de la empresa");
-      console.error(error);
+      console.warn("No se encontró información de la empresa, creando estructura vacía...");
+      setEmpresa({
+        nombre: "",
+        mision: "",
+        vision: "",
+        historia: "",
+        equipo: "",
+        correo: "",
+        telefono: "",
+        valores: [],
+        logo: "",
+      });
     } finally {
       setLoading(false);
     }
@@ -39,10 +63,6 @@ const Empresa = () => {
   }, []);
 
   if (loading) return <CargandoBarra message="Cargando empresa..." />;
-  if (error)
-    return (
-      <div className="text-center py-4 text-red-500 font-semibold">{error}</div>
-    );
 
   return (
     <motion.div
@@ -69,11 +89,11 @@ const Empresa = () => {
               </button>
             </div>
             <div className="space-y-1 text-gray-700 text-sm sm:text-base">
-              <p><strong>Nombre:</strong> {empresa.nombre}</p>
-              <p><strong>Misión:</strong> {empresa.mision}</p>
-              <p><strong>Visión:</strong> {empresa.vision}</p>
-              <p><strong>Historia:</strong> {empresa.historia}</p>
-              <p><strong>Equipo:</strong> {empresa.equipo}</p>
+              <p><strong>Nombre:</strong> {empresa.nombre || "—"}</p>
+              <p><strong>Misión:</strong> {empresa.mision || "—"}</p>
+              <p><strong>Visión:</strong> {empresa.vision || "—"}</p>
+              <p><strong>Historia:</strong> {empresa.historia || "—"}</p>
+              <p><strong>Equipo:</strong> {empresa.equipo || "—"}</p>
             </div>
           </section>
 
@@ -91,8 +111,8 @@ const Empresa = () => {
               </button>
             </div>
             <div className="text-gray-700 text-sm sm:text-base space-y-1">
-              <p><strong>Correo:</strong> {empresa.correo}</p>
-              <p><strong>Teléfono:</strong> {empresa.telefono}</p>
+              <p><strong>Correo:</strong> {empresa.correo || "—"}</p>
+              <p><strong>Teléfono:</strong> {empresa.telefono || "—"}</p>
             </div>
           </section>
 
@@ -139,10 +159,15 @@ const Empresa = () => {
                 </button>
               </div>
             ) : (
-              <p className="text-gray-500">No disponible</p>
+              <div
+                onClick={() => setMostrarModalLogo(true)}
+                className="w-36 h-36 mx-auto rounded-lg bg-blue-50 border-2 border-dashed border-blue-300 flex flex-col items-center justify-center text-gray-500 hover:scale-105 transition-all cursor-pointer"
+              >
+                <FaEdit className="text-blue-600 text-xl mb-1" />
+                <span className="text-sm font-medium">Agregar logo</span>
+              </div>
             )}
           </section>
-
 
           {/* === MODALES === */}
           {mostrarModalGenerales && (
