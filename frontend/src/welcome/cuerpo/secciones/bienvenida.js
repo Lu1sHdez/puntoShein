@@ -29,7 +29,7 @@ const Bienvenida = () => {
             </span>
           </h1>
 
-          <p className="text-base sm:text-lg md:text-xl text-gray-100 max-w-2xl mx-auto lg:mx-0">
+          <p className="font-titulo text-base sm:text-lg md:text-xl text-gray-100 max-w-2xl mx-auto lg:mx-0">
             Explora nuestras últimas colecciones, descubre las mejores ofertas y
             mantén tu inventario bajo control desde cualquier lugar.
           </p>
