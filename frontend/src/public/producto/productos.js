@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { API_URL } from "../../ApiConexion.js";
 import CargandoBarra from "../../Animations/CargandoBarra";
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import Filtros from "./filtros/Filtros";
 import ModalAutenticacion from "../autenticacion/Autenticacion";
 import CargandoModal from "../../Animations/CargandoModal.js";
@@ -17,6 +17,8 @@ const Productos = () => {
   });
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState("");
   const [subcategoriaSeleccionada, setSubcategoriaSeleccionada] = useState("");
+  const [nombreCategoria, setNombreCategoria] = useState("");
+  const [nombreSubcategoria, setNombreSubcategoria] = useState("");
   const [mostrarSidebar, setMostrarSidebar] = useState(false);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [cargandoCarrito] = useState(false);
@@ -61,30 +63,72 @@ const Productos = () => {
         sinResultados: res.data.length === 0,
       });
     } catch (error) {
-      if (axios.isCancel(error)) return; // Evita errores por abortar solicitud
+      if (axios.isCancel(error)) return;
       console.error("Error al obtener productos:", error);
       setEstado((prev) => ({ ...prev, cargando: false }));
     }
   };
 
-  // === Carga inicial ===
+  // === Obtener nombre de categoría o subcategoría ===
+  const fetchNombres = async (categoria, subcategoria) => {
+    try {
+      if (categoria) {
+        const res = await axios.get(`${API_URL}/api/filtro/categorias`);
+        const encontrada = res.data.find((c) => String(c.id) === String(categoria));
+        setNombreCategoria(encontrada ? encontrada.nombre : "");
+      }
+      if (subcategoria) {
+        const res = await axios.get(`${API_URL}/api/filtro/subcategorias`);
+        const encontrada = res.data.find((s) => String(s.id) === String(subcategoria));
+        setNombreSubcategoria(encontrada ? encontrada.nombre : "");
+      }
+    } catch (error) {
+      console.error("Error al obtener nombres:", error);
+    }
+  };
+
   useEffect(() => {
     const controller = new AbortController();
-    const timeout = setTimeout(() => fetchProductos("inicial", controller.signal), 150);
-    return () => {
-      controller.abort();
-      clearTimeout(timeout);
-    };
-  }, []);
+
+    const params = new URLSearchParams(location.search);
+    const categoria = params.get("categoria");
+    const subcategoria = params.get("subcategoria");
+
+    if (categoria) {
+      setCategoriaSeleccionada(categoria);
+      setSubcategoriaSeleccionada("");
+      fetchNombres(categoria, null);
+      fetchProductos("filtro", controller.signal);
+    } else if (subcategoria) {
+      setSubcategoriaSeleccionada(subcategoria);
+      setCategoriaSeleccionada("");
+      fetchNombres(null, subcategoria);
+      fetchProductos("filtro", controller.signal);
+    } else {
+      setNombreCategoria("");
+      setNombreSubcategoria("");
+      fetchProductos("inicial", controller.signal);
+    }
+
+    return () => controller.abort();
+  }, [location.search]);
 
   // === Filtro dinámico ===
   useEffect(() => {
     const controller = new AbortController();
     if (categoriaSeleccionada || subcategoriaSeleccionada)
       fetchProductos("filtro", controller.signal);
-
     return () => controller.abort();
   }, [categoriaSeleccionada, subcategoriaSeleccionada]);
+
+  useEffect(() => {
+    if (!categoriaSeleccionada && !subcategoriaSeleccionada) {
+      const controller = new AbortController();
+      fetchProductos("inicial", controller.signal);
+      return () => controller.abort();
+    }
+  }, [categoriaSeleccionada, subcategoriaSeleccionada]);
+
 
   // === Bloquear scroll cuando el sidebar está abierto ===
   useEffect(() => {
@@ -93,7 +137,6 @@ const Productos = () => {
 
   const { productos, cargando, sinResultados } = estado;
 
-  // === Determinar qué mostrar según la búsqueda o filtros ===
   const productosAMostrar = terminoBusqueda ? productosFiltrados : productos;
   const cargandoActual = cargando || cargandoBusqueda;
   const sinResultadosActual = terminoBusqueda
@@ -116,7 +159,8 @@ const Productos = () => {
               onClick={() => {
                 setCategoriaSeleccionada("");
                 setSubcategoriaSeleccionada("");
-                fetchProductos("inicial");
+                setNombreCategoria("");
+                setNombreSubcategoria("");
               }}
               className="btn-secundario hover:scale-[1.03] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
             >
@@ -132,6 +176,34 @@ const Productos = () => {
             </button>
           </div>
         </div>
+
+        {/* Migas de pan */}
+        <nav
+          className="text-sm mt-6 mb-10 text-gray-600 flex flex-wrap gap-1 items-center justify-center sm:justify-start"
+          aria-label="Ruta de navegación"
+        >
+          <Link to="/" className="hover:underline hover:text-blue-700 transition-colors duration-200">
+            Inicio
+          </Link>
+          <span>&gt;</span>
+          <Link to="/cuerpo" className="hover:underline hover:text-blue-700 transition-colors duration-200">
+            Productos
+          </Link>
+
+          {nombreCategoria && (
+            <>
+              <span>&gt;</span>
+              <span className="text-blue-800 font-semibold">{nombreCategoria}</span>
+            </>
+          )}
+
+          {nombreSubcategoria && (
+            <>
+              <span>&gt;</span>
+              <span className="text-blue-800 font-semibold">{nombreSubcategoria}</span>
+            </>
+          )}
+        </nav>
 
         {/* Contenido principal */}
         {sinResultadosActual ? (
@@ -171,7 +243,7 @@ const Productos = () => {
         />
       </div>
 
-      {/* Overlay al abrir filtros */}
+      {/* Overlay */}
       {mostrarSidebar && (
         <div
           className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40"

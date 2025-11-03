@@ -100,7 +100,7 @@ const DetalleProducto = () => {
   const { nombre, descripcion, precio, imagen, color, stock, subcategoria, tallas } = producto;
 
   return (
-    <section className="relative isolate overflow-hidden bg-white py-20 sm:py-28">
+    <section className="relative isolate overflow-hidden bg-white pt-8 sm:pt-10 pb-20 sm:pb-28">
       {/* Fondo difuminado superior */}
       <div
         aria-hidden="true"

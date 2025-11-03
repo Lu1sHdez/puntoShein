@@ -20,7 +20,7 @@ const AccionesProducto = ({ handleAgregarCarrito }) => (
       to="/cuerpo"
       className="text-sm text-blue-600 hover:underline text-center mt-3 transition-colors"
     >
-      ← Volver a productos
+      Volver a productos
     </Link>
   </div>
 );
