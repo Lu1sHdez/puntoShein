@@ -4,20 +4,36 @@ import { dataLoadingAnimation } from "../Funciones";
 import axios from "axios";
 import { API_URL } from "../../ApiConexion";
 import CargandoBarra from "../../Animations/CargandoBarra";
-import { Link } from "react-router-dom";
 
 const Terminos = () => {
-  const [contenido, setContenido] = useState("");
+  const [documento, setDocumento] = useState(null);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
     const obtenerDocumento = async () => {
       try {
-        const res = await axios.get(`${API_URL}/api/documento/documentos/Términos%20y%20Condiciones`);
-        setContenido(res.data.contenido);
+        const res = await axios.get(
+          `${API_URL}/api/documento/obtener/Términos%20y%20Condiciones`
+        );
+
+        // Si el contenido viene como string, lo convertimos a JSON
+        const contenido =
+          typeof res.data.contenido === "string"
+            ? JSON.parse(res.data.contenido)
+            : res.data.contenido;
+
+        setDocumento({
+          titulo: res.data.titulo,
+          descripcion: res.data.descripcion,
+          fecha: res.data.fecha_actualizacion,
+          contenido,
+        });
       } catch (err) {
-        setError("No se pudieron cargar los términos y condiciones.");
+        console.error("Error al obtener documento:", err);
+        setError(
+          "No se pudieron cargar los Términos y Condiciones. Por favor, intenta más tarde."
+        );
       } finally {
         setCargando(false);
       }
@@ -25,51 +41,112 @@ const Terminos = () => {
 
     obtenerDocumento();
   }, []);
-  
-  if(cargando){
-    return (
-      <div className="flex justify-center items-center py-8">
-        <CargandoBarra message="Cargando términos y condiciones..." />
-      </div>
-    );
-  }
+
+  // Función para mostrar fecha formateada
+  const formatFecha = (fecha) => {
+    const date = new Date(fecha);
+    return date.toLocaleDateString("es-MX", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
 
   return (
-    <motion.section
-      {...dataLoadingAnimation}
-      className="px-6 sm:px-10 py-10 max-w-5xl mx-auto bg-white border border-gray-300 rounded-md shadow-md"
-    >
-      <header className="mb-10 text-center">
-        <h1 className="text-4xl font-serif font-semibold text-gray-800 tracking-wide">
-          Términos y Condiciones
-        </h1>
-        <p className="text-sm text-gray-500 mt-2">
-          Última actualización: junio de 2025
-        </p>
-      </header>
-
-      {cargando && (
-        <p className="text-center text-gray-500 text-sm">Cargando contenido...</p>
-      )}
-
-      {error && (
-        <p className="text-center text-red-600 text-base font-medium">{error}</p>
-      )}
-
-      {!cargando && !error && (
-        <article
-          className="prose prose-gray max-w-none text-justify leading-relaxed text-base text-gray-700"
-          dangerouslySetInnerHTML={{ __html: contenido }}
+    <section className="relative isolate overflow-hidden bg-white py-20 sm:py-24">
+      {/* Fondo superior difuminado */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl"
+      >
+        <div
+          className="relative left-[calc(50%-12rem)] aspect-[1155/678] w-[40rem]
+                     -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr
+                     from-blue-400 to-blue-700 opacity-20
+                     sm:left-[calc(50%-36rem)] sm:w-[72rem]"
+          style={{
+            clipPath:
+              "polygon(74.1% 44.1%,100% 61.6%,97.5% 26.9%,85.5% 0.1%,80.7% 2%,72.5% 32.5%,60.2% 62.4%,52.4% 68.1%,47.5% 58.3%,45.2% 34.5%,27.5% 76.7%,0.1% 64.9%,17.9% 100%,27.6% 76.8%,76.1% 97.7%,74.1% 44.1%)",
+          }}
         />
-      )}
-      
-      {/* Botón de regreso */}
-      <div className="mt-6">
-        <Link to="/" className="btn-secundario">
-          Volver a Inicio
-        </Link>
       </div>
-    </motion.section>
+
+      {/* === Contenido principal === */}
+      <motion.div
+        {...dataLoadingAnimation}
+        className="max-w-5xl mx-auto px-6 sm:px-10 py-10 bg-white border border-gray-200 rounded-2xl shadow-lg"
+      >
+        {/* Encabezado */}
+        <header className="text-center mb-10">
+          <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 tracking-tight mb-3">
+            {documento?.titulo || "Términos y Condiciones"}
+          </h1>
+          <p className="text-gray-600 text-base max-w-2xl mx-auto">
+            {documento?.descripcion}
+          </p>
+          {documento?.fecha && (
+            <p className="text-sm text-gray-500 mt-3">
+              Última actualización: {formatFecha(documento.fecha)}
+            </p>
+          )}
+        </header>
+
+        {/* Contenido dinámico */}
+        {cargando ? (
+          <div className="flex justify-center py-8">
+            <CargandoBarra message="Cargando términos y condiciones..." />
+          </div>
+        ) : error ? (
+          <p className="text-center text-red-600 text-base font-semibold">
+            {error}
+          </p>
+        ) : documento && documento.contenido ? (
+          <div className="space-y-10 animate-fade-in-up">
+            {documento.contenido.map((seccion, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: index * 0.1 }}
+                className="p-5 border border-gray-100 rounded-xl bg-gradient-to-br from-blue-50 to-white shadow-sm hover:shadow-md transition-all duration-300"
+              >
+                <h2 className="text-2xl font-bold text-blue-700 mb-1">
+                  {seccion.tituloSeccion}
+                </h2>
+                <h3 className="text-lg font-semibold text-gray-800 mb-3">
+                  {seccion.subtitulo}
+                </h3>
+                <ul className="list-disc pl-6 space-y-1 text-gray-700 text-base">
+                  {seccion.contenidoLista.map((item, i) => (
+                    <li key={i}>{item}</li>
+                  ))}
+                </ul>
+              </motion.div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-center text-gray-500 text-base">
+            No hay información disponible actualmente.
+          </p>
+        )}
+      </motion.div>
+
+      {/* Fondo inferior difuminado */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-x-0 top-[calc(100%-15rem)] -z-10 transform-gpu overflow-hidden blur-3xl"
+      >
+        <div
+          className="relative left-[calc(50%+4rem)] aspect-[1155/678] w-[40rem]
+                     -translate-x-1/2 bg-gradient-to-tr from-blue-400 to-blue-700 opacity-20
+                     sm:left-[calc(50%+36rem)] sm:w-[72rem]"
+          style={{
+            clipPath:
+              "polygon(74.1% 44.1%,100% 61.6%,97.5% 26.9%,85.5% 0.1%,80.7% 2%,72.5% 32.5%,60.2% 62.4%,52.4% 68.1%,47.5% 58.3%,45.2% 34.5%,27.5% 76.7%,0.1% 64.9%,17.9% 100%,27.6% 76.8%,76.1% 97.7%,74.1% 44.1%)",
+          }}
+        />
+      </div>
+    </section>
   );
 };
 

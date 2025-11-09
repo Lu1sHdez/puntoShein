@@ -13,7 +13,6 @@ import LayoutUsuario from "./layout/LayoutUsuario.js";
 import LayoutPublico from "./public/layout/layout.js";
 import { CartProvider } from "./context/CartContext";
 import InstalarPWA from './InstalarPWA.js';
-
 // Rutas protegidas
 import ProteccionRutas from "./utils/ProteccionRutas";
 import ErrorRoutes from "./routes/ErrorRoutes";
@@ -70,7 +69,8 @@ const AcercaDe = lazy(() => import("./components/empresa/AcercaDe"));
 const PoliticaPrivacidad = lazy(() => import("./components/empresa/PoliticaPrivacidad"));
 const Terminos = lazy(() => import("./components/empresa/Terminos"));
 const DeslindeLegal = lazy(() => import("./components/empresa/DeslindeLegal"));
-const Contacto = lazy(() => import("./components/empresa/Contacto"));
+const Contacto = lazy(() => import("./components/empresa/Contacto.js"));
+
 const MapaSitio = lazy(() => import("./components/empresa/MapaSitio"));
 const PreguntasFrecuentesAll = lazy(() => import("./components/empresa/PreguntasFrecuentes"));
 
@@ -115,13 +115,13 @@ const App = () => {
 
           <Route element={<LayoutGeneral />}>
              {/* Empresa */}
-             <Route path="/acercaDe" element={<AcercaDe />} />
-            <Route path="/privacidad" element={<PoliticaPrivacidad />} />
-            <Route path="/terminos" element={<Terminos />} />
-            <Route path="/deslindeLegal" element={<DeslindeLegal />} />
-            <Route path="/contacto" element={<Contacto />} />
-            <Route path="/mapa-del-sitio" element={<MapaSitio />} />
-            <Route path="/preguntasFrecuentes" element={<PreguntasFrecuentesAll />} />
+              <Route path="/acercaDe" element={<AcercaDe />} /> 
+              <Route path="/privacidad" element={<PoliticaPrivacidad />} />
+              <Route path="/terminos" element={<Terminos />} />
+              <Route path="/deslindeLegal" element={<DeslindeLegal />} />
+              <Route path="/contacto" element={<Contacto />} />
+              <Route path="/mapa-del-sitio" element={<MapaSitio />} />
+              <Route path="/preguntasFrecuentes" element={<PreguntasFrecuentesAll />} />
           </Route>
 
           <Route element = {<LayoutAdmin/>}>

@@ -10,7 +10,7 @@ const Demanda = () => {
   const [predicciones, setPredicciones] = useState([]);
   const [resumen, setResumen] = useState([]);
   const [cargando, setCargando] = useState(true);
-  const [filtro, setFiltro] = useState("alto"); // alto, medio, bajo
+  const [filtro, setFiltro] = useState("alto");
   
   
 
@@ -66,7 +66,7 @@ const Demanda = () => {
           
 
         setPredicciones(conNivel);
-        setResumen(resumenPorNivel); // 👈 Nuevo estado
+        setResumen(resumenPorNivel);
 
       } catch (error) {
         console.error("Error al obtener predicciones:", error);

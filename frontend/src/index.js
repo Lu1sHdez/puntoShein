@@ -5,6 +5,10 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { SidebarProvider } from './context/SidebarContext';
+import { inicializarNotificacionesConexion } from './utils/notificacion';
+
+// Inicializa los detectores de conexión
+inicializarNotificacionesConexion();
 
 // === Detector de pantallazo blanco con botón de restablecer ===
 window.addEventListener('error', (e) => {

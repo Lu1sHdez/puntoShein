@@ -9,7 +9,7 @@ const LayoutGeneral = () => {
   const location = useLocation();
 
   // Opcional: en ciertas rutas como /registro, también mostrar el encabezado simple
-  const mostrarEncabezado = ["/acercaDe","/terminos", 
+  const mostrarEncabezado = ["/acercaDe","/contactanos", "/terminos", 
                               "/privacidad", "/deslindeLegal",
                              "/contacto", "/ayuda", "/mapa-del-sitio", 
                              "/preguntasFrecuentes"].includes(location.pathname);

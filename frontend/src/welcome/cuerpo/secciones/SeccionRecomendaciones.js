@@ -15,7 +15,6 @@ const SeccionRecomendaciones = ({ productoId }) => {
         const res = await axios.get(`${API_URL}/api/recomendacion/id/${productoId}`);
         const originales = res.data.recomendaciones || [];
 
-        // ✅ Filtro para que no se repita el mismo productoConsecuente.id
         const vistos = new Set();
         const unicos = originales.filter((rec) => {
           const id = rec.productoConsecuente?.id;

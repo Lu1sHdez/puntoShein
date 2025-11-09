@@ -10,6 +10,14 @@ const urlsToCache = [
   "/manifest.json",
   "/logo192.png",
   "/logo512.png",
+
+  "/acercaDe",
+  "/privacidad",
+  "/terminos",
+  "/deslindeLegal",
+  "/contacto",
+  "/mapa-del-sitio",
+  "/preguntasFrecuentes",
 ];
 
 // Instalar

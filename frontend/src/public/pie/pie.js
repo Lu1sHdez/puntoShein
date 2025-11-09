@@ -123,10 +123,11 @@ const PiePublico = () => {
                 <FaMapMarkerAlt className="text-blue-500" /> Huejutla de Reyes, Hidalgo
               </li>
               <li className="flex items-center gap-2">
-                <FaPhoneAlt className="text-blue-500" /> +52 771 123 4567
+                <FaPhoneAlt className="text-blue-500" /> +52 789 112 97 62
               </li>
               <li className="flex items-center gap-2">
-                <FaEnvelope className="text-blue-500" /> contacto@puntoshein.com
+                <FaEnvelope className="text-blue-500" /> puntosheinhuejutla@gmail.com
+
               </li>
             </ul>
           </div>
@@ -145,21 +146,27 @@ const PiePublico = () => {
 
           <div className="flex gap-5 text-gray-400">
             <a
-              href="#"
+              href="https://www.facebook.com/puntosheinhuejutla"
+              target="_blank"
+              rel="noopener noreferrer"
               className="hover:text-blue-500 transition"
               aria-label="Facebook"
             >
               <FaFacebookF size={18} />
             </a>
             <a
-              href="#"
+              href="https://www.instagram.com/puntoshein"
+              target="_blank"
+              rel="noopener noreferrer"
               className="hover:text-pink-500 transition"
               aria-label="Instagram"
             >
               <FaInstagram size={18} />
             </a>
             <a
-              href="#"
+              href="https://twitter.com/puntoshein"
+              target="_blank"
+              rel="noopener noreferrer"
               className="hover:text-sky-400 transition"
               aria-label="Twitter"
             >
@@ -167,6 +174,7 @@ const PiePublico = () => {
             </a>
           </div>
         </div>
+
       </div>
 
       {/* Fondo difuminado inferior */}
